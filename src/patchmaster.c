@@ -57,6 +57,24 @@ void patchmaster_stop(patchmaster *pm) {
   pm->running = false;
 }
 
+// ================ movement ================
+
+void patchmaster_next_patch(patchmaster *pm) {
+  cursor_next_patch(pm->cursor);
+}
+
+void patchmaster_prev_patch(patchmaster *pm) {
+  cursor_prev_patch(pm->cursor);
+}
+
+void patchmaster_next_song(patchmaster *pm) {
+  cursor_next_song(pm->cursor);
+}
+
+void patchmaster_prev_song(patchmaster *pm) {
+  cursor_prev_song(pm->cursor);
+}
+
 // ================ debugging ================
 
 #ifdef DEBUG

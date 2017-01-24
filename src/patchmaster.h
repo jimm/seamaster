@@ -28,6 +28,11 @@ int patchmaster_load(patchmaster *, const char *);
 void patchmaster_start(patchmaster *);
 void patchmaster_stop(patchmaster *);
 
+void patchmaster_next_patch(patchmaster *);
+void patchmaster_prev_patch(patchmaster *);
+void patchmaster_next_song(patchmaster *);
+void patchmaster_prev_song(patchmaster *);
+
 #ifdef DEBUG
 void patchmaster_debug(patchmaster *);
 #endif

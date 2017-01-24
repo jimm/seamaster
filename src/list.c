@@ -30,7 +30,7 @@ int list_length(list *l) {
 }
 
 void *list_at(list *l, int i) {
-  return l->nodes[i];
+  return (i >= 0 && i < l->num_elements) ? l->nodes[i] : 0;
 }
 
 int list_index_of(list *l, void *node) {
@@ -39,6 +39,18 @@ int list_index_of(list *l, void *node) {
       return i;
   return -1;
 }
+
+void *list_last(list *l) {
+  return list_at(l, list_length(l) - 1);
+}
+
+// func may be 0
+void list_clear(list *l, void (*content_freeing_func)()) {
+  if (content_freeing_func != 0)
+    for (int i = 0; i < l->num_elements; ++i)
+      content_freeing_func(l->nodes[i]);
+  l->num_elements = 0;
+}  
 
 list *list_append(list *l, void *node) {
   if (l->num_allocated == l->num_elements)

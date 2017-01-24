@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "list_window.h"
+#include "../song.h"            /* DEBUG */
 
 list_window *list_window_new(rect r, char * title_prefix, char *(*str_func)(),
                              void *(*curr_item_func)()) {
@@ -15,9 +16,11 @@ list_window *list_window_new(rect r, char * title_prefix, char *(*str_func)(),
 void list_window_free(list_window * lw) {
 }
 
-void list_window_set_contents(list_window *lw, char *title, list *list) {
+void list_window_set_contents(list_window *lw, char *title, list *list,
+                              void *curr_item_func_arg) {
   lw->w->title = title;
   lw->list = list;
+  lw->curr_item_func_arg = curr_item_func_arg;
   list_window_draw(lw);
 }
 
@@ -27,21 +30,21 @@ void list_window_draw(list_window *lw) {
     return;
 
   int vis_height = window_visible_height(lw->w);
-  // FIXME
-  /* void *curr_item = lw->curr_item_func(); */
+
   void *curr_item = 0;
+  if (lw->curr_item_func != 0)
+    curr_item = lw->curr_item_func(lw->curr_item_func_arg);
+
   int curr_index = list_index_of(lw->list, curr_item);
-  if (curr_index == -1)         /* should never happen */
+  if (curr_index == -1)
     curr_index = 0;
   if (curr_index < lw->offset)
     lw->offset = curr_index;
   else if (curr_index >= lw->offset + vis_height)
     lw->offset = curr_index - vis_height + 1;
 
-  fprintf(stderr, "lw->offset = %d\n", lw->offset); /* DEBUG */
   for (int i = lw->offset; i < list_length(lw->list) && i < lw->offset + vis_height; ++i) {
     void *thing = list_at(lw->list, i);
-    fprintf(stderr, "list_window_draw i = %d, thing = %p\r\n", i, thing); /* DEBUG */
     wmove(lw->w->win, i+1, 1);
 
     if (thing == curr_item)
@@ -49,7 +52,7 @@ void list_window_draw(list_window *lw) {
 
     waddch(lw->w->win, ' ');
     char *str = lw->str_func(thing);
-    waddstr(lw->w->win, str ? window_make_fit(lw->w, str, 2) : "(null)"); /* DEBUG (null) */
+    waddstr(lw->w->win, str);
     waddch(lw->w->win, ' ');
 
     if (thing == curr_item)

@@ -38,7 +38,7 @@ char *patch_name(patch *p) {
 }
 
 void patch_start(patch *p) {
-  if (p->running)
+  if (p == 0 || p->running)
     return;
   for (int i = 0; i < list_length(p->connections); ++i) {
     connection *conn = list_at(p->connections, i);
@@ -52,7 +52,7 @@ bool patch_is_running(patch *p) {
 }
 
 void patch_stop(patch *p) {
-  if (!p->running)
+  if (p == 0 || !p->running)
     return;
   for (int i = 0; i < list_length(p->connections); ++i) {
     connection *conn = list_at(p->connections, i);
