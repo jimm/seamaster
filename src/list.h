@@ -20,6 +20,7 @@ void *list_last(list *);
 void list_clear(list *, void (*content_freeing_func)()); // func may be 0
 
 list *list_append(list *, void *);
+list *list_append_list(list *, list *);
 list *list_insert(list *, int, void *); // insert before index
 void *list_remove(list *, void *);
 void *list_remove_at(list *, int);

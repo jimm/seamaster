@@ -32,11 +32,16 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int16_t.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
-  /usr/include/sys/_types/_mode_t.h src/connection.h src/types.h \
-  src/bytes.h src/input.h /usr/include/pthread.h \
-  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
-  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
-  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
+  /usr/include/sys/_types/_mode_t.h /usr/include/stdio.h \
+  /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h \
+  /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
+  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
+  src/consts.h src/connection.h src/list.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
+  src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
+  /usr/include/pthread/sched.h /usr/include/time.h \
+  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
+  /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -47,9 +52,7 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/local/include/portmidi.h src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/trigger.h src/output.h
+  /usr/local/include/portmidi.h src/trigger.h src/output.h
 
 /usr/include/stdlib.h:
 
@@ -173,11 +176,27 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
 
 /usr/include/sys/_types/_mode_t.h:
 
+/usr/include/stdio.h:
+
+/usr/include/sys/_types/_va_list.h:
+
+/usr/include/sys/stdio.h:
+
+/usr/include/sys/_types/_off_t.h:
+
+/usr/include/sys/_types/_ssize_t.h:
+
+/usr/include/secure/_stdio.h:
+
+/usr/include/secure/_common.h:
+
+src/consts.h:
+
 src/connection.h:
 
-src/types.h:
+src/list.h:
 
-src/bytes.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/input.h:
 
@@ -220,10 +239,6 @@ src/input.h:
 /usr/include/sys/_types/_mach_port_t.h:
 
 /usr/local/include/portmidi.h:
-
-src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/trigger.h:
 

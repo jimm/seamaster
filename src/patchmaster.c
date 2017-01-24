@@ -33,7 +33,7 @@ void patchmaster_free(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
     song_free(list_at(pm->all_songs->songs, i));
   list_free(pm->song_lists, song_list_free); /* includes pm->all_songs */
-  list_free(pm->messages, bytes_free);
+  list_free(pm->messages, message_free);
   list_free(pm->triggers, trigger_free);
   free(pm);
 }

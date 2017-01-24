@@ -1,11 +1,21 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include "types.h"
-#include "bytes.h"
+#include "list.h"
 
 typedef struct input input;
 typedef struct output output;
+
+typedef struct program {
+  int bank_msb;
+  int bank_lsb;
+  int prog;
+} program;
+
+typedef struct zone {
+  int low;
+  int high;
+} zone;
 
 typedef struct connection {
   int id;
@@ -13,25 +23,20 @@ typedef struct connection {
   output *output;
   int input_chan;
   int output_chan;
-  int bank_msb;
-  int bank_lsb;
-  int pc_prog;
-  int zone_low;
-  int zone_high;
+  program prog;
+  zone zone;
   int xpose;
   // TODO filter
 } connection;
 
 connection *connection_new(int id,
-                           input *input, byte input_chan,
-                           output *output, byte output_chan,
-                           byte bank_msb, byte bank_lsb, byte pc_prog,
-                           byte zone_low, byte zone_high,
-                           byte xpose);
+                           input *input, int input_chan,
+                           output *output, int output_chan,
+                           program prog, zone zone, int xpose);
 void connection_free(connection *conn);
 
-void connection_start(connection *, bytes *);
-void connection_stop(connection *, bytes *);
+void connection_start(connection *, list *);
+void connection_stop(connection *, list *);
 
 
 #endif /* CONNECTION_H */

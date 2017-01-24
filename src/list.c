@@ -59,6 +59,16 @@ list *list_append(list *l, void *node) {
   return l;
 }
 
+list *list_append_list(list *l, list *other) {
+  if (other->num_elements == 0)
+    return l;
+
+  while (l->num_allocated < l->num_elements + other->num_elements)
+    list_grow(l);
+  memcpy(l->nodes, other->nodes, other->num_elements * sizeof(void *));
+  return l;
+}
+
 // insert before index
 list *list_insert(list *l, int index, void *node) {
   if (l->num_allocated == l->num_elements)

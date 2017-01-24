@@ -2,7 +2,6 @@
 #define PATCH_H
 
 #include "list.h"
-#include "bytes.h"
 #include "connection.h"
 #include "input.h"
 
@@ -10,8 +9,8 @@ typedef struct patch {
   int id;
   char *name;
   list *connections;
-  bytes *start_bytes;
-  bytes *stop_bytes;
+  list *start_messages;
+  list *stop_messages;
   bool running;
 } patch;
 

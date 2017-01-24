@@ -32,16 +32,18 @@ src/curses/info_window.o: src/curses/info_window.c /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int16_t.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
-  /usr/include/sys/_types/_mode_t.h src/curses/info_window.h \
-  src/curses/window.h /usr/include/ncurses.h /usr/include/ncurses_dll.h \
-  /usr/include/stdio.h /usr/include/sys/_types/_va_list.h \
-  /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/secure/_stdio.h \
-  /usr/include/secure/_common.h /usr/include/unctrl.h \
-  /usr/include/curses.h \
+  /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
+  /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
+  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
+  /usr/include/secure/_string.h /usr/include/secure/_common.h \
+  src/curses/info_window.h src/curses/window.h /usr/include/ncurses.h \
+  /usr/include/ncurses_dll.h /usr/include/stdio.h \
+  /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h \
+  /usr/include/sys/_types/_off_t.h /usr/include/secure/_stdio.h \
+  /usr/include/unctrl.h /usr/include/curses.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/geometry.h
+  src/curses/geometry.h src/curses/../list.h src/curses/help_window.h
 
 /usr/include/stdlib.h:
 
@@ -165,6 +167,20 @@ src/curses/info_window.o: src/curses/info_window.c /usr/include/stdlib.h \
 
 /usr/include/sys/_types/_mode_t.h:
 
+/usr/include/string.h:
+
+/usr/include/sys/_types/_rsize_t.h:
+
+/usr/include/sys/_types/_errno_t.h:
+
+/usr/include/sys/_types/_ssize_t.h:
+
+/usr/include/strings.h:
+
+/usr/include/secure/_string.h:
+
+/usr/include/secure/_common.h:
+
 src/curses/info_window.h:
 
 src/curses/window.h:
@@ -181,11 +197,7 @@ src/curses/window.h:
 
 /usr/include/sys/_types/_off_t.h:
 
-/usr/include/sys/_types/_ssize_t.h:
-
 /usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
 
 /usr/include/unctrl.h:
 
@@ -196,3 +208,7 @@ src/curses/window.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/curses/geometry.h:
+
+src/curses/../list.h:
+
+src/curses/help_window.h:

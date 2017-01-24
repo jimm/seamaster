@@ -46,5 +46,5 @@ char *help_window_read_help() {
 "l    - load\n" \
 "r    - reload\n" \
 "\n" \
-"q    - quit\n";
+"q    - quit";
 }

@@ -4,6 +4,10 @@
 #include "trigger.h"
 
 #define MIDI_BUFSIZ 128
+// 1/10 second
+#define NANOSECS_WAIT 100000000
+
+static struct timespec rqtp = {0, NANOSECS_WAIT};
 
 void *input_thread(void *);
 
@@ -38,19 +42,19 @@ void input_free(input *in) {
   free(in);
 }
 
-void add_connection(input *in, connection *conn) {
+void input_add_connection(input *in, connection *conn) {
   list_append(in->connections, conn);
 }
 
-void remove_connection(input *in, connection *conn) {
+void input_remove_connection(input *in, connection *conn) {
   list_remove(in->connections, conn);
 }
 
-void add_trigger(input *in, trigger *trigger) {
+void input_add_trigger(input *in, trigger *trigger) {
   list_append(in->triggers, trigger);
 }
 
-void remove_trigger(input *in, trigger *trigger) {
+void input_remove_trigger(input *in, trigger *trigger) {
   list_remove(in->triggers, trigger);
 }
 
@@ -80,13 +84,15 @@ void input_read(input *in, PmEvent *buf, int len) {
 
 void *input_thread(void *in_voidptr) {
   input *in = (input *)in_voidptr;
-  // TODO need streams
   // TOOD if nothing to do, sleep for 1 second (unistd.h, sleep(seconds))
   while (in->running) {
     if (Pm_Poll(in->stream) == TRUE) {
       PmEvent buf[MIDI_BUFSIZ];
       int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
       input_read(in, buf, n);
+    }
+    else {
+      nanosleep(&rqtp, 0);
     }
   }
   pthread_exit(0);

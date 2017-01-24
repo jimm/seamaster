@@ -30,6 +30,14 @@ void cleanup() {
   Pm_Terminate();
 }
 
+void check_sizes() {
+  if (sizeof(void *) < sizeof(PmMessage)) {
+    fprintf(stderr, "error: code assumes PmMessage struct fits inside void *\n");
+    fprintf(stderr, "exiting (sorry, it's me, it's not you)\n");
+    exit(1);
+  }
+}
+
 int main(int argc, const char **argv) {
   Pm_Initialize();
   atexit(cleanup);
@@ -37,6 +45,8 @@ int main(int argc, const char **argv) {
   if (argc > 1 && strncmp("-l", argv[1], 2) == 0)
     list_all_devices();
   else {
+    check_sizes();
+
     patchmaster *pm = patchmaster_new();
     if (argc > 1) {
       if (load(pm, argv[1]) != 0)

@@ -1,8 +1,5 @@
-# DWARF_VERSION = 2
-# -ggdb -gcodeview -gdwarf-$(DWARF_VERSION) -gmodules
-# -MD -MP -g
 CC = clang
-CPPFLAGS += -g
+CPPFLAGS += -MD -MP -g
 LIBS = -lc -lncurses -lportmidi -lsqlite3
 LDFLAGS += $(LIBS) -macosx_version_min 10.10
 

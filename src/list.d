@@ -35,10 +35,7 @@ src/list.o: src/list.c /usr/include/stdlib.h /usr/include/Availability.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  /usr/include/secure/_string.h /usr/include/secure/_common.h \
-  /usr/include/stdio.h /usr/include/sys/_types/_va_list.h \
-  /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h \
-  /usr/include/secure/_stdio.h src/list.h \
+  /usr/include/secure/_string.h /usr/include/secure/_common.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h
 
 /usr/include/stdlib.h:
@@ -176,16 +173,6 @@ src/list.o: src/list.c /usr/include/stdlib.h /usr/include/Availability.h \
 /usr/include/secure/_string.h:
 
 /usr/include/secure/_common.h:
-
-/usr/include/stdio.h:
-
-/usr/include/sys/_types/_va_list.h:
-
-/usr/include/sys/stdio.h:
-
-/usr/include/sys/_types/_off_t.h:
-
-/usr/include/secure/_stdio.h:
 
 src/list.h:
 

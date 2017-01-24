@@ -31,6 +31,7 @@ void refresh_all(patchmaster *pm, windows *);
 void set_window_data(patchmaster *pm, windows *);
 void close_screen();
 void gui_help(windows *);
+void show_message(windows *, char *);
 
 void gui_main(patchmaster *pm) {
   config_curses();
@@ -72,27 +73,31 @@ void gui_run(patchmaster *pm, windows *ws) {
       gui_help(ws);
       break;
     case '\e':                  /* escape */
+      show_message(ws, "Sending panic note off messages...");
       // TODO, panic
+      /* # Twice in a row sends individual note-off commands */
+      /* @pm.panic(@prev_cmd == 27) */
+      show_message(ws, "Panic sent");
       break;
     case 'l':
-      // TODO
+      // TODO load file
       /* file = PromptWindow.new('Load', 'Load file:').gets */
       /* if file.length > 0 */
       /*   begin */
       /*     load(file) */
-      /*     message("Loaded #{file}") */
+      /*     show_message(ws, "Loaded #{file}") */
       /*   rescue => ex */
-      /*     message(ex.to_s) */
+      /*     show_message(ws, ex.to_s) */
       /*   end */
       /* end */
       break;
     case 'r':
-      // TODO
+      // TODO reload file
       /* if @pm.loaded_file && @pm.loaded_file.length > 0 */
       /*   load(@pm.loaded_file) */
-      /*   message("Reloaded #{@pm.loaded_file}") */
+      /*   show_message(ws, "Reloaded #{@pm.loaded_file}") */
       /* else */
-      /*   message('No file loaded') */
+      /*   show_message(ws, "No file loaded"); */
       /* end */
       break;
     case 'q':
@@ -213,6 +218,7 @@ void close_screen() {
   noraw();
   nocbreak();
   refresh();
+  endwin();
 }
 
 void gui_help(windows *ws) {
@@ -223,4 +229,11 @@ void gui_help(windows *ws) {
   doupdate();
   getch();                      /* wait for key and eat it */
   help_window_free(hw);
+}
+
+void show_message(windows *ws, char *msg) {
+  WINDOW *win = ws->message->win;
+  wclear(win);
+  waddstr(win, msg);
+  wrefresh(win);
 }

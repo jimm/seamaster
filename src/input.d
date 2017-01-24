@@ -52,7 +52,7 @@ src/input.o: src/input.c /usr/include/stdlib.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   /usr/local/include/portmidi.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/connection.h src/types.h src/bytes.h src/trigger.h
+  src/connection.h src/trigger.h
 
 /usr/include/stdlib.h:
 
@@ -237,9 +237,5 @@ src/list.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/connection.h:
-
-src/types.h:
-
-src/bytes.h:
 
 src/trigger.h:

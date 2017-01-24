@@ -1,16 +1,15 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "types.h"
+#include "list.h"
 
 typedef struct message {
   int id;
   char *name;
-  int num_bytes;
-  byte *bytes;
+  list *messages;
 } message;
 
-message *message_new(int id, char *name, int num_bytes, byte *bytes);
+message *message_new(int id, char *name);
 void message_free(message *);
 
 #endif /* MESSAGE_H */

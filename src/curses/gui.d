@@ -42,11 +42,11 @@ src/curses/gui.o: src/curses/gui.c /usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/curses/gui.h src/curses/../patchmaster.h src/curses/../song_list.h \
   src/curses/../list.h src/curses/../song.h src/curses/../patch.h \
-  src/curses/../bytes.h src/curses/../types.h src/curses/../connection.h \
-  src/curses/../input.h /usr/include/pthread.h \
-  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
-  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
-  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
+  src/curses/../connection.h src/curses/../input.h \
+  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
+  /usr/include/pthread/sched.h /usr/include/time.h \
+  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
+  /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -61,7 +61,7 @@ src/curses/gui.o: src/curses/gui.c /usr/include/stdlib.h \
   src/curses/../output.h src/curses/../message.h src/curses/geometry.h \
   src/curses/list_window.h src/curses/window.h src/curses/patch_window.h \
   src/curses/trigger_window.h src/curses/info_window.h \
-  src/curses/../cursor.h
+  src/curses/help_window.h src/curses/../cursor.h
 
 /usr/include/stdlib.h:
 
@@ -223,10 +223,6 @@ src/curses/../song.h:
 
 src/curses/../patch.h:
 
-src/curses/../bytes.h:
-
-src/curses/../types.h:
-
 src/curses/../connection.h:
 
 src/curses/../input.h:
@@ -288,5 +284,7 @@ src/curses/patch_window.h:
 src/curses/trigger_window.h:
 
 src/curses/info_window.h:
+
+src/curses/help_window.h:
 
 src/curses/../cursor.h:

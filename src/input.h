@@ -22,11 +22,11 @@ typedef struct input {
 input *input_new(int id, char *sym, char *name, int port_num);
 void input_free(input *);
 
-void add_connection(input *, connection *);
-void remove_connection(input *, connection *);
+void input_add_connection(input *, connection *);
+void input_remove_connection(input *, connection *);
 
-void add_trigger(input *, trigger *);
-void remove_trigger(input *, trigger *);
+void input_add_trigger(input *, trigger *);
+void input_remove_trigger(input *, trigger *);
 
 void input_start(input *);
 void input_stop(input *);

@@ -95,7 +95,8 @@ int load_messages(sqlite3 *db, context *context) {
     const unsigned char *name = sqlite3_column_text(stmt, 1);
     int num_bytes = sqlite3_column_int(stmt, 2);
     const void *bytes = sqlite3_column_blob(stmt, 3);
-    message *m = message_new(id, (char *)name, num_bytes, (byte *)bytes);
+    message *m = message_new(id, (char *)name);
+    // TODO convert bytes into PmMessages
     list_append(context->pm->messages, m);
   }
 
@@ -167,16 +168,16 @@ int load_patches(sqlite3 *db, context *context) {
 int load_connections_callback(void *cptr, int argc, char **argv,
                                           char **col_names) {
   context *c = (context *)cptr;
+  program prog = {int_from_col(argv[5]), int_from_col(argv[6]), int_from_col(argv[7])};
+  zone zone = {int_from_col(argv[8]), int_from_col(argv[9])};
   connection *conn =
     connection_new(int_from_col(argv[0]),
-                   find_by_id(c->pm->inputs, int_from_col(argv[1])),
-                   int_from_col(argv[2]),
-                   (output *)find_by_id(c->pm->outputs,int_from_col(argv[3])),
-                   int_from_col(argv[4]),
-                   int_from_col(argv[5]), int_from_col(argv[6]), /* bank */
-                   int_from_col(argv[7]), /* prog chg */
-                   int_from_col(argv[8]), int_from_col(argv[9]), /* zone */
-                   int_from_col(argv[10]));              /* xpose */
+                   find_by_id(c->pm->inputs, int_from_col(argv[1])), /* input */
+                   int_from_col(argv[2]),                            /* input chan */
+                   (output *)find_by_id(c->pm->outputs,int_from_col(argv[3])), /* output */
+                   int_from_col(argv[4]), /* output chan */
+                   prog, zone,
+                   int_from_col(argv[10])); /* xpose */
   list_append(c->patch->connections, conn);
 
   return 0;
