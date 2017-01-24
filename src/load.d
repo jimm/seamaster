@@ -39,6 +39,7 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/strings.h /usr/include/secure/_string.h \
+  /usr/include/errno.h /usr/include/sys/errno.h /usr/include/err.h \
   /usr/local/include/portmidi.h src/patchmaster.h src/song_list.h \
   src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
@@ -57,9 +58,7 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/trigger.h src/output.h src/message.h /usr/include/sqlite3.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
-  src/load.h
+  src/trigger.h src/output.h src/message.h src/load.h
 
 /usr/include/stdio.h:
 
@@ -207,6 +206,12 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
 
 /usr/include/secure/_string.h:
 
+/usr/include/errno.h:
+
+/usr/include/sys/errno.h:
+
+/usr/include/err.h:
+
 /usr/local/include/portmidi.h:
 
 src/patchmaster.h:
@@ -268,9 +273,5 @@ src/trigger.h:
 src/output.h:
 
 src/message.h:
-
-/usr/include/sqlite3.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
 
 src/load.h:

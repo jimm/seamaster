@@ -1,278 +1,195 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <err.h>
 #include "portmidi.h"
 #include "patchmaster.h"
-#include "sqlite3.h"
 #include "load.h"
 
 typedef struct context {
+  FILE *fp;
   patchmaster *pm;
   song *song;
   patch *patch;
   song_list *song_list;
 } context;
 
-int int_from_col(char *);
-input *find_by_id(list *, int);
-PmDeviceID find_device(char *, char);
+void parse_line(context *, char *);
+list *comma_sep_args(char *);
+void strip_newline(char *);
 
-int load_instruments(sqlite3 *, context *);
-int load_messages(sqlite3 *, context *);
-int load_songs(sqlite3 *, context *);
-int load_patches(sqlite3 *, context *);
-int load_connections(sqlite3 *, context *);
-int load_song_lists(sqlite3 *, context *);
-int load_song_list_songs(sqlite3 *db, context *context);
+PmDeviceID find_device(char *, char);
+input *find_by_sym(list *, char *);
+song *find_song(list *, char *);
+
+int load_instrument(context *, char *, int);
+int load_message(context *, char *);
+int load_trigger(context *, char *);
+int load_song(context *, char *);
+int load_notes(context *);
+int load_patch(context *, char *);
+int load_connection(context *, char *);
+int load_song_list(context *, char *);
 
 int load(patchmaster *pm, const char *path) {
-  sqlite3 *db;
-  int rc, retval;
-  context context;
-
-  rc = sqlite3_open(path, &db);
-  if (rc != SQLITE_OK) {
-    fprintf(stderr, "error opening database %s: %s\n", path, sqlite3_errmsg(db));
-    return -1;
-  }
-
-  context.pm = pm;
-  context.song = 0;
-  context.patch = 0;
-  context.song_list = 0;
-  retval = -1;
-  if (load_instruments(db, &context) == 0 &&
-      load_songs(db, &context) == 0 &&
-      load_song_lists(db, &context) == 0) {
-    retval = 0;
-  }
-  sqlite3_close(db);
-  return retval;
-}
-
-int load_instruments_callback(void *cptr, int argc, char **argv,
-                                          char **col_names) {
-  context *c = (context *)cptr;
-  if (int_from_col(argv[4]) == 1) {
-    input *input = input_new(int_from_col(argv[0]), argv[2], argv[1],
-                             find_device(argv[3], 'i'));
-    list_append(c->pm->inputs, input);
-  }
-  if (int_from_col(argv[5]) == 1) {
-    output *output = output_new(int_from_col(argv[0]), argv[2], argv[1],
-                                find_device(argv[3], 'o'));
-    list_append(c->pm->outputs, output);
-  }
-  return 0;
-}   
-
-int load_instruments(sqlite3 *db, context *context) {
-  char *errmsg = 0;
   int rc;
+  context ctxt;
+  char line[BUFSIZ];
 
-  rc = sqlite3_exec(db,
-                    "select id, name, short_name, port_name, input, output from instruments",
-                    load_instruments_callback, context, &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading instruments: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
+  ctxt.fp = fopen(path, "r");
+  if (ctxt.fp == 0) {
+    err(errno, "%s", path);
+    return 1;
   }
+
+  ctxt.pm = pm;
+  ctxt.song = 0;
+  ctxt.patch = 0;
+  ctxt.song_list = 0;
+  while (fgets(line, BUFSIZ, ctxt.fp) != 0) {
+    strip_newline(line);
+    parse_line(&ctxt, line);
+  }
+  fclose(ctxt.fp);
+#ifdef DEBUG
+  patchmaster_debug(pm);
+#endif
   return 0;
 }
 
-int load_messages(sqlite3 *db, context *context) {
-  int rc;
-  sqlite3_stmt *stmt;
+void parse_line(context *c, char *line) {
+  int start = strspn(line, " \t");
+  if (line[start] == 0 || line[start] == '#') /* whitespace only or comment */
+    return;
 
-  char *sql = "select id, name, length, bytes from messages";
-  rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-  if (rc != SQLITE_OK)
-    return -1;
-
-  while (sqlite3_step(stmt) == SQLITE_ROW) {
-    int id = sqlite3_column_int(stmt, 0);
-    const unsigned char *name = sqlite3_column_text(stmt, 1);
-    int num_bytes = sqlite3_column_int(stmt, 2);
-    const void *bytes = sqlite3_column_blob(stmt, 3);
-    message *m = message_new(id, (char *)name);
-    // TODO convert bytes into PmMessages
-    list_append(context->pm->messages, m);
+  int ch = line[start];
+  switch (ch) {
+  case 'i': case 'o':
+    load_instrument(c, line, ch);
+    break;
+  case 'm':
+    load_message(c, line);
+    break;
+  case 't':
+    load_trigger(c, line);
+    break;
+  case 's':
+    load_song(c, line);
+    break;
+  case 'p':
+    load_patch(c, line);
+    break;
+  case 'c':
+    load_connection(c, line);
+    break;
+  case 'n':
+    load_notes(c);
+    break;
+  case 'l':
+    load_song_list(c, line);
+    break;
+  // TODO patch start and stop messages
   }
-
-  rc = sqlite3_finalize(stmt);
-  return rc == SQLITE_OK ? 0 : -1;
 }
 
-int load_songs_callback(void *cptr, int argc, char **argv,
-                                    char **col_names) {
-  context *c = (context *)cptr;
-  song *song = song_new(int_from_col(argv[0]), argv[1], argv[2]);
-  list_append(c->pm->all_songs->songs, song);
+int load_instrument(context *c, char *line, int type) {
+  list *args = comma_sep_args(line);
+  switch (type) {
+  case 'i':
+    list_append(c->pm->inputs, input_new(list_at(args, 1), list_at(args, 2),
+                                         find_device(list_at(args, 0), 'i')));
+    break;
+  case 'o':
+    list_append(c->pm->outputs, output_new(list_at(args, 1), list_at(args, 2),
+                                           find_device(list_at(args, 0), 'o')));
+    break;
+  }
+  list_free(args, 0);
   return 0;
 }
 
-int load_songs(sqlite3 *db, context *context) {
-  char *errmsg = 0;
-  int rc;
-
-  rc = sqlite3_exec(db, "select id, name, notes from songs order by name",
-                    load_songs_callback, context, &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading songs: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
-  }
-
-  for (int i = 0; i < list_length(context->pm->all_songs->songs); ++i) {
-    song *s = (song *)list_at(context->pm->all_songs->songs, i);
-    context->song = s;
-    load_patches(db, context);
-  }
-
+int load_message(context *c, char *line) {
+  // TODO
   return 0;
 }
 
-int load_patches_callback(void *cptr, int argc, char **argv,
-                                      char **col_names) {
-  context *c = (context *)cptr;
-  patch *patch = patch_new(int_from_col(argv[0]), argv[1]);
-  list_append(c->song->patches, patch);
+int load_trigger(context *c, char *line) {
+  // TODO
   return 0;
 }
 
-int load_patches(sqlite3 *db, context *context) {
-  char sql[BUFSIZ];
-  char *errmsg = 0;
-  int rc;
-
-  sprintf(sql, "select id, name from patches where song_id = %d order by position",
-          context->song->id);
-  rc = sqlite3_exec(db, sql, load_patches_callback, context,
-                    &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading patches: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
-  }
-
-  for (int i = 0; i < list_length(context->song->patches); ++i) {
-    patch *p = (patch *)list_at(context->song->patches, i);
-    context->patch = p;
-    load_connections(db, context);
-  }
-
+int load_song(context *c, char *line) {
+  char *name = line + strcspn(line, " ");
+  song *s = song_new(name);
+  list_append(c->pm->all_songs->songs, s);
+  c->song = s;
   return 0;
 }
 
-int load_connections_callback(void *cptr, int argc, char **argv,
-                                          char **col_names) {
-  context *c = (context *)cptr;
-  program prog = {int_from_col(argv[5]), int_from_col(argv[6]), int_from_col(argv[7])};
-  zone zone = {int_from_col(argv[8]), int_from_col(argv[9])};
-  connection *conn =
-    connection_new(int_from_col(argv[0]),
-                   find_by_id(c->pm->inputs, int_from_col(argv[1])), /* input */
-                   int_from_col(argv[2]),                            /* input chan */
-                   (output *)find_by_id(c->pm->outputs,int_from_col(argv[3])), /* output */
-                   int_from_col(argv[4]), /* output chan */
-                   prog, zone,
-                   int_from_col(argv[10])); /* xpose */
+int load_notes(context *c) {
+  char line[BUFSIZ];
+  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end_notes", 9) != 0)
+    song_append_notes(c->song, line);
+  return 0;
+}
+
+int load_patch(context *c, char *line) {
+  char *name = line + strcspn(line, " ");
+  patch *p = patch_new(name);
+  list_append(c->song->patches, p);
+  c->patch = p;
+  return 0;
+}
+
+int load_connection(context *c, char *line) {
+  list *args = comma_sep_args(line);
+  input *in = find_by_sym(c->pm->inputs, (char *)list_at(args, 0));
+  int in_chan = strcmp(list_at(args, 1), "all") == 0 ? -1 : atoi(list_at(args, 1)) - 1;
+  output *out = (output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
+  int out_chan = strcmp(list_at(args, 3), "all") == 0 ? -1 : atoi(list_at(args, 3)) - 1;
+  connection *conn = connection_new(in, in_chan, out, out_chan);
   list_append(c->patch->connections, conn);
+  return 0;
+}
+
+int load_song_list(context *c, char *line) {
+  char *name = line + strcspn(line, " ");
+  song_list *sl = song_list_new(name);
+  list_append(c->pm->song_lists, sl);
+
+  char song_name[BUFSIZ];
+  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end_list", 8) != 0) {
+    strip_newline(song_name);
+    list_append(sl->songs, find_song(c->pm->all_songs->songs, song_name));
+  }
+  c->song_list = sl;
 
   return 0;
 }
 
-int load_connections(sqlite3 *db, context *context) {
-  char sql[BUFSIZ];
-  char *errmsg = 0;
-  int rc;
+void strip_newline(char *line) {
+  int len = strlen(line);
+  if (line[len-1] == '\n')
+    line[len-1] = 0;
+}
 
-  sprintf(sql, "select id, input_id, input_chan, output_id, output_chan,"
-          " bank_msb, bank_lsb, prog_chg, zone_low, zone_high, xpose"
-          " from connections where patch_id = %d",
-          context->patch->id);
-  rc = sqlite3_exec(db, sql, load_connections_callback, context,
-                    &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading connections: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
+/*
+ * Skips first word on line, splits rest of line on commas, and returns the
+ * list as a list of strings. The contents should NOT be freed, since they
+ * are a destructive mutation of `line`.
+ */
+list *comma_sep_args(char *line) {
+  list *l = list_new();
+  int word_end = strcspn(line, " ");
+
+  char *word;
+  for (word = strtok(line+word_end, ","); word != 0; word = strtok(0, ",")) {
+    word += strcspn(word, " \t");
+    list_append(l, word);
   }
 
-  return 0;
-}
-
-int load_song_lists_callback(void *cptr, int argc, char **argv,
-                                         char **col_names) {
-  context *c = (context *)cptr;
-  song_list *song_list = song_list_new(int_from_col(argv[0]), argv[1]);
-  list_append(c->pm->song_lists, song_list);
-  return 0;
-}
-
-int load_song_lists(sqlite3 *db, context *context) {
-  char sql[BUFSIZ];
-  char *errmsg = 0;
-  int rc;
-
-  rc = sqlite3_exec(db, "select id, name from song_lists",
-                    load_song_lists_callback, context, &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading song lists: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
-  }
-
-  // Skip song list 0, which is special "all songs" lists that already
-  // contains all the songs we've loaded
-  for (int i = 1; i < list_length(context->pm->song_lists); ++i) {
-    song_list *sl = (song_list *)list_at(context->pm->song_lists, i);
-    context->song_list = sl;
-    load_song_list_songs(db, context);
-  }
-
-  return 0;
-}
-
-int load_song_list_songs_callback(void *cptr, int argc, char **argv,
-                                              char **col_names) {
-  context *c = (context *)cptr;
-  song_list *sl = c->song_list;
-  song *s = (song *)find_by_id(c->pm->all_songs->songs, int_from_col(argv[0]));
-  list_append(sl->songs, s);
-  return 0;
-}
-
-int load_song_list_songs(sqlite3 *db, context *context) {
-  char sql[BUFSIZ], *errmsg = 0;
-  int rc;
-
-  song_list *sl = context->song_list;
-  sprintf(sql,
-          "select song_id from song_lists_songs where song_list_id = %d order by position",
-          sl->id);
-  rc = sqlite3_exec(db, sql, load_song_list_songs_callback, context,
-                    &errmsg);
-  if (rc != 0) {
-    fprintf(stderr, "error loading song list songs: %s\n", errmsg);
-    sqlite3_free(errmsg);
-    return -1;
-  }
-  return 0;
-}
-
-int int_from_col(char *s) {
-  return s ? atoi(s) : -1;
-}
-
-input *find_by_id(list *list, int val) {
-  for (int i = 0; i < list_length(list); ++i) {
-    input *in = (input *)list_at(list, i);
-    if (in->id == val)
-      return in;
-  }
-  return 0;
+  return l;
 }
 
 PmDeviceID find_device(char *name, char in_or_out) {
@@ -285,4 +202,22 @@ PmDeviceID find_device(char *name, char in_or_out) {
       return i;
   }
   return pmNoDevice;
+}
+
+input *find_by_sym(list *list, char *name) {
+  for (int i = 0; i < list_length(list); ++i) {
+    input *in = (input *)list_at(list, i);
+    if (strcmp(name, in->sym) == 0)
+      return in;
+  }
+  return 0;
+}
+
+song *find_song(list *list, char *name) {
+  for (int i = 0; i < list_length(list); ++i) {
+    song *s = (song *)list_at(list, i);
+    if (strcmp(name, s->name) == 0)
+      return s;
+  }
+  return 0;
 }

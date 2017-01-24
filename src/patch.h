@@ -6,7 +6,6 @@
 #include "input.h"
 
 typedef struct patch {
-  int id;
   char *name;
   list *connections;
   list *start_messages;
@@ -14,15 +13,18 @@ typedef struct patch {
   bool running;
 } patch;
 
-patch *patch_new(int id, char *name);
+patch *patch_new(char *name);
 void patch_free(patch *);
 
-void patch_add_connection(patch *, connection *);
 list *patch_inputs(patch *);
 char *patch_name(patch *);
 
 void patch_start(patch *);
 bool patch_is_running(patch *);
 void patch_stop(patch *);
+
+#ifdef DEBUG
+void patch_debug(patch *);
+#endif
 
 #endif /* PATCH_H */

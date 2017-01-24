@@ -11,9 +11,8 @@ static struct timespec rqtp = {0, NANOSECS_WAIT};
 
 void *input_thread(void *);
 
-input *input_new(int id, char *sym, char *name, int port_num) {
+input *input_new(char *sym, char *name, int port_num) {
   input *in = malloc(sizeof(input));
-  in->id = id;
 
   in->sym = malloc(strlen(sym) + 1);
   strcpy(in->sym, sym);

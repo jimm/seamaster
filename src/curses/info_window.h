@@ -14,7 +14,7 @@ typedef struct info_window {
 info_window *info_window_new(rect, char *);
 void info_window_free(info_window *);
 
-void info_window_set_contents(info_window *, char *text);
+void info_window_set_contents(info_window *, list *text_lines);
 
 void info_window_draw(info_window *);
 

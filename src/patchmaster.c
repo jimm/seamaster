@@ -15,7 +15,7 @@ patchmaster *patchmaster_new() {
   pm->running = false;
   pm->inputs = list_new();
   pm->outputs = list_new();
-  pm->all_songs = song_list_new(0, "All Songs"); /* TODO sorted song list */
+  pm->all_songs = song_list_new("All Songs"); /* TODO sorted song list */
   pm->song_lists = list_new();
   list_append(pm->song_lists, pm->all_songs);
   pm->messages = list_new();
@@ -83,7 +83,8 @@ void patchmaster_debug(patchmaster *pm) {
   fprintf(stderr, "patchmaster %p, running %d\n", pm, pm->running);
   list_debug(pm->inputs, "pm->inputs");
   list_debug(pm->outputs, "pm->outputs");
-  list_debug(pm->all_songs->songs, "pm->all_songs->songs");
+  for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
+    song_debug(list_at(pm->all_songs->songs, i));
   list_debug(pm->song_lists, "pm->song_lists");
   list_debug(pm->messages, "pm->messages");
   list_debug(pm->triggers, "pm->triggers");

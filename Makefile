@@ -1,5 +1,5 @@
-CC = clang
-CPPFLAGS += -MD -MP -g
+# DEBUG = -DDEBUG
+CPPFLAGS += -MD -MP -g $(DEBUG)
 LIBS = -lc -lncurses -lportmidi -lsqlite3
 LDFLAGS += $(LIBS) -macosx_version_min 10.10
 

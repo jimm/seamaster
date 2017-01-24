@@ -40,38 +40,71 @@ void patch_window_draw(patch_window *pw) {
 
 void patch_window_draw_headers(patch_window *pw) {
   wattron(pw->w->win, A_REVERSE);
-  char *str = " Input          Chan | Output         Chan | Prog | Zone      | Xpose | Filter";
+  char *str = " Input            Chan | Output           Chan | Zone      | Xpose | Prog";
   waddstr(pw->w->win, str);
   for (int i = 0; i < getmaxx(pw->w->win) - 2 - strlen(str); ++i)
     waddch(pw->w->win, ' ');
   wattroff(pw->w->win, A_REVERSE);
 }
 
+void format_chans(patch_window *pw, connection *conn, char *buf) {
+  char inchan[4], outchan[4];
+
+  if (conn->input_chan == -1)
+    strcpy(inchan, "all");
+  else
+    sprintf(inchan, "%3d", conn->input_chan + 1);
+  if (conn->output_chan == -1)
+    strcpy(outchan, "all");
+  else
+    sprintf(outchan, "%3d", conn->output_chan + 1);
+
+  sprintf(buf, " %16s  %3s | %16s  %3s |",
+          conn->input->name, inchan, conn->output->name, outchan);
+}
+
+void format_prog(patch_window *pw, connection *conn, char *buf) {
+  int has_msb = conn->prog.bank_msb != -1;
+  int has_lsb = conn->prog.bank_lsb != -1;
+  int has_bank = has_msb || has_lsb;
+
+  if (has_bank)
+    strcat(buf, " [");
+  if (has_msb)
+    sprintf(buf+strlen(buf), "%d", conn->prog.bank_msb);
+  if (has_bank)
+    strcat(buf, ",");
+  if (has_lsb)
+    sprintf(buf+strlen(buf), "%d", conn->prog.bank_lsb);
+  if (has_bank)
+    strcat(buf, "]");
+
+  if (conn->prog.prog != -1)
+    sprintf(buf + strlen(buf), " %d", conn->prog.prog);
+}
+
+void format_zone(patch_window *pw, connection *conn, char *buf) {
+  if (conn->zone.low != -1 || conn->zone.high != -1)
+    sprintf(buf + strlen(buf), " %3d - %3d |", conn->zone.low, conn->zone.high);
+  else
+    strcat(buf, "           |");
+}
+
+void format_xpose(patch_window *pw, connection *conn, char *buf) {
+  if (conn->xpose != -1)
+    sprintf(buf + strlen(buf), "  %s%2d |", conn->xpose < 0 ? "-" : " ", abs(conn->xpose));
+  else
+    strcat(buf, "      |");
+}
+
 void patch_window_draw_connection(patch_window *pw, connection *conn) {  
   int vis_height = window_visible_height(pw->w);
   char buf[1024];
 
-  sprintf(buf, " %16s %2d %16s %2d |",
-          conn->input->name, conn->input_chan + 1,
-          conn->output->name, conn->output_chan + 1);
-
-  // FIXME banks, too
-  if (conn->prog.prog != -1)
-    sprintf((buf + strlen(buf)), "  %3d |", conn->prog.prog);
-  else
-    strcpy((buf + strlen(buf)), "      |");
-
-  if (conn->zone.low != -1 || conn->zone.high != -1)
-    sprintf((buf + strlen(buf)), " %3d - %3d |", conn->zone.low, conn->zone.high);
-  else
-    strcpy((buf + strlen(buf)), "           |");
-
-  if (conn->xpose != -1)
-    sprintf((buf + strlen(buf)), " %s%2d |", conn->xpose < 0 ? "" : " ", conn->xpose);
-  else
-    strcpy((buf + strlen(buf)), "       |");
-
-  // TODO filter
+  format_chans(pw, conn, buf);
+  format_zone(pw, conn, buf);
+  format_xpose(pw, conn, buf);
+  format_prog(pw, conn, buf);
 
   char *fitted = window_make_fit(pw->w, buf, 0);
   waddstr(pw->w->win, fitted);

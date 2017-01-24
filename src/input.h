@@ -8,7 +8,6 @@
 #include "trigger.h"
 
 typedef struct input {
-  int id;
   char *name;
   char *sym;
   int port_num;
@@ -19,7 +18,7 @@ typedef struct input {
   pthread_t portmidi_thread;
 } input;
 
-input *input_new(int id, char *sym, char *name, int port_num);
+input *input_new(char *sym, char *name, int port_num);
 void input_free(input *);
 
 void input_add_connection(input *, connection *);

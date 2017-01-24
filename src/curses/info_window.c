@@ -15,16 +15,14 @@ info_window *info_window_new(rect r, char *title_prefix) {
 }
 
 void info_window_free(info_window *iw) {
-  info_window_free_lines(iw->text_lines);
   info_window_free_lines(iw->help_lines);
   free(iw);
 }
 
-void info_window_set_contents(info_window *iw, char *text) {
-  if (text) {
+void info_window_set_contents(info_window *iw, list *text_lines) {
+  if (text_lines && list_length(text_lines) > 0) {
     iw->w->title = "Song Notes";
-    info_window_free_lines(iw->text_lines);
-    iw->text_lines = info_window_text_to_lines(text);
+    iw->text_lines = text_lines;
     iw->display_list = iw->text_lines;
   }
   else {

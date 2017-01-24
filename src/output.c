@@ -4,9 +4,8 @@
 #include "output.h"
 #include "trigger.h"
 
-output *output_new(int id, char *sym, char *name, int port_num) {
+output *output_new(char *sym, char *name, int port_num) {
   output *out = malloc(sizeof(output));
-  out->id = id;
   out->sym = malloc(strlen(sym) + 1);
   strcpy(out->sym, sym);
   out->name = malloc(strlen(name) + 1);

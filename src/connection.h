@@ -18,7 +18,6 @@ typedef struct zone {
 } zone;
 
 typedef struct connection {
-  int id;
   input *input;
   output *output;
   int input_chan;
@@ -29,14 +28,15 @@ typedef struct connection {
   // TODO filter
 } connection;
 
-connection *connection_new(int id,
-                           input *input, int input_chan,
-                           output *output, int output_chan,
-                           program prog, zone zone, int xpose);
+connection *connection_new(input *input, int input_chan,
+                           output *output, int output_chan);
 void connection_free(connection *conn);
 
 void connection_start(connection *, list *);
 void connection_stop(connection *, list *);
 
+#ifdef DEBUG
+void connection_debug(connection *);
+#endif
 
 #endif /* CONNECTION_H */

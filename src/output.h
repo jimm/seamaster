@@ -5,14 +5,13 @@
 #include "list.h"
 
 typedef struct output {
-  int id;
   char *name;
   char *sym;
   int port_num;
   PortMidiStream *stream;
 } output;
 
-output *output_new(int id, char *sym, char *name, int port_num);
+output *output_new(char *sym, char *name, int port_num);
 void output_free(output *);
 
 void output_start(output *);

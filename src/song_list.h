@@ -5,12 +5,11 @@
 #include "song.h"
 
 typedef struct song_list {
-  int id;
   char *name;
   list *songs;
 } song_list;
 
-song_list *song_list_new(int id, char *name);
+song_list *song_list_new(char *name);
 void song_list_free(song_list *);
 
 char *song_list_name(song_list *);

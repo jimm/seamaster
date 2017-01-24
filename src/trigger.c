@@ -2,9 +2,8 @@
 #include <string.h>
 #include "trigger.h"
 
-trigger *trigger_new(int id, char *name) {
+trigger *trigger_new(char *name) {
   trigger *t = malloc(sizeof(trigger));
-  t->id = id;
   t->name = malloc(strlen(name)+1);
   strcpy(t->name, name);
   return t;

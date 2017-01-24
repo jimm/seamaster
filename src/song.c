@@ -5,35 +5,27 @@
 #endif
 #include "song.h"
 
-song *song_new(int id, char *name, char *notes) {
+song *song_new(char *name) {
   song *s = malloc(sizeof(song));
-  s->id = id;
+  s->name = malloc(strlen(name)+1);
+  strcpy(s->name, name);
   s->patches = list_new();
-
-  if (name != 0) {
-    s->name = malloc(strlen(name)+1);
-    strcpy(s->name, name);
-  }
-  else
-    s->name = 0;
-
-  if (notes != 0) {
-    s->notes = malloc(strlen(notes)+1);
-    strcpy(s->notes, notes);
-  }
-  else
-    s->notes = 0;
-
+  s->notes = list_new();
   return s;
 }
 
 void song_free(song *s) {
   if (s->name)
     free(s->name);
-  if (s->notes)
-    free(s->notes);
+  list_free(s->notes, free);
   list_free(s->patches, patch_free);
   free(s);
+}
+
+void song_append_notes(song *s, char *notes) {
+  char *str = malloc(strlen(notes) + 1);
+  strcpy(str, notes);
+  list_append(s->notes, str);
 }
 
 char *song_name(song *s) {
@@ -43,8 +35,13 @@ char *song_name(song *s) {
 #ifdef DEBUG
 
 void song_debug(song *s) {
-  fprintf(stderr, "song %p, name %s, notes %s\n", s, s->name, s->notes ? s->notes : "(null)");
-  list_debug(s->patches, "patches for that song");
+  fprintf(stderr, "song %p, name %s\n", s, s->name);
+  if (s->notes != 0) {
+    for (int i = 0; i < list_length(s->notes); ++i)
+      fprintf(stderr, "  notes: %s\n", list_at(s->notes, i));
+  }
+  for (int i = 0; i < list_length(s->patches); ++i)
+    patch_debug(list_at(s->patches, i));
 }
 
 #endif

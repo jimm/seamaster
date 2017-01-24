@@ -1,5 +1,7 @@
 #include <stdlib.h>
-#include <stdio.h>              /* DEBUG */
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 #include "consts.h"
 #include "connection.h"
 #include "input.h"
@@ -8,23 +10,17 @@
 void midi_in(connection *conn, list *messages);
 void midi_out(connection *conn, list *messages);
 
-connection *connection_new(int id,
-                           input *input, int input_chan,
-                           output *output, int output_chan,
-                           program prog, zone zone, int xpose)
+connection *connection_new(input *input, int input_chan,
+                           output *output, int output_chan)
 {
   connection *conn = malloc(sizeof(connection));
-  conn->id = id;
   conn->input = input;
   conn->input_chan = input_chan;
   conn->output = output;
   conn->output_chan = output_chan;
-  conn->prog.bank_msb = prog.bank_msb;
-  conn->prog.bank_lsb = prog.bank_lsb;
-  conn->prog.prog = prog.prog;
-  conn->zone.low = zone.low;
-  conn->zone.high = zone.high;
-  conn->xpose = xpose;
+  conn->prog.bank_msb = conn->prog.bank_lsb = conn->prog.prog = -1;
+  conn->zone.low = conn->zone.high = -1;
+  conn->xpose = 0;
   return conn;
 }
 
@@ -69,3 +65,13 @@ void midi_out(connection *conn, list *messages) {
 
   free(events);
 }
+
+#ifdef DEBUG
+
+void connection_debug(connection *c) {
+  fprintf(stderr, "conn %s, %d, %s, %d\n",
+          c->input->name, c->input_chan,
+          c->output->name, c->output_chan);
+}
+
+#endif

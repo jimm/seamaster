@@ -32,11 +32,8 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int16_t.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
-  /usr/include/sys/_types/_mode_t.h /usr/include/stdio.h \
-  /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h \
-  /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
-  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
-  src/consts.h src/connection.h src/list.h \
+  /usr/include/sys/_types/_mode_t.h src/consts.h src/connection.h \
+  src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h /usr/include/time.h \
@@ -175,20 +172,6 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
 /usr/include/sys/_types/_dev_t.h:
 
 /usr/include/sys/_types/_mode_t.h:
-
-/usr/include/stdio.h:
-
-/usr/include/sys/_types/_va_list.h:
-
-/usr/include/sys/stdio.h:
-
-/usr/include/sys/_types/_off_t.h:
-
-/usr/include/sys/_types/_ssize_t.h:
-
-/usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
 
 src/consts.h:
 

@@ -1,10 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
+#ifdef DEBUG
+#include <stdio.h>
+#endif
 #include "patch.h"
 
-patch *patch_new(int id, char *name) {
+patch *patch_new(char *name) {
   patch *p = malloc(sizeof(patch));
-  p->id = id;
   p->name = malloc(strlen(name)+1);
   strcpy(p->name, name);
   p->connections = list_new();
@@ -59,3 +61,15 @@ void patch_stop(patch *p) {
   }
   p->running = false;
 }
+
+#ifdef DEBUG
+
+void patch_debug(patch *p) {
+  fprintf(stderr, "patch %s\n", p->name);
+  for (int i = 0; i < list_length(p->connections); ++i) {
+    connection *conn = list_at(p->connections, i);
+    connection_debug(conn);
+  }
+}
+
+#endif

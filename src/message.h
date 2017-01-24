@@ -4,12 +4,11 @@
 #include "list.h"
 
 typedef struct message {
-  int id;
   char *name;
   list *messages;
 } message;
 
-message *message_new(int id, char *name);
+message *message_new(char *name);
 void message_free(message *);
 
 #endif /* MESSAGE_H */

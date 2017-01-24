@@ -2,9 +2,8 @@
 #include <string.h>
 #include "message.h"
 
-message *message_new(int id, char *name) {
+message *message_new(char *name) {
   message *m = (message *)malloc(sizeof(message));
-  m->id = id;
   m->name = malloc(strlen(name) + 1);
   strcpy(m->name, name);
   m->messages = list_new();

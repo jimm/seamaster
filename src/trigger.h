@@ -5,11 +5,10 @@
 
 typedef struct trigger {
   // TODO
-  int id;
   char *name;
 } trigger;
 
-trigger *trigger_new();
+trigger *trigger_new(char *);
 void trigger_free(trigger *);
 
 void trigger_signal(trigger *, PmEvent);
