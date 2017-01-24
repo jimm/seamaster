@@ -7,7 +7,9 @@
 #include "input.h"
 #include "output.h"
 
-void midi_in(connection *conn, list *messages);
+int accept_from_input(connection *conn, PmMessage msg);
+int inside_zone(connection *conn, PmMessage msg);
+void do_midi_in(connection *conn, PmMessage msg, list *out_msgs);
 void midi_out(connection *conn, list *messages);
 
 connection *connection_new(input *input, int input_chan,
@@ -48,8 +50,57 @@ void connection_stop(connection *conn, list *stop_messages) {
   input_remove_connection(conn->input, conn);
 }
 
-void midi_in(connection *conn, list *messages) {
-  // TODO
+void connection_midi_in(connection *conn, list *messages) {
+  list *out_msgs = list_new();
+  for (int i = 0; i < list_length(messages); ++i) {
+    PmMessage msg = (PmMessage)list_at(messages, i);
+    if (accept_from_input(conn, msg))
+      do_midi_in(conn, msg, out_msgs);
+  }
+  list_free(out_msgs, 0);
+}
+
+void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
+  int status = Pm_MessageStatus(msg);
+  int high_nibble = status & 0xf0;
+  int data1 = Pm_MessageData1(msg);
+  int data2 = Pm_MessageData2(msg);
+
+  switch (high_nibble) {
+  case NOTE_ON: case NOTE_OFF: case POLY_PRESSURE:
+    if (inside_zone(conn, msg)) {
+      if (conn->output_chan != -1)
+        status = high_nibble + conn->output_chan;
+      data1 += conn->xpose;
+      list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
+    }
+    break;
+  case CONTROLLER: case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
+    if (conn->output_chan != -1)
+      status = high_nibble + conn->output_chan;
+    list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
+    break;
+  default:
+    list_append(out_msgs, (void *)msg);
+    break;
+  }
+}
+
+int accept_from_input(connection *conn, PmMessage msg) {
+  if (conn->input_chan == -1)
+    return true;
+  if (Pm_MessageStatus(msg) >= SYSEX)
+    return true;
+  return conn->input_chan == (Pm_MessageStatus(msg) & 0x0f);
+}
+
+int inside_zone(connection *conn, PmMessage msg) {
+  int note = Pm_MessageData1(msg);
+  if (note < conn->zone.low)
+    return false;
+  if (conn->zone.high != -1 && note > conn->zone.high)
+    return false;
+  return true;
 }
 
 void midi_out(connection *conn, list *messages) {

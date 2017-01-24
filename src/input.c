@@ -73,12 +73,17 @@ void input_stop(input *in) {
 }
 
 void input_read(input *in, PmEvent *buf, int len) {
-  // TODO
-  for (int i = 0; i < list_length(in->triggers); ++i) {
-    trigger *trigger = list_at(in->triggers, i);
-    for (int j = 0; i < len; ++j)
-      trigger_signal(trigger, buf[i]);
-  }
+  list *messages = list_new();
+  for (int i = 0; i < len; ++i)
+    list_append(messages, (void *)buf[i].message);
+
+  for (int i = 0; i < list_length(in->triggers); ++i)
+    trigger_signal(list_at(in->triggers, i), messages);
+
+  for (int i = 0; i < list_length(in->connections); ++i)
+    connection_midi_in(list_at(in->connections, i), messages);
+
+  list_free(messages, 0);
 }
 
 void *input_thread(void *in_voidptr) {

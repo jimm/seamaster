@@ -35,6 +35,8 @@ void connection_free(connection *conn);
 void connection_start(connection *, list *);
 void connection_stop(connection *, list *);
 
+void connection_midi_in(connection *conn, list *messages);
+
 #ifdef DEBUG
 void connection_debug(connection *);
 #endif

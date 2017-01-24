@@ -14,7 +14,7 @@ void trigger_free(trigger *t) {
   free(t);
 }
 
-void trigger_signal(trigger *t, PmEvent event) {
+void trigger_signal(trigger *t, list *messages) {
   // TODO
 }
 
