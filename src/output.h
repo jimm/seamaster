@@ -14,9 +14,8 @@ typedef struct output {
 output *output_new(char *sym, char *name, int port_num);
 void output_free(output *);
 
-void output_start(output *);
-void output_stop(output *);
-
 void output_write(output *, PmEvent *buf, int len);
+
+void output_debug(output *);
 
 #endif /* OUTPUT_H */

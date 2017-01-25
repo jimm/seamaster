@@ -38,7 +38,7 @@ src/output.o: src/output.c /usr/include/stdlib.h \
   /usr/include/secure/_string.h /usr/include/secure/_common.h \
   /usr/local/include/portmidi.h src/output.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/trigger.h
+  src/trigger.h src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -185,3 +185,5 @@ src/list.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/trigger.h:
+
+src/debug.h:

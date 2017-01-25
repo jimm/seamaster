@@ -1,11 +1,9 @@
 #include <stdlib.h>
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 #include "consts.h"
 #include "connection.h"
 #include "input.h"
 #include "output.h"
+#include "debug.h"
 
 int accept_from_input(connection *conn, PmMessage msg);
 int inside_zone(connection *conn, PmMessage msg);
@@ -31,6 +29,7 @@ void connection_free(connection *conn) {
 }
 
 void connection_start(connection *conn, list *start_messages) {
+  debug("connection_start\n");
   list *msgs = list_new();
   list_append_list(msgs, start_messages);
   if (conn->prog.bank_msb >= 0)
@@ -46,17 +45,20 @@ void connection_start(connection *conn, list *start_messages) {
 }
 
 void connection_stop(connection *conn, list *stop_messages) {
+  debug("connection_stop\n");
   midi_out(conn, stop_messages);
   input_remove_connection(conn->input, conn);
 }
 
 void connection_midi_in(connection *conn, list *messages) {
+  debug("connection_midi_in %d messages\n", list_length(messages));
   list *out_msgs = list_new();
   for (int i = 0; i < list_length(messages); ++i) {
     PmMessage msg = (PmMessage)list_at(messages, i);
     if (accept_from_input(conn, msg))
-      do_midi_in(conn, msg, out_msgs);
+      do_midi_in(conn, msg, out_msgs); /* appends to out_msgs */
   }
+  midi_out(conn, out_msgs);
   list_free(out_msgs, 0);
 }
 
@@ -105,6 +107,7 @@ int inside_zone(connection *conn, PmMessage msg) {
 
 void midi_out(connection *conn, list *messages) {
   int num_messages = list_length(messages);
+  debug("connection_midi_out %d messages\n", num_messages);
   if (num_messages == 0)
     return;
 
@@ -117,12 +120,8 @@ void midi_out(connection *conn, list *messages) {
   free(events);
 }
 
-#ifdef DEBUG
-
 void connection_debug(connection *c) {
-  fprintf(stderr, "conn %s, %d, %s, %d\n",
-          c->input->name, c->input_chan,
-          c->output->name, c->output_chan);
+  debug("conn %s, %d, %s, %d\n",
+        c->input->name, c->input_chan,
+        c->output->name, c->output_chan);
 }
-
-#endif

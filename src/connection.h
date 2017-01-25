@@ -37,8 +37,6 @@ void connection_stop(connection *, list *);
 
 void connection_midi_in(connection *conn, list *messages);
 
-#ifdef DEBUG
 void connection_debug(connection *);
-#endif
 
 #endif /* CONNECTION_H */

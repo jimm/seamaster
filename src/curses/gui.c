@@ -171,7 +171,6 @@ void free_windows(windows *ws) {
 
 void refresh_all(patchmaster *pm, windows *ws) {
   set_window_data(pm, ws);
-#ifndef DEBUG
   list_window_draw(ws->song_lists);
   list_window_draw(ws->song_list);
   list_window_draw(ws->song);
@@ -187,7 +186,6 @@ void refresh_all(patchmaster *pm, windows *ws) {
   wnoutrefresh(ws->info->w->win);
   wnoutrefresh(ws->trigger->w->win);
   doupdate();
-#endif
 }
 
 void set_window_data(patchmaster *pm, windows *ws) {

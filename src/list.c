@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 #include "list.h"
+#include "debug.h"
 
 #define INITIAL_SIZE 8
 
@@ -106,23 +104,19 @@ void list_grow(list *l) {
   l->nodes = realloc(l->nodes, l->num_allocated * sizeof(void *));
 }
 
-#ifdef DEBUG
-
 void list_debug(list *l, char *msg) {
-  fprintf(stderr, "%s%slist %p, num_alloc %d (%p), num_elems %d (%p), nodes %p\n",
-          msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
-          l,
-          l->num_allocated, (void *)l->num_allocated,
-          l->num_elements, (void *)l->num_elements,
-          l->nodes);
+  debug("%s%slist %p, num_alloc %d (%p), num_elems %d (%p), nodes %p\n",
+        msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
+        l,
+        l->num_allocated, (void *)l->num_allocated,
+        l->num_elements, (void *)l->num_elements,
+        l->nodes);
   if (l->num_elements < 0) {
-    fprintf(stderr, "ERROR: l->num_elements is negative\n");
+    debug("ERROR: l->num_elements is negative\n");
     return;
   }
-  for (int i = 0; i < l->num_elements && i < 10; ++i) /* DEBUG i < 10 */
-    fprintf(stderr, "  %3i: %p\n", i, l->nodes[i]);
+  for (int i = 0; i < l->num_elements && i < 10; ++i)
+    debug("  %3i: %p\n", i, l->nodes[i]);
   if (l->num_elements > 10)
-    fprintf(stderr, "  ...\n");
+    debug("  ...\n");
 }
-
-#endif // DEBUG

@@ -36,7 +36,8 @@ src/list.o: src/list.c /usr/include/stdlib.h /usr/include/Availability.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
   /usr/include/secure/_string.h /usr/include/secure/_common.h src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
+  src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -177,3 +178,5 @@ src/list.o: src/list.c /usr/include/stdlib.h /usr/include/Availability.h \
 src/list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+src/debug.h:

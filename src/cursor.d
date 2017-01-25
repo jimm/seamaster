@@ -54,7 +54,8 @@ src/cursor.o: src/cursor.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/local/include/portmidi.h src/trigger.h src/output.h src/message.h
+  /usr/local/include/portmidi.h src/trigger.h src/output.h src/message.h \
+  src/debug.h
 
 /usr/include/stdio.h:
 
@@ -255,3 +256,5 @@ src/trigger.h:
 src/output.h:
 
 src/message.h:
+
+src/debug.h:

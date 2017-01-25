@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 #include "patch.h"
+#include "debug.h"
 
 patch *patch_new(char *name) {
   patch *p = malloc(sizeof(patch));
@@ -39,6 +37,7 @@ char *patch_name(patch *p) {
 }
 
 void patch_start(patch *p) {
+  debug("patch_start\n");
   if (p == 0 || p->running)
     return;
   for (int i = 0; i < list_length(p->connections); ++i) {
@@ -49,6 +48,7 @@ void patch_start(patch *p) {
 }
 
 bool patch_is_running(patch *p) {
+  debug("patch_stop\n");
   return p->running;
 }
 
@@ -62,14 +62,10 @@ void patch_stop(patch *p) {
   p->running = false;
 }
 
-#ifdef DEBUG
-
 void patch_debug(patch *p) {
-  fprintf(stderr, "patch %s\n", p->name);
+  debug("patch %s\n", p->name);
   for (int i = 0; i < list_length(p->connections); ++i) {
     connection *conn = list_at(p->connections, i);
     connection_debug(conn);
   }
 }
-
-#endif

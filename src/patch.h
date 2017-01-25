@@ -23,8 +23,6 @@ void patch_start(patch *);
 bool patch_is_running(patch *);
 void patch_stop(patch *);
 
-#ifdef DEBUG
 void patch_debug(patch *);
-#endif
 
 #endif /* PATCH_H */

@@ -1,12 +1,7 @@
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 #include <stdlib.h>
-/* #include <string.h> */
-/* #include <unistd.h> */
-/* #include "portmidi.h" */
 #include "patchmaster.h"
 #include "cursor.h"
+#include "debug.h"
 
 // ================ allocation ================
 
@@ -21,9 +16,7 @@ patchmaster *patchmaster_new() {
   pm->messages = list_new();
   pm->triggers = list_new();
   pm->cursor = cursor_new(pm);
-#ifdef DEBUG
   patchmaster_debug(pm);
-#endif
   return pm;
 }
 
@@ -41,19 +34,21 @@ void patchmaster_free(patchmaster *pm) {
 // ================ running ================
 
 void patchmaster_start(patchmaster *pm) {
+  debug("patchmaster_start\n");
   cursor_init(pm->cursor);
+  for (int i = 0; i < list_length(pm->inputs); ++i)
+    input_start((input *)list_at(pm->inputs, i));
   if (cursor_patch(pm->cursor))
     patch_start(cursor_patch(pm->cursor));
   pm->running = true;
-  for (int i = 0; i < list_length(pm->inputs); ++i)
-    input_start((input *)list_at(pm->inputs, i));
 }
 
 void patchmaster_stop(patchmaster *pm) {
+  debug("patchmaster_stop\n");
   if (cursor_patch(pm->cursor))
     patch_stop(cursor_patch(pm->cursor));
   for (int i = 0; i < list_length(pm->inputs); ++i)
-    output_start((output *)list_at(pm->outputs, i));
+    input_stop((input *)list_at(pm->inputs, i));
   pm->running = false;
 }
 
@@ -77,12 +72,12 @@ void patchmaster_prev_song(patchmaster *pm) {
 
 // ================ debugging ================
 
-#ifdef DEBUG
-
 void patchmaster_debug(patchmaster *pm) {
-  fprintf(stderr, "patchmaster %p, running %d\n", pm, pm->running);
-  list_debug(pm->inputs, "pm->inputs");
-  list_debug(pm->outputs, "pm->outputs");
+  debug("patchmaster %p, running %d\n", pm, pm->running);
+  for (int i = 0; i < list_length(pm->inputs); ++i)
+    input_debug(list_at(pm->inputs, i));
+  for (int i = 0; i < list_length(pm->outputs); ++i)
+    output_debug(list_at(pm->outputs, i));
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
     song_debug(list_at(pm->all_songs->songs, i));
   list_debug(pm->song_lists, "pm->song_lists");
@@ -90,5 +85,3 @@ void patchmaster_debug(patchmaster *pm) {
   list_debug(pm->triggers, "pm->triggers");
   cursor_debug(pm->cursor);
 }
-
-#endif

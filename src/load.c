@@ -6,17 +6,21 @@
 #include "portmidi.h"
 #include "patchmaster.h"
 #include "load.h"
+#include "debug.h"
 
 typedef struct context {
   FILE *fp;
   patchmaster *pm;
   song *song;
   patch *patch;
+  connection *conn;
   song_list *song_list;
 } context;
 
 void parse_line(context *, char *);
+char *skip_first_word(char *);
 list *comma_sep_args(char *);
+int chan_from_word(char *);
 void strip_newline(char *);
 
 PmDeviceID find_device(char *, char);
@@ -30,6 +34,7 @@ int load_song(context *, char *);
 int load_notes(context *);
 int load_patch(context *, char *);
 int load_connection(context *, char *);
+int load_xpose(context *, char *);
 int load_song_list(context *, char *);
 
 int load(patchmaster *pm, const char *path) {
@@ -52,9 +57,7 @@ int load(patchmaster *pm, const char *path) {
     parse_line(&ctxt, line);
   }
   fclose(ctxt.fp);
-#ifdef DEBUG
   patchmaster_debug(pm);
-#endif
   return 0;
 }
 
@@ -63,7 +66,8 @@ void parse_line(context *c, char *line) {
   if (line[start] == 0 || line[start] == '#') /* whitespace only or comment */
     return;
 
-  int ch = line[start];
+  line += start;                /* strip leading whitespace */
+  int ch = line[0];
   switch (ch) {
   case 'i': case 'o':
     load_instrument(c, line, ch);
@@ -83,6 +87,9 @@ void parse_line(context *c, char *line) {
   case 'c':
     load_connection(c, line);
     break;
+  case 'x':
+    load_xpose(c, line);
+    break;
   case 'n':
     load_notes(c);
     break;
@@ -95,14 +102,20 @@ void parse_line(context *c, char *line) {
 
 int load_instrument(context *c, char *line, int type) {
   list *args = comma_sep_args(line);
+  PmDeviceID devid = find_device(list_at(args, 0), type);
+
+  if (devid == pmNoDevice)
+    return 1;
+
+  char *sym = list_at(args, 1);
+  char *name = list_at(args, 2);
+
   switch (type) {
   case 'i':
-    list_append(c->pm->inputs, input_new(list_at(args, 1), list_at(args, 2),
-                                         find_device(list_at(args, 0), 'i')));
+    list_append(c->pm->inputs, input_new(sym, name, devid));
     break;
   case 'o':
-    list_append(c->pm->outputs, output_new(list_at(args, 1), list_at(args, 2),
-                                           find_device(list_at(args, 0), 'o')));
+    list_append(c->pm->outputs, output_new(sym, name, devid));
     break;
   }
   list_free(args, 0);
@@ -120,7 +133,7 @@ int load_trigger(context *c, char *line) {
 }
 
 int load_song(context *c, char *line) {
-  char *name = line + strcspn(line, " ");
+  char *name = skip_first_word(line);
   song *s = song_new(name);
   list_append(c->pm->all_songs->songs, s);
   c->song = s;
@@ -135,7 +148,7 @@ int load_notes(context *c) {
 }
 
 int load_patch(context *c, char *line) {
-  char *name = line + strcspn(line, " ");
+  char *name = skip_first_word(line);
   patch *p = patch_new(name);
   list_append(c->song->patches, p);
   c->patch = p;
@@ -145,16 +158,25 @@ int load_patch(context *c, char *line) {
 int load_connection(context *c, char *line) {
   list *args = comma_sep_args(line);
   input *in = find_by_sym(c->pm->inputs, (char *)list_at(args, 0));
-  int in_chan = strcmp(list_at(args, 1), "all") == 0 ? -1 : atoi(list_at(args, 1)) - 1;
+  int in_chan = chan_from_word(list_at(args, 1));
   output *out = (output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
-  int out_chan = strcmp(list_at(args, 3), "all") == 0 ? -1 : atoi(list_at(args, 3)) - 1;
+  int out_chan = chan_from_word(list_at(args, 3));
+
   connection *conn = connection_new(in, in_chan, out, out_chan);
   list_append(c->patch->connections, conn);
+  c->conn = conn;
+
+  return 0;
+}
+
+int load_xpose(context *c, char *line) {
+  char *amount = skip_first_word(line);
+  c->conn->xpose = atoi(amount);
   return 0;
 }
 
 int load_song_list(context *c, char *line) {
-  char *name = line + strcspn(line, " ");
+  char *name = skip_first_word(line);
   song_list *sl = song_list_new(name);
   list_append(c->pm->song_lists, sl);
 
@@ -174,6 +196,12 @@ void strip_newline(char *line) {
     line[len-1] = 0;
 }
 
+char *skip_first_word(char *line) {
+  char *after_leading_spaces = line + strcspn(line, " \t");
+  char *after_word = after_leading_spaces + strspn(line, " \t");
+  return after_word + strcspn(after_word, " \t");
+}
+
 /*
  * Skips first word on line, splits rest of line on commas, and returns the
  * list as a list of strings. The contents should NOT be freed, since they
@@ -181,15 +209,19 @@ void strip_newline(char *line) {
  */
 list *comma_sep_args(char *line) {
   list *l = list_new();
-  int word_end = strcspn(line, " ");
+  char *args_start = skip_first_word(line);
 
   char *word;
-  for (word = strtok(line+word_end, ","); word != 0; word = strtok(0, ",")) {
-    word += strcspn(word, " \t");
+  for (word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
+    word += strspn(word, " \t");
     list_append(l, word);
   }
 
   return l;
+}
+
+int chan_from_word(char *word) {
+  return strcmp(word, "all") == 0 ? -1 : atoi(word) - 1;
 }
 
 PmDeviceID find_device(char *name, char in_or_out) {

@@ -32,4 +32,6 @@ void input_stop(input *);
 
 void input_read(input *, PmEvent *buf, int len);
 
+void input_debug(input *);
+
 #endif /* INPUT_H */

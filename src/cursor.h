@@ -31,8 +31,6 @@ void cursor_prev_song(cursor *);
 void cursor_next_patch(cursor *);
 void cursor_prev_patch(cursor *);
 
-#ifdef DEBUG
 void cursor_debug(cursor *);
-#endif
 
 #endif /* CURSOR_H */

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cursor.h"
+#include "debug.h"
 
 #define UNDEFINED -1
 
@@ -123,14 +124,10 @@ void cursor_prev_patch(cursor *c) {
   }
 }
 
-#ifdef DEBUG
-
 void cursor_debug(cursor *cursor) {
-  fprintf(stderr, "cursor %p\n", cursor);
-  fprintf(stderr, "  pm %p\n", cursor->pm);
-  fprintf(stderr, "  song_list_index %d\n", cursor->song_list_index);
-  fprintf(stderr, "  song_index %d\n", cursor->song_index);
-  fprintf(stderr, "  patch_index %d\n", cursor->patch_index);
+  debug("cursor %p\n", cursor);
+  debug("  pm %p\n", cursor->pm);
+  debug("  song_list_index %d\n", cursor->song_list_index);
+  debug("  song_index %d\n", cursor->song_index);
+  debug("  patch_index %d\n", cursor->patch_index);
 }
-
-#endif

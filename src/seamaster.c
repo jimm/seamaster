@@ -8,8 +8,11 @@
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
   printf("%s:\n", title);
   for (int i = 0; i < num_devices; ++i)
-    if (infos[i] != 0)
-      printf("  %2d: %s%s\n", i, infos[i]->name, infos[i]->opened ? " (open)" : "");
+    if (infos[i] != 0) {
+      const char *name = infos[i]->name;
+      char *q = (name[0] == ' ' || name[strlen(name)-1] == ' ') ? "\"" : "";
+      printf("  %2d: %s%s%s%s\n", i, q, name, q, infos[i]->opened ? " (open)" : "");
+    }
 }
 
 void list_all_devices() {

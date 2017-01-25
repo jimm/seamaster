@@ -17,8 +17,6 @@ void song_append_notes(song *, char *);
 
 char *song_name(song *song);
 
-#ifdef DEBUG
 void song_debug(song *);
-#endif
 
 #endif /* SONG_H */

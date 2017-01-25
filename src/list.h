@@ -26,8 +26,6 @@ void *list_remove(list *, void *);
 void *list_remove_at(list *, int);
 bool includes(list *, void *);
 
-#ifdef DEBUG
 void list_debug(list *, char *);
-#endif
 
 #endif /* LIST_H */

@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 #include "song.h"
+#include "debug.h"
 
 song *song_new(char *name) {
   song *s = malloc(sizeof(song));
@@ -32,16 +30,12 @@ char *song_name(song *s) {
   return s->name;
 }
 
-#ifdef DEBUG
-
 void song_debug(song *s) {
-  fprintf(stderr, "song %p, name %s\n", s, s->name);
+  debug("song %p, name %s\n", s, s->name);
   if (s->notes != 0) {
     for (int i = 0; i < list_length(s->notes); ++i)
-      fprintf(stderr, "  notes: %s\n", list_at(s->notes, i));
+      debug("  notes: %s\n", list_at(s->notes, i));
   }
   for (int i = 0; i < list_length(s->patches); ++i)
     patch_debug(list_at(s->patches, i));
 }
-
-#endif
