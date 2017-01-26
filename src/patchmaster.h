@@ -16,6 +16,7 @@ typedef struct patchmaster {
   list *song_lists;
   cursor *cursor;
   bool running;
+  bool testing;
   list *messages;
   list *triggers;
 } patchmaster;

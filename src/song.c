@@ -31,7 +31,12 @@ char *song_name(song *s) {
 }
 
 void song_debug(song *s) {
-  debug("song %p, name %s\n", s, s->name);
+  if (s == 0) {
+    debug("song NULL\n");
+    return;
+  }
+
+  debug("song %p, name \"%s\"\n", s, s->name);
   if (s->notes != 0) {
     for (int i = 0; i < list_length(s->notes); ++i)
       debug("  notes: %s\n", list_at(s->notes, i));

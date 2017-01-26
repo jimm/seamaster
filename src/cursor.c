@@ -75,10 +75,8 @@ void cursor_next_song(cursor *c) {
   if (list_last(sl->songs) == cursor_song(c))
     return;
 
-  patch_start(cursor_patch(c));
   ++c->song_index;
   c->patch_index = 0;
-  patch_start(cursor_patch(c));
 }
 
 void cursor_prev_song(cursor *c) {
@@ -88,10 +86,8 @@ void cursor_prev_song(cursor *c) {
   if (list_at(sl->songs, 0) == cursor_song(c))
     return;
 
-  patch_start(cursor_patch(c));
   --c->song_index;
   c->patch_index = 0;
-  patch_start(cursor_patch(c));
 }
 
 void cursor_next_patch(cursor *c) {
@@ -102,11 +98,8 @@ void cursor_next_patch(cursor *c) {
   patch *p = cursor_patch(c);
   if (list_last(s->patches) == p)
     cursor_next_song(c);
-  else if (p != 0) {
-    patch_start(p);
+  else if (p != 0)
     --c->patch_index;
-    patch_start(cursor_patch(c));
-  }
 }
 
 void cursor_prev_patch(cursor *c) {
@@ -117,14 +110,16 @@ void cursor_prev_patch(cursor *c) {
   patch *p = cursor_patch(c);
   if (list_at(s->patches, 0) == p)
     cursor_prev_song(c);
-  else if (p != 0) {
-    patch_start(p);
+  else if (p != 0)
     ++c->patch_index;
-    patch_start(cursor_patch(c));
-  }
 }
 
 void cursor_debug(cursor *cursor) {
+  if (cursor == 0) {
+    debug("cursor NULL\n");
+    return;
+  }
+
   debug("cursor %p\n", cursor);
   debug("  pm %p\n", cursor->pm);
   debug("  song_list_index %d\n", cursor->song_list_index);

@@ -17,6 +17,8 @@ typedef struct context {
   song_list *song_list;
 } context;
 
+const char * const whitespace = " \t";
+
 void parse_line(context *, char *);
 char *skip_first_word(char *);
 list *comma_sep_args(char *);
@@ -62,7 +64,7 @@ int load(patchmaster *pm, const char *path) {
 }
 
 void parse_line(context *c, char *line) {
-  int start = strspn(line, " \t");
+  int start = strspn(line, whitespace);
   if (line[start] == 0 || line[start] == '#') /* whitespace only or comment */
     return;
 
@@ -104,7 +106,7 @@ int load_instrument(context *c, char *line, int type) {
   list *args = comma_sep_args(line);
   PmDeviceID devid = find_device(list_at(args, 0), type);
 
-  if (devid == pmNoDevice)
+  if (devid == pmNoDevice && !c->pm->testing)
     return 1;
 
   char *sym = list_at(args, 1);
@@ -137,6 +139,8 @@ int load_song(context *c, char *line) {
   song *s = song_new(name);
   list_append(c->pm->all_songs->songs, s);
   c->song = s;
+  c->patch = 0;
+  c->conn = 0;
   return 0;
 }
 
@@ -152,6 +156,7 @@ int load_patch(context *c, char *line) {
   patch *p = patch_new(name);
   list_append(c->song->patches, p);
   c->patch = p;
+  c->conn = 0;
   return 0;
 }
 
@@ -197,9 +202,9 @@ void strip_newline(char *line) {
 }
 
 char *skip_first_word(char *line) {
-  char *after_leading_spaces = line + strcspn(line, " \t");
-  char *after_word = after_leading_spaces + strspn(line, " \t");
-  return after_word + strcspn(after_word, " \t");
+  char *after_leading_spaces = line + strspn(line, whitespace);
+  char *after_word = after_leading_spaces + strcspn(line, whitespace);
+  return after_word + strspn(after_word, whitespace);
 }
 
 /*
@@ -213,7 +218,7 @@ list *comma_sep_args(char *line) {
 
   char *word;
   for (word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
-    word += strspn(word, " \t");
+    word += strspn(word, whitespace);
     list_append(l, word);
   }
 

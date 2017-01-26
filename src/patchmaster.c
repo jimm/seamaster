@@ -8,6 +8,7 @@
 patchmaster *patchmaster_new() {
   patchmaster *pm = malloc(sizeof(patchmaster));
   pm->running = false;
+  pm->testing = false;
   pm->inputs = list_new();
   pm->outputs = list_new();
   pm->all_songs = song_list_new("All Songs"); /* TODO sorted song list */
@@ -35,18 +36,16 @@ void patchmaster_free(patchmaster *pm) {
 
 void patchmaster_start(patchmaster *pm) {
   debug("patchmaster_start\n");
-  cursor_init(pm->cursor);
   for (int i = 0; i < list_length(pm->inputs); ++i)
     input_start((input *)list_at(pm->inputs, i));
-  if (cursor_patch(pm->cursor))
-    patch_start(cursor_patch(pm->cursor));
+  cursor_init(pm->cursor);
+  patch_start(cursor_patch(pm->cursor));
   pm->running = true;
 }
 
 void patchmaster_stop(patchmaster *pm) {
   debug("patchmaster_stop\n");
-  if (cursor_patch(pm->cursor))
-    patch_stop(cursor_patch(pm->cursor));
+  patch_stop(cursor_patch(pm->cursor));
   for (int i = 0; i < list_length(pm->inputs); ++i)
     input_stop((input *)list_at(pm->inputs, i));
   pm->running = false;
@@ -55,24 +54,37 @@ void patchmaster_stop(patchmaster *pm) {
 // ================ movement ================
 
 void patchmaster_next_patch(patchmaster *pm) {
+  patch_stop(cursor_patch(pm->cursor));
   cursor_next_patch(pm->cursor);
+  patch_start(cursor_patch(pm->cursor));
 }
 
 void patchmaster_prev_patch(patchmaster *pm) {
+  patch_stop(cursor_patch(pm->cursor));
   cursor_prev_patch(pm->cursor);
+  patch_start(cursor_patch(pm->cursor));
 }
 
 void patchmaster_next_song(patchmaster *pm) {
+  patch_stop(cursor_patch(pm->cursor));
   cursor_next_song(pm->cursor);
+  patch_start(cursor_patch(pm->cursor));
 }
 
 void patchmaster_prev_song(patchmaster *pm) {
+  patch_stop(cursor_patch(pm->cursor));
   cursor_prev_song(pm->cursor);
+  patch_start(cursor_patch(pm->cursor));
 }
 
 // ================ debugging ================
 
 void patchmaster_debug(patchmaster *pm) {
+  if (pm == 0) {
+    debug("patchmaster NULL\n");
+    return;
+  }
+
   debug("patchmaster %p, running %d\n", pm, pm->running);
   for (int i = 0; i < list_length(pm->inputs); ++i)
     input_debug(list_at(pm->inputs, i));

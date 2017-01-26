@@ -37,7 +37,10 @@ char *patch_name(patch *p) {
 }
 
 void patch_start(patch *p) {
-  debug("patch_start\n");
+  debug("patch_start %s\n", p ? p->name : "(null)");
+  if (p == 0 || p->running)
+    return;
+
   if (p == 0 || p->running)
     return;
   for (int i = 0; i < list_length(p->connections); ++i) {
@@ -48,13 +51,14 @@ void patch_start(patch *p) {
 }
 
 bool patch_is_running(patch *p) {
-  debug("patch_stop\n");
   return p->running;
 }
 
 void patch_stop(patch *p) {
+  debug("patch_stop %s\n", p ? p->name : "(null)");
   if (p == 0 || !p->running)
     return;
+
   for (int i = 0; i < list_length(p->connections); ++i) {
     connection *conn = list_at(p->connections, i);
     connection_stop(conn, p->stop_messages);
@@ -63,6 +67,11 @@ void patch_stop(patch *p) {
 }
 
 void patch_debug(patch *p) {
+  if (p == 0) {
+    debug("patch NULL\n");
+    return;
+  }
+
   debug("patch %s\n", p->name);
   for (int i = 0; i < list_length(p->connections); ++i) {
     connection *conn = list_at(p->connections, i);

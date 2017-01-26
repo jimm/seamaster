@@ -105,6 +105,11 @@ void list_grow(list *l) {
 }
 
 void list_debug(list *l, char *msg) {
+  if (l == 0) {
+    debug("list NULL\n");
+    return;
+  }
+
   debug("%s%slist %p, num_alloc %d (%p), num_elems %d (%p), nodes %p\n",
         msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
         l,
