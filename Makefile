@@ -27,8 +27,8 @@ seamaster_test:	$(TEST_SRC:%c=%o)
 
 .PHONY: clean
 clean:
-	rm -f seamaster src/*.o src/curses/*.o
+	rm -f seamaster src/*.o src/curses/*.o test/*.o
 
 .PHONY: distclean
 distclean: clean
-	rm -f src/*.d src/curses/*.d
+	rm -f src/*.d src/curses/*.d test/*.d
