@@ -117,7 +117,7 @@ void *input_thread(void *in_voidptr) {
 }
 
 void input_debug(input *in) {
-  if (input == 0) {
+  if (in == 0) {
     debug("input NULL\n");
     return;
   }

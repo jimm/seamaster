@@ -6,4 +6,4 @@ patch Vanilla Through
 conn mp, all, ss, all
 patch Up One Octave
 conn mp, all, ss, all
-xpose -12
+xpose 12

@@ -4,6 +4,7 @@
 #include "mock_output.h"
 #include "seamaster_test.h"
 #include "../src/load.h"
+#include "../src/cursor.h"
 #include "cursor_test.h"
 
 #define TEST_FILE "test/testfile.sm"
@@ -30,6 +31,10 @@ void test_failed() {
   ++results.num_tests;
   ++results.num_errors;
   printf("*");
+}
+
+int test_num_errors() {
+  return results.num_errors;
 }
 
 void test_clear_midi(patchmaster *pm) {

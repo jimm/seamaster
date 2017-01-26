@@ -13,6 +13,17 @@ void test_start(patchmaster *pm);
 void test_results_init();
 void test_passed();
 void test_failed();
+int test_num_errors();
+
+// assumes "pm" is defined
+#define test_run(name)                          \
+  {                                             \
+    int num_errors = test_num_errors();         \
+    test_start(pm);                             \
+    name(pm);                                   \
+    if (test_num_errors() == num_errors)        \
+      test_passed();                            \
+  }
 
 #define tassert(test, errmsg)                                           \
   {                                                                     \
