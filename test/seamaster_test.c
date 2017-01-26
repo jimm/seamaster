@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mock_input.h"
+#include "mock_output.h"
 #include "seamaster_test.h"
 #include "../src/load.h"
 #include "cursor_test.h"
 
 #define TEST_FILE "test/testfile.sm"
 
-// ================ test results ================
+// ================ running tests ================
 
 test_results results;
+
+void test_start(patchmaster *pm) {
+  cursor_init(pm->cursor);
+  test_clear_midi(pm);
+}
 
 void test_results_init() {
   results.num_tests = results.num_errors = 0;
@@ -25,8 +31,6 @@ void test_failed() {
   ++results.num_errors;
   printf("*");
 }
-
-// ================ running tests ================
 
 void test_clear_midi(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->inputs); ++i) {
@@ -56,6 +60,7 @@ void run_tests(patchmaster *pm) {
 int main(int argc, const char **argv) {
   patchmaster *pm = patchmaster_new();
   pm->testing = true;
+  fprintf(stderr, "loading %s\n", TEST_FILE); /* DEBUG */
   if (load(pm, TEST_FILE) != 0)
       exit(1);                /* error already printed */
 

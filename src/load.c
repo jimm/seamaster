@@ -81,7 +81,14 @@ void parse_line(context *c, char *line) {
     load_trigger(c, line);
     break;
   case 's':
-    load_song(c, line);
+    switch (line[1]) {
+    case 'o':                   /* song */
+      load_song(c, line);
+      break;
+    case 'e':                   /* set */
+      load_song_list(c, line);
+      break;
+    }
     break;
   case 'p':
     load_patch(c, line);
@@ -146,7 +153,7 @@ int load_song(context *c, char *line) {
 
 int load_notes(context *c) {
   char line[BUFSIZ];
-  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end_notes", 9) != 0)
+  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end", 3) != 0)
     song_append_notes(c->song, line);
   return 0;
 }
@@ -186,7 +193,7 @@ int load_song_list(context *c, char *line) {
   list_append(c->pm->song_lists, sl);
 
   char song_name[BUFSIZ];
-  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end_list", 8) != 0) {
+  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end", 3) != 0) {
     strip_newline(song_name);
     list_append(sl->songs, find_song(c->pm->all_songs->songs, song_name));
   }

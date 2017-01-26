@@ -36,3 +36,13 @@ patch Split Into Two Outputs
   conn one, 1, two, 5
     zone 64, 127
     xpose -12
+
+set Song List One
+To Each His Own
+Another Song
+end
+
+set Song List Two
+Another Song
+To Each His Own
+end

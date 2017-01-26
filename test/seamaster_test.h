@@ -9,6 +9,7 @@ typedef struct test_results {
   int num_errors;
 } test_results;
 
+void test_start(patchmaster *pm);
 void test_results_init();
 void test_passed();
 void test_failed();
@@ -16,7 +17,7 @@ void test_failed();
 #define tassert(test, errmsg)                                           \
   {                                                                     \
     if (!(test)) {                                                      \
-      printf("\n%s:%d:0: error: %s\n", __FILE__, __LINE__, errmsg ? errmsg : "test failed"); \
+     printf("\n%s:%d:0: error: %s\n", __FILE__, __LINE__, errmsg ? errmsg : "test failed"); \
       test_failed();                                                    \
       return;                                                           \
     }                                                                   \

@@ -39,10 +39,11 @@ test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
   /usr/include/sys/_types/_mode_t.h test/mock_input.h \
   /usr/local/include/portmidi.h test/../src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  test/../src/connection.h test/../src/trigger.h test/seamaster_test.h \
-  test/../src/patchmaster.h test/../src/song_list.h test/../src/song.h \
-  test/../src/patch.h test/../src/input.h test/../src/output.h \
-  test/../src/message.h test/../src/load.h test/cursor_test.h
+  test/../src/connection.h test/../src/trigger.h test/mock_output.h \
+  test/seamaster_test.h test/../src/patchmaster.h \
+  test/../src/song_list.h test/../src/song.h test/../src/patch.h \
+  test/../src/input.h test/../src/output.h test/../src/message.h \
+  test/../src/load.h test/cursor_test.h
 
 /usr/include/stdio.h:
 
@@ -191,6 +192,8 @@ test/../src/list.h:
 test/../src/connection.h:
 
 test/../src/trigger.h:
+
+test/mock_output.h:
 
 test/seamaster_test.h:
 
