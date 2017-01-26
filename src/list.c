@@ -38,8 +38,12 @@ int list_index_of(list *l, void *node) {
   return -1;
 }
 
+void *list_first(list *l) {
+  return l->nodes[0];
+}
+
 void *list_last(list *l) {
-  return list_at(l, list_length(l) - 1);
+  return l->num_elements > 0 ? l->nodes[l->num_elements-1] : 0;
 }
 
 // func may be 0

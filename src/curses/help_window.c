@@ -17,7 +17,7 @@ help_window *help_window_new(rect r, char *title) {
 void help_window_free(help_window *hw) {
   free(hw->w->title);
   if (list_length(hw->lines) > 0)
-    free(list_at(hw->lines, 0));
+    free(list_first(hw->lines));
   list_free(hw->lines, 0);
   free(hw);
 }

@@ -100,13 +100,13 @@ void test_cursor_song_list(patchmaster *pm) {
 
 void test_cursor_song(patchmaster *pm) {
   cursor *c = pm->cursor;
-  tassert(cursor_song(c) == list_at(pm->all_songs->songs, 0), BAD_SONG);
+  tassert(cursor_song(c) == list_first(pm->all_songs->songs), BAD_SONG);
 }
 
 void test_cursor_patch(patchmaster *pm) {
   cursor *c = pm->cursor;
   song *s = cursor_song(c);
-  tassert(cursor_patch(c) == list_at(s->patches, 0), BAD_PATCH);
+  tassert(cursor_patch(c) == list_first(s->patches), BAD_PATCH);
 }
 
 void test_cursor(patchmaster *pm) {

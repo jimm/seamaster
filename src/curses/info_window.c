@@ -61,7 +61,7 @@ void info_window_free_lines(list *lines) {
 
   if (lines != 0) {
     if (list_length(lines) > 0)
-      free(list_at(lines, 0));
+      free(list_first(lines));
     list_free(lines, 0);
   }
 }

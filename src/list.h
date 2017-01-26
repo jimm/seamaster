@@ -15,6 +15,8 @@ void list_free(list *, void (*content_freeing_func)()); // func may be 0
 int list_length(list *);
 void *list_at(list *, int i);
 int list_index_of(list *, void *); // -1 if not found
+
+void *list_first(list *);
 void *list_last(list *);
 
 void list_clear(list *, void (*content_freeing_func)()); // func may be 0

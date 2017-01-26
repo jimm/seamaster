@@ -111,7 +111,7 @@ void parse_line(context *c, char *line) {
 
 int load_instrument(context *c, char *line, int type) {
   list *args = comma_sep_args(line);
-  PmDeviceID devid = find_device(list_at(args, 0), type);
+  PmDeviceID devid = find_device(list_first(args), type);
 
   if (devid == pmNoDevice && !c->pm->testing)
     return 1;
@@ -169,7 +169,7 @@ int load_patch(context *c, char *line) {
 
 int load_connection(context *c, char *line) {
   list *args = comma_sep_args(line);
-  input *in = find_by_sym(c->pm->inputs, (char *)list_at(args, 0));
+  input *in = find_by_sym(c->pm->inputs, (char *)list_first(args));
   int in_chan = chan_from_word(list_at(args, 1));
   output *out = (output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
   int out_chan = chan_from_word(list_at(args, 3));
