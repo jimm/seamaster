@@ -56,6 +56,9 @@ void input_stop(input *in) {
   in->running = false;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+
 void input_read(input *in, PmEvent *buf, int len) {
   debug("input_read %d events\n", len);
   list *messages = list_new();
@@ -73,6 +76,8 @@ void input_read(input *in, PmEvent *buf, int len) {
 
   list_free(messages, 0);
 }
+
+#pragma clang diagnostic pop
 
 void input_debug(input *in) {
   debug("input %s %s (%p)\n", in->sym, in->name, in);

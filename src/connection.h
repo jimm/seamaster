@@ -25,7 +25,7 @@ typedef struct connection {
   program prog;
   zone zone;
   int xpose;
-  // TODO filter
+  int cc_maps[128];           // -1 == filter out, else dest. controller number
 } connection;
 
 connection *connection_new(input *input, int input_chan,

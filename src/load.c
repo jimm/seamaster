@@ -37,6 +37,8 @@ int load_notes(context *);
 int load_patch(context *, char *);
 int load_connection(context *, char *);
 int load_xpose(context *, char *);
+int load_filter(context *, char *);
+int load_map(context *, char *);
 int load_song_list(context *, char *);
 
 int load(patchmaster *pm, const char *path) {
@@ -75,7 +77,10 @@ void parse_line(context *c, char *line) {
     load_instrument(c, line, ch);
     break;
   case 'm':
-    load_message(c, line);
+    if (line[1] == 'e')
+      load_message(c, line);
+    else
+      load_map(c, line);
     break;
   case 't':
     load_trigger(c, line);
@@ -98,6 +103,9 @@ void parse_line(context *c, char *line) {
     break;
   case 'x':
     load_xpose(c, line);
+    break;
+  case 'f':
+    load_filter(c, line);
     break;
   case 'n':
     load_notes(c);
@@ -193,12 +201,28 @@ int load_song_list(context *c, char *line) {
   list_append(c->pm->song_lists, sl);
 
   char song_name[BUFSIZ];
-  while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end", 3) != 0) {
+  while (fgets(song_name, BUFSIZ, c->fp) != 0 && strncmp(song_name, "end\n", 4) != 0) {
     strip_newline(song_name);
-    list_append(sl->songs, find_song(c->pm->all_songs->songs, song_name));
+    song *s = find_song(c->pm->all_songs->songs, song_name);
+    if (s == 0)
+      fprintf(stderr, "error in set: can not find song named \"%s\"\n", song_name);
+    else
+      list_append(sl->songs, find_song(c->pm->all_songs->songs, song_name));
   }
   c->song_list = sl;
 
+  return 0;
+}
+
+int load_filter(context *c, char *line) {
+  int controller = atoi(skip_first_word(line));
+  c->conn->cc_maps[controller] = -1;
+  return 0;
+}
+
+int load_map(context *c, char *line) {
+  list *args = comma_sep_args(line);
+  c->conn->cc_maps[atoi(list_at(args, 0))] = atoi(list_at(args, 1));
   return 0;
 }
 

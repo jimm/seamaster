@@ -50,7 +50,7 @@ void test_clear_midi(patchmaster *pm) {
 
 void run_tests(patchmaster *pm) {
   // TODO
-  /* test_load(pm); */
+  test_load(pm);
   test_cursor(pm);
   // TODO
   /* test_connection(pm); */

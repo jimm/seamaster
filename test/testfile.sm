@@ -8,12 +8,17 @@ output port two, two, second output
 song To Each His Own
 
 # indentation doesn't matter
-patch Vanilla Through
-  conn one, all, two, all
+patch Vanilla Through, Filter Two's Sustain
+  conn one, all, one, all
+  conn two, all, two, all
+    filter 64
 
-patch Up One Octave
-  conn one, all, two, all
-  xpose -12
+patch One Up One Octave and CC Vol -> Pan, Two Down One Octave
+  conn one, all, one, all
+    xpose 12
+    map 7, 10
+  conn two, all, two, all
+    xpose -12
 
 song Another Song
 notes

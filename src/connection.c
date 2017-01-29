@@ -21,12 +21,17 @@ connection *connection_new(input *input, int input_chan,
   conn->prog.bank_msb = conn->prog.bank_lsb = conn->prog.prog = -1;
   conn->zone.low = conn->zone.high = -1;
   conn->xpose = 0;
+  for (int i = 0; i < 128; ++i)
+    conn->cc_maps[i] = i;
   return conn;
 }
 
 void connection_free(connection *conn) {
   free(conn);
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
 
 void connection_start(connection *conn, list *start_messages) {
   debug("connection_start %p\n", conn);
@@ -43,6 +48,8 @@ void connection_start(connection *conn, list *start_messages) {
 
   input_add_connection(conn->input, conn);
 }
+
+#pragma clang diagnostic pop
 
 void connection_stop(connection *conn, list *stop_messages) {
   debug("connection_stop %p\n", conn);
@@ -62,6 +69,9 @@ void connection_midi_in(connection *conn, list *messages) {
   list_free(out_msgs, 0);
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+
 void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
   int status = Pm_MessageStatus(msg);
   int high_nibble = status & 0xf0;
@@ -70,16 +80,18 @@ void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
 
   switch (high_nibble) {
   case NOTE_ON: case NOTE_OFF: case POLY_PRESSURE:
-    if (inside_zone(conn, msg)) {
-      if (conn->output_chan != -1)
-        status = high_nibble + conn->output_chan;
-      data1 += conn->xpose;
-      list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
-    }
+    if (!inside_zone(conn, msg))
+      return;
+    if (conn->output_chan != -1)
+      status = high_nibble + conn->output_chan;
+    data1 += conn->xpose;
+    list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
     break;
   case CONTROLLER: case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
     if (conn->output_chan != -1)
       status = high_nibble + conn->output_chan;
+    if (high_nibble == CONTROLLER) /* map controller number */
+      data1 = conn->cc_maps[data1]; /* won't be -1, that's already filtered */
     list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
     break;
   default:
@@ -88,12 +100,24 @@ void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
   }
 }
 
+#pragma clang diagnostic pop
+
 int accept_from_input(connection *conn, PmMessage msg) {
   if (conn->input_chan == -1)
     return true;
-  if (Pm_MessageStatus(msg) >= SYSEX)
+  unsigned char status = Pm_MessageStatus(msg);
+
+  if (status >= SYSEX)
     return true;
-  return conn->input_chan == (Pm_MessageStatus(msg) & 0x0f);
+  if (conn->input_chan != (Pm_MessageStatus(msg) & 0x0f))
+    return false;
+
+  if ((status & 0xf0) == CONTROLLER) {
+    unsigned char controller = Pm_MessageData1(msg);
+    if (conn->cc_maps[controller] == -1)
+      return false;
+  }
+  return true;
 }
 
 int inside_zone(connection *conn, PmMessage msg) {

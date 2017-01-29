@@ -82,6 +82,9 @@ void input_stop(input *in) {
   }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+
 void input_read(input *in, PmEvent *buf, int len) {
   debug("input_read %d events\n", len);
   list *messages = list_new();
@@ -96,6 +99,8 @@ void input_read(input *in, PmEvent *buf, int len) {
 
   list_free(messages, 0);
 }
+
+#pragma clang diagnostic pop
 
 void *input_thread(void *in_voidptr) {
   input *in = (input *)in_voidptr;

@@ -114,11 +114,9 @@ void list_debug(list *l, char *msg) {
     return;
   }
 
-  debug("%s%slist %p, num_alloc %d (%p), num_elems %d (%p), nodes %p\n",
+  debug("%s%slist %p, num_alloc %d, num_elems %d, nodes %p\n",
         msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
-        l,
-        l->num_allocated, (void *)l->num_allocated,
-        l->num_elements, (void *)l->num_elements,
+        l, l->num_allocated, l->num_elements,
         l->nodes);
   if (l->num_elements < 0) {
     debug("ERROR: l->num_elements is negative\n");
