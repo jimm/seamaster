@@ -7,7 +7,7 @@
 typedef struct window {
   WINDOW *win;
   const char *title_prefix;
-  char *title;
+  const char *title;
   rect rect;
   int max_contents_len;
 } window;

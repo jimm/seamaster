@@ -6,7 +6,7 @@
 void info_window_free_lines(list *);
 
 info_window *info_window_new(rect r, char *title_prefix) {
-  info_window *iw = malloc(sizeof(info_window));
+  info_window *iw = (info_window *)malloc(sizeof(info_window));
   iw->w = window_new(r, title_prefix);
   iw->text_lines = 0;
   iw->help_lines = info_window_text_to_lines(help_window_read_help());
@@ -36,7 +36,7 @@ void info_window_draw(info_window *iw) {
   window_draw(iw->w);
   for (int i = 0; i < list_length(iw->display_list); ++i) {
     wmove(iw->w->win, i+1, 1);
-    waddstr(iw->w->win, list_at(iw->display_list, i));
+    waddstr(iw->w->win, (char *)list_at(iw->display_list, i));
   }
 }
 
@@ -44,7 +44,7 @@ void info_window_draw(info_window *iw) {
  * Splits `text` into lines and returns a list containing the lines. When
  * you are done with the list, only the first entry should be freed.
  */
-list *info_window_text_to_lines(char *text) {
+list *info_window_text_to_lines(const char *text) {
   list *l = list_new();
 
   char *line;

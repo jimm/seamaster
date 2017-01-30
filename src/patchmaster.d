@@ -1,4 +1,4 @@
-src/patchmaster.o: src/patchmaster.c /usr/include/stdlib.h \
+src/patchmaster.o: src/patchmaster.cpp /usr/include/stdlib.h \
   /usr/include/Availability.h /usr/include/AvailabilityInternal.h \
   /usr/include/_types.h /usr/include/sys/_types.h \
   /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
@@ -35,7 +35,7 @@ src/patchmaster.o: src/patchmaster.c /usr/include/stdlib.h \
   /usr/include/sys/_types/_mode_t.h src/patchmaster.h src/song_list.h \
   src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/song.h src/patch.h src/connection.h /usr/local/include/portmidi.h \
+  src/song.h src/patch.h /usr/local/include/portmidi.h src/connection.h \
   src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h /usr/include/time.h \
   /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
@@ -187,9 +187,9 @@ src/song.h:
 
 src/patch.h:
 
-src/connection.h:
-
 /usr/local/include/portmidi.h:
+
+src/connection.h:
 
 src/input.h:
 

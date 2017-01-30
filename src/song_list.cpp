@@ -3,8 +3,8 @@
 #include "song_list.h"
 
 song_list *song_list_new(char *name) {
-  song_list *sl = malloc(sizeof(song_list));
-  sl->name = malloc(strlen(name)+1);
+  song_list *sl = (song_list *)malloc(sizeof(song_list));
+  sl->name = (char *)malloc(strlen(name)+1);
   strcpy(sl->name, name);
   sl->songs = list_new();
   return sl;

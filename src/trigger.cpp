@@ -3,8 +3,8 @@
 #include "trigger.h"
 
 trigger *trigger_new(char *name) {
-  trigger *t = malloc(sizeof(trigger));
-  t->name = malloc(strlen(name)+1);
+  trigger *t = (trigger *)malloc(sizeof(trigger));
+  t->name = (char *)malloc(strlen(name)+1);
   strcpy(t->name, name);
   return t;
 }

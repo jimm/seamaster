@@ -9,15 +9,15 @@ typedef struct list_window {
   list *list;
   int offset;
   char *(*str_func)(void *);
-  void *(*curr_item_func)();
+  void *(*curr_item_func)(void *);
   void *curr_item_func_arg;
 } list_window;
 
-list_window *list_window_new(rect, char *, char *(*str_func)(void *),
-                             void *(*curr_item_func)());
+list_window *list_window_new(rect, const char *, char *(*str_func)(void *),
+                             void *(*curr_item_func)(void *));
 void list_window_free(list_window *);
 
-void list_window_set_contents(list_window *, char *title, list *list,
+void list_window_set_contents(list_window *, const char *title, list *list,
                               void *curr_item_func_arg);
 void list_window_draw(list_window *);
 

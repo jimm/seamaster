@@ -1,4 +1,4 @@
-src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
+src/load.o: src/load.cpp /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
   /usr/include/AvailabilityInternal.h /usr/include/_types.h \
@@ -7,7 +7,6 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_types/_va_list.h /usr/include/sys/_types/_size_t.h \
   /usr/include/sys/_types/_null.h /usr/include/sys/stdio.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
-  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
   /usr/include/stdlib.h /usr/include/sys/wait.h \
   /usr/include/sys/_types/_pid_t.h /usr/include/sys/_types/_id_t.h \
   /usr/include/sys/signal.h /usr/include/sys/appleapiopts.h \
@@ -38,10 +37,9 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/strings.h /usr/include/secure/_string.h \
-  /usr/include/errno.h /usr/include/sys/errno.h /usr/include/err.h \
-  /usr/local/include/portmidi.h src/patchmaster.h src/song_list.h \
-  src/list.h \
+  /usr/include/strings.h /usr/include/errno.h /usr/include/sys/errno.h \
+  /usr/include/err.h /usr/local/include/portmidi.h src/patchmaster.h \
+  src/song_list.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/song.h src/patch.h src/connection.h src/input.h \
   /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
@@ -94,10 +92,6 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
 /usr/include/sys/_types/_off_t.h:
 
 /usr/include/sys/_types/_ssize_t.h:
-
-/usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
 
 /usr/include/stdlib.h:
 
@@ -204,8 +198,6 @@ src/load.o: src/load.c /usr/include/stdio.h /usr/include/sys/cdefs.h \
 /usr/include/sys/_types/_errno_t.h:
 
 /usr/include/strings.h:
-
-/usr/include/secure/_string.h:
 
 /usr/include/errno.h:
 

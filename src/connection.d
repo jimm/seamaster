@@ -1,4 +1,4 @@
-src/connection.o: src/connection.c /usr/include/stdlib.h \
+src/connection.o: src/connection.cpp /usr/include/stdlib.h \
   /usr/include/Availability.h /usr/include/AvailabilityInternal.h \
   /usr/include/_types.h /usr/include/sys/_types.h \
   /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \

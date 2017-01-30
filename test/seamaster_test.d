@@ -1,4 +1,4 @@
-test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
+test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
   /usr/include/AvailabilityInternal.h /usr/include/_types.h \
@@ -7,7 +7,6 @@ test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
   /usr/include/sys/_types/_va_list.h /usr/include/sys/_types/_size_t.h \
   /usr/include/sys/_types/_null.h /usr/include/sys/stdio.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
-  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
   /usr/include/stdlib.h /usr/include/sys/wait.h \
   /usr/include/sys/_types/_pid_t.h /usr/include/sys/_types/_id_t.h \
   /usr/include/sys/signal.h /usr/include/sys/appleapiopts.h \
@@ -39,12 +38,11 @@ test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
   /usr/include/sys/_types/_mode_t.h test/seamaster_test.h \
   test/../src/patchmaster.h test/../src/song_list.h test/../src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  test/../src/song.h test/../src/patch.h test/../src/connection.h \
-  /usr/local/include/portmidi.h test/../src/input.h \
-  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h /usr/include/time.h \
-  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
-  /usr/include/sys/_types/_timespec.h \
+  test/../src/song.h test/../src/patch.h /usr/local/include/portmidi.h \
+  test/../src/connection.h test/../src/input.h /usr/include/pthread.h \
+  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
+  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
+  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -92,10 +90,6 @@ test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
 /usr/include/sys/_types/_off_t.h:
 
 /usr/include/sys/_types/_ssize_t.h:
-
-/usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
 
 /usr/include/stdlib.h:
 
@@ -209,9 +203,9 @@ test/../src/song.h:
 
 test/../src/patch.h:
 
-test/../src/connection.h:
-
 /usr/local/include/portmidi.h:
+
+test/../src/connection.h:
 
 test/../src/input.h:
 

@@ -1,7 +1,7 @@
-src/song.o: src/song.c /usr/include/stdlib.h /usr/include/Availability.h \
-  /usr/include/AvailabilityInternal.h /usr/include/_types.h \
-  /usr/include/sys/_types.h /usr/include/sys/cdefs.h \
-  /usr/include/sys/_symbol_aliasing.h \
+src/song.o: src/song.cpp /usr/include/stdlib.h \
+  /usr/include/Availability.h /usr/include/AvailabilityInternal.h \
+  /usr/include/_types.h /usr/include/sys/_types.h \
+  /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/machine/_types.h \
   /usr/include/i386/_types.h /usr/include/sys/_pthread/_pthread_types.h \
   /usr/include/sys/wait.h /usr/include/sys/_types/_pid_t.h \
@@ -34,11 +34,10 @@ src/song.o: src/song.c /usr/include/stdlib.h /usr/include/Availability.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  /usr/include/secure/_string.h /usr/include/secure/_common.h src/song.h \
+  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h src/song.h \
   src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/patch.h src/connection.h /usr/local/include/portmidi.h src/input.h \
+  src/patch.h /usr/local/include/portmidi.h src/connection.h src/input.h \
   /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h /usr/include/time.h \
   /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
@@ -187,10 +186,6 @@ src/song.o: src/song.c /usr/include/stdlib.h /usr/include/Availability.h \
 
 /usr/include/strings.h:
 
-/usr/include/secure/_string.h:
-
-/usr/include/secure/_common.h:
-
 src/song.h:
 
 src/list.h:
@@ -199,9 +194,9 @@ src/list.h:
 
 src/patch.h:
 
-src/connection.h:
-
 /usr/local/include/portmidi.h:
+
+src/connection.h:
 
 src/input.h:
 

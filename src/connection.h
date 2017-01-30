@@ -18,7 +18,8 @@ typedef struct zone {
   int high;
 } zone;
 
-typedef struct connection {
+class Connection {
+public:
   input *input;
   output *output;
   int input_chan;
@@ -27,17 +28,21 @@ typedef struct connection {
   zone zone;
   int xpose;
   int cc_maps[128];           // -1 == filter out, else dest. controller number
-} connection;
 
-connection *connection_new(input *input, int input_chan,
-                           output *output, int output_chan);
-void connection_free(connection *conn);
+  Connection(struct input *input, int input_chan, struct output *output, int output_chan);
+  ~Connection();
 
-void connection_start(connection *, list *);
-void connection_stop(connection *, list *);
+  void start(PmMessage *buf, int len);
+  void stop(PmMessage *buf, int len);
 
-void connection_midi_in(connection *conn, PmMessage msg);
+  void midi_in(PmMessage msg);
 
-void connection_debug(connection *);
+  void debug();
 
-#endif /* CONNECTION_H */
+private:
+  int accept_from_input(PmMessage msg);
+  int inside_zone(PmMessage msg);
+  void midi_out(PmMessage msg);
+};
+
+#endif /* H */

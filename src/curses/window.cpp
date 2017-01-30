@@ -6,7 +6,7 @@ void window_set_max_contents_len(window *, int);
 
 
 window *window_new(rect r, const char *title_prefix) {
-  window *w = malloc(sizeof(window));
+  window *w = (window *)malloc(sizeof(window));
   w->win = newwin(r.height, r.width, r.row, r.col);
   w->title_prefix = title_prefix;
   w->title = 0;
@@ -58,7 +58,7 @@ char *window_make_fit(window *w, const char *str, int reduce_max_len_by) {
   int len = strlen(str);
   int w_maxlen = w->max_contents_len - reduce_max_len_by;
   int newlen = len < w_maxlen ? len : w_maxlen;
-  char *newstr = malloc(newlen + 1);
+  char *newstr = (char *)malloc(newlen + 1);
   strncpy(newstr, str, newlen);
   newstr[newlen] = 0;
   return newstr;

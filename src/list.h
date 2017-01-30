@@ -10,7 +10,7 @@ typedef struct list {
 } list;
 
 list *list_new();
-void list_free(list *, void (*content_freeing_func)()); // func may be 0
+void list_free(list *, void (*content_freeing_func)(void *)); // func may be 0
 void list_copy(list *dest, list *src);
 
 int list_length(list *);
@@ -21,7 +21,7 @@ int list_index_of(list *, void *); // -1 if not found
 void *list_first(list *);
 void *list_last(list *);
 
-void list_clear(list *, void (*content_freeing_func)()); // func may be 0
+void list_clear(list *, void (*content_freeing_func)(void *)); // func may be 0
 
 list *list_append(list *, void *);
 list *list_append_list(list *, list *);
@@ -30,6 +30,6 @@ void *list_remove(list *, void *);
 void *list_remove_at(list *, int);
 bool includes(list *, void *);
 
-void list_debug(list *, char *);
+void list_debug(list *, const char *);
 
 #endif /* LIST_H */

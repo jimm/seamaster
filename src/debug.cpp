@@ -6,7 +6,7 @@
 
 #define DEBUG_FILE "/tmp/seamaster_debug.log"
 
-void debug(const char *fmt, ...) {
+void vdebug(const char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);
@@ -22,7 +22,7 @@ void debug(const char *fmt, ...) {
 
 #else
 
-void debug(const char *fmt, ...) {
+void vdebug(const char *fmt, ...) {
 }
 
 #endif

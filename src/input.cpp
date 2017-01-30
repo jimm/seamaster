@@ -9,11 +9,11 @@ bool input_real_port(input *);
 void *input_thread(void *);
 
 input *input_new(char *sym, char *name, int port_num) {
-  input *in = malloc(sizeof(input));
+  input *in = (input *)malloc(sizeof(input));
 
-  in->sym = malloc(strlen(sym) + 1);
+  in->sym = (char *)malloc(strlen(sym) + 1);
   strcpy(in->sym, sym);
-  in->name = malloc(strlen(name) + 1);
+  in->name = (char *)malloc(strlen(name) + 1);
   strcpy(in->name, name);
 
   in->port_num = port_num;
@@ -53,13 +53,13 @@ bool input_real_port(input *in) {
   return in->port_num != pmNoDevice;
 }
 
-void input_add_connection(input *in, connection *conn) {
-  debug("input %p adding connection %p\n", in, conn);
+void input_add_connection(input *in, Connection *conn) {
+  vdebug("input %p adding connection %p\n", in, conn);
   list_append(in->connections, conn);
 }
 
-void input_remove_connection(input *in, connection *conn) {
-  debug("input %p removing connection %p\n", in, conn);
+void input_remove_connection(input *in, Connection *conn) {
+  vdebug("input %p removing connection %p\n", in, conn);
   list_remove(in->connections, conn);
 }
 
@@ -74,7 +74,7 @@ void input_remove_trigger(input *in, trigger *trigger) {
 void input_start(input *in) {
   int status;
 
-  debug("input_start\n");
+  vdebug("input_start\n");
   in->running = true;
   if (input_real_port(in)) {
     status = pthread_create(&in->portmidi_thread, 0, input_thread, in);
@@ -83,7 +83,7 @@ void input_start(input *in) {
 }
 
 void input_stop(input *in) {
-  debug("input_stop\n");
+  vdebug("input_stop\n");
   if (in->running)
     in->running = false;
 }
@@ -92,11 +92,11 @@ void input_stop(input *in) {
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
 
 void input_read(input *in, PmEvent *buf, int len) {
-  debug("input_read %d events\n", len);
+  vdebug("input_read %d events\n", len);
 
   // triggers
   for (int i = 0; i < list_length(in->triggers); ++i)
-    trigger_signal(list_at(in->triggers, i), buf, len);
+    trigger_signal((trigger *)list_at(in->triggers, i), buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;
@@ -129,8 +129,10 @@ void input_read(input *in, PmEvent *buf, int len) {
       break;
     }
 
-    for (int j = 0; j < list_length(conns); ++j)
-      connection_midi_in(list_at(conns, i), msg);
+    for (int j = 0; j < list_length(conns); ++j) {
+      Connection *conn = (Connection *)list_at(conns, i);
+      conn->midi_in(msg);
+    }
   }
 }
 
@@ -142,28 +144,28 @@ void *input_thread(void *in_voidptr) {
     if (Pm_Poll(in->stream) == TRUE) {
       PmEvent buf[MIDI_BUFSIZ];
       int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
-      debug("%d events seen, sending to input_read\n", n);
+      vdebug("%d events seen, sending to input_read\n", n);
       input_read(in, buf, n);
     }
   }
 
-  debug("input exiting\n");
+  vdebug("input exiting\n");
   pthread_exit(0);
 }
 
 void input_debug(input *in) {
   if (in == 0) {
-    debug("input NULL\n");
+    vdebug("input NULL\n");
     return;
   }
 
-  debug("input %s %s (%p)\n", in->sym, in->name, in);
-  debug("  port_num %d stream %p\n", in->port_num, in->stream);
-  debug("  connections:");
+  vdebug("input %s %s (%p)\n", in->sym, in->name, in);
+  vdebug("  port_num %d stream %p\n", in->port_num, in->stream);
+  vdebug("  connections:");
   for (int i = 0; i < list_length(in->connections); ++i)
-    debug("    %p\n", list_at(in->connections, i));
-  debug("  running: %d\n", in->running);
-  debug("  thread: %p\n", in->portmidi_thread);
+    vdebug("    %p\n", list_at(in->connections, i));
+  vdebug("  running: %d\n", in->running);
+  vdebug("  thread: %p\n", in->portmidi_thread);
 }
 
 // only used during testing

@@ -1,13 +1,13 @@
 NAME = seamaster
 # DEBUG = -DDEBUG -DDEBUG_STDERR
 CPPFLAGS += -MD -MP -g $(DEBUG)
-LIBS = -lc -lncurses -lportmidi -lsqlite3
+LIBS = -lc -lc++ -lncurses -lportmidi -lsqlite3
 LDFLAGS += $(LIBS) -macosx_version_min 10.10
 
-SRC = $(wildcard src/*.c) $(wildcard src/curses/*.c)
-OBJS = $(SRC:%.c=%.o)
-TEST_SRC = $(wildcard test/*.c)
-TEST_OBJS = $(TEST_SRC:%.c=%.o)
+SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp)
+OBJS = $(SRC:%.cpp=%.o)
+TEST_SRC = $(wildcard test/*.cpp)
+TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
 TEST_OBJ_FILTERS = src/seamaster.o
 
 .PHONY: all
@@ -16,7 +16,8 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
--include $(SRC:%.c=%.d)
+-include $(C_SRC:%.c=%.d)
+-include $(CPP_SRC:%.cpp=%.d)
 
 .PHONY: test
 test: $(NAME)_test

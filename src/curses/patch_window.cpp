@@ -5,10 +5,10 @@
 #include "../output.h"
 
 void patch_window_draw_headers(patch_window *);
-void patch_window_draw_connection(patch_window *, connection *);
+void patch_window_draw_connection(patch_window *, Connection *);
 
-patch_window *patch_window_new(rect r, char *title_prefix) {
-  patch_window *pw = malloc(sizeof(patch_window));
+patch_window *patch_window_new(rect r, const char *title_prefix) {
+  patch_window *pw = (patch_window *)malloc(sizeof(patch_window));
   pw->w = window_new(r, title_prefix);
   pw->patch = 0;
   return pw;
@@ -34,20 +34,20 @@ void patch_window_draw(patch_window *pw) {
   list *conns = pw->patch->connections;
   for (int i = 0; i < list_length(conns); ++i) {
     wmove(pw->w->win, i+2, 1);
-    patch_window_draw_connection(pw, (connection *)list_at(conns, i));
+    patch_window_draw_connection(pw, (Connection *)list_at(conns, i));
   }
 }
 
 void patch_window_draw_headers(patch_window *pw) {
   wattron(pw->w->win, A_REVERSE);
-  char *str = " Input            Chan | Output           Chan | Zone      | Xpose | Prog";
+  const char *str = " Input            Chan | Output           Chan | Zone      | Xpose | Prog";
   waddstr(pw->w->win, str);
   for (int i = 0; i < getmaxx(pw->w->win) - 2 - strlen(str); ++i)
     waddch(pw->w->win, ' ');
   wattroff(pw->w->win, A_REVERSE);
 }
 
-void format_chans(patch_window *pw, connection *conn, char *buf) {
+void format_chans(patch_window *pw, Connection *conn, char *buf) {
   char inchan[4], outchan[4];
 
   if (conn->input_chan == -1)
@@ -63,7 +63,7 @@ void format_chans(patch_window *pw, connection *conn, char *buf) {
           conn->input->name, inchan, conn->output->name, outchan);
 }
 
-void format_prog(patch_window *pw, connection *conn, char *buf) {
+void format_prog(patch_window *pw, Connection *conn, char *buf) {
   int has_msb = conn->prog.bank_msb != -1;
   int has_lsb = conn->prog.bank_lsb != -1;
   int has_bank = has_msb || has_lsb;
@@ -83,21 +83,21 @@ void format_prog(patch_window *pw, connection *conn, char *buf) {
     sprintf(buf + strlen(buf), " %d", conn->prog.prog);
 }
 
-void format_zone(patch_window *pw, connection *conn, char *buf) {
+void format_zone(patch_window *pw, Connection *conn, char *buf) {
   if (conn->zone.low != -1 || conn->zone.high != -1)
     sprintf(buf + strlen(buf), " %3d - %3d |", conn->zone.low, conn->zone.high);
   else
     strcat(buf, "           |");
 }
 
-void format_xpose(patch_window *pw, connection *conn, char *buf) {
+void format_xpose(patch_window *pw, Connection *conn, char *buf) {
   if (conn->xpose != -1)
     sprintf(buf + strlen(buf), "  %s%2d |", conn->xpose < 0 ? "-" : " ", abs(conn->xpose));
   else
     strcat(buf, "      |");
 }
 
-void patch_window_draw_connection(patch_window *pw, connection *conn) {  
+void patch_window_draw_connection(patch_window *pw, Connection *conn) {  
   int vis_height = window_visible_height(pw->w);
   char buf[1024];
 

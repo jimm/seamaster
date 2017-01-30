@@ -13,7 +13,7 @@ typedef struct context {
   patchmaster *pm;
   song *song;
   patch *patch;
-  connection *conn;
+  Connection *conn;
   song_list *song_list;
 } context;
 
@@ -119,13 +119,13 @@ void parse_line(context *c, char *line) {
 
 int load_instrument(context *c, char *line, int type) {
   list *args = comma_sep_args(line);
-  PmDeviceID devid = find_device(list_first(args), type);
+  PmDeviceID devid = find_device((char *)list_first(args), type);
 
   if (devid == pmNoDevice && !c->pm->testing)
     return 1;
 
-  char *sym = list_at(args, 1);
-  char *name = list_at(args, 2);
+  char *sym = (char *)list_at(args, 1);
+  char *name = (char *)list_at(args, 2);
 
   switch (type) {
   case 'i':
@@ -178,11 +178,11 @@ int load_patch(context *c, char *line) {
 int load_connection(context *c, char *line) {
   list *args = comma_sep_args(line);
   input *in = find_by_sym(c->pm->inputs, (char *)list_first(args));
-  int in_chan = chan_from_word(list_at(args, 1));
+  int in_chan = chan_from_word((char *)list_at(args, 1));
   output *out = (output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
-  int out_chan = chan_from_word(list_at(args, 3));
+  int out_chan = chan_from_word((char *)list_at(args, 3));
 
-  connection *conn = connection_new(in, in_chan, out, out_chan);
+  Connection *conn = new Connection(in, in_chan, out, out_chan);
   list_append(c->patch->connections, conn);
   c->conn = conn;
 
@@ -222,7 +222,7 @@ int load_filter(context *c, char *line) {
 
 int load_map(context *c, char *line) {
   list *args = comma_sep_args(line);
-  c->conn->cc_maps[atoi(list_at(args, 0))] = atoi(list_at(args, 1));
+  c->conn->cc_maps[atoi((char *)list_at(args, 0))] = atoi((char *)list_at(args, 1));
   return 0;
 }
 

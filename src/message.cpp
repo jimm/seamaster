@@ -4,7 +4,7 @@
 
 message *message_new(char *name) {
   message *m = (message *)malloc(sizeof(message));
-  m->name = malloc(strlen(name) + 1);
+  m->name = (char *)malloc(strlen(name) + 1);
   strcpy(m->name, name);
   m->messages = list_new();
 

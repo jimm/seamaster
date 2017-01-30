@@ -18,6 +18,6 @@ void info_window_set_contents(info_window *, list *text_lines);
 
 void info_window_draw(info_window *);
 
-list *info_window_text_to_lines(char *);
+list *info_window_text_to_lines(const char *);
 
 #endif /* INFO_WINDOW_H */

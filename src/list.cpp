@@ -8,14 +8,14 @@
 void list_grow(list *, int);
 
 list *list_new() {
-  list *l = malloc(sizeof(list));
+  list *l = (list *)malloc(sizeof(list));
   l->nodes = (void **)malloc(INITIAL_SIZE * sizeof(void *));
   l->num_elements = 0;
   l->num_allocated = INITIAL_SIZE;
   return l;
 }
 
-void list_free(list *l, void (*content_freeing_func)()) {
+void list_free(list *l, void (*content_freeing_func)(void *)) {
   if (content_freeing_func != 0)
     for (int i = 0; i < l->num_elements; ++i)
       content_freeing_func(l->nodes[i]);
@@ -58,7 +58,7 @@ void *list_last(list *l) {
 }
 
 // func may be 0
-void list_clear(list *l, void (*content_freeing_func)()) {
+void list_clear(list *l, void (*content_freeing_func)(void *)) {
   if (content_freeing_func != 0)
     for (int i = 0; i < l->num_elements; ++i)
       content_freeing_func(l->nodes[i]);
@@ -120,25 +120,25 @@ void list_grow(list *l, int min_size) {
 
   while (l->num_allocated < min_size)
     l->num_allocated *= 2;
-  l->nodes = realloc(l->nodes, l->num_allocated * sizeof(void *));
+  l->nodes = (void **)realloc(l->nodes, l->num_allocated * sizeof(void *));
 }
 
-void list_debug(list *l, char *msg) {
+void list_debug(list *l, const char *msg) {
   if (l == 0) {
-    debug("list NULL\n");
+    vdebug("list NULL\n");
     return;
   }
 
-  debug("%s%slist %p, num_alloc %d, num_elems %d, nodes %p\n",
+  vdebug("%s%slist %p, num_alloc %d, num_elems %d, nodes %p\n",
         msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
         l, l->num_allocated, l->num_elements,
         l->nodes);
   if (l->num_elements < 0) {
-    debug("ERROR: l->num_elements is negative\n");
+    vdebug("ERROR: l->num_elements is negative\n");
     return;
   }
   for (int i = 0; i < l->num_elements && i < 10; ++i)
-    debug("  %3i: %p\n", i, l->nodes[i]);
+    vdebug("  %3i: %p\n", i, l->nodes[i]);
   if (l->num_elements > 10)
-    debug("  ...\n");
+    vdebug("  ...\n");
 }

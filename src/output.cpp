@@ -8,11 +8,11 @@
 bool output_real_port(output *);
 
 output *output_new(char *sym, char *name, int port_num) {
-  output *out = malloc(sizeof(output));
+  output *out = (output *)malloc(sizeof(output));
 
-  out->sym = malloc(strlen(sym) + 1);
+  out->sym = (char *)malloc(strlen(sym) + 1);
   strcpy(out->sym, sym);
-  out->name = malloc(strlen(name) + 1);
+  out->name = (char *)malloc(strlen(name) + 1);
   strcpy(out->name, name);
 
   out->port_num = port_num;
@@ -54,12 +54,12 @@ void output_write(output *out, PmEvent *buf, int len) {
 
 void output_debug(output *out) {
   if (out == 0) {
-    debug("output NULL\n");
+    vdebug("output NULL\n");
     return;
   }
 
-  debug("output %s %s (%p)\n", out->sym, out->name, out);
-  debug("  port_num %d stream %p\n", out->port_num, out->stream);
+  vdebug("output %s %s (%p)\n", out->sym, out->name, out);
+  vdebug("  port_num %d stream %p\n", out->port_num, out->stream);
 }
 
 // only used during testing

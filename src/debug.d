@@ -1,4 +1,4 @@
-src/debug.o: src/debug.c \
+src/debug.o: src/debug.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
   /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_symbol_aliasing.h \
@@ -9,7 +9,7 @@ src/debug.o: src/debug.c \
   /usr/include/sys/_types/_va_list.h /usr/include/sys/_types/_size_t.h \
   /usr/include/sys/_types/_null.h /usr/include/sys/stdio.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
-  /usr/include/secure/_stdio.h /usr/include/secure/_common.h src/debug.h
+  src/debug.h
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
 
@@ -46,9 +46,5 @@ src/debug.o: src/debug.c \
 /usr/include/sys/_types/_off_t.h:
 
 /usr/include/sys/_types/_ssize_t.h:
-
-/usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
 
 src/debug.h:

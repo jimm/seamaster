@@ -24,14 +24,14 @@ typedef struct windows {
 
 void config_curses();
 windows *create_windows();
-void resize_windows();
+void resize_windows(windows *);
 void free_windows(windows *);
 void gui_run(patchmaster *, windows *);
 void refresh_all(patchmaster *pm, windows *);
 void set_window_data(patchmaster *pm, windows *);
 void close_screen();
 void gui_help(windows *);
-void show_message(windows *, char *);
+void show_message(windows *, const char *);
 
 void gui_main(patchmaster *pm) {
   config_curses();
@@ -127,7 +127,7 @@ void config_curses() {
 }
 
 windows *create_windows() {
-  windows *ws = malloc(sizeof(windows));
+  windows *ws = (windows *)malloc(sizeof(windows));
 
   ws->song_lists = list_window_new(geom_song_lists_rect(), 0,
                                    NAME_FUNC(&song_list_name),
@@ -229,7 +229,7 @@ void gui_help(windows *ws) {
   help_window_free(hw);
 }
 
-void show_message(windows *ws, char *msg) {
+void show_message(windows *ws, const char *msg) {
   WINDOW *win = ws->message->win;
   wclear(win);
   waddstr(win, msg);

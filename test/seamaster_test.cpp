@@ -39,11 +39,11 @@ int test_num_errors() {
 
 void test_clear_midi(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->inputs); ++i) {
-    input *in = list_at(pm->inputs, i);
+    input *in = (input *)list_at(pm->inputs, i);
     input_clear(in);
   }
   for (int i = 0; i < list_length(pm->outputs); ++i) {
-    output *out = list_at(pm->outputs, i);
+    output *out = (output *)list_at(pm->outputs, i);
     output_clear(out);
   }
 }

@@ -9,11 +9,11 @@ typedef struct help_window {
   list *lines;
 } help_window;
 
-help_window *help_window_new(rect, char *);
+help_window *help_window_new(rect, const char *);
 void help_window_free(help_window *);
 
 void help_window_draw(help_window *);
 
-char *help_window_read_help();  // used by info_window
+const char *help_window_read_help();  // used by info_window
 
 #endif /* HELP_WINDOW_H */

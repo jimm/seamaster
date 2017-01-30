@@ -1,6 +1,7 @@
 #ifndef PATCH_H
 #define PATCH_H
 
+#include <portmidi.h>
 #include "list.h"
 #include "connection.h"
 #include "input.h"
@@ -8,8 +9,10 @@
 typedef struct patch {
   char *name;
   list *connections;
-  list *start_messages;
-  list *stop_messages;
+  PmMessage *start_messages;
+  int num_start_messages;
+  PmMessage *stop_messages;
+  int num_stop_messages;
   bool running;
 } patch;
 

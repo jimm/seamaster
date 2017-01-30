@@ -1,4 +1,4 @@
-src/curses/patch_window.o: src/curses/patch_window.c \
+src/curses/patch_window.o: src/curses/patch_window.cpp \
   /usr/include/stdlib.h /usr/include/Availability.h \
   /usr/include/AvailabilityInternal.h /usr/include/_types.h \
   /usr/include/sys/_types.h /usr/include/sys/cdefs.h \
@@ -36,20 +36,20 @@ src/curses/patch_window.o: src/curses/patch_window.c \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  /usr/include/secure/_string.h /usr/include/secure/_common.h \
   src/curses/patch_window.h src/curses/window.h /usr/include/ncurses.h \
   /usr/include/ncurses_dll.h /usr/include/stdio.h \
   /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h \
-  /usr/include/sys/_types/_off_t.h /usr/include/secure/_stdio.h \
-  /usr/include/unctrl.h /usr/include/curses.h \
+  /usr/include/sys/_types/_off_t.h /usr/include/unctrl.h \
+  /usr/include/curses.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
+  src/curses/geometry.h src/curses/../patch.h \
+  /usr/local/include/portmidi.h src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/geometry.h src/curses/../patch.h src/curses/../list.h \
-  src/curses/../connection.h /usr/local/include/portmidi.h \
-  src/curses/../input.h /usr/include/pthread.h \
-  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
-  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
-  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
+  src/curses/../connection.h src/curses/../input.h \
+  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
+  /usr/include/pthread/sched.h /usr/include/time.h \
+  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
+  /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -194,10 +194,6 @@ src/curses/patch_window.o: src/curses/patch_window.c \
 
 /usr/include/strings.h:
 
-/usr/include/secure/_string.h:
-
-/usr/include/secure/_common.h:
-
 src/curses/patch_window.h:
 
 src/curses/window.h:
@@ -214,25 +210,23 @@ src/curses/window.h:
 
 /usr/include/sys/_types/_off_t.h:
 
-/usr/include/secure/_stdio.h:
-
 /usr/include/unctrl.h:
 
 /usr/include/curses.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
-
 src/curses/geometry.h:
 
 src/curses/../patch.h:
 
+/usr/local/include/portmidi.h:
+
 src/curses/../list.h:
 
-src/curses/../connection.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
-/usr/local/include/portmidi.h:
+src/curses/../connection.h:
 
 src/curses/../input.h:
 

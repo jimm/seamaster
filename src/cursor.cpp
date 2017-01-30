@@ -12,7 +12,7 @@
  */
 
 cursor *cursor_new(patchmaster *pm) {
-  cursor *c = malloc(sizeof(cursor));
+  cursor *c = (cursor *)malloc(sizeof(cursor));
   c->pm = pm;
   cursor_clear(c);
   c->song_list_name = c->song_name = c->patch_name = 0;
@@ -49,7 +49,7 @@ void cursor_init(cursor *c) {
 
 song_list *cursor_song_list(cursor *c) {
   if (c->song_list_index != UNDEFINED)
-    return list_at(c->pm->song_lists, c->song_list_index);
+    return (song_list *)list_at(c->pm->song_lists, c->song_list_index);
   else
     return 0;
 }
@@ -58,14 +58,14 @@ song *cursor_song(cursor *c) {
   song_list *sl = cursor_song_list(c);
   if (sl == 0 || c->song_index == UNDEFINED)
     return 0;
-  return list_at(sl->songs, c->song_index);
+  return (song *)list_at(sl->songs, c->song_index);
 }
 
 patch *cursor_patch(cursor *c) {
   song *song = cursor_song(c);
   if (song == 0 || c->patch_index == UNDEFINED)
     return 0;
-  return list_at(song->patches, c->patch_index);
+  return (patch *)list_at(song->patches, c->patch_index);
 }
 
 void cursor_next_song(cursor *c) {
@@ -107,13 +107,13 @@ void cursor_prev_patch(cursor *c) {
 
 void cursor_debug(cursor *cursor) {
   if (cursor == 0) {
-    debug("cursor NULL\n");
+    vdebug("cursor NULL\n");
     return;
   }
 
-  debug("cursor %p\n", cursor);
-  debug("  pm %p\n", cursor->pm);
-  debug("  song_list_index %d\n", cursor->song_list_index);
-  debug("  song_index %d\n", cursor->song_index);
-  debug("  patch_index %d\n", cursor->patch_index);
+  vdebug("cursor %p\n", cursor);
+  vdebug("  pm %p\n", cursor->pm);
+  vdebug("  song_list_index %d\n", cursor->song_list_index);
+  vdebug("  song_index %d\n", cursor->song_index);
+  vdebug("  patch_index %d\n", cursor->patch_index);
 }

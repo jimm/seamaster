@@ -10,7 +10,7 @@ void list_devices(const char *title, const PmDeviceInfo *infos[], int num_device
   for (int i = 0; i < num_devices; ++i)
     if (infos[i] != 0) {
       const char *name = infos[i]->name;
-      char *q = (name[0] == ' ' || name[strlen(name)-1] == ' ') ? "\"" : "";
+      const char *q = (name[0] == ' ' || name[strlen(name)-1] == ' ') ? "\"" : "";
       printf("  %2d: %s%s%s%s\n", i, q, name, q, infos[i]->opened ? " (open)" : "");
     }
 }

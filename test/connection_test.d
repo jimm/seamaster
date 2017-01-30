@@ -1,4 +1,4 @@
-test/connection_test.o: test/connection_test.c test/seamaster_test.h \
+test/connection_test.o: test/connection_test.cpp test/seamaster_test.h \
   /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
@@ -8,11 +8,9 @@ test/connection_test.o: test/connection_test.c test/seamaster_test.h \
   /usr/include/sys/_types/_va_list.h /usr/include/sys/_types/_size_t.h \
   /usr/include/sys/_types/_null.h /usr/include/sys/stdio.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
-  /usr/include/secure/_stdio.h /usr/include/secure/_common.h \
   test/../src/patchmaster.h test/../src/song_list.h test/../src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  test/../src/song.h test/../src/patch.h test/../src/connection.h \
-  /usr/local/include/portmidi.h \
+  test/../src/song.h test/../src/patch.h /usr/local/include/portmidi.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdint.h \
   /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h \
   /usr/include/sys/_types/_int16_t.h /usr/include/sys/_types/_int32_t.h \
@@ -20,11 +18,11 @@ test/connection_test.o: test/connection_test.c test/seamaster_test.h \
   /usr/include/_types/_uint16_t.h /usr/include/_types/_uint32_t.h \
   /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h \
   /usr/include/sys/_types/_uintptr_t.h /usr/include/_types/_intmax_t.h \
-  /usr/include/_types/_uintmax_t.h test/../src/input.h \
-  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h /usr/include/time.h \
-  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
-  /usr/include/sys/_types/_timespec.h \
+  /usr/include/_types/_uintmax_t.h test/../src/connection.h \
+  test/../src/input.h /usr/include/pthread.h \
+  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
+  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
+  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_attr_t.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
@@ -76,10 +74,6 @@ test/seamaster_test.h:
 
 /usr/include/sys/_types/_ssize_t.h:
 
-/usr/include/secure/_stdio.h:
-
-/usr/include/secure/_common.h:
-
 test/../src/patchmaster.h:
 
 test/../src/song_list.h:
@@ -91,8 +85,6 @@ test/../src/list.h:
 test/../src/song.h:
 
 test/../src/patch.h:
-
-test/../src/connection.h:
 
 /usr/local/include/portmidi.h:
 
@@ -123,6 +115,8 @@ test/../src/connection.h:
 /usr/include/_types/_intmax_t.h:
 
 /usr/include/_types/_uintmax_t.h:
+
+test/../src/connection.h:
 
 test/../src/input.h:
 

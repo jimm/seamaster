@@ -2,9 +2,11 @@
 #include "list_window.h"
 #include "../song.h"            /* DEBUG */
 
-list_window *list_window_new(rect r, char * title_prefix, char *(*str_func)(),
-                             void *(*curr_item_func)()) {
-  list_window *lw = malloc(sizeof(list_window));
+list_window *list_window_new(rect r, const char *title_prefix,
+                             char *(*str_func)(void *),
+                             void *(*curr_item_func)(void *))
+{
+  list_window *lw = (list_window *)malloc(sizeof(list_window));
   lw->w = window_new(r, title_prefix);
   lw->list = 0;
   lw->offset = 0;
@@ -16,7 +18,7 @@ list_window *list_window_new(rect r, char * title_prefix, char *(*str_func)(),
 void list_window_free(list_window * lw) {
 }
 
-void list_window_set_contents(list_window *lw, char *title, list *list,
+void list_window_set_contents(list_window *lw, const char *title, list *list,
                               void *curr_item_func_arg) {
   lw->w->title = title;
   lw->list = list;

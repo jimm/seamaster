@@ -28,8 +28,8 @@ typedef struct input {
 input *input_new(char *sym, char *name, int port_num);
 void input_free(input *);
 
-void input_add_connection(input *, connection *);
-void input_remove_connection(input *, connection *);
+void input_add_connection(input *, Connection *);
+void input_remove_connection(input *, Connection *);
 
 void input_add_trigger(input *, trigger *);
 void input_remove_trigger(input *, trigger *);
