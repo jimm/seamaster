@@ -5,6 +5,8 @@
 #include "trigger.h"
 #include "debug.h"
 
+bool output_real_port(output *);
+
 output *output_new(char *sym, char *name, int port_num) {
   output *out = malloc(sizeof(output));
 
@@ -14,21 +16,42 @@ output *output_new(char *sym, char *name, int port_num) {
   strcpy(out->name, name);
 
   out->port_num = port_num;
-  int err = Pm_OpenOutput(&out->stream, port_num, 0, 128, 0, 0, 0);
-  // TODO check error
+  if (output_real_port(out)) {
+    int err = Pm_OpenOutput(&out->stream, port_num, 0, 128, 0, 0, 0);
+    // TODO check error
+  }
+
+  out->sent_messages = list_new();
+
   return out;
 }
 
 void output_free(output *out) {
-  Pm_Close(out->stream);
+  if (output_real_port(out))
+    Pm_Close(out->stream);
   free(out->sym);
   free(out->name);
+  free(out->sent_messages);
   free(out);
 }
 
-void output_write(output *out, PmEvent *buf, int len) {
-  Pm_Write(out->stream, buf, len);
+bool output_real_port(output *out) {
+  return out->port_num != pmNoDevice;
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
+
+void output_write(output *out, PmEvent *buf, int len) {
+  if (output_real_port(out))
+    Pm_Write(out->stream, buf, len);
+  else {
+    for (int i = 0; i < len; ++i)
+      list_append(out->sent_messages, (void *)buf->message);
+  }
+}
+
+#pragma clang diagnostic pop
 
 void output_debug(output *out) {
   if (out == 0) {
@@ -38,4 +61,9 @@ void output_debug(output *out) {
 
   debug("output %s %s (%p)\n", out->sym, out->name, out);
   debug("  port_num %d stream %p\n", out->port_num, out->stream);
+}
+
+// only used during testing
+void output_clear(output *out) {
+  list_clear(out->sent_messages, 0);
 }

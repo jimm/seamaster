@@ -7,8 +7,7 @@
 
 int accept_from_input(connection *conn, PmMessage msg);
 int inside_zone(connection *conn, PmMessage msg);
-void do_midi_in(connection *conn, PmMessage msg, list *out_msgs);
-void midi_out(connection *conn, list *messages);
+void midi_out(connection *conn, PmMessage msg);
 
 connection *connection_new(input *input, int input_chan,
                            output *output, int output_chan)
@@ -30,49 +29,32 @@ void connection_free(connection *conn) {
   free(conn);
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-
 void connection_start(connection *conn, list *start_messages) {
   debug("connection_start %p\n", conn);
-  list *msgs = list_new();
-  list_append_list(msgs, start_messages);
+  for (int i = 0; i < list_length(start_messages); ++i)
+    midi_out(conn, (PmMessage)list_at(start_messages, i));
   if (conn->prog.bank_msb >= 0)
-    list_append(msgs, (void *)Pm_Message(CONTROLLER + conn->output_chan, CC_BANK_SELECT_MSB, conn->prog.bank_msb));
+    midi_out(conn, Pm_Message(CONTROLLER + conn->output_chan, CC_BANK_SELECT_MSB, conn->prog.bank_msb));
   if (conn->prog.bank_lsb >= 0)
-    list_append(msgs, (void *)Pm_Message(CONTROLLER + conn->output_chan, CC_BANK_SELECT_LSB, conn->prog.bank_lsb));
+    midi_out(conn, Pm_Message(CONTROLLER + conn->output_chan, CC_BANK_SELECT_LSB, conn->prog.bank_lsb));
   if (conn->prog.prog >= 0)
-    list_append(msgs, (void *)Pm_Message(PROGRAM_CHANGE + conn->output_chan, conn->prog.prog, 0));
-  midi_out(conn, msgs);
-  list_free(msgs, 0);
+    midi_out(conn, Pm_Message(PROGRAM_CHANGE + conn->output_chan, conn->prog.prog, 0));
 
   input_add_connection(conn->input, conn);
 }
 
-#pragma clang diagnostic pop
-
 void connection_stop(connection *conn, list *stop_messages) {
   debug("connection_stop %p\n", conn);
-  midi_out(conn, stop_messages);
+  for (int i = 0; i < list_length(stop_messages); ++i)
+    midi_out(conn, (PmMessage)list_at(stop_messages, i));
   input_remove_connection(conn->input, conn);
 }
 
-void connection_midi_in(connection *conn, list *messages) {
-  debug("connection_midi_in %p, %d messages\n", conn, list_length(messages));
-  list *out_msgs = list_new();
-  for (int i = 0; i < list_length(messages); ++i) {
-    PmMessage msg = (PmMessage)list_at(messages, i);
-    if (accept_from_input(conn, msg))
-      do_midi_in(conn, msg, out_msgs); /* appends to out_msgs */
-  }
-  midi_out(conn, out_msgs);
-  list_free(out_msgs, 0);
-}
+void connection_midi_in(connection *conn, PmMessage msg) {
+  debug("connection_midi_in %p, message %p\n", conn, msg);
+  if (!accept_from_input(conn, msg))
+      return;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-
-void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
   int status = Pm_MessageStatus(msg);
   int high_nibble = status & 0xf0;
   int data1 = Pm_MessageData1(msg);
@@ -85,22 +67,20 @@ void do_midi_in(connection *conn, PmMessage msg, list *out_msgs) {
     if (conn->output_chan != -1)
       status = high_nibble + conn->output_chan;
     data1 += conn->xpose;
-    list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
+    midi_out(conn, Pm_Message(status, data1, data2));
     break;
   case CONTROLLER: case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
     if (conn->output_chan != -1)
       status = high_nibble + conn->output_chan;
     if (high_nibble == CONTROLLER) /* map controller number */
       data1 = conn->cc_maps[data1]; /* won't be -1, that's already filtered */
-    list_append(out_msgs, (void *)Pm_Message(status, data1, data2));
+    midi_out(conn, Pm_Message(status, data1, data2));
     break;
   default:
-    list_append(out_msgs, (void *)msg);
+    midi_out(conn, msg);
     break;
   }
 }
-
-#pragma clang diagnostic pop
 
 int accept_from_input(connection *conn, PmMessage msg) {
   if (conn->input_chan == -1)
@@ -129,19 +109,10 @@ int inside_zone(connection *conn, PmMessage msg) {
   return true;
 }
 
-void midi_out(connection *conn, list *messages) {
-  int num_messages = list_length(messages);
-  debug("connection_midi_out %p, %d messages\n", conn, num_messages);
-  if (num_messages == 0)
-    return;
-
-  PmEvent *events = calloc(num_messages, sizeof(PmEvent));
-
-  for (int i = 0; i < num_messages; ++i)
-    events[i].message = (PmMessage)list_at(messages, i);
-  output_write(conn->output, events, list_length(messages));
-
-  free(events);
+void midi_out(connection *conn, PmMessage message) {
+  debug("connection_midi_out %p, message %p\n", conn, message);
+  PmEvent event = {message, 0};
+  output_write(conn->output, &event, 1);
 }
 
 void connection_debug(connection *conn) {

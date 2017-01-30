@@ -37,6 +37,11 @@ void *list_at(list *l, int i) {
   return (i >= 0 && i < l->num_elements) ? l->nodes[i] : 0;
 }
 
+void list_at_set(list *l, int i, void *val) {
+  list_grow(l, i);
+  l->nodes[i] = val;
+}
+
 int list_index_of(list *l, void *node) {
   for (int i = 0; i < l->num_elements; ++i)
     if (node == l->nodes[i])
@@ -110,6 +115,9 @@ bool list_includes(list *l, void *node) {
 }
 
 void list_grow(list *l, int min_size) {
+  if (l->num_allocated >= min_size)
+    return;
+
   while (l->num_allocated < min_size)
     l->num_allocated *= 2;
   l->nodes = realloc(l->nodes, l->num_allocated * sizeof(void *));

@@ -1,6 +1,7 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include <portmidi.h>
 #include "list.h"
 
 typedef struct input input;
@@ -35,7 +36,7 @@ void connection_free(connection *conn);
 void connection_start(connection *, list *);
 void connection_stop(connection *, list *);
 
-void connection_midi_in(connection *conn, list *messages);
+void connection_midi_in(connection *conn, PmMessage msg);
 
 void connection_debug(connection *);
 

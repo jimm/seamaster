@@ -33,7 +33,7 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h src/consts.h src/connection.h \
-  src/list.h \
+  /usr/local/include/portmidi.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h /usr/include/time.h \
@@ -49,7 +49,7 @@ src/connection.o: src/connection.c /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/local/include/portmidi.h src/trigger.h src/output.h src/debug.h
+  src/trigger.h src/output.h src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -177,6 +177,8 @@ src/consts.h:
 
 src/connection.h:
 
+/usr/local/include/portmidi.h:
+
 src/list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
@@ -220,8 +222,6 @@ src/input.h:
 /usr/include/sys/qos.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
-
-/usr/local/include/portmidi.h:
 
 src/trigger.h:
 

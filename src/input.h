@@ -17,6 +17,9 @@ typedef struct input {
   bool running;
   pthread_t portmidi_thread;
   list *notes_off_conns[16][128];
+
+  list *messages;               // used in input_read only
+  list *received_messages;      // used during testing only
 } input;
 
 input *input_new(char *sym, char *name, int port_num);
@@ -34,5 +37,6 @@ void input_stop(input *);
 void input_read(input *, PmEvent *buf, int len);
 
 void input_debug(input *);
+void input_clear(input *);      // testing only
 
 #endif /* INPUT_H */

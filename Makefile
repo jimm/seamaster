@@ -8,7 +8,7 @@ SRC = $(wildcard src/*.c) $(wildcard src/curses/*.c)
 OBJS = $(SRC:%.c=%.o)
 TEST_SRC = $(wildcard test/*.c)
 TEST_OBJS = $(TEST_SRC:%.c=%.o)
-TEST_OBJ_FILTERS = src/input.o src/output.o src/seamaster.o
+TEST_OBJ_FILTERS = src/seamaster.o
 
 .PHONY: all
 all: $(NAME)

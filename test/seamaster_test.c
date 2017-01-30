@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "mock_input.h"
-#include "mock_output.h"
 #include "seamaster_test.h"
 #include "../src/load.h"
 #include "../src/cursor.h"
+#include "load_test.h"
 #include "cursor_test.h"
 
 #define TEST_FILE "test/testfile.sm"
