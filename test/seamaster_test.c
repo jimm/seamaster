@@ -5,6 +5,7 @@
 #include "../src/cursor.h"
 #include "load_test.h"
 #include "cursor_test.h"
+#include "connection_test.h"
 
 #define TEST_FILE "test/testfile.sm"
 
@@ -48,11 +49,9 @@ void test_clear_midi(patchmaster *pm) {
 }
 
 void run_tests(patchmaster *pm) {
-  // TODO
   test_load(pm);
   test_cursor(pm);
-  // TODO
-  /* test_connection(pm); */
+  test_connection(pm);
   printf("\n\nTests run: %d, tests passed: %d, tests failed: %d\n",
          results.num_tests, results.num_tests - results.num_errors,
          results.num_errors);

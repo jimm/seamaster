@@ -38,9 +38,9 @@ test/load_test.o: test/load_test.c /usr/include/string.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/include/sys/_types/_sigset_t.h test/../src/trigger.h \
-  test/../src/output.h test/../src/message.h test/../src/load.h \
-  test/load_test.h
+  /usr/include/sys/_types/_sigset_t.h test/../src/consts.h \
+  test/../src/trigger.h test/../src/output.h test/../src/message.h \
+  test/../src/load.h test/load_test.h
 
 /usr/include/string.h:
 
@@ -179,6 +179,8 @@ test/../src/input.h:
 /usr/include/sys/_types/_mach_port_t.h:
 
 /usr/include/sys/_types/_sigset_t.h:
+
+test/../src/consts.h:
 
 test/../src/trigger.h:
 

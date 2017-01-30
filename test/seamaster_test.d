@@ -57,7 +57,7 @@ test/seamaster_test.o: test/seamaster_test.c /usr/include/stdio.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   test/../src/consts.h test/../src/trigger.h test/../src/output.h \
   test/../src/message.h test/../src/load.h test/../src/cursor.h \
-  test/load_test.h test/cursor_test.h
+  test/load_test.h test/cursor_test.h test/connection_test.h
 
 /usr/include/stdio.h:
 
@@ -268,3 +268,5 @@ test/../src/cursor.h:
 test/load_test.h:
 
 test/cursor_test.h:
+
+test/connection_test.h:

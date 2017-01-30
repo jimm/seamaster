@@ -10,7 +10,10 @@ void debug(const char *fmt, ...) {
   va_list ap;
 
   va_start(ap, fmt);
-  FILE *fp = fopen(DEBUG_FILE, "a");
+  FILE *fp = 0;
+#ifndef DEBUG_STDERR
+  fp = fopen(DEBUG_FILE, "a");
+#endif
   vfprintf(fp == 0 ? stderr : fp, fmt, ap);
   va_end(ap);
   if (fp)

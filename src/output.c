@@ -45,10 +45,8 @@ void output_write(output *out, PmEvent *buf, int len) {
   if (output_real_port(out))
     Pm_Write(out->stream, buf, len);
   else {
-    for (int i = 0; i < len && out->num_sent_messages < MIDI_BUFSIZ-1; ++i) {
-      list_append(out->sent_messages, buf[i].message);
-      ++out->num_sent_messages;
-    }
+    for (int i = 0; i < len && out->num_sent_messages < MIDI_BUFSIZ-1; ++i)
+      out->sent_messages[out->num_sent_messages++] = buf[i].message;
   }
 }
 

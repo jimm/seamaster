@@ -1,4 +1,4 @@
-test/cursor_test.o: test/cursor_test.c test/seamaster_test.h \
+test/connection_test.o: test/connection_test.c test/seamaster_test.h \
   /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
@@ -38,7 +38,7 @@ test/cursor_test.o: test/cursor_test.c test/seamaster_test.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   /usr/include/sys/_types/_sigset_t.h test/../src/consts.h \
   test/../src/trigger.h test/../src/output.h test/../src/message.h \
-  test/../src/cursor.h test/cursor_test.h
+  test/../src/cursor.h test/connection_test.h
 
 test/seamaster_test.h:
 
@@ -178,4 +178,4 @@ test/../src/message.h:
 
 test/../src/cursor.h:
 
-test/cursor_test.h:
+test/connection_test.h:
