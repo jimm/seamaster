@@ -50,7 +50,8 @@ src/patchmaster.o: src/patchmaster.c /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/trigger.h src/output.h src/message.h src/cursor.h src/debug.h
+  src/consts.h src/trigger.h src/output.h src/message.h src/cursor.h \
+  src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -229,6 +230,8 @@ src/input.h:
 /usr/include/sys/qos.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
+
+src/consts.h:
 
 src/trigger.h:
 

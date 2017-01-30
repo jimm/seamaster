@@ -21,7 +21,7 @@ output *output_new(char *sym, char *name, int port_num) {
     // TODO check error
   }
 
-  out->sent_messages = list_new();
+  out->num_sent_messages = 0;
 
   return out;
 }
@@ -31,7 +31,6 @@ void output_free(output *out) {
     Pm_Close(out->stream);
   free(out->sym);
   free(out->name);
-  free(out->sent_messages);
   free(out);
 }
 
@@ -46,8 +45,10 @@ void output_write(output *out, PmEvent *buf, int len) {
   if (output_real_port(out))
     Pm_Write(out->stream, buf, len);
   else {
-    for (int i = 0; i < len; ++i)
-      list_append(out->sent_messages, (void *)buf->message);
+    for (int i = 0; i < len && out->num_sent_messages < MIDI_BUFSIZ-1; ++i) {
+      list_append(out->sent_messages, buf[i].message);
+      ++out->num_sent_messages;
+    }
   }
 }
 
@@ -65,5 +66,5 @@ void output_debug(output *out) {
 
 // only used during testing
 void output_clear(output *out) {
-  list_clear(out->sent_messages, 0);
+  out->num_sent_messages = 0;
 }

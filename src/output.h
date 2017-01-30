@@ -3,6 +3,7 @@
 
 #include <portmidi.h>
 #include "list.h"
+#include "input.h"
 
 typedef struct output {
   char *name;
@@ -10,7 +11,8 @@ typedef struct output {
   int port_num;
   PortMidiStream *stream;
 
-  list *sent_messages;          // testing only
+  PmMessage sent_messages[MIDI_BUFSIZ]; // testing only
+  int num_sent_messages;
 } output;
 
 output *output_new(char *sym, char *name, int port_num);

@@ -38,7 +38,21 @@ src/output.o: src/output.c /usr/include/stdlib.h \
   /usr/include/secure/_string.h /usr/include/secure/_common.h \
   /usr/local/include/portmidi.h src/output.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/trigger.h src/debug.h
+  src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
+  /usr/include/pthread/sched.h /usr/include/time.h \
+  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
+  /usr/include/sys/_types/_timespec.h \
+  /usr/include/sys/_pthread/_pthread_cond_t.h \
+  /usr/include/sys/_pthread/_pthread_condattr_t.h \
+  /usr/include/sys/_pthread/_pthread_key_t.h \
+  /usr/include/sys/_pthread/_pthread_mutex_t.h \
+  /usr/include/sys/_pthread/_pthread_mutexattr_t.h \
+  /usr/include/sys/_pthread/_pthread_once_t.h \
+  /usr/include/sys/_pthread/_pthread_rwlock_t.h \
+  /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
+  /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
+  /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
+  src/consts.h src/connection.h src/trigger.h src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -183,6 +197,50 @@ src/output.h:
 src/list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+src/input.h:
+
+/usr/include/pthread.h:
+
+/usr/include/pthread/pthread_impl.h:
+
+/usr/include/pthread/sched.h:
+
+/usr/include/time.h:
+
+/usr/include/sys/_types/_clock_t.h:
+
+/usr/include/sys/_types/_time_t.h:
+
+/usr/include/sys/_types/_timespec.h:
+
+/usr/include/sys/_pthread/_pthread_cond_t.h:
+
+/usr/include/sys/_pthread/_pthread_condattr_t.h:
+
+/usr/include/sys/_pthread/_pthread_key_t.h:
+
+/usr/include/sys/_pthread/_pthread_mutex_t.h:
+
+/usr/include/sys/_pthread/_pthread_mutexattr_t.h:
+
+/usr/include/sys/_pthread/_pthread_once_t.h:
+
+/usr/include/sys/_pthread/_pthread_rwlock_t.h:
+
+/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
+
+/usr/include/sys/_pthread/_pthread_t.h:
+
+/usr/include/pthread/qos.h:
+
+/usr/include/sys/qos.h:
+
+/usr/include/sys/_types/_mach_port_t.h:
+
+src/consts.h:
+
+src/connection.h:
 
 src/trigger.h:
 

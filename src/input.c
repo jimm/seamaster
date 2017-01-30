@@ -5,8 +5,6 @@
 #include "consts.h"
 #include "debug.h"
 
-#define MIDI_BUFSIZ 128
-
 bool input_real_port(input *);
 void *input_thread(void *);
 
@@ -24,15 +22,14 @@ input *input_new(char *sym, char *name, int port_num) {
 
   in->connections = list_new();
   in->triggers = list_new();
-  for (int chan = 0; chan < 16; ++chan)
-    for (int note = 0; note < 128; ++note)
+  for (int chan = 0; chan < MIDI_CHANNELS; ++chan)
+    for (int note = 0; note < NOTES_PER_CHANNEL; ++note)
       in->notes_off_conns[chan][note] = list_new();
 
-  in->messages = list_new();
-  in->received_messages = list_new();
+  in->num_received_messages = 0;
 
   if (input_real_port(in)) {
-    int err = Pm_OpenInput(&in->stream, port_num, 0, 128, 0, 0);
+    int err = Pm_OpenInput(&in->stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     // TODO check error
   }
 
@@ -49,8 +46,6 @@ void input_free(input *in) {
   for (int chan = 0; chan < 16; ++chan)
     for (int note = 0; note < 128; ++note)
       list_free(in->notes_off_conns[chan][note], 0);
-  list_free(in->messages, 0);
-  list_free(in->received_messages, 0);
   free(in);
 }
 
@@ -99,21 +94,19 @@ void input_stop(input *in) {
 void input_read(input *in, PmEvent *buf, int len) {
   debug("input_read %d events\n", len);
 
-  // Extract messages and split into note off and non-note-off.
-  list_clear(in->messages, 0);
-  for (int i = 0; i < len; ++i) {
-    void *msg = (void *)buf[i].message;
-    list_append(in->messages, msg);
-    if (!input_real_port(in))
-      list_append(in->received_messages, msg);
-  }
-
   // triggers
   for (int i = 0; i < list_length(in->triggers); ++i)
-    trigger_signal(list_at(in->triggers, i), in->messages);
+    trigger_signal(list_at(in->triggers, i), buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;
+
+    // when testing, remember the messages we've seen. this could be made
+    // more efficient by doing a bulk copy before or after this for loop,
+    // making sure not to copy over the end of received_messages.
+    if (!input_real_port(in) && in->num_received_messages < MIDI_BUFSIZ-1)
+      in->received_messages[in->num_received_messages++] = msg;
+
     unsigned char status = Pm_MessageStatus(msg);
     unsigned char high_nibble = status & 0xf0;
     unsigned char chan = status & 0x0f;
@@ -175,5 +168,5 @@ void input_debug(input *in) {
 
 // only used during testing
 void input_clear(input *in) {
-  list_clear(in->received_messages, 0);
+  in->num_received_messages = 0;
 }

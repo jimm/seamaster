@@ -3,9 +3,12 @@
 
 #include <pthread.h>
 #include <portmidi.h>
+#include "consts.h"
 #include "list.h"
 #include "connection.h"
 #include "trigger.h"
+
+#define MIDI_BUFSIZ 128
 
 typedef struct input {
   char *name;
@@ -16,10 +19,10 @@ typedef struct input {
   list *triggers;
   bool running;
   pthread_t portmidi_thread;
-  list *notes_off_conns[16][128];
+  list *notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
 
-  list *messages;               // used in input_read only
-  list *received_messages;      // used during testing only
+  PmMessage received_messages[MIDI_BUFSIZ]; // used during testing only
+  int num_received_messages;
 } input;
 
 input *input_new(char *sym, char *name, int port_num);
