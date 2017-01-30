@@ -11,9 +11,11 @@ typedef struct list {
 
 list *list_new();
 void list_free(list *, void (*content_freeing_func)()); // func may be 0
+void list_copy(list *dest, list *src);
 
 int list_length(list *);
 void *list_at(list *, int i);
+void list_at_set(list *, int i, void *);
 int list_index_of(list *, void *); // -1 if not found
 
 void *list_first(list *);

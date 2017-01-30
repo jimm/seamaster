@@ -5,7 +5,7 @@
 
 #define INITIAL_SIZE 8
 
-void list_grow(list *);
+void list_grow(list *, int);
 
 list *list_new() {
   list *l = malloc(sizeof(list));
@@ -21,6 +21,12 @@ void list_free(list *l, void (*content_freeing_func)()) {
       content_freeing_func(l->nodes[i]);
   free(l->nodes);
   free(l);
+}
+
+void list_copy(list *dest, list *src) {
+  if (dest->num_allocated < src->num_elements)
+    list_grow(dest, src->num_elements);
+  memcpy(dest->nodes, src->nodes, src->num_elements * sizeof(void *));
 }
 
 int list_length(list *l) {
@@ -56,7 +62,7 @@ void list_clear(list *l, void (*content_freeing_func)()) {
 
 list *list_append(list *l, void *node) {
   if (l->num_allocated == l->num_elements)
-    list_grow(l);
+    list_grow(l, l->num_elements + 1);
   l->nodes[l->num_elements++] = node;
   return l;
 }
@@ -65,8 +71,8 @@ list *list_append_list(list *l, list *other) {
   if (other->num_elements == 0)
     return l;
 
-  while (l->num_allocated < l->num_elements + other->num_elements)
-    list_grow(l);
+  if (l->num_allocated < l->num_elements + other->num_elements)
+    list_grow(l, l->num_elements + other->num_elements);
   memcpy(l->nodes, other->nodes, other->num_elements * sizeof(void *));
   return l;
 }
@@ -74,7 +80,7 @@ list *list_append_list(list *l, list *other) {
 // insert before index
 list *list_insert(list *l, int index, void *node) {
   if (l->num_allocated == l->num_elements)
-    list_grow(l);
+    list_grow(l, l->num_elements + 1);
   memcpy(&l->nodes[index+1], &l->nodes[index],
          (l->num_elements - index) * sizeof(void *));
   ++l->num_elements;
@@ -103,8 +109,9 @@ bool list_includes(list *l, void *node) {
   return false;
 }
 
-void list_grow(list *l) {
-  l->num_allocated = l->num_allocated * 2;
+void list_grow(list *l, int min_size) {
+  while (l->num_allocated < min_size)
+    l->num_allocated *= 2;
   l->nodes = realloc(l->nodes, l->num_allocated * sizeof(void *));
 }
 

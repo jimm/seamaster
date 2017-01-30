@@ -16,6 +16,7 @@ typedef struct input {
   list *triggers;
   bool running;
   pthread_t portmidi_thread;
+  list *notes_off_conns[16][128];
 } input;
 
 input *input_new(char *sym, char *name, int port_num);
