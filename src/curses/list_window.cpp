@@ -3,14 +3,12 @@
 #include "../song.h"            /* DEBUG */
 
 list_window *list_window_new(rect r, const char *title_prefix,
-                             char *(*str_func)(void *),
                              void *(*curr_item_func)(void *))
 {
   list_window *lw = (list_window *)malloc(sizeof(list_window));
   lw->w = window_new(r, title_prefix);
   lw->list = 0;
   lw->offset = 0;
-  lw->str_func = str_func;
   lw->curr_item_func = curr_item_func;
   return lw;
 }
@@ -46,15 +44,14 @@ void list_window_draw(list_window *lw) {
     lw->offset = curr_index - vis_height + 1;
 
   for (int i = lw->offset; i < list_length(lw->list) && i < lw->offset + vis_height; ++i) {
-    void *thing = list_at(lw->list, i);
+    Named *thing = (Named *)list_at(lw->list, i);
     wmove(lw->w->win, i+1, 1);
 
     if (thing == curr_item)
       wattron(lw->w->win, A_REVERSE);
 
     waddch(lw->w->win, ' ');
-    char *str = lw->str_func(thing);
-    waddstr(lw->w->win, str);
+    waddstr(lw->w->win, thing->name);
     waddch(lw->w->win, ' ');
 
     if (thing == curr_item)

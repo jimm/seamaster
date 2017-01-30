@@ -2,30 +2,30 @@
 #define PATCH_H
 
 #include <portmidi.h>
+#include "named.h"
 #include "list.h"
 #include "connection.h"
 #include "input.h"
 
-typedef struct patch {
-  char *name;
+class Patch : public Named {
+public:
   list *connections;
   PmMessage *start_messages;
   int num_start_messages;
   PmMessage *stop_messages;
   int num_stop_messages;
   bool running;
-} patch;
 
-patch *patch_new(char *name);
-void patch_free(patch *);
+  Patch(const char *name);
+  ~Patch();
 
-list *patch_inputs(patch *);
-char *patch_name(patch *);
+  list *inputs();
 
-void patch_start(patch *);
-bool patch_is_running(patch *);
-void patch_stop(patch *);
+  void start();
+  bool is_running();
+  void stop();
 
-void patch_debug(patch *);
+  void debug();
+};
 
 #endif /* PATCH_H */

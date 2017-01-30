@@ -11,8 +11,8 @@
 typedef struct context {
   FILE *fp;
   patchmaster *pm;
-  song *song;
-  patch *patch;
+  Song *song;
+  Patch *patch;
   Connection *conn;
   song_list *song_list;
 } context;
@@ -27,7 +27,7 @@ void strip_newline(char *);
 
 PmDeviceID find_device(char *, char);
 input *find_by_sym(list *, char *);
-song *find_song(list *, char *);
+Song *find_song(list *, char *);
 
 int load_instrument(context *, char *, int);
 int load_message(context *, char *);
@@ -151,7 +151,7 @@ int load_trigger(context *c, char *line) {
 
 int load_song(context *c, char *line) {
   char *name = skip_first_word(line);
-  song *s = song_new(name);
+  Song *s = new Song(name);
   list_append(c->pm->all_songs->songs, s);
   c->song = s;
   c->patch = 0;
@@ -162,13 +162,13 @@ int load_song(context *c, char *line) {
 int load_notes(context *c) {
   char line[BUFSIZ];
   while (fgets(line, BUFSIZ, c->fp) != 0 && strncmp(line, "end", 3) != 0)
-    song_append_notes(c->song, line);
+    c->song->append_notes(line);
   return 0;
 }
 
 int load_patch(context *c, char *line) {
   char *name = skip_first_word(line);
-  patch *p = patch_new(name);
+  Patch *p = new Patch(name);
   list_append(c->song->patches, p);
   c->patch = p;
   c->conn = 0;
@@ -203,7 +203,7 @@ int load_song_list(context *c, char *line) {
   char song_name[BUFSIZ];
   while (fgets(song_name, BUFSIZ, c->fp) != 0 && strncmp(song_name, "end\n", 4) != 0) {
     strip_newline(song_name);
-    song *s = find_song(c->pm->all_songs->songs, song_name);
+    Song *s = find_song(c->pm->all_songs->songs, song_name);
     if (s == 0)
       fprintf(stderr, "error in set: can not find song named \"%s\"\n", song_name);
     else
@@ -281,9 +281,9 @@ input *find_by_sym(list *list, char *name) {
   return 0;
 }
 
-song *find_song(list *list, char *name) {
+Song *find_song(list *list, char *name) {
   for (int i = 0; i < list_length(list); ++i) {
-    song *s = (song *)list_at(list, i);
+    Song *s = (Song *)list_at(list, i);
     if (strcmp(name, s->name) == 0)
       return s;
   }

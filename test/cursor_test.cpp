@@ -105,7 +105,7 @@ void test_cursor_song(patchmaster *pm) {
 
 void test_cursor_patch(patchmaster *pm) {
   cursor *c = pm->cursor;
-  song *s = cursor_song(c);
+  Song *s = cursor_song(c);
   tassert(cursor_patch(c) == list_first(s->patches), BAD_PATCH);
 }
 

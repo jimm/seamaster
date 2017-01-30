@@ -1,4 +1,4 @@
-src/song.o: src/song.cpp /usr/include/stdlib.h \
+src/named.o: src/named.cpp /usr/include/stdlib.h \
   /usr/include/Availability.h /usr/include/AvailabilityInternal.h \
   /usr/include/_types.h /usr/include/sys/_types.h \
   /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
@@ -34,25 +34,7 @@ src/song.o: src/song.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h src/song.h \
-  src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/patch.h /usr/local/include/portmidi.h src/named.h src/connection.h \
-  src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h /usr/include/time.h \
-  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
-  /usr/include/sys/_types/_timespec.h \
-  /usr/include/sys/_pthread/_pthread_cond_t.h \
-  /usr/include/sys/_pthread/_pthread_condattr_t.h \
-  /usr/include/sys/_pthread/_pthread_key_t.h \
-  /usr/include/sys/_pthread/_pthread_mutex_t.h \
-  /usr/include/sys/_pthread/_pthread_mutexattr_t.h \
-  /usr/include/sys/_pthread/_pthread_once_t.h \
-  /usr/include/sys/_pthread/_pthread_rwlock_t.h \
-  /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
-  /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
-  /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/consts.h src/trigger.h src/debug.h
+  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h src/named.h
 
 /usr/include/stdlib.h:
 
@@ -186,62 +168,4 @@ src/song.o: src/song.cpp /usr/include/stdlib.h \
 
 /usr/include/strings.h:
 
-src/song.h:
-
-src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
-
-src/patch.h:
-
-/usr/local/include/portmidi.h:
-
 src/named.h:
-
-src/connection.h:
-
-src/input.h:
-
-/usr/include/pthread.h:
-
-/usr/include/pthread/pthread_impl.h:
-
-/usr/include/pthread/sched.h:
-
-/usr/include/time.h:
-
-/usr/include/sys/_types/_clock_t.h:
-
-/usr/include/sys/_types/_time_t.h:
-
-/usr/include/sys/_types/_timespec.h:
-
-/usr/include/sys/_pthread/_pthread_cond_t.h:
-
-/usr/include/sys/_pthread/_pthread_condattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_key_t.h:
-
-/usr/include/sys/_pthread/_pthread_mutex_t.h:
-
-/usr/include/sys/_pthread/_pthread_mutexattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_once_t.h:
-
-/usr/include/sys/_pthread/_pthread_rwlock_t.h:
-
-/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_t.h:
-
-/usr/include/pthread/qos.h:
-
-/usr/include/sys/qos.h:
-
-/usr/include/sys/_types/_mach_port_t.h:
-
-src/consts.h:
-
-src/trigger.h:
-
-src/debug.h:

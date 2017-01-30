@@ -38,11 +38,11 @@ src/cursor.o: src/cursor.cpp /usr/include/stdio.h \
   /usr/include/sys/_types/_mode_t.h src/cursor.h src/patchmaster.h \
   src/song_list.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/song.h src/patch.h /usr/local/include/portmidi.h src/connection.h \
-  src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h /usr/include/time.h \
-  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
-  /usr/include/sys/_types/_timespec.h \
+  src/song.h src/patch.h /usr/local/include/portmidi.h src/named.h \
+  src/connection.h src/input.h /usr/include/pthread.h \
+  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
+  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
+  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -202,6 +202,8 @@ src/song.h:
 src/patch.h:
 
 /usr/local/include/portmidi.h:
+
+src/named.h:
 
 src/connection.h:
 

@@ -32,10 +32,8 @@ src/patch.o: src/patch.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int16_t.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
-  /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
-  /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h src/patch.h \
-  /usr/local/include/portmidi.h src/list.h \
+  /usr/include/sys/_types/_mode_t.h src/patch.h \
+  /usr/local/include/portmidi.h src/named.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/connection.h src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
@@ -175,19 +173,11 @@ src/patch.o: src/patch.cpp /usr/include/stdlib.h \
 
 /usr/include/sys/_types/_mode_t.h:
 
-/usr/include/string.h:
-
-/usr/include/sys/_types/_rsize_t.h:
-
-/usr/include/sys/_types/_errno_t.h:
-
-/usr/include/sys/_types/_ssize_t.h:
-
-/usr/include/strings.h:
-
 src/patch.h:
 
 /usr/local/include/portmidi.h:
+
+src/named.h:
 
 src/list.h:
 

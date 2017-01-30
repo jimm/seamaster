@@ -6,13 +6,13 @@
 
 typedef struct patch_window {
   window *w;
-  patch *patch;
+  Patch *patch;
 } patch_window;
 
 patch_window *patch_window_new(rect, const char *);
 void patch_window_free(patch_window *);
 
-void patch_window_set_contents(patch_window *, patch *patch);
+void patch_window_set_contents(patch_window *, Patch *patch);
 
 void patch_window_draw(patch_window *);
 

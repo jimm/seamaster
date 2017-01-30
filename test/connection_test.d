@@ -18,8 +18,8 @@ test/connection_test.o: test/connection_test.cpp test/seamaster_test.h \
   /usr/include/_types/_uint16_t.h /usr/include/_types/_uint32_t.h \
   /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h \
   /usr/include/sys/_types/_uintptr_t.h /usr/include/_types/_intmax_t.h \
-  /usr/include/_types/_uintmax_t.h test/../src/connection.h \
-  test/../src/input.h /usr/include/pthread.h \
+  /usr/include/_types/_uintmax_t.h test/../src/named.h \
+  test/../src/connection.h test/../src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
   /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
@@ -115,6 +115,8 @@ test/../src/patch.h:
 /usr/include/_types/_intmax_t.h:
 
 /usr/include/_types/_uintmax_t.h:
+
+test/../src/named.h:
 
 test/../src/connection.h:
 

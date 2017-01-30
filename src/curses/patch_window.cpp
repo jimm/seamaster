@@ -18,7 +18,7 @@ void patch_window_free(patch_window * pw) {
   free(pw);
 }
 
-void patch_window_set_contents(patch_window *pw, patch *patch) {
+void patch_window_set_contents(patch_window *pw, Patch *patch) {
   pw->w->title = patch == 0 ? 0 : patch->name;
   pw->patch = patch;
   patch_window_draw(pw);

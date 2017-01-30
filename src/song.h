@@ -4,19 +4,17 @@
 #include "list.h"
 #include "patch.h"
 
-typedef struct song {
-  char *name;
+class Song : public Named {
+public:
   list *notes;
   list *patches;
-} song;
 
-song *song_new(char *name);
-void song_free(song *);
+  Song(const char *name);
+  ~Song();
 
-void song_append_notes(song *, char *);
+  void append_notes(char *);
 
-char *song_name(song *song);
-
-void song_debug(song *);
+  void debug();
+};
 
 #endif /* SONG_H */

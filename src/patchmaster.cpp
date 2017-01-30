@@ -29,7 +29,7 @@ void patchmaster_free(patchmaster *pm) {
     output_free((output *)list_at(pm->outputs, i));
   list_free(pm->outputs, 0);
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
-    song_free((song *)list_at(pm->all_songs->songs, i));
+    delete (Song *)list_at(pm->all_songs->songs, i);
   for (int i = 0; i < list_length(pm->song_lists); ++i)
     song_list_free((song_list *)list_at(pm->song_lists, i));
   list_free(pm->song_lists, 0);
@@ -49,13 +49,15 @@ void patchmaster_start(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->inputs); ++i)
     input_start((input *)list_at(pm->inputs, i));
   cursor_init(pm->cursor);
-  patch_start(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->start();
   pm->running = true;
 }
 
 void patchmaster_stop(patchmaster *pm) {
   vdebug("patchmaster_stop\n");
-  patch_stop(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->stop();
   for (int i = 0; i < list_length(pm->inputs); ++i)
     input_stop((input *)list_at(pm->inputs, i));
   pm->running = false;
@@ -64,27 +66,35 @@ void patchmaster_stop(patchmaster *pm) {
 // ================ movement ================
 
 void patchmaster_next_patch(patchmaster *pm) {
-  patch_stop(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->stop();
   cursor_next_patch(pm->cursor);
-  patch_start(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->start();
 }
 
 void patchmaster_prev_patch(patchmaster *pm) {
-  patch_stop(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->stop();
   cursor_prev_patch(pm->cursor);
-  patch_start(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->start();
 }
 
 void patchmaster_next_song(patchmaster *pm) {
-  patch_stop(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->stop();
   cursor_next_song(pm->cursor);
-  patch_start(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->start();
 }
 
 void patchmaster_prev_song(patchmaster *pm) {
-  patch_stop(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->stop();
   cursor_prev_song(pm->cursor);
-  patch_start(cursor_patch(pm->cursor));
+  if (cursor_patch(pm->cursor) != 0)
+    cursor_patch(pm->cursor)->start();
 }
 
 // ================ vdebugging ================
@@ -101,7 +111,7 @@ void patchmaster_debug(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->outputs); ++i)
     output_debug((output *)list_at(pm->outputs, i));
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
-    song_debug((song *)list_at(pm->all_songs->songs, i));
+    ((Song *)list_at(pm->all_songs->songs, i))->debug();
   list_debug(pm->song_lists, "pm->song_lists");
   list_debug(pm->messages, "pm->messages");
   list_debug(pm->triggers, "pm->triggers");

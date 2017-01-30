@@ -130,13 +130,10 @@ windows *create_windows() {
   windows *ws = (windows *)malloc(sizeof(windows));
 
   ws->song_lists = list_window_new(geom_song_lists_rect(), 0,
-                                   NAME_FUNC(&song_list_name),
                                    PTR_FUNC(&cursor_song_list));
   ws->song_list = list_window_new(geom_song_list_rect(), "Song List",
-                                  NAME_FUNC(&song_list_name),
                                   PTR_FUNC(&cursor_song));
   ws->song = list_window_new(geom_song_rect(), "Song",
-                             NAME_FUNC(&patch_name),
                              PTR_FUNC(&cursor_patch));
   ws->patch = patch_window_new(geom_patch_rect(), "Patch");
   ws->message = window_new(geom_message_rect(), 0);
@@ -195,11 +192,11 @@ void set_window_data(patchmaster *pm, windows *ws) {
   song_list *sl = cursor_song_list(pm->cursor);
   list_window_set_contents(ws->song_list, sl->name, sl->songs, pm->cursor);
 
-  song *song = cursor_song(pm->cursor);
+  Song *song = cursor_song(pm->cursor);
   if (song != 0) {
     list_window_set_contents(ws->song, song->name, song->patches, pm->cursor);
     info_window_set_contents(ws->info, song->notes);
-    patch *patch = cursor_patch(pm->cursor);
+    Patch *patch = cursor_patch(pm->cursor);
     patch_window_set_contents(ws->patch, patch);
   }
   else {

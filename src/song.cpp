@@ -3,46 +3,34 @@
 #include "song.h"
 #include "debug.h"
 
-song *song_new(char *name) {
-  song *s = (song *)malloc(sizeof(song));
-  s->name = (char *)malloc(strlen(name)+1);
-  strcpy(s->name, name);
-  s->patches = list_new();
-  s->notes = list_new();
-  return s;
+Song::Song(const char *name)
+  : Named(name)
+{
+  patches = list_new();
+  notes = list_new();
 }
 
-void song_free(song *s) {
-  if (s->name)
-    free(s->name);
-  list_free(s->notes, free);
-  for (int i = 0; i < list_length(s->patches); ++i)
-    patch_free((patch *)list_at(s->patches, i));
-  list_free(s->patches, 0);
-  free(s);
+Song::~Song() {
+  list_free(notes, free);
+  for (int i = 0; i < list_length(patches); ++i)
+    delete (Patch *)list_at(patches, i);
+  list_free(patches, 0);
 }
 
-void song_append_notes(song *s, char *notes) {
-  char *str = (char *)malloc(strlen(notes) + 1);
-  strcpy(str, notes);
-  list_append(s->notes, str);
+void Song::append_notes(char *text) {
+  char *str = (char *)malloc(strlen(text) + 1);
+  strcpy(str, text);
+  list_append(notes, str);
 }
 
-char *song_name(song *s) {
-  return s->name;
-}
-
-void song_debug(song *s) {
-  if (s == 0) {
-    vdebug("song NULL\n");
-    return;
+void Song::debug() {
+  vdebug("song %p, name \"%s\"\n", this, name);
+  if (notes != 0) {
+    for (int i = 0; i < list_length(notes); ++i)
+      vdebug("  notes: %s\n", list_at(notes, i));
   }
-
-  vdebug("song %p, name \"%s\"\n", s, s->name);
-  if (s->notes != 0) {
-    for (int i = 0; i < list_length(s->notes); ++i)
-      vdebug("  notes: %s\n", list_at(s->notes, i));
+  for (int i = 0; i < list_length(patches); ++i) {
+    Patch *p =(Patch *)list_at(patches, i);
+    p->debug();
   }
-  for (int i = 0; i < list_length(s->patches); ++i)
-    patch_debug((patch *)list_at(s->patches, i));
 }

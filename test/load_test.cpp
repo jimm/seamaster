@@ -28,18 +28,18 @@ void test_load_songs(patchmaster *pm) {
   list *all = pm->all_songs->songs;
   tassert(list_length(all) == 2, "wrong num songs loaded");
 
-  song *s = (song *)list_first(all);
+  Song *s = (Song *)list_first(all);
   tassert(strcmp(s->name, "To Each His Own") == 0, "bad song title");
 
-  s = (song *)list_last(all);
+  s = (Song *)list_last(all);
   tassert(strcmp(s->name, "Another Song") == 0, "bad song title");
 }
 
 void test_load_notes(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
   tassert(list_length(s->notes) == 0, "extra notes?");
 
-  s = (song *)list_last(pm->all_songs->songs);
+  s = (Song *)list_last(pm->all_songs->songs);
   tassert(list_length(s->notes) == 2, "bad notes length");
   tassert(strcmp((const char *)list_first(s->notes), "this song has note text\n") == 0,
           "bad notes 1");
@@ -48,17 +48,17 @@ void test_load_notes(patchmaster *pm) {
 }
 
 void test_load_patches(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
   tassert(list_length(s->patches) == 2, "bad num patches");
 
-  patch *p = (patch *)list_first(s->patches);
+  Patch *p = (Patch *)list_first(s->patches);
   tassert(strcmp(p->name, "Vanilla Through, Filter Two's Sustain") == 0,
           "bad patch name");
 }
 
 void test_load_connections(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
-  patch *p = (patch *)list_first(s->patches);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
+  Patch *p = (Patch *)list_first(s->patches);
   tassert(list_length(p->connections) == 2, "bad num conns");
   Connection *conn = (Connection *)list_first(p->connections);
   tassert(conn->input == list_first(pm->inputs), "wrong conn input");
@@ -66,8 +66,8 @@ void test_load_connections(patchmaster *pm) {
   tassert(conn->output == list_first(pm->outputs), "wrong conn output");
   tassert(conn->output_chan == -1, "wrong conn output channel");
 
-  s = (song *)list_last(pm->all_songs->songs);
-  p = (patch *)list_last(s->patches);
+  s = (Song *)list_last(pm->all_songs->songs);
+  p = (Patch *)list_last(s->patches);
   tassert(list_length(p->connections) == 2, "bad num conns");
   conn = (Connection *)list_first(p->connections);
   tassert(conn->input_chan == 2, "wrong conn input channel");
@@ -75,12 +75,12 @@ void test_load_connections(patchmaster *pm) {
 }
 
 void test_load_xpose(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
-  patch *p = (patch *)list_first(s->patches);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
+  Patch *p = (Patch *)list_first(s->patches);
   Connection *conn = (Connection *)list_first(p->connections);
   tassert(conn->xpose == 0, "bad default xpose");
 
-  p = (patch *)list_last(s->patches);
+  p = (Patch *)list_last(s->patches);
   conn = (Connection *)list_first(p->connections);
   tassert(conn->xpose = 12, "bad xpose");
   conn = (Connection *)list_last(p->connections);
@@ -88,19 +88,19 @@ void test_load_xpose(patchmaster *pm) {
 }
 
 void test_load_filter(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
-  patch *p = (patch *)list_first(s->patches);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
+  Patch *p = (Patch *)list_first(s->patches);
   Connection *conn = (Connection *)list_last(p->connections);
   tassert(conn->cc_maps[64] == -1, "bad cc filter");
 }
 
 void test_load_map(patchmaster *pm) {
-  song *s = (song *)list_first(pm->all_songs->songs);
-  patch *p = (patch *)list_first(s->patches);
+  Song *s = (Song *)list_first(pm->all_songs->songs);
+  Patch *p = (Patch *)list_first(s->patches);
   Connection *conn = (Connection *)list_first(p->connections);
   tassert(conn->cc_maps[7] == 7, "bad default map");
 
-  p = (patch *)list_last(s->patches);
+  p = (Patch *)list_last(s->patches);
   conn = (Connection *)list_first(p->connections);
   tassert(conn->cc_maps[7] == 10, "bad cc remapping");
 }
