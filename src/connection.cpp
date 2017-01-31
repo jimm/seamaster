@@ -5,8 +5,7 @@
 #include "output.h"
 #include "debug.h"
 
-Connection::Connection(struct input *in, int in_chan,
-                       struct output *out, int out_chan)
+Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   : input(in), input_chan(in_chan), output(out), output_chan(out_chan)
 {
   prog.bank_msb = prog.bank_lsb = prog.prog = -1;
@@ -30,14 +29,14 @@ void Connection::start(PmMessage *buf, int len) {
   if (prog.prog >= 0)
     midi_out(Pm_Message(PROGRAM_CHANGE + output_chan, prog.prog, 0));
 
-  input_add_connection(input, this);
+  input->add_connection(this);
 }
 
 void Connection::stop(PmMessage *buf, int len) {
   vdebug("connection_stop %p\n", this);
   for (int i = 0; i < len; ++i)
     midi_out(buf[i]);
-  input_remove_connection(input, this);
+  input->remove_connection(this);
 }
 
 void Connection::midi_in(PmMessage msg) {
@@ -102,7 +101,7 @@ int Connection::inside_zone(PmMessage msg) {
 void Connection::midi_out(PmMessage message) {
   vdebug("connection_midi_out %p, message %p\n", this, message);
   PmEvent event = {message, 0};
-  output_write(output, &event, 1);
+  output->write(&event, 1);
 }
 
 void Connection::debug() {

@@ -4,14 +4,12 @@
 #include "list.h"
 #include "song.h"
 
-typedef struct song_list {
-  char *name;
+class SongList : public Named {
+public:
   list *songs;
-} song_list;
 
-song_list *song_list_new(char *name);
-void song_list_free(song_list *);
-
-char *song_list_name(song_list *);
+  SongList(const char *name);
+  ~SongList();
+};
 
 #endif /* SONGLIST_LIST_H */

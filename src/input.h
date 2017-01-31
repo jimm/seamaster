@@ -3,43 +3,35 @@
 
 #include <pthread.h>
 #include <portmidi.h>
+#include "instrument.h"
 #include "consts.h"
 #include "list.h"
 #include "connection.h"
 #include "trigger.h"
 
-#define MIDI_BUFSIZ 128
-
-typedef struct input {
-  char *name;
-  char *sym;
-  int port_num;
-  PortMidiStream *stream;
+class Input : public Instrument {
+public:
   list *connections;
   list *triggers;
   bool running;
   pthread_t portmidi_thread;
   list *notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
 
-  PmMessage received_messages[MIDI_BUFSIZ]; // used during testing only
-  int num_received_messages;
-} input;
+  Input(const char *sym, const char *name, int port_num);
+  ~Input();
 
-input *input_new(char *sym, char *name, int port_num);
-void input_free(input *);
+  void add_connection(Connection *);
+  void remove_connection(Connection *);
 
-void input_add_connection(input *, Connection *);
-void input_remove_connection(input *, Connection *);
+  void add_trigger(trigger *);
+  void remove_trigger(trigger *);
 
-void input_add_trigger(input *, trigger *);
-void input_remove_trigger(input *, trigger *);
+  void start();
+  void stop();
 
-void input_start(input *);
-void input_stop(input *);
+  void read(PmEvent *buf, int len);
 
-void input_read(input *, PmEvent *buf, int len);
-
-void input_debug(input *);
-void input_clear(input *);      // testing only
+  void debug();
+};
 
 #endif /* INPUT_H */

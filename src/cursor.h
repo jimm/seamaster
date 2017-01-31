@@ -22,7 +22,7 @@ void cursor_free(cursor *);
 void cursor_clear(cursor *);
 void cursor_init(cursor *);
 
-song_list *cursor_song_list(cursor *);
+SongList *cursor_song_list(cursor *);
 Song *cursor_song(cursor *);
 Patch *cursor_patch(cursor *);
 

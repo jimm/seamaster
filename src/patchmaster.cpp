@@ -11,7 +11,7 @@ patchmaster *patchmaster_new() {
   pm->testing = false;
   pm->inputs = list_new();
   pm->outputs = list_new();
-  pm->all_songs = song_list_new((char *)"All Songs"); /* TODO sorted song list */
+  pm->all_songs = new SongList((char *)"All Songs"); /* TODO sorted song list */
   pm->song_lists = list_new();
   list_append(pm->song_lists, pm->all_songs);
   pm->messages = list_new();
@@ -23,15 +23,15 @@ patchmaster *patchmaster_new() {
 
 void patchmaster_free(patchmaster *pm) {
   for (int i = 0; i < list_length(pm->inputs); ++i)
-    input_free((input *)list_at(pm->inputs, i));
+    delete (Input *)list_at(pm->inputs, i);
   list_free(pm->inputs, 0);
   for (int i = 0; i < list_length(pm->outputs); ++i)
-    output_free((output *)list_at(pm->outputs, i));
+    delete (Output *)list_at(pm->outputs, i);
   list_free(pm->outputs, 0);
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
     delete (Song *)list_at(pm->all_songs->songs, i);
   for (int i = 0; i < list_length(pm->song_lists); ++i)
-    song_list_free((song_list *)list_at(pm->song_lists, i));
+    delete (SongList *)list_at(pm->song_lists, i);
   list_free(pm->song_lists, 0);
   for (int i = 0; i < list_length(pm->messages); ++i)
     message_free((message *)list_at(pm->messages, i));
@@ -47,7 +47,7 @@ void patchmaster_free(patchmaster *pm) {
 void patchmaster_start(patchmaster *pm) {
   vdebug("patchmaster_start\n");
   for (int i = 0; i < list_length(pm->inputs); ++i)
-    input_start((input *)list_at(pm->inputs, i));
+    ((Input *)list_at(pm->inputs, i))->start();
   cursor_init(pm->cursor);
   if (cursor_patch(pm->cursor) != 0)
     cursor_patch(pm->cursor)->start();
@@ -59,7 +59,7 @@ void patchmaster_stop(patchmaster *pm) {
   if (cursor_patch(pm->cursor) != 0)
     cursor_patch(pm->cursor)->stop();
   for (int i = 0; i < list_length(pm->inputs); ++i)
-    input_stop((input *)list_at(pm->inputs, i));
+    ((Input *)list_at(pm->inputs, i))->stop();
   pm->running = false;
 }
 
@@ -107,9 +107,9 @@ void patchmaster_debug(patchmaster *pm) {
 
   vdebug("patchmaster %p, running %d\n", pm, pm->running);
   for (int i = 0; i < list_length(pm->inputs); ++i)
-    input_debug((input *)list_at(pm->inputs, i));
+    ((Input *)list_at(pm->inputs, i))->debug();
   for (int i = 0; i < list_length(pm->outputs); ++i)
-    output_debug((output *)list_at(pm->outputs, i));
+    ((Output *)list_at(pm->outputs, i))->debug();
   for (int i = 0; i < list_length(pm->all_songs->songs); ++i)
     ((Song *)list_at(pm->all_songs->songs, i))->debug();
   list_debug(pm->song_lists, "pm->song_lists");

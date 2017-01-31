@@ -58,7 +58,8 @@ src/curses/list_window.o: src/curses/list_window.cpp \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/curses/../consts.h src/curses/../trigger.h
+  src/curses/../instrument.h src/curses/../consts.h \
+  src/curses/../trigger.h
 
 /usr/include/stdlib.h:
 
@@ -261,6 +262,8 @@ src/curses/../input.h:
 /usr/include/sys/qos.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
+
+src/curses/../instrument.h:
 
 src/curses/../consts.h:
 

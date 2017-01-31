@@ -34,9 +34,9 @@ test/connection_test.o: test/connection_test.cpp test/seamaster_test.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/include/sys/_types/_sigset_t.h test/../src/consts.h \
-  test/../src/trigger.h test/../src/output.h test/../src/message.h \
-  test/../src/cursor.h test/connection_test.h
+  /usr/include/sys/_types/_sigset_t.h test/../src/instrument.h \
+  test/../src/consts.h test/../src/trigger.h test/../src/output.h \
+  test/../src/message.h test/../src/cursor.h test/connection_test.h
 
 test/seamaster_test.h:
 
@@ -163,6 +163,8 @@ test/../src/input.h:
 /usr/include/sys/_types/_mach_port_t.h:
 
 /usr/include/sys/_types/_sigset_t.h:
+
+test/../src/instrument.h:
 
 test/../src/consts.h:
 

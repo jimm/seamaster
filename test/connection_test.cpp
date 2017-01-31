@@ -4,10 +4,10 @@
 #include "connection_test.h"
 
 Connection *create_conn(patchmaster *pm) {
-  input *in = (input *)list_first(pm->inputs);
-  output *out = (output *)list_first(pm->outputs);
-  input_clear(in);
-  output_clear(out);
+  Input *in = (Input *)list_first(pm->inputs);
+  Output *out = (Output *)list_first(pm->outputs);
+  in->clear();
+  out->clear();
   return new Connection(in, 0, out, 0);
 }
 
@@ -22,9 +22,9 @@ void test_connection_start_msgs(patchmaster *pm) {
   msgs[1] = Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127);
 
   conn->start(msgs, 2);
-  tassert(conn->output->num_sent_messages == 2, "bad num start messages");
-  tassert(conn->output->sent_messages[0] == msgs[0], "bad msg1");
-  tassert(conn->output->sent_messages[1] == msgs[1], "bad msg2");
+  tassert(conn->output->num_io_messages == 2, "bad num start messages");
+  tassert(conn->output->io_messages[0] == msgs[0], "bad msg1");
+  tassert(conn->output->io_messages[1] == msgs[1], "bad msg2");
 
   delete conn;
 }
@@ -33,7 +33,7 @@ void test_connection_start_empty_msgs(patchmaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->start(0, 0);
-  tassert(conn->output->num_sent_messages == 0, "bad num start messages");
+  tassert(conn->output->num_io_messages == 0, "bad num start messages");
 
   delete conn;
 }
@@ -46,9 +46,9 @@ void test_connection_stop_msgs(patchmaster *pm) {
   msgs[1] = Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127);
 
   conn->stop(msgs, 2);
-  tassert(conn->output->num_sent_messages == 2, "bad num stop messages");
-  tassert(conn->output->sent_messages[0] == msgs[0], "bad msg1");
-  tassert(conn->output->sent_messages[1] == msgs[1], "bad msg2");
+  tassert(conn->output->num_io_messages == 2, "bad num stop messages");
+  tassert(conn->output->io_messages[0] == msgs[0], "bad msg1");
+  tassert(conn->output->io_messages[1] == msgs[1], "bad msg2");
 
   delete conn;
 }
@@ -59,7 +59,7 @@ void test_connection_stop_empty_msgs(patchmaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->stop(0, 0);
-  tassert(conn->output->num_sent_messages == 0, "bad num stop messages");
+  tassert(conn->output->num_io_messages == 0, "bad num stop messages");
 
   delete conn;
 }
@@ -67,7 +67,7 @@ void test_connection_stop_empty_msgs(patchmaster *pm) {
 void test_connection_filter_other_input_chan(patchmaster *pm) {
   Connection *conn = create_conn(pm);
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
-  tassert(conn->output->num_sent_messages == 0, 0);
+  tassert(conn->output->num_io_messages == 0, 0);
   delete conn;
 }
 
@@ -75,8 +75,8 @@ void test_connection_allow_all_chans(patchmaster *pm) {
   Connection *conn = create_conn(pm);
   conn->input_chan = -1;
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
-  tassert(conn->output->num_sent_messages == 1, 0);
-  tassert(conn->output->sent_messages[0] == Pm_Message(NOTE_ON, 64, 127), 0); /* mutated to output chan */
+  tassert(conn->output->num_io_messages == 1, 0);
+  tassert(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 64, 127), 0); /* mutated to output chan */
   delete conn;
 }
 
@@ -85,8 +85,8 @@ void test_connection_allow_all_chans_in_and_out(patchmaster *pm) {
   conn->input_chan = -1;
   conn->output_chan = -1;
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
-  tassert(conn->output->num_sent_messages == 1, 0);
-  tassert(conn->output->sent_messages[0] == Pm_Message(NOTE_ON + 3, 64, 127), 0); /* out chan not changed */
+  tassert(conn->output->num_io_messages == 1, 0);
+  tassert(conn->output->io_messages[0] == Pm_Message(NOTE_ON + 3, 64, 127), 0); /* out chan not changed */
   delete conn;
 }
 
@@ -99,10 +99,10 @@ void test_connection_xpose(patchmaster *pm) {
   conn->xpose = -12;
   conn->midi_in(Pm_Message(NOTE_ON, 64, 127));
 
-  tassert(conn->output->num_sent_messages == 3, "bad num msgs");
-  tassert(conn->output->sent_messages[0] == Pm_Message(NOTE_ON, 64,    127), 0);
-  tassert(conn->output->sent_messages[1] == Pm_Message(NOTE_ON, 64+12, 127), 0);
-  tassert(conn->output->sent_messages[2] == Pm_Message(NOTE_ON, 64-12, 127), 0);
+  tassert(conn->output->num_io_messages == 3, "bad num msgs");
+  tassert(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 64,    127), 0);
+  tassert(conn->output->io_messages[1] == Pm_Message(NOTE_ON, 64+12, 127), 0);
+  tassert(conn->output->io_messages[2] == Pm_Message(NOTE_ON, 64-12, 127), 0);
 
   delete conn;
 }
@@ -117,9 +117,9 @@ void test_connection_zone(patchmaster *pm) {
   conn->midi_in(Pm_Message(NOTE_ON, 76, 127));
   conn->midi_in(Pm_Message(NOTE_OFF, 76, 127));
 
-  tassert(conn->output->num_sent_messages == 2, "bad num msgs");
-  tassert(conn->output->sent_messages[0] == Pm_Message(NOTE_ON, 48, 127), 0);
-  tassert(conn->output->sent_messages[1] == Pm_Message(NOTE_OFF, 48, 127), 0);
+  tassert(conn->output->num_io_messages == 2, "bad num msgs");
+  tassert(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 48, 127), 0);
+  tassert(conn->output->io_messages[1] == Pm_Message(NOTE_OFF, 48, 127), 0);
 
   delete conn;
 }
@@ -132,8 +132,8 @@ void test_connection_zone_poly_pressure(patchmaster *pm) {
   conn->midi_in(Pm_Message(POLY_PRESSURE, 48, 127));
   conn->midi_in(Pm_Message(POLY_PRESSURE, 76, 127));
 
-  tassert(conn->output->num_sent_messages == 1, "bad num msgs");
-  tassert(conn->output->sent_messages[0] == Pm_Message(POLY_PRESSURE, 48, 127), 0);
+  tassert(conn->output->num_io_messages == 1, "bad num msgs");
+  tassert(conn->output->io_messages[0] == Pm_Message(POLY_PRESSURE, 48, 127), 0);
 
   delete conn;
 }
@@ -143,7 +143,7 @@ void test_connection_filter_controller(patchmaster *pm) {
   conn->cc_maps[7] = -1;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
 
-  tassert(conn->output->num_sent_messages == 0, "bad num msgs");
+  tassert(conn->output->num_io_messages == 0, "bad num msgs");
 
   delete conn;
 }
@@ -153,8 +153,8 @@ void test_connection_map_controller(patchmaster *pm) {
   conn->cc_maps[7] = 10;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
 
-  tassert(conn->output->num_sent_messages == 1, "bad num msgs");
-  tassert(conn->output->sent_messages[0] == Pm_Message(CONTROLLER, 10, 127), 0);
+  tassert(conn->output->num_io_messages == 1, "bad num msgs");
+  tassert(conn->output->io_messages[0] == Pm_Message(CONTROLLER, 10, 127), 0);
 
   delete conn;
 }

@@ -12,7 +12,7 @@ typedef struct cursor cursor;
 typedef struct patchmaster {
   list *inputs;
   list *outputs;
-  song_list *all_songs;
+  SongList *all_songs;
   list *song_lists;
   cursor *cursor;
   bool running;

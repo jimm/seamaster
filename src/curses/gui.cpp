@@ -189,7 +189,7 @@ void set_window_data(patchmaster *pm, windows *ws) {
   list_window_set_contents(ws->song_lists, "Song Lists", pm->song_lists,
                            pm->cursor);
 
-  song_list *sl = cursor_song_list(pm->cursor);
+  SongList *sl = cursor_song_list(pm->cursor);
   list_window_set_contents(ws->song_list, sl->name, sl->songs, pm->cursor);
 
   Song *song = cursor_song(pm->cursor);

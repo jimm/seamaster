@@ -5,64 +5,33 @@
 #include "trigger.h"
 #include "debug.h"
 
-bool output_real_port(output *);
-
-output *output_new(char *sym, char *name, int port_num) {
-  output *out = (output *)malloc(sizeof(output));
-
-  out->sym = (char *)malloc(strlen(sym) + 1);
-  strcpy(out->sym, sym);
-  out->name = (char *)malloc(strlen(name) + 1);
-  strcpy(out->name, name);
-
-  out->port_num = port_num;
-  if (output_real_port(out)) {
-    int err = Pm_OpenOutput(&out->stream, port_num, 0, 128, 0, 0, 0);
+Output::Output(const char *sym, const char *name, int port_num)
+  : Instrument(sym, name, port_num)
+{
+  if (real_port()) {
+    int err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);
     // TODO check error
   }
-
-  out->num_sent_messages = 0;
-
-  return out;
 }
 
-void output_free(output *out) {
-  if (output_real_port(out))
-    Pm_Close(out->stream);
-  free(out->sym);
-  free(out->name);
-  free(out);
-}
-
-bool output_real_port(output *out) {
-  return out->port_num != pmNoDevice;
+Output::~Output() {
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
 
-void output_write(output *out, PmEvent *buf, int len) {
-  if (output_real_port(out))
-    Pm_Write(out->stream, buf, len);
+void Output::write(PmEvent *buf, int len) {
+  if (real_port())
+    Pm_Write(stream, buf, len);
   else {
-    for (int i = 0; i < len && out->num_sent_messages < MIDI_BUFSIZ-1; ++i)
-      out->sent_messages[out->num_sent_messages++] = buf[i].message;
+    for (int i = 0; i < len && num_io_messages < MIDI_BUFSIZ-1; ++i)
+      io_messages[num_io_messages++] = buf[i].message;
   }
 }
 
 #pragma clang diagnostic pop
 
-void output_debug(output *out) {
-  if (out == 0) {
-    vdebug("output NULL\n");
-    return;
-  }
-
-  vdebug("output %s %s (%p)\n", out->sym, out->name, out);
-  vdebug("  port_num %d stream %p\n", out->port_num, out->stream);
-}
-
-// only used during testing
-void output_clear(output *out) {
-  out->num_sent_messages = 0;
+void Output::debug() {
+  Instrument::debug();
+  vdebug("  ...is an output\n");
 }

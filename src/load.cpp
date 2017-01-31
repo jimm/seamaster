@@ -14,7 +14,7 @@ typedef struct context {
   Song *song;
   Patch *patch;
   Connection *conn;
-  song_list *song_list;
+  SongList *song_list;
 } context;
 
 const char * const whitespace = " \t";
@@ -26,7 +26,7 @@ int chan_from_word(char *);
 void strip_newline(char *);
 
 PmDeviceID find_device(char *, char);
-input *find_by_sym(list *, char *);
+Instrument *find_by_sym(list *, char *);
 Song *find_song(list *, char *);
 
 int load_instrument(context *, char *, int);
@@ -129,10 +129,10 @@ int load_instrument(context *c, char *line, int type) {
 
   switch (type) {
   case 'i':
-    list_append(c->pm->inputs, input_new(sym, name, devid));
+    list_append(c->pm->inputs, new Input(sym, name, devid));
     break;
   case 'o':
-    list_append(c->pm->outputs, output_new(sym, name, devid));
+    list_append(c->pm->outputs, new Output(sym, name, devid));
     break;
   }
   list_free(args, 0);
@@ -177,9 +177,9 @@ int load_patch(context *c, char *line) {
 
 int load_connection(context *c, char *line) {
   list *args = comma_sep_args(line);
-  input *in = find_by_sym(c->pm->inputs, (char *)list_first(args));
+  Input *in = (Input *)find_by_sym(c->pm->inputs, (char *)list_first(args));
   int in_chan = chan_from_word((char *)list_at(args, 1));
-  output *out = (output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
+  Output *out = (Output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
   int out_chan = chan_from_word((char *)list_at(args, 3));
 
   Connection *conn = new Connection(in, in_chan, out, out_chan);
@@ -197,7 +197,7 @@ int load_xpose(context *c, char *line) {
 
 int load_song_list(context *c, char *line) {
   char *name = skip_first_word(line);
-  song_list *sl = song_list_new(name);
+  SongList *sl = new SongList(name);
   list_append(c->pm->song_lists, sl);
 
   char song_name[BUFSIZ];
@@ -272,11 +272,11 @@ PmDeviceID find_device(char *name, char in_or_out) {
   return pmNoDevice;
 }
 
-input *find_by_sym(list *list, char *name) {
+Instrument *find_by_sym(list *list, char *name) {
   for (int i = 0; i < list_length(list); ++i) {
-    input *in = (input *)list_at(list, i);
-    if (strcmp(name, in->sym) == 0)
-      return in;
+    Instrument *inst = (Instrument *)list_at(list, i);
+    if (strcmp(name, inst->sym) == 0)
+      return inst;
   }
   return 0;
 }

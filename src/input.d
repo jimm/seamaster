@@ -49,9 +49,9 @@ src/input.o: src/input.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/local/include/portmidi.h src/consts.h src/list.h \
+  /usr/local/include/portmidi.h src/instrument.h src/named.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/connection.h src/trigger.h src/debug.h
+  src/consts.h src/connection.h src/trigger.h src/debug.h
 
 /usr/include/stdlib.h:
 
@@ -227,11 +227,15 @@ src/input.h:
 
 /usr/local/include/portmidi.h:
 
-src/consts.h:
+src/instrument.h:
+
+src/named.h:
 
 src/list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+src/consts.h:
 
 src/connection.h:
 

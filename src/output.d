@@ -35,7 +35,8 @@ src/output.o: src/output.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  /usr/local/include/portmidi.h src/output.h src/list.h \
+  /usr/local/include/portmidi.h src/output.h src/instrument.h \
+  src/named.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h /usr/include/time.h \
@@ -188,6 +189,10 @@ src/output.o: src/output.cpp /usr/include/stdlib.h \
 /usr/local/include/portmidi.h:
 
 src/output.h:
+
+src/instrument.h:
+
+src/named.h:
 
 src/list.h:
 

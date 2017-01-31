@@ -7,11 +7,11 @@ void test_load_instruments(patchmaster *pm) {
   tassert(list_length(pm->inputs) == 2, "bad num inputs");
   tassert(list_length(pm->outputs) == 2, "bad num outputs");
 
-  input *in = (input *)list_first(pm->inputs);
+  Input *in = (Input *)list_first(pm->inputs);
   tassert(strcmp(in->sym, "one") == 0, "bad input sym");
   tassert(strcmp(in->name, "first input") == 0, "bad input name");
 
-  output *out = (output *)list_last(pm->outputs);
+  Output *out = (Output *)list_last(pm->outputs);
   tassert(strcmp(out->sym, "two") == 0, "bad output sym");
   tassert(strcmp(out->name, "second output") == 0, "bad output name");
 }
@@ -109,7 +109,7 @@ void test_load_song_list(patchmaster *pm) {
   list *all = pm->all_songs->songs;
 
   tassert(list_length(pm->song_lists) == 3, "bad num song lists");
-  song_list *sl = (song_list *)list_last(pm->song_lists);
+  SongList *sl = (SongList *)list_last(pm->song_lists);
   tassert(strcmp(sl->name, "Song List Two") == 0, "bad song list name");
 
   tassert(list_length(sl->songs) == 2, "bad num songs in song list");

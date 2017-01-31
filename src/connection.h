@@ -4,8 +4,8 @@
 #include <portmidi.h>
 #include "list.h"
 
-typedef struct input input;
-typedef struct output output;
+class Input;
+class Output;
 
 typedef struct program {
   int bank_msb;
@@ -20,8 +20,8 @@ typedef struct zone {
 
 class Connection {
 public:
-  input *input;
-  output *output;
+  Input *input;
+  Output *output;
   int input_chan;
   int output_chan;
   program prog;
@@ -29,7 +29,7 @@ public:
   int xpose;
   int cc_maps[128];           // -1 == filter out, else dest. controller number
 
-  Connection(struct input *input, int input_chan, struct output *output, int output_chan);
+  Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
 
   void start(PmMessage *buf, int len);

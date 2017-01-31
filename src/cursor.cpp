@@ -35,7 +35,7 @@ void cursor_clear(cursor *c) {
 void cursor_init(cursor *c) {
   c->song_list_index = 0;
 
-  song_list *sl = cursor_song_list(c);
+  SongList *sl = cursor_song_list(c);
   if (sl != 0 && list_length(sl->songs) > 0) {
     c->song_index = 0;
     Song *s = cursor_song(c);
@@ -47,15 +47,15 @@ void cursor_init(cursor *c) {
   }
 }
 
-song_list *cursor_song_list(cursor *c) {
+SongList *cursor_song_list(cursor *c) {
   if (c->song_list_index != UNDEFINED)
-    return (song_list *)list_at(c->pm->song_lists, c->song_list_index);
+    return (SongList *)list_at(c->pm->song_lists, c->song_list_index);
   else
     return 0;
 }
 
 Song *cursor_song(cursor *c) {
-  song_list *sl = cursor_song_list(c);
+  SongList *sl = cursor_song_list(c);
   if (sl == 0 || c->song_index == UNDEFINED)
     return 0;
   return (Song *)list_at(sl->songs, c->song_index);
@@ -71,7 +71,7 @@ Patch *cursor_patch(cursor *c) {
 void cursor_next_song(cursor *c) {
   if (c->song_list_index == UNDEFINED)
     return;
-  song_list *sl = cursor_song_list(c);
+  SongList *sl = cursor_song_list(c);
   if (c->song_index == list_length(sl->songs)-1)
     return;
 
