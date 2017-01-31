@@ -33,7 +33,7 @@ list *Patch::inputs() {
 }
 
 void Patch::start() {
-  vdebug("Patch::start %s\n", reinterpret_cast<const char *>(&name));
+  vdebug("Patch::start %s\n", name.c_str());
   if (running)
     return;
 
@@ -49,7 +49,7 @@ bool Patch::is_running() {
 }
 
 void Patch::stop() {
-  vdebug("Patch::stop %s\n", reinterpret_cast<const char *>(&name));
+  vdebug("Patch::stop %s\n", name.c_str());
   if (!running)
     return;
 
@@ -61,7 +61,7 @@ void Patch::stop() {
 }
 
 void Patch::debug() {
-  vdebug("patch %s\n", reinterpret_cast<const char *>(&name));
+  vdebug("patch %s\n", name.c_str());
   for (int i = 0; i < list_length(connections); ++i) {
     Connection *conn = (Connection *)list_at(connections, i);
     conn->debug();

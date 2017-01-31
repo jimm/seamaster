@@ -20,9 +20,7 @@ bool Instrument::real_port() {
 }
 
 void Instrument::debug() {
-  vdebug("instrument %s %s (%p)\n",
-         reinterpret_cast<const char *>(&sym),
-         reinterpret_cast<const char *>(&name), this);
+  vdebug("instrument %s %s (%p)\n", sym.c_str(), name.c_str(), this);
   vdebug("  port_num %d stream %p\n", port_num, stream);
 }
 

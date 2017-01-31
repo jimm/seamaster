@@ -105,10 +105,8 @@ void Connection::midi_out(PmMessage message) {
 }
 
 void Connection::debug() {
-  const char *input_name = input ?
-    reinterpret_cast<const char *>(&input->name) : "(null input)";
-  const char *output_name = output ?
-    reinterpret_cast<const char *>(&output->name) : "(null output)";
+  const char *input_name = input ? input->name.c_str() : "(null input)";
+  const char *output_name = output ? output->name.c_str() : "(null output)";
   vdebug("conn (%p), in [%s, %d], out [%s, %d], prog [%d, %d, %d], zone [%d, %d], xpose %d\n",
          this,
          input_name, input ? input_chan : 0,

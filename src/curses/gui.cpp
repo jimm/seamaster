@@ -187,14 +187,12 @@ void set_window_data(PatchMaster *pm, windows *ws) {
                            pm->cursor->song_list());
 
   SongList *sl = pm->cursor->song_list();
-  list_window_set_contents(ws->song_list,
-                           reinterpret_cast<const char *>(&sl->name),
+  list_window_set_contents(ws->song_list, sl->name.c_str(),
                            sl->songs, pm->cursor->song());
 
   Song *song = pm->cursor->song();
   if (song != 0) {
-    list_window_set_contents(ws->song,
-                             reinterpret_cast<const char *>(&song->name),
+    list_window_set_contents(ws->song, song->name.c_str(),
                              song->patches, pm->cursor->patch());
     info_window_set_contents(ws->info, song->notes);
     Patch *patch = pm->cursor->patch();

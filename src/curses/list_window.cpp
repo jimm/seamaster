@@ -45,7 +45,7 @@ void list_window_draw(list_window *lw) {
       wattron(lw->w->win, A_REVERSE);
 
     waddch(lw->w->win, ' ');
-    waddstr(lw->w->win, reinterpret_cast<const char *>(&thing->name));
+    waddstr(lw->w->win, thing->name.c_str());
     waddch(lw->w->win, ' ');
 
     if (thing == lw->curr_item)
