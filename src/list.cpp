@@ -27,6 +27,7 @@ void list_copy(list *dest, list *src) {
   if (dest->num_allocated < src->num_elements)
     list_grow(dest, src->num_elements);
   memcpy(dest->nodes, src->nodes, src->num_elements * sizeof(void *));
+  dest->num_elements = src->num_elements;
 }
 
 int list_length(list *l) {
