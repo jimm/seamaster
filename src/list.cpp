@@ -6,9 +6,8 @@
 #define INITIAL_SIZE 8
 
 List::List() {
-  nodes = (void **)malloc(INITIAL_SIZE * sizeof(void *));
-  num_elements = 0;
-  num_allocated = INITIAL_SIZE;
+  nodes = 0;
+  num_allocated = num_elements = 0;
 }
 
 List::~List() {
@@ -119,9 +118,15 @@ void List::grow(int min_size) {
   if (num_allocated >= min_size)
     return;
 
+  if (nodes == 0)
+    num_allocated = INITIAL_SIZE;
   while (num_allocated < min_size)
     num_allocated *= 2;
-  nodes = (void **)realloc(nodes, num_allocated * sizeof(void *));
+
+  if (nodes == 0)
+    nodes = (void **)malloc(num_allocated * sizeof(void *));
+  else
+    nodes = (void **)realloc(nodes, num_allocated * sizeof(void *));
 }
 
 void List::debug(const char *msg) {
