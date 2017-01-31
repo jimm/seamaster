@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "list_window.h"
-#include "../song.h"            /* DEBUG */
 
 list_window *list_window_new(rect r, const char *title_prefix) {
   list_window *lw = (list_window *)malloc(sizeof(list_window));
@@ -60,7 +59,6 @@ void list_window_debug(list_window *lw) {
   window_debug(lw->w);
   fprintf(stderr, "  list in list window %p:\n", lw);
   list_debug(lw->list, "list in list window");
-  fprintf(stderr, "  address of str_func = %p\r\n", lw->str_func); /* DEBUG */
-  fprintf(stderr, "  address of curr_item_func = %p\r\n", lw->curr_item_func); /* DEBUG */
+  fprintf(stderr, "  address of curr_item = %p\r\n", lw->curr_item);
 }
 #endif

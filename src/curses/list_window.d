@@ -80,23 +80,7 @@ src/curses/list_window.o: src/curses/list_window.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
   src/curses/../list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/../song.h src/curses/../patch.h \
-  /usr/local/include/portmidi.h src/curses/../connection.h \
-  src/curses/../input.h /usr/include/pthread.h \
-  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
-  /usr/include/sys/_pthread/_pthread_cond_t.h \
-  /usr/include/sys/_pthread/_pthread_condattr_t.h \
-  /usr/include/sys/_pthread/_pthread_key_t.h \
-  /usr/include/sys/_pthread/_pthread_mutex_t.h \
-  /usr/include/sys/_pthread/_pthread_mutexattr_t.h \
-  /usr/include/sys/_pthread/_pthread_once_t.h \
-  /usr/include/sys/_pthread/_pthread_rwlock_t.h \
-  /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
-  /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
-  /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/curses/../instrument.h src/curses/../consts.h \
-  src/curses/../trigger.h
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h
 
 /usr/include/stdlib.h:
 
@@ -343,49 +327,3 @@ src/curses/../named.h:
 src/curses/../list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
-
-src/curses/../song.h:
-
-src/curses/../patch.h:
-
-/usr/local/include/portmidi.h:
-
-src/curses/../connection.h:
-
-src/curses/../input.h:
-
-/usr/include/pthread.h:
-
-/usr/include/pthread/pthread_impl.h:
-
-/usr/include/pthread/sched.h:
-
-/usr/include/sys/_pthread/_pthread_cond_t.h:
-
-/usr/include/sys/_pthread/_pthread_condattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_key_t.h:
-
-/usr/include/sys/_pthread/_pthread_mutex_t.h:
-
-/usr/include/sys/_pthread/_pthread_mutexattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_once_t.h:
-
-/usr/include/sys/_pthread/_pthread_rwlock_t.h:
-
-/usr/include/sys/_pthread/_pthread_rwlockattr_t.h:
-
-/usr/include/sys/_pthread/_pthread_t.h:
-
-/usr/include/pthread/qos.h:
-
-/usr/include/sys/qos.h:
-
-/usr/include/sys/_types/_mach_port_t.h:
-
-src/curses/../instrument.h:
-
-src/curses/../consts.h:
-
-src/curses/../trigger.h:

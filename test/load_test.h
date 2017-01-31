@@ -3,6 +3,6 @@
 
 #include "../src/patchmaster.h"
 
-void test_load(PatchMaster *pm);
+void test_load();
 
 #endif /* LOAD_TEST_H */

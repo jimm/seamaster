@@ -110,7 +110,7 @@ void Input::read(PmEvent *buf, int len) {
     }
 
     for (int j = 0; j < list_length(conns); ++j) {
-      Connection *conn = (Connection *)list_at(conns, i);
+      Connection *conn = (Connection *)list_at(conns, j);
       conn->midi_in(msg);
     }
   }

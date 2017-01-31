@@ -6,9 +6,11 @@ More docs to come.
 
 # To Do
 
-A string class.
+"use midi" flag in PM, replace "testing".
+
+Should PatchMsater be returned by load()? What does that do to reload?
 
 Display controller filters and maps.
 
-Load should count args (e.g. input and output creation) and make sure not
-null.
+Load should be more robust. Count args (e.g. input and output creation) and
+make sure not null.

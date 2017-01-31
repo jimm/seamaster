@@ -3,6 +3,6 @@
 
 #include "../src/patchmaster.h"
 
-void test_connection(PatchMaster *pm);
+void test_connection();
 
 #endif /* CONNECTION_TEST_H */
