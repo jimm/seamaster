@@ -10,7 +10,7 @@
 
 typedef struct context {
   FILE *fp;
-  patchmaster *pm;
+  PatchMaster *pm;
   Song *song;
   Patch *patch;
   Connection *conn;
@@ -41,7 +41,7 @@ int load_filter(context *, char *);
 int load_map(context *, char *);
 int load_song_list(context *, char *);
 
-int load(patchmaster *pm, const char *path) {
+int load(PatchMaster *pm, const char *path) {
   int rc;
   context ctxt;
   char line[BUFSIZ];
@@ -61,7 +61,7 @@ int load(patchmaster *pm, const char *path) {
     parse_line(&ctxt, line);
   }
   fclose(ctxt.fp);
-  patchmaster_debug(pm);
+  pm->debug();
   return 0;
 }
 

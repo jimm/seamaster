@@ -26,14 +26,14 @@ void config_curses();
 windows *create_windows();
 void resize_windows(windows *);
 void free_windows(windows *);
-void gui_run(patchmaster *, windows *);
-void refresh_all(patchmaster *pm, windows *);
-void set_window_data(patchmaster *pm, windows *);
+void gui_run(PatchMaster *, windows *);
+void refresh_all(PatchMaster *pm, windows *);
+void set_window_data(PatchMaster *pm, windows *);
 void close_screen();
 void gui_help(windows *);
 void show_message(windows *, const char *);
 
-void gui_main(patchmaster *pm) {
+void gui_main(PatchMaster *pm) {
   config_curses();
   windows *ws = create_windows();
   gui_run(pm, ws);
@@ -43,7 +43,7 @@ void gui_main(patchmaster *pm) {
   free_windows(ws);
 }
 
-void gui_run(patchmaster *pm, windows *ws) {
+void gui_run(PatchMaster *pm, windows *ws) {
   bool done = FALSE;
   int ch, prev_cmd = 0;
 
@@ -52,16 +52,16 @@ void gui_run(patchmaster *pm, windows *ws) {
     ch = getch();
     switch (ch) {
     case 'j': case KEY_DOWN: case ' ':
-      patchmaster_next_patch(pm);
+      pm->next_patch();
       break;
     case 'k': case KEY_UP:
-      patchmaster_prev_patch(pm);
+      pm->prev_patch();
       break;
     case 'n': case KEY_RIGHT:
-      patchmaster_next_song(pm);
+      pm->next_song();
       break;
     case 'p': case KEY_LEFT:
-      patchmaster_prev_song(pm);
+      pm->prev_song();
       break;
     case 'g':
       // TODO go to song
@@ -163,7 +163,7 @@ void free_windows(windows *ws) {
   info_window_free(ws->info);
 }
 
-void refresh_all(patchmaster *pm, windows *ws) {
+void refresh_all(PatchMaster *pm, windows *ws) {
   set_window_data(pm, ws);
   list_window_draw(ws->song_lists);
   list_window_draw(ws->song_list);
@@ -182,7 +182,7 @@ void refresh_all(patchmaster *pm, windows *ws) {
   doupdate();
 }
 
-void set_window_data(patchmaster *pm, windows *ws) {
+void set_window_data(PatchMaster *pm, windows *ws) {
   list_window_set_contents(ws->song_lists, "Song Lists", pm->song_lists,
                            pm->cursor->song_list());
 

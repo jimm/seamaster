@@ -8,7 +8,7 @@
 
 class Cursor {
 public:
-  patchmaster *pm;
+  PatchMaster *pm;
   int song_list_index;
   int song_index;
   int patch_index;
@@ -16,7 +16,7 @@ public:
   char *song_name;
   char *patch_name;
 
-  Cursor(patchmaster *pm);
+  Cursor(PatchMaster *pm);
   ~Cursor();
 
   void clear();
@@ -34,4 +34,4 @@ public:
   void debug();
 };
 
-#endif /* H */
+#endif /* CURSOR_H */

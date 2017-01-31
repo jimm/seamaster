@@ -3,7 +3,7 @@
 #include "../src/cursor.h"
 #include "connection_test.h"
 
-Connection *create_conn(patchmaster *pm) {
+Connection *create_conn(PatchMaster *pm) {
   Input *in = (Input *)list_first(pm->inputs);
   Output *out = (Output *)list_first(pm->outputs);
   in->clear();
@@ -14,7 +14,7 @@ Connection *create_conn(patchmaster *pm) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
 
-void test_connection_start_msgs(patchmaster *pm) {
+void test_connection_start_msgs(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   PmMessage msgs[2];
@@ -29,7 +29,7 @@ void test_connection_start_msgs(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_start_empty_msgs(patchmaster *pm) {
+void test_connection_start_empty_msgs(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->start(0, 0);
@@ -38,7 +38,7 @@ void test_connection_start_empty_msgs(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_stop_msgs(patchmaster *pm) {
+void test_connection_stop_msgs(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   PmMessage msgs[2];
@@ -55,7 +55,7 @@ void test_connection_stop_msgs(patchmaster *pm) {
 
 #pragma clang diagnostic pop
 
-void test_connection_stop_empty_msgs(patchmaster *pm) {
+void test_connection_stop_empty_msgs(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->stop(0, 0);
@@ -64,14 +64,14 @@ void test_connection_stop_empty_msgs(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_filter_other_input_chan(patchmaster *pm) {
+void test_connection_filter_other_input_chan(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
   tassert(conn->output->num_io_messages == 0, 0);
   delete conn;
 }
 
-void test_connection_allow_all_chans(patchmaster *pm) {
+void test_connection_allow_all_chans(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
   conn->input_chan = -1;
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
@@ -80,7 +80,7 @@ void test_connection_allow_all_chans(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_allow_all_chans_in_and_out(patchmaster *pm) {
+void test_connection_allow_all_chans_in_and_out(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
   conn->input_chan = -1;
   conn->output_chan = -1;
@@ -90,7 +90,7 @@ void test_connection_allow_all_chans_in_and_out(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_xpose(patchmaster *pm) {
+void test_connection_xpose(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->midi_in(Pm_Message(NOTE_ON, 64, 127));
@@ -107,7 +107,7 @@ void test_connection_xpose(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_zone(patchmaster *pm) {
+void test_connection_zone(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->zone.low = 0;
@@ -124,7 +124,7 @@ void test_connection_zone(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_zone_poly_pressure(patchmaster *pm) {
+void test_connection_zone_poly_pressure(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
 
   conn->zone.low = 0;
@@ -138,7 +138,7 @@ void test_connection_zone_poly_pressure(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_filter_controller(patchmaster *pm) {
+void test_connection_filter_controller(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
   conn->cc_maps[7] = -1;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
@@ -148,7 +148,7 @@ void test_connection_filter_controller(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection_map_controller(patchmaster *pm) {
+void test_connection_map_controller(PatchMaster *pm) {
   Connection *conn = create_conn(pm);
   conn->cc_maps[7] = 10;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
@@ -159,7 +159,7 @@ void test_connection_map_controller(patchmaster *pm) {
   delete conn;
 }
 
-void test_connection(patchmaster *pm) {
+void test_connection(PatchMaster *pm) {
   test_run(test_connection_start_msgs);
   test_run(test_connection_start_empty_msgs);
   test_run(test_connection_stop_msgs);

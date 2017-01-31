@@ -13,7 +13,7 @@
 
 test_results results;
 
-void test_start(patchmaster *pm) {
+void test_start(PatchMaster *pm) {
   pm->cursor->init();
   test_clear_midi(pm);
 }
@@ -37,7 +37,7 @@ int test_num_errors() {
   return results.num_errors;
 }
 
-void test_clear_midi(patchmaster *pm) {
+void test_clear_midi(PatchMaster *pm) {
   for (int i = 0; i < list_length(pm->inputs); ++i) {
     Input *in = (Input *)list_at(pm->inputs, i);
     in->clear();
@@ -48,7 +48,7 @@ void test_clear_midi(patchmaster *pm) {
   }
 }
 
-void run_tests(patchmaster *pm) {
+void run_tests(PatchMaster *pm) {
   test_load(pm);
   test_cursor(pm);
   test_connection(pm);
@@ -61,16 +61,16 @@ void run_tests(patchmaster *pm) {
 // ================ main ================
 
 int main(int argc, const char **argv) {
-  patchmaster *pm = patchmaster_new();
+  PatchMaster *pm = new PatchMaster();
   pm->testing = true;
   fprintf(stderr, "loading %s\n", TEST_FILE); /* DEBUG */
   if (load(pm, TEST_FILE) != 0)
       exit(1);                /* error already printed */
 
-  patchmaster_start(pm);
+  pm->start();
   run_tests(pm);
-  patchmaster_stop(pm);
-  patchmaster_free(pm);
+  pm->stop();
+  delete pm;
 
   exit(results.num_errors == 0 ? 0 : 1);
   return 0;

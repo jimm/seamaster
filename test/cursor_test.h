@@ -3,6 +3,6 @@
 
 #include "../src/patchmaster.h"
 
-void test_cursor(patchmaster *pm);
+void test_cursor(PatchMaster *pm);
 
 #endif /* CURSOR_TEST_H */

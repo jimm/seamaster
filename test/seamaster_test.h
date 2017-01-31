@@ -9,7 +9,7 @@ typedef struct test_results {
   int num_errors;
 } test_results;
 
-void test_start(patchmaster *pm);
+void test_start(PatchMaster *pm);
 void test_results_init();
 void test_passed();
 void test_failed();
@@ -34,6 +34,6 @@ int test_num_errors();
     }                                                                   \
   }
 
-void test_clear_midi(patchmaster *pm);
+void test_clear_midi(PatchMaster *pm);
 
 #endif /* SEAMASTER_TEST_H */

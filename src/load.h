@@ -3,6 +3,6 @@
 
 #include "patchmaster.h"
 
-int load(patchmaster *, const char *path);
+int load(PatchMaster *, const char *path);
 
 #endif /* LOAD_H */

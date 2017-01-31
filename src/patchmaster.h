@@ -9,7 +9,8 @@
 
 class Cursor;
 
-typedef struct patchmaster {
+class PatchMaster {
+public:
   list *inputs;
   list *outputs;
   SongList *all_songs;
@@ -19,21 +20,21 @@ typedef struct patchmaster {
   bool testing;
   list *messages;
   list *triggers;
-} patchmaster;
 
-patchmaster *patchmaster_new();
-void patchmaster_free(patchmaster *);
+  PatchMaster();
+  ~PatchMaster();
 
-int patchmaster_load(patchmaster *, const char *);
+  int load(const char *);
 
-void patchmaster_start(patchmaster *);
-void patchmaster_stop(patchmaster *);
+  void start();
+  void stop();
 
-void patchmaster_next_patch(patchmaster *);
-void patchmaster_prev_patch(patchmaster *);
-void patchmaster_next_song(patchmaster *);
-void patchmaster_prev_song(patchmaster *);
+  void next_patch();
+  void prev_patch();
+  void next_song();
+  void prev_song();
 
-void patchmaster_debug(patchmaster *);
+  void debug();
+};
 
 #endif /* PATCHMASTER_H */

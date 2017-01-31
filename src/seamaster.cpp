@@ -50,15 +50,15 @@ int main(int argc, const char **argv) {
   else {
     check_sizes();
 
-    patchmaster *pm = patchmaster_new();
+    PatchMaster *pm = new PatchMaster();
     if (argc > 1) {
       if (load(pm, argv[1]) != 0)
         exit(1);                /* error already printed */
     }
-    patchmaster_start(pm);
+    pm->start();
     gui_main(pm);
-    patchmaster_stop(pm);
-    patchmaster_free(pm);
+    pm->stop();
+    delete pm;
   }
 
   exit(0);

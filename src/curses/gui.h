@@ -3,6 +3,6 @@
 
 #include "../patchmaster.h"
 
-void gui_main(patchmaster *);
+void gui_main(PatchMaster *);
 
 #endif /* GUI_H */
