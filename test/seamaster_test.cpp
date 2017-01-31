@@ -14,7 +14,7 @@
 test_results results;
 
 void test_start(patchmaster *pm) {
-  cursor_init(pm->cursor);
+  pm->cursor->init();
   test_clear_midi(pm);
 }
 

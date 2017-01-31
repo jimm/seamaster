@@ -35,7 +35,7 @@ src/message.o: src/message.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  src/message.h src/list.h \
+  src/message.h src/named.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h
 
 /usr/include/stdlib.h:
@@ -171,6 +171,8 @@ src/message.o: src/message.cpp /usr/include/stdlib.h \
 /usr/include/strings.h:
 
 src/message.h:
+
+src/named.h:
 
 src/list.h:
 

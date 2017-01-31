@@ -12,7 +12,7 @@ trigger_window *trigger_window_new(rect r, const char *title_prefix) {
 void trigger_window_free(trigger_window * tw) {
 }
 
-void trigger_window_set_contents(trigger_window *tw, const char *title, trigger *trigger) {
+void trigger_window_set_contents(trigger_window *tw, const char *title, Trigger *trigger) {
   tw->w->title = title;
   tw->trigger = trigger;
   trigger_window_draw(tw);

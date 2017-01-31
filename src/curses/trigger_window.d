@@ -41,7 +41,8 @@ src/curses/trigger_window.o: src/curses/trigger_window.cpp \
   /usr/include/curses.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
   src/curses/geometry.h src/curses/../trigger.h \
-  /usr/local/include/portmidi.h src/curses/../list.h \
+  /usr/local/include/portmidi.h src/curses/../named.h \
+  src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h
 
 /usr/include/stdlib.h:
@@ -195,6 +196,8 @@ src/curses/geometry.h:
 src/curses/../trigger.h:
 
 /usr/local/include/portmidi.h:
+
+src/curses/../named.h:
 
 src/curses/../list.h:
 

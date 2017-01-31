@@ -2,14 +2,12 @@
 #include "list_window.h"
 #include "../song.h"            /* DEBUG */
 
-list_window *list_window_new(rect r, const char *title_prefix,
-                             void *(*curr_item_func)(void *))
-{
+list_window *list_window_new(rect r, const char *title_prefix) {
   list_window *lw = (list_window *)malloc(sizeof(list_window));
   lw->w = window_new(r, title_prefix);
   lw->list = 0;
   lw->offset = 0;
-  lw->curr_item_func = curr_item_func;
+  lw->curr_item = 0;
   return lw;
 }
 
@@ -17,10 +15,10 @@ void list_window_free(list_window * lw) {
 }
 
 void list_window_set_contents(list_window *lw, const char *title, list *list,
-                              void *curr_item_func_arg) {
+                              Named *curr_item) {
   lw->w->title = title;
   lw->list = list;
-  lw->curr_item_func_arg = curr_item_func_arg;
+  lw->curr_item = curr_item;
   list_window_draw(lw);
 }
 
@@ -31,11 +29,7 @@ void list_window_draw(list_window *lw) {
 
   int vis_height = window_visible_height(lw->w);
 
-  void *curr_item = 0;
-  if (lw->curr_item_func != 0)
-    curr_item = lw->curr_item_func(lw->curr_item_func_arg);
-
-  int curr_index = list_index_of(lw->list, curr_item);
+  int curr_index = list_index_of(lw->list, lw->curr_item);
   if (curr_index == -1)
     curr_index = 0;
   if (curr_index < lw->offset)
@@ -47,14 +41,14 @@ void list_window_draw(list_window *lw) {
     Named *thing = (Named *)list_at(lw->list, i);
     wmove(lw->w->win, i+1, 1);
 
-    if (thing == curr_item)
+    if (thing == lw->curr_item)
       wattron(lw->w->win, A_REVERSE);
 
     waddch(lw->w->win, ' ');
     waddstr(lw->w->win, thing->name);
     waddch(lw->w->win, ' ');
 
-    if (thing == curr_item)
+    if (thing == lw->curr_item)
       wattroff(lw->w->win, A_REVERSE);
   }
 }

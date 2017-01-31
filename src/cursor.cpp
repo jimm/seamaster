@@ -6,114 +6,106 @@
 #define UNDEFINED -1
 
 /*
- * A PM::Cursor knows the current PM::SongList, PM::Song, and PM::Patch, how
- * to move between songs and patches, and how to find them given name
- * regexes.
+ * A Cursor knows the current SongList, Song, and Patch, how to move between
+ * songs and patches, and how to find them given name regexes.
  */
 
-cursor *cursor_new(patchmaster *pm) {
-  cursor *c = (cursor *)malloc(sizeof(cursor));
-  c->pm = pm;
-  cursor_clear(c);
-  c->song_list_name = c->song_name = c->patch_name = 0;
-  return c;
+Cursor::Cursor(patchmaster *pmaster)
+  : pm(pmaster)
+{
+  song_list_name = song_name = patch_name = 0;
+  clear();
 }
 
-void cursor_free(cursor *c) {
-  free(c);
+Cursor::~Cursor() {
 }
 
-void cursor_clear(cursor *c) {
-  c->song_list_index = c->song_index = c->patch_index = UNDEFINED;
-  // Do not erase names saved by cursor_mark();
+void Cursor::clear() {
+  song_list_index = song_index = patch_index = UNDEFINED;
+  // Do not erase names saved by mark();
 }
 
 /*
  * Set @song_list to All Songs, @song to first song, and
  * @patch to song's first patch. Song and patch may be +nil+.
  */
-void cursor_init(cursor *c) {
-  c->song_list_index = 0;
+void Cursor::init() {
+  song_list_index = 0;
 
-  SongList *sl = cursor_song_list(c);
+  SongList *sl = song_list();
   if (sl != 0 && list_length(sl->songs) > 0) {
-    c->song_index = 0;
-    Song *s = cursor_song(c);
-    c->patch_index = (s != 0 && list_length(s->patches) > 0) ? 0 : UNDEFINED;
+    song_index = 0;
+    Song *s = song();
+    patch_index = (s != 0 && list_length(s->patches) > 0) ? 0 : UNDEFINED;
   }
   else {
-    c->song_index = UNDEFINED;
-    c->patch_index = UNDEFINED;
+    song_index = UNDEFINED;
+    patch_index = UNDEFINED;
   }
 }
 
-SongList *cursor_song_list(cursor *c) {
-  if (c->song_list_index != UNDEFINED)
-    return (SongList *)list_at(c->pm->song_lists, c->song_list_index);
+SongList *Cursor::song_list() {
+  if (song_list_index != UNDEFINED)
+    return (SongList *)list_at(pm->song_lists, song_list_index);
   else
     return 0;
 }
 
-Song *cursor_song(cursor *c) {
-  SongList *sl = cursor_song_list(c);
-  if (sl == 0 || c->song_index == UNDEFINED)
+Song *Cursor::song() {
+  SongList *sl = song_list();
+  if (sl == 0 || song_index == UNDEFINED)
     return 0;
-  return (Song *)list_at(sl->songs, c->song_index);
+  return (Song *)list_at(sl->songs, song_index);
 }
 
-Patch *cursor_patch(cursor *c) {
-  Song *song = cursor_song(c);
-  if (song == 0 || c->patch_index == UNDEFINED)
+Patch *Cursor::patch() {
+  Song *s = song();
+  if (s == 0 || patch_index == UNDEFINED)
     return 0;
-  return (Patch *)list_at(song->patches, c->patch_index);
+  return (Patch *)list_at(s->patches, patch_index);
 }
 
-void cursor_next_song(cursor *c) {
-  if (c->song_list_index == UNDEFINED)
+void Cursor::next_song() {
+  if (song_list_index == UNDEFINED)
     return;
-  SongList *sl = cursor_song_list(c);
-  if (c->song_index == list_length(sl->songs)-1)
+  SongList *sl = song_list();
+  if (song_index == list_length(sl->songs)-1)
     return;
 
-  ++c->song_index;
-  c->patch_index = 0;
+  ++song_index;
+  patch_index = 0;
 }
 
-void cursor_prev_song(cursor *c) {
-  if (c->song_list_index == UNDEFINED || c->song_index == 0)
+void Cursor::prev_song() {
+  if (song_list_index == UNDEFINED || song_index == 0)
     return;
 
-  --c->song_index;
-  c->patch_index = 0;
+  --song_index;
+  patch_index = 0;
 }
 
-void cursor_next_patch(cursor *c) {
-  Song *s = cursor_song(c);
+void Cursor::next_patch() {
+  Song *s = song();
   if (s == 0)
     return;
 
-  if (c->patch_index == list_length(s->patches)-1)
-    cursor_next_song(c);
+  if (patch_index == list_length(s->patches)-1)
+    next_song();
   else
-    ++c->patch_index;
+    ++patch_index;
 }
 
-void cursor_prev_patch(cursor *c) {
-  if (c->patch_index == 0)
-    cursor_prev_song(c);
+void Cursor::prev_patch() {
+  if (patch_index == 0)
+    prev_song();
   else
-    --c->patch_index;
+    --patch_index;
 }
 
-void cursor_debug(cursor *cursor) {
-  if (cursor == 0) {
-    vdebug("cursor NULL\n");
-    return;
-  }
-
-  vdebug("cursor %p\n", cursor);
-  vdebug("  pm %p\n", cursor->pm);
-  vdebug("  song_list_index %d\n", cursor->song_list_index);
-  vdebug("  song_index %d\n", cursor->song_index);
-  vdebug("  patch_index %d\n", cursor->patch_index);
+void Cursor::debug() {
+  vdebug("cursor %p\n", this);
+  vdebug("  pm %p\n", pm);
+  vdebug("  song_list_index %d\n", song_list_index);
+  vdebug("  song_index %d\n", song_index);
+  vdebug("  patch_index %d\n", patch_index);
 }

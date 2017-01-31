@@ -2,16 +2,15 @@
 #define TRIGGER_H
 
 #include <portmidi.h>
+#include "named.h"
 #include "list.h"
 
-typedef struct trigger {
-  // TODO
-  char *name;
-} trigger;
+class Trigger : public Named {
+public:
+  Trigger(const char *name);
+  ~Trigger();
 
-trigger *trigger_new(char *);
-void trigger_free(trigger *);
-
-void trigger_signal(trigger *, PmEvent *buf, int len);
+  void signal(PmEvent *buf, int len);
+};
 
 #endif /* TRIGGER_H */

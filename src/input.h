@@ -23,8 +23,8 @@ public:
   void add_connection(Connection *);
   void remove_connection(Connection *);
 
-  void add_trigger(trigger *);
-  void remove_trigger(trigger *);
+  void add_trigger(Trigger *);
+  void remove_trigger(Trigger *);
 
   void start();
   void stop();

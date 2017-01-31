@@ -43,11 +43,11 @@ void Input::remove_connection(Connection *conn) {
   list_remove(connections, conn);
 }
 
-void Input::add_trigger(trigger *trigger) {
+void Input::add_trigger(Trigger *trigger) {
   list_append(triggers, trigger);
 }
 
-void Input::remove_trigger(trigger *trigger) {
+void Input::remove_trigger(Trigger *trigger) {
   list_remove(triggers, trigger);
 }
 
@@ -76,7 +76,7 @@ void Input::read(PmEvent *buf, int len) {
 
   // triggers
   for (int i = 0; i < list_length(triggers); ++i)
-    trigger_signal((trigger *)list_at(triggers, i), buf, len);
+    ((Trigger *)list_at(triggers, i))->signal(buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;

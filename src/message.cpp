@@ -2,17 +2,12 @@
 #include <string.h>
 #include "message.h"
 
-message *message_new(char *name) {
-  message *m = (message *)malloc(sizeof(message));
-  m->name = (char *)malloc(strlen(name) + 1);
-  strcpy(m->name, name);
-  m->messages = list_new();
-
-  return m;
+Message::Message(const char *name)
+  : Named(name)
+{
+  messages = list_new();
 }
 
-void message_free(message *m) {
-  free(m->name);
-  list_free(m->messages, 0);
-  free(m);
+Message::~Message() {
+  list_free(messages, 0);
 }

@@ -7,14 +7,14 @@
 #include "output.h"
 #include "message.h"
 
-typedef struct cursor cursor;
+class Cursor;
 
 typedef struct patchmaster {
   list *inputs;
   list *outputs;
   SongList *all_songs;
   list *song_lists;
-  cursor *cursor;
+  Cursor *cursor;
   bool running;
   bool testing;
   list *messages;

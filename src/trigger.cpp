@@ -2,19 +2,14 @@
 #include <string.h>
 #include "trigger.h"
 
-trigger *trigger_new(char *name) {
-  trigger *t = (trigger *)malloc(sizeof(trigger));
-  t->name = (char *)malloc(strlen(name)+1);
-  strcpy(t->name, name);
-  return t;
+Trigger::Trigger(const char *name)
+  : Named(name)
+{
 }
 
-void trigger_free(trigger *t) {
-  free(t->name);
-  free(t);
+Trigger::~Trigger() {
 }
 
-void trigger_signal(trigger *t, PmEvent *buf, int len) {
+void Trigger::signal(PmEvent *buf, int len) {
   // TODO
 }
-

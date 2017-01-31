@@ -1,14 +1,15 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include "named.h"
 #include "list.h"
 
-typedef struct message {
-  char *name;
+class Message : public Named {
+public:
   list *messages;
-} message;
 
-message *message_new(char *name);
-void message_free(message *);
+  Message(const char *name);
+  ~Message();
+};
 
 #endif /* MESSAGE_H */

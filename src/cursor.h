@@ -6,7 +6,8 @@
 #include "song.h"
 #include "patch.h"
 
-typedef struct cursor {
+class Cursor {
+public:
   patchmaster *pm;
   int song_list_index;
   int song_index;
@@ -14,23 +15,23 @@ typedef struct cursor {
   char *song_list_name;
   char *song_name;
   char *patch_name;
-} cursor;
 
-cursor *cursor_new(patchmaster *pm);
-void cursor_free(cursor *);
+  Cursor(patchmaster *pm);
+  ~Cursor();
 
-void cursor_clear(cursor *);
-void cursor_init(cursor *);
+  void clear();
+  void init();
 
-SongList *cursor_song_list(cursor *);
-Song *cursor_song(cursor *);
-Patch *cursor_patch(cursor *);
+  SongList *song_list();
+  Song *song();
+  Patch *patch();
 
-void cursor_next_song(cursor *);
-void cursor_prev_song(cursor *);
-void cursor_next_patch(cursor *);
-void cursor_prev_patch(cursor *);
+  void next_song();
+  void prev_song();
+  void next_patch();
+  void prev_patch();
 
-void cursor_debug(cursor *);
+  void debug();
+};
 
-#endif /* CURSOR_H */
+#endif /* H */
