@@ -5,22 +5,21 @@
 #include "../named.h"
 #include "../list.h"
 
-typedef struct list_window {
-  Window *w;
+class ListWindow : public Window {
+public:
   list *list;
   int offset;
   Named *curr_item;
-} list_window;
 
-list_window *list_window_new(rect, const char *);
-void list_window_free(list_window *);
+  ListWindow(struct rect, const char *);
+  ~ListWindow();
 
-void list_window_set_contents(list_window *, const char *title, list *list,
-                              Named *curr_item);
-void list_window_draw(list_window *);
+  void set_contents(const char *title, struct list *list, Named *curr_item);
+  void draw();
 
 #ifdef DEBUG
-void list_window_debug(list_window *);
+  void debug();
 #endif
+};
 
 #endif /* LIST_WINDOW_H */

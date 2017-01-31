@@ -13,9 +13,9 @@
 #define PTR_FUNC(f) ((void *(*)(void *))f)
 
 typedef struct windows {
-  list_window *song_lists;
-  list_window *song_list;
-  list_window *song;
+  ListWindow *song_lists;
+  ListWindow *song_list;
+  ListWindow *song;
   PatchWindow *patch;
   Window *message;
   TriggerWindow *trigger;
@@ -129,9 +129,9 @@ void config_curses() {
 windows *create_windows() {
   windows *ws = (windows *)malloc(sizeof(windows));
 
-  ws->song_lists = list_window_new(geom_song_lists_rect(), 0);
-  ws->song_list = list_window_new(geom_song_list_rect(), "Song List");
-  ws->song = list_window_new(geom_song_rect(), "Song");
+  ws->song_lists = new ListWindow(geom_song_lists_rect(), 0);
+  ws->song_list = new ListWindow(geom_song_list_rect(), "Song List");
+  ws->song = new ListWindow(geom_song_rect(), "Song");
   ws->patch = new PatchWindow(geom_patch_rect(), "Patch");
   ws->message = new Window(geom_message_rect(), "");
   ws->trigger = new TriggerWindow(geom_trigger_rect(), "");
@@ -144,9 +144,9 @@ windows *create_windows() {
 }
 
 void resize_windows(windows *ws) {
-  ws->song_lists->w->move_and_resize(geom_song_lists_rect());
-  ws->song_list->w->move_and_resize(geom_song_list_rect());
-  ws->song->w->move_and_resize(geom_song_rect());
+  ws->song_lists->move_and_resize(geom_song_lists_rect());
+  ws->song_list->move_and_resize(geom_song_list_rect());
+  ws->song->move_and_resize(geom_song_rect());
   ws->patch->move_and_resize(geom_patch_rect());
   ws->message->move_and_resize(geom_message_rect());
   ws->trigger->move_and_resize(geom_trigger_rect());
@@ -154,9 +154,9 @@ void resize_windows(windows *ws) {
 }
 
 void free_windows(windows *ws) {
-  list_window_free(ws->song_lists);
-  list_window_free(ws->song_list);
-  list_window_free(ws->song);
+  delete ws->song_lists;
+  delete ws->song_list;
+  delete ws->song;
   delete ws->patch;
   delete ws->message;
   delete ws->trigger;
@@ -165,17 +165,17 @@ void free_windows(windows *ws) {
 
 void refresh_all(PatchMaster *pm, windows *ws) {
   set_window_data(pm, ws);
-  list_window_draw(ws->song_lists);
-  list_window_draw(ws->song_list);
-  list_window_draw(ws->song);
+  ws->song_lists->draw();
+  ws->song_list->draw();
+  ws->song->draw();
   ws->patch->draw();
   ws->message->draw();
   ws->trigger->draw();
   ws->info->draw();
   wnoutrefresh(stdscr);
-  wnoutrefresh(ws->song_lists->w->win);
-  wnoutrefresh(ws->song_list->w->win);
-  wnoutrefresh(ws->song->w->win);
+  wnoutrefresh(ws->song_lists->win);
+  wnoutrefresh(ws->song_list->win);
+  wnoutrefresh(ws->song->win);
   wnoutrefresh(ws->patch->win);
   wnoutrefresh(ws->info->win);
   wnoutrefresh(ws->trigger->win);
@@ -183,23 +183,20 @@ void refresh_all(PatchMaster *pm, windows *ws) {
 }
 
 void set_window_data(PatchMaster *pm, windows *ws) {
-  list_window_set_contents(ws->song_lists, "Song Lists", pm->song_lists,
-                           pm->cursor->song_list());
+  ws->song_lists->set_contents("Song Lists", pm->song_lists, pm->cursor->song_list());
 
   SongList *sl = pm->cursor->song_list();
-  list_window_set_contents(ws->song_list, sl->name.c_str(),
-                           sl->songs, pm->cursor->song());
+  ws->song_list->set_contents(sl->name.c_str(), sl->songs, pm->cursor->song());
 
   Song *song = pm->cursor->song();
   if (song != 0) {
-    list_window_set_contents(ws->song, song->name.c_str(),
-                             song->patches, pm->cursor->patch());
+    ws->song->set_contents(song->name.c_str(), song->patches, pm->cursor->patch());
     ws->info->set_contents(song->notes);
     Patch *patch = pm->cursor->patch();
     ws->patch->set_contents(patch);
   }
   else {
-    list_window_set_contents(ws->song, 0, 0, 0);
+    ws->song->set_contents(0, 0, 0);
     ws->info->set_contents(0);
     ws->patch->set_contents(0);
   }

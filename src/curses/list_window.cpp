@@ -1,65 +1,64 @@
 #include <stdlib.h>
 #include "list_window.h"
 
-list_window *list_window_new(rect r, const char *title_prefix) {
-  list_window *lw = (list_window *)malloc(sizeof(list_window));
-  lw->w = new Window(r, title_prefix);
-  lw->list = 0;
-  lw->offset = 0;
-  lw->curr_item = 0;
-  return lw;
+ListWindow::ListWindow(struct rect r, const char *title_prefix)
+  : Window(r, title_prefix)
+{
+  list = 0;
+  offset = 0;
+  curr_item = 0;
 }
 
-void list_window_free(list_window * lw) {
-  delete lw->w;
+ListWindow::~ListWindow() {
 }
 
-void list_window_set_contents(list_window *lw, const char *title, list *list,
-                              Named *curr_item) {
-  lw->w->title = title;
-  lw->list = list;
-  lw->curr_item = curr_item;
-  list_window_draw(lw);
+void ListWindow::set_contents(const char *title_str, struct list *l,
+                              Named *curr_item_ptr)
+{
+  title = title_str;
+  list = l;
+  curr_item = curr_item_ptr;
+  draw();
 }
 
-void list_window_draw(list_window *lw) {
-  lw->w->draw();
-  if (lw->list == 0)
+void ListWindow::draw() {
+  Window::draw();
+  if (list == 0)
     return;
 
-  int vis_height = lw->w->visible_height();
+  int vis_height = visible_height();
 
-  int curr_index = list_index_of(lw->list, lw->curr_item);
+  int curr_index = list_index_of(list, curr_item);
   if (curr_index == -1)
     curr_index = 0;
-  if (curr_index < lw->offset)
-    lw->offset = curr_index;
-  else if (curr_index >= lw->offset + vis_height)
-    lw->offset = curr_index - vis_height + 1;
+  if (curr_index < offset)
+    offset = curr_index;
+  else if (curr_index >= offset + vis_height)
+    offset = curr_index - vis_height + 1;
 
-  for (int i = lw->offset; i < list_length(lw->list) && i < lw->offset + vis_height; ++i) {
-    Named *thing = (Named *)list_at(lw->list, i);
-    wmove(lw->w->win, i+1, 1);
+  for (int i = offset; i < list_length(list) && i < offset + vis_height; ++i) {
+    Named *thing = (Named *)list_at(list, i);
+    wmove(win, i+1, 1);
 
-    if (thing == lw->curr_item)
-      wattron(lw->w->win, A_REVERSE);
+    if (thing == curr_item)
+      wattron(win, A_REVERSE);
 
-    waddch(lw->w->win, ' ');
-    waddstr(lw->w->win, thing->name.c_str());
-    waddch(lw->w->win, ' ');
+    waddch(win, ' ');
+    waddstr(win, thing->name.c_str());
+    waddch(win, ' ');
 
-    if (thing == lw->curr_item)
-      wattroff(lw->w->win, A_REVERSE);
+    if (thing == curr_item)
+      wattroff(win, A_REVERSE);
   }
 }
 
 #ifdef DEBUG
 
-void list_window_debug(list_window *lw) {
-  fprintf(stderr, "list_window %p, offset %d, ", lw, lw->offset);
-  window_debug(lw->w);
-  fprintf(stderr, "  list in list window %p:\n", lw);
-  list_debug(lw->list, "list in list window");
-  fprintf(stderr, "  address of curr_item = %p\r\n", lw->curr_item);
+void ListWindow::debug() {
+  fprintf(stderr, "list_window %p, offset %d, ", this, offset);
+  window_debug(w);
+  fprintf(stderr, "  list in list window %p:\n", this);
+  list_debug(list, "list in list window");
+  fprintf(stderr, "  address of curr_item = %p\r\n", curr_item);
 }
 #endif
