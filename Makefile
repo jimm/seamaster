@@ -1,8 +1,9 @@
 NAME = seamaster
 # DEBUG = -DDEBUG -DDEBUG_STDERR
-CPPFLAGS += -MD -MP -g $(DEBUG)
+MACOS_VER = 10.9
+CPPFLAGS += -mmacosx-version-min=$(MACOS_VER) -MD -MP -g $(DEBUG)
 LIBS = -lc -lc++ -lncurses -lportmidi -lsqlite3
-LDFLAGS += $(LIBS) -macosx_version_min 10.10
+LDFLAGS += $(LIBS) -macosx_version_min $(MACOS_VER)
 
 SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp)
 OBJS = $(SRC:%.cpp=%.o)
@@ -23,7 +24,6 @@ $(NAME): $(OBJS)
 test: $(NAME)_test
 	./$(NAME)_test
 
-# Move "real" .o files out of the way so mocks with same name will be picked up.
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)
 
