@@ -16,10 +16,10 @@ typedef struct windows {
   list_window *song_lists;
   list_window *song_list;
   list_window *song;
-  patch_window *patch;
-  window *message;
-  trigger_window *trigger;
-  info_window *info;
+  PatchWindow *patch;
+  Window *message;
+  TriggerWindow *trigger;
+  InfoWindow *info;
 } windows;
 
 void config_curses();
@@ -132,10 +132,10 @@ windows *create_windows() {
   ws->song_lists = list_window_new(geom_song_lists_rect(), 0);
   ws->song_list = list_window_new(geom_song_list_rect(), "Song List");
   ws->song = list_window_new(geom_song_rect(), "Song");
-  ws->patch = patch_window_new(geom_patch_rect(), "Patch");
-  ws->message = window_new(geom_message_rect(), 0);
-  ws->trigger = trigger_window_new(geom_trigger_rect(), 0);
-  ws->info = info_window_new(geom_info_rect(), 0);
+  ws->patch = new PatchWindow(geom_patch_rect(), "Patch");
+  ws->message = new Window(geom_message_rect(), "");
+  ws->trigger = new TriggerWindow(geom_trigger_rect(), "");
+  ws->info = new InfoWindow(geom_info_rect(), "");
 
   scrollok(stdscr, false);
   scrollok(ws->message->win, false);
@@ -144,23 +144,23 @@ windows *create_windows() {
 }
 
 void resize_windows(windows *ws) {
-  window_move_and_resize(ws->song_lists->w, geom_song_lists_rect());
-  window_move_and_resize(ws->song_list->w, geom_song_list_rect());
-  window_move_and_resize(ws->song->w, geom_song_rect());
-  window_move_and_resize(ws->patch->w, geom_patch_rect());
-  window_move_and_resize(ws->message, geom_message_rect());
-  window_move_and_resize(ws->trigger->w, geom_trigger_rect());
-  window_move_and_resize(ws->info->w, geom_info_rect());
+  ws->song_lists->w->move_and_resize(geom_song_lists_rect());
+  ws->song_list->w->move_and_resize(geom_song_list_rect());
+  ws->song->w->move_and_resize(geom_song_rect());
+  ws->patch->move_and_resize(geom_patch_rect());
+  ws->message->move_and_resize(geom_message_rect());
+  ws->trigger->move_and_resize(geom_trigger_rect());
+  ws->info->move_and_resize(geom_info_rect());
 }
 
 void free_windows(windows *ws) {
   list_window_free(ws->song_lists);
   list_window_free(ws->song_list);
   list_window_free(ws->song);
-  patch_window_free(ws->patch);
-  window_free(ws->message);
-  trigger_window_free(ws->trigger);
-  info_window_free(ws->info);
+  delete ws->patch;
+  delete ws->message;
+  delete ws->trigger;
+  delete ws->info;
 }
 
 void refresh_all(PatchMaster *pm, windows *ws) {
@@ -168,17 +168,17 @@ void refresh_all(PatchMaster *pm, windows *ws) {
   list_window_draw(ws->song_lists);
   list_window_draw(ws->song_list);
   list_window_draw(ws->song);
-  patch_window_draw(ws->patch);
-  window_draw(ws->message);
-  trigger_window_draw(ws->trigger);
-  info_window_draw(ws->info);
+  ws->patch->draw();
+  ws->message->draw();
+  ws->trigger->draw();
+  ws->info->draw();
   wnoutrefresh(stdscr);
   wnoutrefresh(ws->song_lists->w->win);
   wnoutrefresh(ws->song_list->w->win);
   wnoutrefresh(ws->song->w->win);
-  wnoutrefresh(ws->patch->w->win);
-  wnoutrefresh(ws->info->w->win);
-  wnoutrefresh(ws->trigger->w->win);
+  wnoutrefresh(ws->patch->win);
+  wnoutrefresh(ws->info->win);
+  wnoutrefresh(ws->trigger->win);
   doupdate();
 }
 
@@ -194,14 +194,14 @@ void set_window_data(PatchMaster *pm, windows *ws) {
   if (song != 0) {
     list_window_set_contents(ws->song, song->name.c_str(),
                              song->patches, pm->cursor->patch());
-    info_window_set_contents(ws->info, song->notes);
+    ws->info->set_contents(song->notes);
     Patch *patch = pm->cursor->patch();
-    patch_window_set_contents(ws->patch, patch);
+    ws->patch->set_contents(patch);
   }
   else {
     list_window_set_contents(ws->song, 0, 0, 0);
-    info_window_set_contents(ws->info, 0);
-    patch_window_set_contents(ws->patch, 0);
+    ws->info->set_contents(0);
+    ws->patch->set_contents(0);
   }
 }
 
@@ -217,12 +217,11 @@ void close_screen() {
 
 void gui_help(windows *ws) {
   rect r = geom_help_rect();
-  help_window *hw = help_window_new(r, "Help");
-  help_window_draw(hw);
-  wnoutrefresh(hw->w->win);
+  HelpWindow hw(r, "Help");
+  hw.draw();
+  wnoutrefresh(hw.win);
   doupdate();
   getch();                      /* wait for key and eat it */
-  help_window_free(hw);
 }
 
 void show_message(windows *ws, const char *msg) {

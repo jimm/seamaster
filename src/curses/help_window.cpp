@@ -3,29 +3,21 @@
 #include "help_window.h"
 #include "info_window.h"
 
-help_window *help_window_new(rect r, const char *title) {
-  help_window *hw = (help_window *)malloc(sizeof(help_window));
-  hw->w = window_new(r, 0);
-  char *title_copy = (char *)malloc(strlen(title)+1);
-  strcpy(title_copy, title);
-  hw->w->title = title_copy;
-  hw->lines = info_window_text_to_lines(help_window_read_help());
-  return hw;
+HelpWindow::HelpWindow(struct rect r, const char *title)
+  : Window(r, title)
+{
+  lines = info_window_text_to_lines(help_window_read_help());
 }
 
-void help_window_free(help_window *hw) {
-  free((void *)hw->w->title);
-  if (list_length(hw->lines) > 0)
-    free(list_first(hw->lines));
-  list_free(hw->lines, 0);
-  free(hw);
+HelpWindow::~HelpWindow() {
+  info_window_free_lines(lines);
 }
 
-void help_window_draw(help_window *hw) {
-  window_draw(hw->w);
-  for (int i = 0; i < list_length(hw->lines); ++i) {
-    wmove(hw->w->win, i+1, 1);
-    waddstr(hw->w->win, (char *)list_at(hw->lines, i));
+void HelpWindow::draw() {
+  Window::draw();
+  for (int i = 0; i < list_length(lines); ++i) {
+    wmove(win, i+1, 1);
+    waddstr(win, (char *)list_at(lines, i));
   }
 }
 

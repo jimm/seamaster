@@ -36,18 +36,14 @@ src/curses/patch_window.o: src/curses/patch_window.cpp \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  src/curses/patch_window.h src/curses/window.h /usr/include/ncurses.h \
-  /usr/include/ncurses_dll.h /usr/include/stdio.h \
-  /usr/include/sys/_types/_va_list.h /usr/include/sys/stdio.h \
-  /usr/include/sys/_types/_off_t.h /usr/include/unctrl.h \
-  /usr/include/curses.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
-  src/curses/geometry.h src/curses/../patch.h \
-  /usr/local/include/portmidi.h src/curses/../named.h \
+  src/curses/patch_window.h src/curses/window.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
   /usr/include/wchar.h /usr/include/sys/_types/_mbstate_t.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
+  /usr/include/stdio.h /usr/include/sys/_types/_va_list.h \
+  /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
   /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/_wctype.h /usr/include/sys/_types/_wint_t.h \
@@ -80,7 +76,10 @@ src/curses/patch_window.o: src/curses/patch_window.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
-  src/curses/../list.h \
+  /usr/include/ncurses.h /usr/include/ncurses_dll.h \
+  /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h \
+  src/curses/../patch.h /usr/local/include/portmidi.h \
+  src/curses/../named.h src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/curses/../connection.h src/curses/../input.h \
   /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
@@ -234,32 +233,6 @@ src/curses/patch_window.h:
 
 src/curses/window.h:
 
-/usr/include/ncurses.h:
-
-/usr/include/ncurses_dll.h:
-
-/usr/include/stdio.h:
-
-/usr/include/sys/_types/_va_list.h:
-
-/usr/include/sys/stdio.h:
-
-/usr/include/sys/_types/_off_t.h:
-
-/usr/include/unctrl.h:
-
-/usr/include/curses.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
-
-src/curses/geometry.h:
-
-src/curses/../patch.h:
-
-/usr/local/include/portmidi.h:
-
-src/curses/../named.h:
-
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config:
@@ -269,6 +242,16 @@ src/curses/../named.h:
 /usr/include/wchar.h:
 
 /usr/include/sys/_types/_mbstate_t.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
+
+/usr/include/stdio.h:
+
+/usr/include/sys/_types/_va_list.h:
+
+/usr/include/sys/stdio.h:
+
+/usr/include/sys/_types/_off_t.h:
 
 /usr/include/time.h:
 
@@ -343,6 +326,22 @@ src/curses/../named.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept:
+
+/usr/include/ncurses.h:
+
+/usr/include/ncurses_dll.h:
+
+/usr/include/unctrl.h:
+
+/usr/include/curses.h:
+
+src/curses/geometry.h:
+
+src/curses/../patch.h:
+
+/usr/local/include/portmidi.h:
+
+src/curses/../named.h:
 
 src/curses/../list.h:
 

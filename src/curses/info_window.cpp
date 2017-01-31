@@ -3,40 +3,36 @@
 #include "info_window.h"
 #include "help_window.h"
 
-void info_window_free_lines(list *);
-
-info_window *info_window_new(rect r, char *title_prefix) {
-  info_window *iw = (info_window *)malloc(sizeof(info_window));
-  iw->w = window_new(r, title_prefix);
-  iw->text_lines = 0;
-  iw->help_lines = info_window_text_to_lines(help_window_read_help());
-  iw->display_list = iw->help_lines; /* do not delete this */
-  return iw;
+InfoWindow::InfoWindow(struct rect r, const char *title_prefix)
+  : Window(r, title_prefix)
+{
+  text_lines = 0;
+  help_lines = info_window_text_to_lines(help_window_read_help());
+  display_list = help_lines;    /* do not delete this */
 }
 
-void info_window_free(info_window *iw) {
-  info_window_free_lines(iw->help_lines);
-  free(iw);
+InfoWindow::~InfoWindow() {
+  info_window_free_lines(help_lines);
 }
 
-void info_window_set_contents(info_window *iw, list *text_lines) {
+void InfoWindow::set_contents(list *text_lines) {
   if (text_lines && list_length(text_lines) > 0) {
-    iw->w->title = "Song Notes";
-    iw->text_lines = text_lines;
-    iw->display_list = iw->text_lines;
+    title = "Song Notes";
+    text_lines = text_lines;
+    display_list = text_lines;
   }
   else {
-    iw->w->title = "SeaMaster Help";
-    iw->display_list = iw->help_lines;
+    title = "SeaMaster Help";
+    display_list = help_lines;
   }
-  info_window_draw(iw);
+  draw();
 }
 
-void info_window_draw(info_window *iw) {
-  window_draw(iw->w);
-  for (int i = 0; i < list_length(iw->display_list); ++i) {
-    wmove(iw->w->win, i+1, 1);
-    waddstr(iw->w->win, (char *)list_at(iw->display_list, i));
+void InfoWindow::draw() {
+  Window::draw();
+  for (int i = 0; i < list_length(display_list); ++i) {
+    wmove(win, i+1, 1);
+    waddstr(win, (char *)list_at(display_list, i));
   }
 }
 

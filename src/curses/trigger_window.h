@@ -4,16 +4,16 @@
 #include "window.h"
 #include "../trigger.h"
 
-typedef struct trigger_window {
-  window *w;
+class TriggerWindow : public Window {
+public:
   Trigger *trigger;
-} trigger_window;
 
-trigger_window *trigger_window_new(rect, const char *);
-void trigger_window_free(trigger_window *);
+  TriggerWindow(struct rect, const char *);
+  ~TriggerWindow();
 
-void trigger_window_set_contents(trigger_window *, const char *title, Trigger *trigger);
+  void set_contents(const char *title, Trigger *trigger);
 
-void trigger_window_draw(trigger_window *);
+  void draw();
+};
 
 #endif /* TRIGGER_WINDOW_H */

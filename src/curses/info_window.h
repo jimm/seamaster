@@ -4,20 +4,21 @@
 #include "window.h"
 #include "../list.h"
 
-typedef struct info_window {
-  window *w;
+class InfoWindow : public Window {
+public:
   list *text_lines;
   list *help_lines;
   list *display_list;
-} info_window;
 
-info_window *info_window_new(rect, char *);
-void info_window_free(info_window *);
+  InfoWindow(struct rect, const char *);
+  ~InfoWindow();
 
-void info_window_set_contents(info_window *, list *text_lines);
+  void set_contents(list *text_lines);
 
-void info_window_draw(info_window *);
+  void draw();
+};
 
 list *info_window_text_to_lines(const char *);
+void info_window_free_lines(list *);
 
 #endif /* INFO_WINDOW_H */

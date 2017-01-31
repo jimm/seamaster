@@ -4,16 +4,16 @@
 #include "window.h"
 #include "../list.h"
 
-typedef struct help_window {
-  window *w;
+class HelpWindow : public Window {
+public:
   list *lines;
-} help_window;
 
-help_window *help_window_new(rect, const char *);
-void help_window_free(help_window *);
+  HelpWindow(struct rect, const char *);
+  ~HelpWindow();
 
-void help_window_draw(help_window *);
+  void draw();
+};
 
-const char *help_window_read_help();  // used by info_window
+const char *help_window_read_help(); // used by info_window
 
 #endif /* HELP_WINDOW_H */

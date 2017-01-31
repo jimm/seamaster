@@ -3,7 +3,7 @@
 
 list_window *list_window_new(rect r, const char *title_prefix) {
   list_window *lw = (list_window *)malloc(sizeof(list_window));
-  lw->w = window_new(r, title_prefix);
+  lw->w = new Window(r, title_prefix);
   lw->list = 0;
   lw->offset = 0;
   lw->curr_item = 0;
@@ -11,6 +11,7 @@ list_window *list_window_new(rect r, const char *title_prefix) {
 }
 
 void list_window_free(list_window * lw) {
+  delete lw->w;
 }
 
 void list_window_set_contents(list_window *lw, const char *title, list *list,
@@ -22,11 +23,11 @@ void list_window_set_contents(list_window *lw, const char *title, list *list,
 }
 
 void list_window_draw(list_window *lw) {
-  window_draw(lw->w);
+  lw->w->draw();
   if (lw->list == 0)
     return;
 
-  int vis_height = window_visible_height(lw->w);
+  int vis_height = lw->w->visible_height();
 
   int curr_index = list_index_of(lw->list, lw->curr_item);
   if (curr_index == -1)

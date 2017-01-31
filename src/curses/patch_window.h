@@ -4,16 +4,24 @@
 #include "window.h"
 #include "../patch.h"
 
-typedef struct patch_window {
-  window *w;
+class PatchWindow : public Window {
+public:
   Patch *patch;
-} patch_window;
 
-patch_window *patch_window_new(rect, const char *);
-void patch_window_free(patch_window *);
+  PatchWindow(struct rect, const char *);
+  ~PatchWindow();
 
-void patch_window_set_contents(patch_window *, Patch *patch);
+  void set_contents(Patch *patch);
 
-void patch_window_draw(patch_window *);
+  void draw();
+
+private:
+  void draw_headers();
+  void draw_connection(Connection *);
+  void format_chans(Connection *, char *);
+  void format_zone(Connection *, char *);
+  void format_xpose(Connection *, char *);
+  void format_prog(Connection *, char *);
+};
 
 #endif /* PATCH_WINDOW_H */

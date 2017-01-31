@@ -1,26 +1,25 @@
 #include <stdlib.h>
 #include "trigger_window.h"
 
-trigger_window *trigger_window_new(rect r, const char *title_prefix) {
-  trigger_window *tw = (trigger_window *)malloc(sizeof(trigger_window));
-  tw->w = window_new(r, title_prefix);
-  tw->w->title = "Triggers";
-  tw->trigger = 0;
-  return tw;
+TriggerWindow::TriggerWindow(struct rect r, const char *title_prefix)
+  : Window(r, title_prefix)
+{
+  title = "Triggers";
+  trigger = 0;
 }
 
-void trigger_window_free(trigger_window * tw) {
+TriggerWindow::~TriggerWindow() {
 }
 
-void trigger_window_set_contents(trigger_window *tw, const char *title, Trigger *trigger) {
-  tw->w->title = title;
-  tw->trigger = trigger;
-  trigger_window_draw(tw);
+void TriggerWindow::set_contents(const char *title, Trigger *trigger) {
+  title = title;
+  trigger = trigger;
+  draw();
 }
 
-void trigger_window_draw(trigger_window *tw) {
-  window_draw(tw->w);
-  if (tw->trigger == 0)
+void TriggerWindow::draw() {
+  Window::draw();
+  if (trigger == 0)
     return;
 
   // TODO

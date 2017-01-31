@@ -1,27 +1,34 @@
 #ifndef SM_WINDOW_H
 #define SM_WINDOW_H
 
+#include <string>
 #include <ncurses.h>
 #include "geometry.h"
 
-typedef struct window {
+using namespace std;
+
+class Window {
+public:
   WINDOW *win;
-  const char *title_prefix;
-  const char *title;
+  string title_prefix;
+  string title;
   rect rect;
   int max_contents_len;
-} window;
 
-window *window_new(rect r, const char *title_prefix);
-void window_free(window *);
+  Window(struct rect r, const char *title_prefix);
+  virtual ~Window();
 
-void window_move_and_resize(window *, rect);
-void window_draw(window *);
-int window_visible_height(window *);
-char *window_make_fit(window *, const char *, int);
+  void move_and_resize(struct rect);
+  void draw();
+  int visible_height();
+  char *make_fit(const char *, int);
 
 #ifdef DEBUG
-void window_debug(window *);
+  void window_debug(window *);
 #endif
+
+private:
+  void set_max_contents_len(int);
+};
 
 #endif /* SM_WINDOW_H */

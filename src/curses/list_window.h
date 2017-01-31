@@ -6,7 +6,7 @@
 #include "../list.h"
 
 typedef struct list_window {
-  window *w;
+  Window *w;
   list *list;
   int offset;
   Named *curr_item;
