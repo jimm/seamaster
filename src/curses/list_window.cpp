@@ -12,7 +12,7 @@ ListWindow::ListWindow(struct rect r, const char *title_prefix)
 ListWindow::~ListWindow() {
 }
 
-void ListWindow::set_contents(const char *title_str, struct list *l,
+void ListWindow::set_contents(const char *title_str, List *l,
                               Named *curr_item_ptr)
 {
   title = title_str;
@@ -28,7 +28,7 @@ void ListWindow::draw() {
 
   int vis_height = visible_height();
 
-  int curr_index = list_index_of(list, curr_item);
+  int curr_index = list->index_of(curr_item);
   if (curr_index == -1)
     curr_index = 0;
   if (curr_index < offset)
@@ -36,8 +36,8 @@ void ListWindow::draw() {
   else if (curr_index >= offset + vis_height)
     offset = curr_index - vis_height + 1;
 
-  for (int i = offset; i < list_length(list) && i < offset + vis_height; ++i) {
-    Named *thing = (Named *)list_at(list, i);
+  for (int i = offset; i < list->length() && i < offset + vis_height; ++i) {
+    Named *thing = (Named *)list->at(i);
     wmove(win, i+1, 1);
 
     if (thing == curr_item)

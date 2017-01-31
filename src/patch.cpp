@@ -5,7 +5,6 @@
 Patch::Patch(const char *patch_name)
   : Named(patch_name)
 {
-  connections = list_new();
   start_messages = stop_messages = 0;
   num_start_messages = num_stop_messages = 0;
   running = false;
@@ -16,19 +15,14 @@ Patch::~Patch() {
     free(start_messages);
   if (stop_messages != 0)
     free(stop_messages);
-  for (int i = 0; i < list_length(connections); ++i) {
-    Connection *conn = (Connection *)list_at(connections, i);
-    delete conn;
-  }
-  list_free(connections, 0);
+  for (int i = 0; i < connections.length(); ++i)
+    delete (Connection *)connections[i];
 }
 
-list *Patch::inputs() {
-  list *inputs = list_new();
-  for (int i = 0; i < list_length(connections); ++i) {
-    Connection *conn = (Connection *)list_at(connections, i);
-    list_append(inputs, conn->input);
-  }
+List *Patch::inputs() {
+  List *inputs = new List();
+  for (int i = 0; i < connections.length(); ++i)
+    inputs->append(((Connection *)connections[i])->input);
   return inputs;
 }
 
@@ -37,10 +31,8 @@ void Patch::start() {
   if (running)
     return;
 
-  for (int i = 0; i < list_length(connections); ++i) {
-    Connection *conn = (Connection *)list_at(connections, i);
-    conn->start(start_messages, num_start_messages);
-  }
+  for (int i = 0; i < connections.length(); ++i)
+    ((Connection *)connections[i])->start(start_messages, num_start_messages);
   running = true;
 }
 
@@ -53,17 +45,13 @@ void Patch::stop() {
   if (!running)
     return;
 
-  for (int i = 0; i < list_length(connections); ++i) {
-    Connection *conn = (Connection *)list_at(connections, i);
-    conn->stop(stop_messages, num_stop_messages);
-  }
+  for (int i = 0; i < connections.length(); ++i)
+    ((Connection *)connections[i])->stop(stop_messages, num_stop_messages);
   running = false;
 }
 
 void Patch::debug() {
   vdebug("patch %s\n", name.c_str());
-  for (int i = 0; i < list_length(connections); ++i) {
-    Connection *conn = (Connection *)list_at(connections, i);
-    conn->debug();
-  }
+  for (int i = 0; i < connections.length(); ++i)
+    ((Connection *)connections[i])->debug();
 }

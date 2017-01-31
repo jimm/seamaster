@@ -26,10 +26,9 @@ void PatchWindow::draw() {
   if (patch == 0)
     return;
 
-  list *conns = patch->connections;
-  for (int i = 0; i < list_length(conns); ++i) {
+  for (int i = 0; i < patch->connections.length(); ++i) {
     wmove(win, i+2, 1);
-    draw_connection((Connection *)list_at(conns, i));
+    draw_connection((Connection *)patch->connections.at(i));
   }
 }
 

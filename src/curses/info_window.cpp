@@ -15,8 +15,8 @@ InfoWindow::~InfoWindow() {
   info_window_free_lines(help_lines);
 }
 
-void InfoWindow::set_contents(list *text_lines) {
-  if (text_lines && list_length(text_lines) > 0) {
+void InfoWindow::set_contents(List *text_lines) {
+  if (text_lines && text_lines->length() > 0) {
     title = "Song Notes";
     text_lines = text_lines;
     display_list = text_lines;
@@ -30,9 +30,9 @@ void InfoWindow::set_contents(list *text_lines) {
 
 void InfoWindow::draw() {
   Window::draw();
-  for (int i = 0; i < list_length(display_list); ++i) {
+  for (int i = 0; i < display_list->length(); ++i) {
     wmove(win, i+1, 1);
-    waddstr(win, (char *)list_at(display_list, i));
+    waddstr(win, (char *)display_list->at(i));
   }
 }
 
@@ -40,24 +40,22 @@ void InfoWindow::draw() {
  * Splits `text` into lines and returns a list containing the lines. When
  * you are done with the list, only the first entry should be freed.
  */
-list *info_window_text_to_lines(const char *text) {
-  list *l = list_new();
+List *info_window_text_to_lines(const char *text) {
+  List *l = new List();
 
   char *line;
   char *s = strdup(text);
   while ((line = strsep(&s, "\n")) != NULL)
-    list_append(l, line);
+    l->append(line);
 
   return l;
 }
 
-void info_window_free_lines(list *lines) {
+void info_window_free_lines(List *lines) {
   if (lines == 0)
     return;
 
-  if (lines != 0) {
-    if (list_length(lines) > 0)
-      free(list_first(lines));
-    list_free(lines, 0);
-  }
+  if (lines->length() > 0)
+    free(lines->first());
+  delete lines;
 }

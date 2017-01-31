@@ -13,12 +13,6 @@ Input::Input(const char *sym, const char *name, int port_num)
   running = false;
   portmidi_thread = 0;
 
-  connections = list_new();
-  triggers = list_new();
-  for (int chan = 0; chan < MIDI_CHANNELS; ++chan)
-    for (int note = 0; note < NOTES_PER_CHANNEL; ++note)
-      notes_off_conns[chan][note] = list_new();
-
   if (real_port()) {
     int err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     // TODO check error
@@ -26,29 +20,24 @@ Input::Input(const char *sym, const char *name, int port_num)
 }
 
 Input::~Input() {
-  list_free(connections, 0);
-  list_free(triggers, 0);
-  for (int chan = 0; chan < 16; ++chan)
-    for (int note = 0; note < 128; ++note)
-      list_free(notes_off_conns[chan][note], 0);
 }
 
 void Input::add_connection(Connection *conn) {
   vdebug("input %p adding connection %p\n", this, conn);
-  list_append(connections, conn);
+  connections << conn;
 }
 
 void Input::remove_connection(Connection *conn) {
   vdebug("input %p removing connection %p\n", this, conn);
-  list_remove(connections, conn);
+  connections.remove(conn);
 }
 
 void Input::add_trigger(Trigger *trigger) {
-  list_append(triggers, trigger);
+  triggers << trigger;
 }
 
 void Input::remove_trigger(Trigger *trigger) {
-  list_remove(triggers, trigger);
+  triggers.remove(trigger);
 }
 
 void Input::start() {
@@ -75,8 +64,8 @@ void Input::read(PmEvent *buf, int len) {
   vdebug("input_read %d events\n", len);
 
   // triggers
-  for (int i = 0; i < list_length(triggers); ++i)
-    ((Trigger *)list_at(triggers, i))->signal(buf, len);
+  for (int i = 0; i < triggers.length(); ++i)
+    ((Trigger *)triggers[i])->signal(buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;
@@ -95,24 +84,22 @@ void Input::read(PmEvent *buf, int len) {
     // note off messages must be sent to their original connections, so for
     // incoming note on messages we store the current connections in
     // note_off_conns.
-    list *conns;
+    List conns;
     switch (high_nibble) {
     case NOTE_OFF:
       conns = notes_off_conns[chan][note];
       break;
     case NOTE_ON:
       conns = connections;
-      list_copy(notes_off_conns[chan][note], conns);
+      notes_off_conns[chan][note] = connections;
       break;
     default:
       conns = connections;
       break;
     }
 
-    for (int j = 0; j < list_length(conns); ++j) {
-      Connection *conn = (Connection *)list_at(conns, j);
-      conn->midi_in(msg);
-    }
+    for (int j = 0; j < conns.length(); ++j)
+      ((Connection *)conns[j])->midi_in(msg);
   }
 }
 
@@ -137,8 +124,8 @@ void Input::debug() {
   Instrument::debug();
   vdebug("  ...is an input\n");
   vdebug("  connections:");
-  for (int i = 0; i < list_length(connections); ++i)
-    vdebug("    %p\n", list_at(connections, i));
+  for (int i = 0; i < connections.length(); ++i)
+    vdebug("    %p\n", connections[i]);
   vdebug("  running: %d\n", running);
   vdebug("  thread: %p\n", portmidi_thread);
 }

@@ -9,7 +9,7 @@
 
 class Patch : public Named {
 public:
-  list *connections;
+  List connections;
   PmMessage *start_messages;
   int num_start_messages;
   PmMessage *stop_messages;
@@ -19,7 +19,7 @@ public:
   Patch(const char *name);
   ~Patch();
 
-  list *inputs();
+  List *inputs();
 
   void start();
   bool is_running();

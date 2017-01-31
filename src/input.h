@@ -11,11 +11,11 @@
 
 class Input : public Instrument {
 public:
-  list *connections;
-  list *triggers;
+  List connections;
+  List triggers;
   bool running;
   pthread_t portmidi_thread;
-  list *notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
+  List notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
 
   Input(const char *sym, const char *name, int port_num);
   ~Input();

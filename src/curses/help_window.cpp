@@ -15,9 +15,9 @@ HelpWindow::~HelpWindow() {
 
 void HelpWindow::draw() {
   Window::draw();
-  for (int i = 0; i < list_length(lines); ++i) {
+  for (int i = 0; i < lines->length(); ++i) {
     wmove(win, i+1, 1);
-    waddstr(win, (char *)list_at(lines, i));
+    waddstr(win, (char *)lines->at(i));
   }
 }
 

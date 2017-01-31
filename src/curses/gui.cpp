@@ -183,15 +183,15 @@ void refresh_all(PatchMaster *pm, windows *ws) {
 }
 
 void set_window_data(PatchMaster *pm, windows *ws) {
-  ws->song_lists->set_contents("Song Lists", pm->song_lists, pm->cursor->song_list());
+  ws->song_lists->set_contents("Song Lists", &pm->song_lists, pm->cursor->song_list());
 
   SongList *sl = pm->cursor->song_list();
-  ws->song_list->set_contents(sl->name.c_str(), sl->songs, pm->cursor->song());
+  ws->song_list->set_contents(sl->name.c_str(), &sl->songs, pm->cursor->song());
 
   Song *song = pm->cursor->song();
   if (song != 0) {
-    ws->song->set_contents(song->name.c_str(), song->patches, pm->cursor->patch());
-    ws->info->set_contents(song->notes);
+    ws->song->set_contents(song->name.c_str(), &song->patches, pm->cursor->patch());
+    ws->info->set_contents(&song->notes);
     Patch *patch = pm->cursor->patch();
     ws->patch->set_contents(patch);
   }

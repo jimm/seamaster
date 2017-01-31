@@ -6,19 +6,19 @@
 
 class InfoWindow : public Window {
 public:
-  list *text_lines;
-  list *help_lines;
-  list *display_list;
+  List *text_lines;
+  List *help_lines;
+  List *display_list;
 
   InfoWindow(struct rect, const char *);
   ~InfoWindow();
 
-  void set_contents(list *text_lines);
+  void set_contents(List *text_lines);
 
   void draw();
 };
 
-list *info_window_text_to_lines(const char *);
-void info_window_free_lines(list *);
+List *info_window_text_to_lines(const char *);
+void info_window_free_lines(List *);
 
 #endif /* INFO_WINDOW_H */

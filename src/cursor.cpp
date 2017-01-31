@@ -32,10 +32,10 @@ void Cursor::init() {
   song_list_index = 0;
 
   SongList *sl = song_list();
-  if (sl != 0 && list_length(sl->songs) > 0) {
+  if (sl != 0 && sl->songs.length() > 0) {
     song_index = 0;
     Song *s = song();
-    patch_index = (s != 0 && list_length(s->patches) > 0) ? 0 : UNDEFINED;
+    patch_index = (s != 0 && s->patches.length() > 0) ? 0 : UNDEFINED;
   }
   else {
     song_index = UNDEFINED;
@@ -45,7 +45,7 @@ void Cursor::init() {
 
 SongList *Cursor::song_list() {
   if (song_list_index != UNDEFINED)
-    return (SongList *)list_at(pm->song_lists, song_list_index);
+    return (SongList *)pm->song_lists[song_list_index];
   else
     return 0;
 }
@@ -54,21 +54,21 @@ Song *Cursor::song() {
   SongList *sl = song_list();
   if (sl == 0 || song_index == UNDEFINED)
     return 0;
-  return (Song *)list_at(sl->songs, song_index);
+  return (Song *)sl->songs[song_index];
 }
 
 Patch *Cursor::patch() {
   Song *s = song();
   if (s == 0 || patch_index == UNDEFINED)
     return 0;
-  return (Patch *)list_at(s->patches, patch_index);
+  return (Patch *)s->patches[patch_index];
 }
 
 void Cursor::next_song() {
   if (song_list_index == UNDEFINED)
     return;
   SongList *sl = song_list();
-  if (song_index == list_length(sl->songs)-1)
+  if (song_index == sl->songs.length()-1)
     return;
 
   ++song_index;
@@ -88,7 +88,7 @@ void Cursor::next_patch() {
   if (s == 0)
     return;
 
-  if (patch_index == list_length(s->patches)-1)
+  if (patch_index == s->patches.length()-1)
     next_song();
   else
     ++patch_index;

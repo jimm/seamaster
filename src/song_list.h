@@ -6,7 +6,7 @@
 
 class SongList : public Named {
 public:
-  list *songs;
+  List songs;
 
   SongList(const char *name);
   ~SongList();

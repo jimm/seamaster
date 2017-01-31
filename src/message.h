@@ -6,7 +6,7 @@
 
 class Message : public Named {
 public:
-  list *messages;
+  List messages;
 
   Message(const char *name);
   ~Message();

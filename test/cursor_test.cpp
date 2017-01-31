@@ -130,7 +130,7 @@ void test_cursor_song_list() {
 void test_cursor_song() {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
-  tassert(c->song() == list_first(pm->all_songs->songs), BAD_SONG);
+  tassert(c->song() == pm->all_songs->songs.first(), BAD_SONG);
   delete pm;
 }
 
@@ -138,7 +138,7 @@ void test_cursor_patch() {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   Song *s = c->song();
-  tassert(c->patch() == list_first(s->patches), BAD_PATCH);
+  tassert(c->patch() == s->patches.first(), BAD_PATCH);
   delete pm;
 }
 

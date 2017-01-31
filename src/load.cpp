@@ -21,13 +21,13 @@ const char * const whitespace = " \t";
 
 void parse_line(context *, char *);
 char *skip_first_word(char *);
-list *comma_sep_args(char *);
+List *comma_sep_args(char *);
 int chan_from_word(char *);
 void strip_newline(char *);
 
 PmDeviceID find_device(char *, char);
-Instrument *find_by_sym(list *, char *);
-Song *find_song(list *, char *);
+Instrument *find_by_sym(List &, char *);
+Song *find_song(List &, char *);
 
 int load_instrument(context *, char *, int);
 int load_message(context *, char *);
@@ -118,24 +118,25 @@ void parse_line(context *c, char *line) {
 }
 
 int load_instrument(context *c, char *line, int type) {
-  list *args = comma_sep_args(line);
-  PmDeviceID devid = find_device((char *)list_first(args), type);
+  List *args = comma_sep_args(line);
+  PmDeviceID devid = find_device((char *)args->at(0), type);
 
   if (devid == pmNoDevice && !c->pm->testing)
     return 1;
 
-  char *sym = (char *)list_at(args, 1);
-  char *name = (char *)list_at(args, 2);
+  char *sym = (char *)args->at(1);
+  char *name = (char *)args->at(2);
 
   switch (type) {
   case 'i':
-    list_append(c->pm->inputs, new Input(sym, name, devid));
+    c->pm->inputs << new Input(sym, name, devid);
     break;
   case 'o':
-    list_append(c->pm->outputs, new Output(sym, name, devid));
+    c->pm->outputs << new Output(sym, name, devid);
     break;
   }
-  list_free(args, 0);
+
+  delete args;
   return 0;
 }
 
@@ -152,7 +153,7 @@ int load_trigger(context *c, char *line) {
 int load_song(context *c, char *line) {
   char *name = skip_first_word(line);
   Song *s = new Song(name);
-  list_append(c->pm->all_songs->songs, s);
+  c->pm->all_songs->songs << s;
   c->song = s;
   c->patch = 0;
   c->conn = 0;
@@ -169,23 +170,24 @@ int load_notes(context *c) {
 int load_patch(context *c, char *line) {
   char *name = skip_first_word(line);
   Patch *p = new Patch(name);
-  list_append(c->song->patches, p);
+  c->song->patches << p;
   c->patch = p;
   c->conn = 0;
   return 0;
 }
 
 int load_connection(context *c, char *line) {
-  list *args = comma_sep_args(line);
-  Input *in = (Input *)find_by_sym(c->pm->inputs, (char *)list_first(args));
-  int in_chan = chan_from_word((char *)list_at(args, 1));
-  Output *out = (Output *)find_by_sym(c->pm->outputs, (char *)list_at(args, 2));
-  int out_chan = chan_from_word((char *)list_at(args, 3));
+  List *args = comma_sep_args(line);
+  Input *in = (Input *)find_by_sym(c->pm->inputs, (char *)args->at(0));
+  int in_chan = chan_from_word((char *)args->at(1));
+  Output *out = (Output *)find_by_sym(c->pm->outputs, (char *)args->at(2));
+  int out_chan = chan_from_word((char *)args->at(3));
 
   Connection *conn = new Connection(in, in_chan, out, out_chan);
-  list_append(c->patch->connections, conn);
+  c->patch->connections << conn;
   c->conn = conn;
 
+  delete args;
   return 0;
 }
 
@@ -198,7 +200,7 @@ int load_xpose(context *c, char *line) {
 int load_song_list(context *c, char *line) {
   char *name = skip_first_word(line);
   SongList *sl = new SongList(name);
-  list_append(c->pm->song_lists, sl);
+  c->pm->song_lists << sl;
 
   char song_name[BUFSIZ];
   while (fgets(song_name, BUFSIZ, c->fp) != 0 && strncmp(song_name, "end\n", 4) != 0) {
@@ -207,7 +209,7 @@ int load_song_list(context *c, char *line) {
     if (s == 0)
       fprintf(stderr, "error in set: can not find song named \"%s\"\n", song_name);
     else
-      list_append(sl->songs, find_song(c->pm->all_songs->songs, song_name));
+      sl->songs << find_song(c->pm->all_songs->songs, song_name);
   }
   c->song_list = sl;
 
@@ -221,8 +223,9 @@ int load_filter(context *c, char *line) {
 }
 
 int load_map(context *c, char *line) {
-  list *args = comma_sep_args(line);
-  c->conn->cc_maps[atoi((char *)list_at(args, 0))] = atoi((char *)list_at(args, 1));
+  List *args = comma_sep_args(line);
+  c->conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
+  delete args;
   return 0;
 }
 
@@ -243,14 +246,14 @@ char *skip_first_word(char *line) {
  * list as a list of strings. The contents should NOT be freed, since they
  * are a destructive mutation of `line`.
  */
-list *comma_sep_args(char *line) {
-  list *l = list_new();
+List *comma_sep_args(char *line) {
+  List *l = new List();
   char *args_start = skip_first_word(line);
 
   char *word;
   for (word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
     word += strspn(word, whitespace);
-    list_append(l, word);
+    l->append(word);
   }
 
   return l;
@@ -272,18 +275,18 @@ PmDeviceID find_device(char *name, char in_or_out) {
   return pmNoDevice;
 }
 
-Instrument *find_by_sym(list *list, char *name) {
-  for (int i = 0; i < list_length(list); ++i) {
-    Instrument *inst = (Instrument *)list_at(list, i);
+Instrument *find_by_sym(List &list, char *name) {
+  for (int i = 0; i < list.length(); ++i) {
+    Instrument *inst = (Instrument *)list[i];
     if (inst->sym == name)
       return inst;
   }
   return 0;
 }
 
-Song *find_song(list *list, char *name) {
-  for (int i = 0; i < list_length(list); ++i) {
-    Song *s = (Song *)list_at(list, i);
+Song *find_song(List &list, char *name) {
+  for (int i = 0; i < list.length(); ++i) {
+    Song *s = (Song *)list[i];
     if (s->name == name)
       return s;
   }

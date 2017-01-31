@@ -5,141 +5,136 @@
 
 #define INITIAL_SIZE 8
 
-void list_grow(list *, int);
-
-list *list_new() {
-  list *l = (list *)malloc(sizeof(list));
-  l->nodes = (void **)malloc(INITIAL_SIZE * sizeof(void *));
-  l->num_elements = 0;
-  l->num_allocated = INITIAL_SIZE;
-  return l;
+List::List() {
+  nodes = (void **)malloc(INITIAL_SIZE * sizeof(void *));
+  num_elements = 0;
+  num_allocated = INITIAL_SIZE;
 }
 
-void list_free(list *l, void (*content_freeing_func)(void *)) {
-  if (content_freeing_func != 0)
-    for (int i = 0; i < l->num_elements; ++i)
-      content_freeing_func(l->nodes[i]);
-  free(l->nodes);
-  free(l);
+List::~List() {
+  free(nodes);
 }
 
-void list_copy(list *dest, list *src) {
-  if (dest->num_allocated < src->num_elements)
-    list_grow(dest, src->num_elements);
-  memcpy(dest->nodes, src->nodes, src->num_elements * sizeof(void *));
-  dest->num_elements = src->num_elements;
+void List::copy(const List &src) {
+  if (num_allocated < src.num_elements)
+    grow(src.num_elements);
+  memcpy(nodes, src.nodes, src.num_elements * sizeof(void *));
+  num_elements = src.num_elements;
 }
 
-int list_length(list *l) {
-  return l->num_elements;
+int List::length() {
+  return num_elements;
 }
 
-void *list_at(list *l, int i) {
-  return (i >= 0 && i < l->num_elements) ? l->nodes[i] : 0;
+void *List::at(int i) {
+  return (i >= 0 && i < num_elements) ? nodes[i] : 0;
 }
 
-void list_at_set(list *l, int i, void *val) {
-  list_grow(l, i);
-  l->nodes[i] = val;
+void List::at_set(int i, void *val) {
+  grow(i);
+  nodes[i] = val;
 }
 
-int list_index_of(list *l, void *node) {
-  for (int i = 0; i < l->num_elements; ++i)
-    if (node == l->nodes[i])
+int List::index_of(void *node) {
+  for (int i = 0; i < num_elements; ++i)
+    if (node == nodes[i])
       return i;
   return -1;
 }
 
-void *list_first(list *l) {
-  return l->nodes[0];
+void *List::first() {
+  return nodes[0];
 }
 
-void *list_last(list *l) {
-  return l->num_elements > 0 ? l->nodes[l->num_elements-1] : 0;
+void *List::last() {
+  return num_elements > 0 ? nodes[num_elements-1] : 0;
 }
 
 // func may be 0
-void list_clear(list *l, void (*content_freeing_func)(void *)) {
+void List::clear(void (*content_freeing_func)(void *)) {
   if (content_freeing_func != 0)
-    for (int i = 0; i < l->num_elements; ++i)
-      content_freeing_func(l->nodes[i]);
-  l->num_elements = 0;
+    for (int i = 0; i < num_elements; ++i)
+      content_freeing_func(nodes[i]);
+  num_elements = 0;
 }  
 
-list *list_append(list *l, void *node) {
-  if (l->num_allocated == l->num_elements)
-    list_grow(l, l->num_elements + 1);
-  l->nodes[l->num_elements++] = node;
-  return l;
+void List::append(void *node) {
+  if (num_allocated == num_elements)
+    grow(num_elements + 1);
+  nodes[num_elements++] = node;
 }
 
-list *list_append_list(list *l, list *other) {
-  if (other->num_elements == 0)
-    return l;
+void List::append_list(const List &other) {
+  if (other.num_elements == 0)
+    return;
 
-  if (l->num_allocated < l->num_elements + other->num_elements)
-    list_grow(l, l->num_elements + other->num_elements);
-  memcpy(l->nodes, other->nodes, other->num_elements * sizeof(void *));
-  return l;
+  if (num_allocated < num_elements + other.num_elements)
+    grow(num_elements + other.num_elements);
+  memcpy(nodes, other.nodes, other.num_elements * sizeof(void *));
 }
 
 // insert before index
-list *list_insert(list *l, int index, void *node) {
-  if (l->num_allocated == l->num_elements)
-    list_grow(l, l->num_elements + 1);
-  memcpy(&l->nodes[index+1], &l->nodes[index],
-         (l->num_elements - index) * sizeof(void *));
-  ++l->num_elements;
-  l->nodes[index] = node;
-  return l;
+void List::insert(int index, void *node) {
+  if (num_allocated == num_elements)
+    grow(num_elements + 1);
+  memcpy(&nodes[index+1], &nodes[index],
+         (num_elements - index) * sizeof(void *));
+  ++num_elements;
+  nodes[index] = node;
 }
 
-void *list_remove_at(list *l, int index) {
-  if (index < 0 || index >= l->num_elements)
-    return 0;
+void List::remove_at(int index) {
+  if (index < 0 || index >= num_elements)
+    return;
 
-  void *node = l->nodes[index];
-  memcpy(&l->nodes[index], &l->nodes[index+1], (l->num_elements - index - 1) * sizeof(void *));
-  --l->num_elements;
-  return node;
+  void *node = nodes[index];
+  memcpy(&nodes[index], &nodes[index+1], (num_elements - index - 1) * sizeof(void *));
+  --num_elements;
 }
 
-void *list_remove(list *l, void *node) {
-  return list_remove_at(l, list_index_of(l, node));
+void List::remove(void *node) {
+  return remove_at(index_of(node));
 }
 
-bool list_includes(list *l, void *node) {
-  for (int i = 0; i < l->num_elements; ++i)
-    if (l->nodes[i] == node)
+bool List::includes(void *node) {
+  for (int i = 0; i < num_elements; ++i)
+    if (nodes[i] == node)
       return true;
   return false;
 }
 
-void list_grow(list *l, int min_size) {
-  if (l->num_allocated >= min_size)
-    return;
-
-  while (l->num_allocated < min_size)
-    l->num_allocated *= 2;
-  l->nodes = (void **)realloc(l->nodes, l->num_allocated * sizeof(void *));
+void List::apply(void (*f)(void *)) {
+  for (int i = 0; i < num_elements; ++i)
+    f(nodes[i]);
 }
 
-void list_debug(list *l, const char *msg) {
-  if (l == 0) {
-    vdebug("list NULL\n");
-    return;
-  }
+List *List::map(void *(*f)(void *)) {
+  List *list = new List();
+  for (int i = 0; i < num_elements; ++i)
+    list->append(f(nodes[i]));
+  return list;
+}
 
+void List::grow(int min_size) {
+  if (num_allocated >= min_size)
+    return;
+
+  while (num_allocated < min_size)
+    num_allocated *= 2;
+  nodes = (void **)realloc(nodes, num_allocated * sizeof(void *));
+}
+
+void List::debug(const char *msg) {
   vdebug("%s%slist %p, num_alloc %d, num_elems %d, nodes %p\n",
-        msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
-        l, l->num_allocated, l->num_elements,
-        l->nodes);
-  if (l->num_elements < 0) {
-    vdebug("ERROR: l->num_elements is negative\n");
+         msg == 0 ? "" : msg, msg == 0 ? "" : ": ",
+         this, num_allocated, num_elements,
+         nodes);
+  if (num_elements < 0) {
+    vdebug("ERROR: num_elements is negative\n");
     return;
   }
-  for (int i = 0; i < l->num_elements && i < 10; ++i)
-    vdebug("  %3i: %p\n", i, l->nodes[i]);
-  if (l->num_elements > 10)
+  for (int i = 0; i < num_elements && i < 10; ++i)
+    vdebug("  %3i: %p\n", i, nodes[i]);
+  if (num_elements > 10)
     vdebug("  ...\n");
 }
