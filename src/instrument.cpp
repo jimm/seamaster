@@ -4,10 +4,8 @@
 #include "debug.h"
 
 Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_num)
-  : Named(name)
+  : Named(name), sym(sym_str)
 {
-  sym = (char *)malloc(strlen(sym_str) + 1);
-  strcpy(sym, sym_str);
   port_num = portmidi_port_num;
   num_io_messages = 0;
 }
@@ -15,7 +13,6 @@ Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_
 Instrument::~Instrument() {
   if (real_port())
     Pm_Close(stream);
-  free(sym);
 }
 
 bool Instrument::real_port() {
@@ -23,7 +20,9 @@ bool Instrument::real_port() {
 }
 
 void Instrument::debug() {
-  vdebug("instrument %s %s (%p)\n", sym, name, this);
+  vdebug("instrument %s %s (%p)\n",
+         reinterpret_cast<const char *>(&sym),
+         reinterpret_cast<const char *>(&name), this);
   vdebug("  port_num %d stream %p\n", port_num, stream);
 }
 

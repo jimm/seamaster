@@ -24,7 +24,7 @@ void Song::append_notes(char *text) {
 }
 
 void Song::debug() {
-  vdebug("song %p, name \"%s\"\n", this, name);
+  vdebug("song %p, name \"%s\"\n", this, reinterpret_cast<const char *>(&name));
   if (notes != 0) {
     for (int i = 0; i < list_length(notes); ++i)
       vdebug("  notes: %s\n", list_at(notes, i));

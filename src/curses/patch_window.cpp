@@ -19,7 +19,7 @@ void patch_window_free(patch_window * pw) {
 }
 
 void patch_window_set_contents(patch_window *pw, Patch *patch) {
-  pw->w->title = patch == 0 ? 0 : patch->name;
+  pw->w->title = patch == 0 ? 0 : reinterpret_cast<const char *>(&patch->name);
   pw->patch = patch;
   patch_window_draw(pw);
 }
@@ -60,7 +60,10 @@ void format_chans(patch_window *pw, Connection *conn, char *buf) {
     sprintf(outchan, "%3d", conn->output_chan + 1);
 
   sprintf(buf, " %16s  %3s | %16s  %3s |",
-          conn->input->name, inchan, conn->output->name, outchan);
+          reinterpret_cast<const char *>(&conn->input->name),
+          inchan,
+          reinterpret_cast<const char *>(&conn->output->name),
+          outchan);
 }
 
 void format_prog(patch_window *pw, Connection *conn, char *buf) {

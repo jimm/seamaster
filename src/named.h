@@ -1,9 +1,13 @@
 #ifndef NAMED_H
 #define NAMED_H
 
+#include <string>
+
+using namespace std;
+
 class Named {
 public:
-  char *name;
+  string name;
 
   Named(const char *name);
   virtual ~Named();

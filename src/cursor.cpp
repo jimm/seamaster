@@ -13,7 +13,6 @@
 Cursor::Cursor(PatchMaster *pmaster)
   : pm(pmaster)
 {
-  song_list_name = song_name = patch_name = 0;
   clear();
 }
 

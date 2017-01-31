@@ -8,12 +8,12 @@ void test_load_instruments(PatchMaster *pm) {
   tassert(list_length(pm->outputs) == 2, "bad num outputs");
 
   Input *in = (Input *)list_first(pm->inputs);
-  tassert(strcmp(in->sym, "one") == 0, "bad input sym");
-  tassert(strcmp(in->name, "first input") == 0, "bad input name");
+  tassert(in->sym == "one", "bad input sym");
+  tassert(in->name == "first input", "bad input name");
 
   Output *out = (Output *)list_last(pm->outputs);
-  tassert(strcmp(out->sym, "two") == 0, "bad output sym");
-  tassert(strcmp(out->name, "second output") == 0, "bad output name");
+  tassert(out->sym == "two", "bad output sym");
+  tassert(out->name == "second output", "bad output name");
 }
 
 void test_load_messages(PatchMaster *pm) {
@@ -29,10 +29,10 @@ void test_load_songs(PatchMaster *pm) {
   tassert(list_length(all) == 2, "wrong num songs loaded");
 
   Song *s = (Song *)list_first(all);
-  tassert(strcmp(s->name, "To Each His Own") == 0, "bad song title");
+  tassert(s->name == "To Each His Own", "bad song title");
 
   s = (Song *)list_last(all);
-  tassert(strcmp(s->name, "Another Song") == 0, "bad song title");
+  tassert(s->name == "Another Song", "bad song title");
 }
 
 void test_load_notes(PatchMaster *pm) {
@@ -52,7 +52,7 @@ void test_load_patches(PatchMaster *pm) {
   tassert(list_length(s->patches) == 2, "bad num patches");
 
   Patch *p = (Patch *)list_first(s->patches);
-  tassert(strcmp(p->name, "Vanilla Through, Filter Two's Sustain") == 0,
+  tassert(p->name == "Vanilla Through, Filter Two's Sustain",
           "bad patch name");
 }
 
@@ -110,7 +110,7 @@ void test_load_song_list(PatchMaster *pm) {
 
   tassert(list_length(pm->song_lists) == 3, "bad num song lists");
   SongList *sl = (SongList *)list_last(pm->song_lists);
-  tassert(strcmp(sl->name, "Song List Two") == 0, "bad song list name");
+  tassert(sl->name == "Song List Two", "bad song list name");
 
   tassert(list_length(sl->songs) == 2, "bad num songs in song list");
   tassert(list_first(sl->songs) == list_last(all), "wrong song");

@@ -9,7 +9,7 @@
 
 class Instrument : public Named {
 public:
-  char *sym;
+  string sym;
   int port_num;
   PortMidiStream *stream;
 

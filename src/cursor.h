@@ -12,9 +12,9 @@ public:
   int song_list_index;
   int song_index;
   int patch_index;
-  char *song_list_name;
-  char *song_name;
-  char *patch_name;
+  string song_list_name;
+  string song_name;
+  string patch_name;
 
   Cursor(PatchMaster *pm);
   ~Cursor();

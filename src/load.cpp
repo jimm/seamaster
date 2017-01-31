@@ -275,7 +275,7 @@ PmDeviceID find_device(char *name, char in_or_out) {
 Instrument *find_by_sym(list *list, char *name) {
   for (int i = 0; i < list_length(list); ++i) {
     Instrument *inst = (Instrument *)list_at(list, i);
-    if (strcmp(name, inst->sym) == 0)
+    if (inst->sym == name)
       return inst;
   }
   return 0;
@@ -284,7 +284,7 @@ Instrument *find_by_sym(list *list, char *name) {
 Song *find_song(list *list, char *name) {
   for (int i = 0; i < list_length(list); ++i) {
     Song *s = (Song *)list_at(list, i);
-    if (strcmp(name, s->name) == 0)
+    if (s->name == name)
       return s;
   }
   return 0;
