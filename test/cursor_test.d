@@ -76,7 +76,7 @@ test/cursor_test.o: test/cursor_test.cpp test/test_helper.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   /usr/include/sys/_types/_sigset_t.h test/../src/instrument.h \
   test/../src/consts.h test/../src/trigger.h test/../src/output.h \
-  test/../src/message.h test/../src/cursor.h test/../src/load.h \
+  test/../src/message.h test/../src/cursor.h test/../src/loader.h \
   test/cursor_test.h
 
 test/test_helper.h:
@@ -311,6 +311,6 @@ test/../src/message.h:
 
 test/../src/cursor.h:
 
-test/../src/load.h:
+test/../src/loader.h:
 
 test/cursor_test.h:

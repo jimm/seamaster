@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "patchmaster.h"
-#include "load.h"
+#include "loader.h"
 #include "curses/gui.h"
 
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
@@ -50,15 +50,16 @@ int main(int argc, const char **argv) {
   else {
     check_sizes();
 
-    PatchMaster *pm = new PatchMaster();
+    PatchMaster pm;
     if (argc > 1) {
-      if (load(pm, argv[1]) != 0)
+      Loader loader(pm);
+      if (loader.load(argv[1]) != 0)
         exit(1);                /* error already printed */
     }
-    pm->start();
-    gui_main(pm);
-    pm->stop();
-    delete pm;
+    pm.start();
+    GUI gui(pm);
+    gui.run();
+    pm.stop();
   }
 
   exit(0);

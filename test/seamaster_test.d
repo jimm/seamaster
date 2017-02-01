@@ -36,7 +36,7 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h test/seamaster_test.h \
-  test/../src/load.h test/../src/patchmaster.h test/../src/song_list.h \
+  test/../src/loader.h test/../src/patchmaster.h test/../src/song_list.h \
   test/../src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   test/../src/song.h test/../src/patch.h /usr/local/include/portmidi.h \
@@ -231,7 +231,7 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
 
 test/seamaster_test.h:
 
-test/../src/load.h:
+test/../src/loader.h:
 
 test/../src/patchmaster.h:
 

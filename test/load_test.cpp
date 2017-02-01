@@ -1,13 +1,14 @@
 #include <string.h>
 #include "test_helper.h"
-#include "../src/load.h"
+#include "../src/loader.h"
 #include "load_test.h"
 
 #define TEST_FILE "test/testfile.sm"
 
 PatchMaster *load_test_file() {
   PatchMaster *pm = create_pm();
-  load(pm, TEST_FILE);
+  Loader loader(*pm);
+  loader.load(TEST_FILE);
   return pm;
 }
 

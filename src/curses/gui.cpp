@@ -1,67 +1,52 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include "gui.h"
+#include "../patchmaster.h"
 #include "geometry.h"
+#include "help_window.h"
+#include "info_window.h"
 #include "list_window.h"
 #include "patch_window.h"
 #include "trigger_window.h"
-#include "info_window.h"
-#include "help_window.h"
 #include "../cursor.h"
 
-#define NAME_FUNC(f) ((char *(*)(void *))f)
-#define PTR_FUNC(f) ((void *(*)(void *))f)
+GUI::GUI(PatchMaster &pmaster)
+  : pm(pmaster)
+{
+}
 
-typedef struct windows {
-  ListWindow *song_lists;
-  ListWindow *song_list;
-  ListWindow *song;
-  PatchWindow *patch;
-  Window *message;
-  TriggerWindow *trigger;
-  InfoWindow *info;
-} windows;
+GUI::~GUI() {
+}
 
-void config_curses();
-windows *create_windows();
-void resize_windows(windows *);
-void free_windows(windows *);
-void gui_run(PatchMaster *, windows *);
-void refresh_all(PatchMaster *pm, windows *);
-void set_window_data(PatchMaster *pm, windows *);
-void close_screen();
-void gui_help(windows *);
-void show_message(windows *, const char *);
-
-void gui_main(PatchMaster *pm) {
+void GUI::run() {
   config_curses();
-  windows *ws = create_windows();
-  gui_run(pm, ws);
+  create_windows();
+  run();
   clear();
   refresh();
   close_screen();
-  free_windows(ws);
+  free_windows();
 }
 
-void gui_run(PatchMaster *pm, windows *ws) {
+void GUI::event_loop() {
   bool done = FALSE;
   int ch, prev_cmd = 0;
 
   while (!done) {
-    refresh_all(pm, ws);
+    refresh_all();
     ch = getch();
     switch (ch) {
     case 'j': case KEY_DOWN: case ' ':
-      pm->next_patch();
+      pm.next_patch();
       break;
     case 'k': case KEY_UP:
-      pm->prev_patch();
+      pm.prev_patch();
       break;
     case 'n': case KEY_RIGHT:
-      pm->next_song();
+      pm.next_song();
       break;
     case 'p': case KEY_LEFT:
-      pm->prev_song();
+      pm.prev_song();
       break;
     case 'g':
       // TODO go to song
@@ -70,14 +55,14 @@ void gui_run(PatchMaster *pm, windows *ws) {
       // TODO go to song list
       break;
     case 'h': case '?':
-      gui_help(ws);
+      gui_help();
       break;
     case '\e':                  /* escape */
-      show_message(ws, "Sending panic note off messages...");
+      show_message("Sending panic note off messages...");
       // TODO, panic
       /* # Twice in a row sends individual note-off commands */
       /* @pm.panic(@prev_cmd == 27) */
-      show_message(ws, "Panic sent");
+      show_message("Panic sent");
       break;
     case 'l':
       // TODO load file
@@ -85,9 +70,9 @@ void gui_run(PatchMaster *pm, windows *ws) {
       /* if file.length > 0 */
       /*   begin */
       /*     load(file) */
-      /*     show_message(ws, "Loaded #{file}") */
+      /*     show_message("Loaded #{file}") */
       /*   rescue => ex */
-      /*     show_message(ws, ex.to_s) */
+      /*     show_message(ex.to_s) */
       /*   end */
       /* end */
       break;
@@ -95,16 +80,16 @@ void gui_run(PatchMaster *pm, windows *ws) {
       // TODO reload file
       /* if @pm.loaded_file && @pm.loaded_file.length > 0 */
       /*   load(@pm.loaded_file) */
-      /*   show_message(ws, "Reloaded #{@pm.loaded_file}") */
+      /*   show_message("Reloaded #{@pm.loaded_file}") */
       /* else */
-      /*   show_message(ws, "No file loaded"); */
+      /*   show_message("No file loaded"); */
       /* end */
       break;
     case 'q':
       done = TRUE;
       break;
     case KEY_RESIZE:
-      resize_windows(ws);
+      resize_windows();
       break;
     }
     prev_cmd = ch;
@@ -117,7 +102,7 @@ void gui_run(PatchMaster *pm, windows *ws) {
   }
 }
 
-void config_curses() {
+void GUI::config_curses() {
   initscr();
   cbreak();                     /* unbuffered input */
   noecho();                     /* do not show typed keys */
@@ -126,83 +111,79 @@ void config_curses() {
   curs_set(0);                  /* cursor: 0 = invisible, 1 = normal */
 }
 
-windows *create_windows() {
-  windows *ws = (windows *)malloc(sizeof(windows));
-
-  ws->song_lists = new ListWindow(geom_song_lists_rect(), 0);
-  ws->song_list = new ListWindow(geom_song_list_rect(), "Song List");
-  ws->song = new ListWindow(geom_song_rect(), "Song");
-  ws->patch = new PatchWindow(geom_patch_rect(), "Patch");
-  ws->message = new Window(geom_message_rect(), "");
-  ws->trigger = new TriggerWindow(geom_trigger_rect(), "");
-  ws->info = new InfoWindow(geom_info_rect(), "");
+void GUI::create_windows() {
+  song_lists = new ListWindow(geom_song_lists_rect(), 0);
+  song_list = new ListWindow(geom_song_list_rect(), "Song List");
+  song = new ListWindow(geom_song_rect(), "Song");
+  patch = new PatchWindow(geom_patch_rect(), "Patch");
+  message = new Window(geom_message_rect(), "");
+  trigger = new TriggerWindow(geom_trigger_rect(), "");
+  info = new InfoWindow(geom_info_rect(), "");
 
   scrollok(stdscr, false);
-  scrollok(ws->message->win, false);
-
-  return ws;
+  scrollok(message->win, false);
 }
 
-void resize_windows(windows *ws) {
-  ws->song_lists->move_and_resize(geom_song_lists_rect());
-  ws->song_list->move_and_resize(geom_song_list_rect());
-  ws->song->move_and_resize(geom_song_rect());
-  ws->patch->move_and_resize(geom_patch_rect());
-  ws->message->move_and_resize(geom_message_rect());
-  ws->trigger->move_and_resize(geom_trigger_rect());
-  ws->info->move_and_resize(geom_info_rect());
+void GUI::resize_windows() {
+  song_lists->move_and_resize(geom_song_lists_rect());
+  song_list->move_and_resize(geom_song_list_rect());
+  song->move_and_resize(geom_song_rect());
+  patch->move_and_resize(geom_patch_rect());
+  message->move_and_resize(geom_message_rect());
+  trigger->move_and_resize(geom_trigger_rect());
+  info->move_and_resize(geom_info_rect());
 }
 
-void free_windows(windows *ws) {
-  delete ws->song_lists;
-  delete ws->song_list;
-  delete ws->song;
-  delete ws->patch;
-  delete ws->message;
-  delete ws->trigger;
-  delete ws->info;
+void GUI::free_windows() {
+  delete song_lists;
+  delete song_list;
+  delete song;
+  delete patch;
+  delete message;
+  delete trigger;
+  delete info;
 }
 
-void refresh_all(PatchMaster *pm, windows *ws) {
-  set_window_data(pm, ws);
-  ws->song_lists->draw();
-  ws->song_list->draw();
-  ws->song->draw();
-  ws->patch->draw();
-  ws->message->draw();
-  ws->trigger->draw();
-  ws->info->draw();
+void GUI::refresh_all() {
+  set_window_data();
+  song_lists->draw();
+  song_list->draw();
+  song->draw();
+  patch->draw();
+  message->draw();
+  trigger->draw();
+  info->draw();
   wnoutrefresh(stdscr);
-  wnoutrefresh(ws->song_lists->win);
-  wnoutrefresh(ws->song_list->win);
-  wnoutrefresh(ws->song->win);
-  wnoutrefresh(ws->patch->win);
-  wnoutrefresh(ws->info->win);
-  wnoutrefresh(ws->trigger->win);
+  wnoutrefresh(song_lists->win);
+  wnoutrefresh(song_list->win);
+  wnoutrefresh(song->win);
+  wnoutrefresh(patch->win);
+  wnoutrefresh(info->win);
+  wnoutrefresh(trigger->win);
   doupdate();
 }
 
-void set_window_data(PatchMaster *pm, windows *ws) {
-  ws->song_lists->set_contents("Song Lists", &pm->song_lists, pm->cursor->song_list());
+void GUI::set_window_data() {
+  song_lists->set_contents("Song Lists", &pm.song_lists, pm.cursor->song_list());
 
-  SongList *sl = pm->cursor->song_list();
-  ws->song_list->set_contents(sl->name.c_str(), &sl->songs, pm->cursor->song());
+  SongList *sl = pm.cursor->song_list();
+  song_list->set_contents(sl->name.c_str(), &sl->songs, pm.cursor->song());
 
-  Song *song = pm->cursor->song();
-  if (song != 0) {
-    ws->song->set_contents(song->name.c_str(), &song->patches, pm->cursor->patch());
-    ws->info->set_contents(&song->notes);
-    Patch *patch = pm->cursor->patch();
-    ws->patch->set_contents(patch);
+  Song *s = pm.cursor->song();
+  if (s != 0) {
+    song->set_contents(s->name.c_str(), &s->patches, pm.cursor->patch());
+    info->set_contents(&s->notes);
+    Patch *p = pm.cursor->patch();
+    patch->set_contents(p);
   }
   else {
-    ws->song->set_contents(0, 0, 0);
-    ws->info->set_contents(0);
-    ws->patch->set_contents(0);
+    song->set_contents(0, 0, 0);
+    info->set_contents(0);
+    patch->set_contents(0);
   }
 }
 
-void close_screen() {
+void GUI::close_screen() {
   curs_set(1);
   echo();
   nl();
@@ -212,7 +193,7 @@ void close_screen() {
   endwin();
 }
 
-void gui_help(windows *ws) {
+void GUI::gui_help() {
   rect r = geom_help_rect();
   HelpWindow hw(r, "Help");
   hw.draw();
@@ -221,8 +202,8 @@ void gui_help(windows *ws) {
   getch();                      /* wait for key and eat it */
 }
 
-void show_message(windows *ws, const char *msg) {
-  WINDOW *win = ws->message->win;
+void GUI::show_message(const char *msg) {
+  WINDOW *win = message->win;
   wclear(win);
   waddstr(win, msg);
   wrefresh(win);

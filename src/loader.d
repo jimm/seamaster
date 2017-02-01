@@ -1,5 +1,5 @@
-src/load.o: src/load.cpp /usr/include/stdio.h /usr/include/sys/cdefs.h \
-  /usr/include/sys/_symbol_aliasing.h \
+src/loader.o: src/loader.cpp /usr/include/stdio.h \
+  /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
   /usr/include/AvailabilityInternal.h /usr/include/_types.h \
   /usr/include/sys/_types.h /usr/include/machine/_types.h \
@@ -92,7 +92,7 @@ src/load.o: src/load.cpp /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   src/instrument.h src/consts.h src/trigger.h src/output.h src/message.h \
-  src/load.h src/debug.h
+  src/loader.h src/debug.h
 
 /usr/include/stdio.h:
 
@@ -386,6 +386,6 @@ src/output.h:
 
 src/message.h:
 
-src/load.h:
+src/loader.h:
 
 src/debug.h:

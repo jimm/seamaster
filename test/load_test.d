@@ -76,7 +76,7 @@ test/load_test.o: test/load_test.cpp /usr/include/string.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   /usr/include/sys/_types/_sigset_t.h test/../src/instrument.h \
   test/../src/consts.h test/../src/trigger.h test/../src/output.h \
-  test/../src/message.h test/../src/cursor.h test/../src/load.h \
+  test/../src/message.h test/../src/cursor.h test/../src/loader.h \
   test/load_test.h
 
 /usr/include/string.h:
@@ -311,6 +311,6 @@ test/../src/message.h:
 
 test/../src/cursor.h:
 
-test/../src/load.h:
+test/../src/loader.h:
 
 test/load_test.h:

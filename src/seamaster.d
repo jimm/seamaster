@@ -90,7 +90,7 @@ src/seamaster.o: src/seamaster.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   src/instrument.h src/consts.h src/trigger.h src/output.h src/message.h \
-  src/load.h src/curses/gui.h
+  src/loader.h src/curses/gui.h
 
 /usr/include/stdlib.h:
 
@@ -378,6 +378,6 @@ src/output.h:
 
 src/message.h:
 
-src/load.h:
+src/loader.h:
 
 src/curses/gui.h:

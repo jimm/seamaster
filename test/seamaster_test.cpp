@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "seamaster_test.h"
-#include "../src/load.h"
+#include "../src/loader.h"
 #include "../src/cursor.h"
 #include "load_test.h"
 #include "cursor_test.h"

@@ -1,5 +1,5 @@
 #include "test_helper.h"
-#include "../src/load.h"
+#include "../src/loader.h"
 #include "cursor_test.h"
 
 #define TEST_FILE "test/testfile.sm"
@@ -10,7 +10,8 @@ const char *BAD_PATCH = "bad patch";
 
 PatchMaster *cursor_pm() {
   PatchMaster *pm = create_pm();
-  load(pm, TEST_FILE);
+  Loader loader(*pm);
+  loader.load(TEST_FILE);
   pm->cursor->init();
   return pm;
 }
