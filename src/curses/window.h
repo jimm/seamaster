@@ -21,7 +21,7 @@ public:
   void move_and_resize(struct rect);
   void draw();
   int visible_height();
-  char *make_fit(const char *, int);
+  void make_fit(const char *, int, char *);
 
 #ifdef DEBUG
   void debug();

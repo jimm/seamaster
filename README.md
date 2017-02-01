@@ -6,11 +6,9 @@ More docs to come.
 
 # To Do
 
-Fix ListWindow bounding/scrolling problem.
+Simple play mode: show song title, patches, and notes.
 
 Remove casts wherever Lists are used.
-
-Convert to .org mode for files.
 
 "use midi" flag in PM, replace "testing".
 

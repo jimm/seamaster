@@ -31,7 +31,7 @@ private:
   int chan_from_word(char *);
   void strip_newline(char *);
 
-  PmDeviceID find_device(char *, char);
+  PmDeviceID find_device(char *, int);
   Instrument *find_by_sym(List<Instrument *> &, char *);
   Song *find_song(List<Song *> &, char *);
 

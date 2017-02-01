@@ -3,6 +3,17 @@
 #include "../src/list.h"
 #include "list_test.h"
 
+void test_list_index_of() {
+  List<int> list;
+  list << 10;
+  list << 20;
+  list << 30;
+
+  tassert(list.index_of(10) == 0, 0);
+  tassert(list.index_of(30) == 2, 0);
+  tassert(list.index_of(42) == -1, 0);
+}
+
 void test_list_slice() {
   List<int> list, *l;
   list << 10;
@@ -48,6 +59,7 @@ void test_list_join() {
 }
 
 void test_list() {
+  test_run(test_list_index_of);
   test_run(test_list_slice);
   test_run(test_list_join);
 }

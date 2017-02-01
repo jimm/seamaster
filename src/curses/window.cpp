@@ -47,17 +47,14 @@ int Window::visible_height() {
 }
 
 /*
- * Returns a newly allocated string in all cases. You'll probably want to
- * free it after giving it to curses `addstr`.
+ * Copies str into outbuf to the maximum window width minus `reduce_max_len_by`.
  */
-char *Window::make_fit(const char *str, int reduce_max_len_by) {
+void Window::make_fit(const char *str, int reduce_max_len_by, char *outbuf) {
   int len = strlen(str);
   int w_maxlen = max_contents_len - reduce_max_len_by;
   int newlen = len < w_maxlen ? len : w_maxlen;
-  char *newstr = (char *)malloc(newlen + 1);
-  strncpy(newstr, str, newlen);
-  newstr[newlen] = 0;
-  return newstr;
+  strncpy(outbuf, str, newlen);
+  outbuf[newlen] = 0;
 }
 
 void Window::set_max_contents_len(int width) {

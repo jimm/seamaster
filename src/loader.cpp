@@ -12,8 +12,8 @@
 #define SECTION_INSTRUMENTS 0
 #define SECTION_SONGS 1
 #define SECTION_SET_LISTS 2
-#define DEFINE_INPUT 0
-#define DEFINE_OUTPUT 1
+#define INSTRUMENT_INPUT 0
+#define INSTRUMENT_OUTPUT 1
 #define NOTES_OUTSIDE -1
 #define NOTES_SKIPPING_BLANK_LINES 0
 #define NOTES_COLLECTING 1
@@ -97,9 +97,9 @@ void Loader::parse_line(char *line) {
 
 void Loader::parse_instrument_line(char *line) {
   if (strncmp("- input ", line, 8) == 0)
-    load_instrument(line + 2, DEFINE_INPUT);
+    load_instrument(line + 2, INSTRUMENT_INPUT);
   else if (strncmp("- output ", line, 9) == 0)
-    load_instrument(line + 2, DEFINE_OUTPUT);
+    load_instrument(line + 2, INSTRUMENT_OUTPUT);
 }
 
 void Loader::parse_song_line(char *line) {
@@ -145,8 +145,8 @@ void Loader::parse_set_list_line(char *line) {
 }
 
 int Loader::load_instrument(char *line, int type) {
-  List<char *> *args = comma_sep_args(line, false);
-  PmDeviceID devid = find_device((char *)args->at(0), type);
+  List<char *> *args = comma_sep_args(skip_first_word(line), false);
+  PmDeviceID devid = find_device(args->at(0), type);
 
   if (devid == pmNoDevice && !pm.testing)
     return 1;
@@ -155,10 +155,10 @@ int Loader::load_instrument(char *line, int type) {
   char *name = (char *)args->at(2);
 
   switch (type) {
-  case DEFINE_INPUT:
+  case INSTRUMENT_INPUT:
     pm.inputs << new Input(sym, name, devid);
     break;
-  case DEFINE_OUTPUT:
+  case INSTRUMENT_OUTPUT:
     pm.outputs << new Output(sym, name, devid);
     break;
   }
@@ -317,13 +317,13 @@ int Loader::chan_from_word(char *word) {
   return strcmp(word, "all") == 0 ? -1 : atoi(word) - 1;
 }
 
-PmDeviceID Loader::find_device(char *name, char in_or_out) {
+PmDeviceID Loader::find_device(char *name, int device_type) {
   int num_devices = Pm_CountDevices();
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-    if (in_or_out == 'i' && info->input && strcmp(name, info->name) == 0)
+    if (device_type == INSTRUMENT_INPUT && info->input && strcmp(name, info->name) == 0)
       return i;
-    if (in_or_out == 'o' && info->output && strcmp(name, info->name) == 0)
+    if (device_type == INSTRUMENT_OUTPUT && info->output && strcmp(name, info->name) == 0)
       return i;
   }
   return pmNoDevice;

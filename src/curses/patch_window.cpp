@@ -43,16 +43,15 @@ void PatchWindow::draw_headers() {
 
 void PatchWindow::draw_connection(Connection *conn) {  
   int vis_height = visible_height();
-  char buf[1024];
+  char buf[BUFSIZ], fitbuf[BUFSIZ];
 
   format_chans(conn, buf);
   format_zone(conn, buf);
   format_xpose(conn, buf);
   format_prog(conn, buf);
 
-  char *fitted = make_fit(buf, 0);
-  waddstr(win, fitted);
-  free(fitted);
+  make_fit(buf, 1, fitbuf);
+  waddstr(win, fitbuf);
 }
 
 void PatchWindow::format_chans(Connection *conn, char *buf) {

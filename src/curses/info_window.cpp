@@ -29,10 +29,13 @@ void InfoWindow::set_contents(List<char *> *text_lines) {
 }
 
 void InfoWindow::draw() {
+  char fitted[BUFSIZ];
+
   Window::draw();
-  for (int i = 0; i < display_list->length(); ++i) {
+  for (int i = 0; i < display_list->length() && i < visible_height(); ++i) {
     wmove(win, i+1, 1);
-    waddstr(win, (char *)display_list->at(i));
+    make_fit(display_list->at(i), 1, fitted);
+    waddstr(win, fitted);
   }
 }
 
