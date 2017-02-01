@@ -43,10 +43,10 @@ int Loader::load(const char *path) {
 
 void Loader::parse_line(char *line) {
   int start = strspn(line, whitespace);
-  if (line[start] == 0 || line[start] == '#') /* whitespace only or comment */
+  if (line[start] == 0 || line[start] == '#') // whitespace only or comment
     return;
 
-  line += start;                /* strip leading whitespace */
+  line += start;                // strip leading whitespace
   int ch = line[0];
   switch (ch) {
   case 'i': case 'o':
@@ -63,16 +63,23 @@ void Loader::parse_line(char *line) {
     break;
   case 's':
     switch (line[1]) {
-    case 'o':                   /* song */
+    case 'o':                   // song
       load_song(line);
       break;
-    case 'e':                   /* set */
+    case 'e':                   // set
       load_song_list(line);
       break;
     }
     break;
   case 'p':
-    load_patch(line);
+    switch (line[1]) {
+    case 'a':                   // patch
+      load_patch(line);
+      break;
+    case 'c': case 'r':         // program change
+      load_prog(line);
+      break;
+    }
     break;
   case 'c':
     load_connection(line);
@@ -166,9 +173,35 @@ int Loader::load_connection(char *line) {
   return 0;
 }
 
+int Loader::load_prog(char *line) {
+  char *prog_chg = skip_first_word(line);
+  conn->prog.prog = atoi(prog_chg);
+  return 0;
+}
+
+int Loader::load_bank(char *line) {
+  List *args = comma_sep_args(line);
+  conn->prog.bank_msb = atoi((char *)args->at(0));
+  conn->prog.bank_lsb = atoi((char *)args->at(1));
+  return 0;
+}
+
 int Loader::load_xpose(char *line) {
   char *amount = skip_first_word(line);
   conn->xpose = atoi(amount);
+  return 0;
+}
+
+int Loader::load_filter(char *line) {
+  int controller = atoi(skip_first_word(line));
+  conn->cc_maps[controller] = -1;
+  return 0;
+}
+
+int Loader::load_map(char *line) {
+  List *args = comma_sep_args(line);
+  conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
+  delete args;
   return 0;
 }
 
@@ -188,19 +221,6 @@ int Loader::load_song_list(char *line) {
   }
   song_list = sl;
 
-  return 0;
-}
-
-int Loader::load_filter(char *line) {
-  int controller = atoi(skip_first_word(line));
-  conn->cc_maps[controller] = -1;
-  return 0;
-}
-
-int Loader::load_map(char *line) {
-  List *args = comma_sep_args(line);
-  conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
-  delete args;
   return 0;
 }
 

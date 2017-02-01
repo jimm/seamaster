@@ -11,6 +11,8 @@ song To Each His Own
 patch Vanilla Through, Filter Two's Sustain
   conn one, all, one, all
   conn two, all, two, all
+    bank 3, 2
+    pc 12
     filter 64
 
 patch One Up One Octave and CC Vol -> Pan, Two Down One Octave

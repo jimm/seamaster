@@ -97,6 +97,23 @@ void test_load_connections() {
   delete pm;
 }
 
+void test_load_bank() {
+  PatchMaster *pm = load_test_file();
+  Song *s = (Song *)pm->all_songs->songs.first();
+  Patch *p = (Patch *)s->patches.first();
+  Connection *conn = (Connection *)p->connections.last();
+  tassert(conn->prog.bank_msb = 3, "bad bank msb");
+  tassert(conn->prog.bank_lsb = 2, "bad bank lsb");
+}
+
+void test_load_prog_chg() {
+  PatchMaster *pm = load_test_file();
+  Song *s = (Song *)pm->all_songs->songs.first();
+  Patch *p = (Patch *)s->patches.first();
+  Connection *conn = (Connection *)p->connections.last();
+  tassert(conn->prog.prog = 12, "bad program change");
+}
+
 void test_load_xpose() {
   PatchMaster *pm = load_test_file();
   Song *s = (Song *)pm->all_songs->songs.first();
@@ -156,6 +173,8 @@ void test_load() {
   test_run(test_load_notes);
   test_run(test_load_patches);
   test_run(test_load_connections);
+  test_run(test_load_bank);
+  test_run(test_load_prog_chg);
   test_run(test_load_xpose);
   test_run(test_load_filter);
   test_run(test_load_map);

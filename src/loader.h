@@ -35,6 +35,8 @@ private:
   int load_notes();
   int load_patch(char *);
   int load_connection(char *);
+  int load_bank(char *);
+  int load_prog(char *);
   int load_xpose(char *);
   int load_filter(char *);
   int load_map(char *);
