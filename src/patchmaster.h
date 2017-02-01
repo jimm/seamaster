@@ -34,6 +34,9 @@ public:
   void next_song();
   void prev_song();
 
+  void goto_song(string name_regex);
+  void goto_song_list(string name_regex);
+
   void debug();
 };
 

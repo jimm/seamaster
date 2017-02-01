@@ -84,6 +84,25 @@ void PatchMaster::prev_song() {
     cursor->patch()->start();
 }
 
+// ================ going places ================
+
+void PatchMaster::goto_song(string name_regex) {
+  if (cursor->patch() != 0)
+    cursor->patch()->stop();
+  cursor->goto_song();
+  if (cursor->patch() != 0)
+    cursor->patch()->start();
+}
+
+void PatchMaster::goto_song_list(string name_regex) {
+  if (cursor->patch() != 0)
+    cursor->patch()->stop();
+  cursor->goto_song_list();
+  if (cursor->patch() != 0)
+    cursor->patch()->start();
+}
+
+
 // ================ vdebugging ================
 
 void PatchMaster::debug() {

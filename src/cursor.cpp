@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <regex.h>
 #include "cursor.h"
 #include "debug.h"
 
@@ -99,6 +100,50 @@ void Cursor::prev_patch() {
     prev_song();
   else
     --patch_index;
+}
+
+void Cursor::goto_song(string name_regex) {
+  regex_t re;
+  regmatch_t pm;
+
+  SongList *sl = song_list();
+  Song *new_song = 0;
+  if (sl != 0)
+    new_song = find_in_list(reinterpret_cast<List<Named *> &>(sl->songs), name_regex);
+  if (new_song == 0)
+    new_song = find_in_list(reinterpret_cast<List<Named *> &>(pm->all_songs->songs), name_regex);
+  Patch *new_patch = new_song == 0 ? 0 : new_song->patches.first();
+
+  Song *curr_song = song();
+  if ((new_song != 0 && new_song != curr_song) || (new_song == curr_song && patch() != new_patch)) {
+    SongList *new_song_list = 0;
+    if (sl != 0 && sl->songs.includes(new_song))
+      new_song_list = sl;
+    else
+      new_song_list = pm.all_songs;
+  }
+
+  song_list_index = pm.song_lists.index_of(new_song_list);
+  song = song_list()->songs.index_of(new_song);
+  patch = song()->patches.index_of(new_patch);
+}
+
+void Cursor::goto_song_list(string name_regex) {
+}
+
+Named *Cursor::find_in_list(List<Named *> &list, string regex) {
+  regex_t re;
+  regmatch_t pm;
+
+  if (regcomp(&re, name_regex.c_str(), REG_EXTENDED | REG_ICASE) != 0)
+    return 0;
+
+  for (int i = 0; i < list.length(); ++i) {
+    if (regexec(&preg, list[i].name.c_str(), 1, &pm, 0) == 0) {
+      return list[i];
+    }
+  }
+  return 0;
 }
 
 void Cursor::debug() {

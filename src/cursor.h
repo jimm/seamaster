@@ -31,7 +31,13 @@ public:
   void next_patch();
   void prev_patch();
 
+  void goto_song(string name_regex);
+  void goto_song_list(string name_regex);
+
   void debug();
+
+private:
+  Named *find_in_list(List<Named *>, string regex);
 };
 
 #endif /* CURSOR_H */

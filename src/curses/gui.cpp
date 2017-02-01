@@ -49,10 +49,18 @@ void GUI::event_loop() {
       pm.prev_song();
       break;
     case 'g':
-      // TODO go to song
+      PromptWindow *pw = new PromptWindow.new("Go To Song", "Go to song:");
+      string name_regex = pw.gets();
+      delete pw;
+      if (name_regex.length() > 0)
+        pm.goto_song(name_regex);
       break;
     case 't':
-      // TODO go to song list
+      PromptWindow *pw = new PromptWindow.new("Go To Song List", "Go to song list:");
+      string name_regex = pw.gets();
+      delete pw;
+      if (name_regex.length() > 0)
+        pm.goto_song_list(name_regex);
       break;
     case 'h': case '?':
       gui_help();
