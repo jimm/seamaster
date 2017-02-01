@@ -60,9 +60,9 @@ void test_load_notes() {
 
   s = (Song *)pm->all_songs->songs.last();
   tassert(s->notes.length() == 2, "bad notes length");
-  tassert(strcmp((const char *)s->notes.first(), "this song has note text\n") == 0,
+  tassert(strcmp((const char *)s->notes.first(), "this song has note text") == 0,
           "bad notes 1");
-  tassert(strcmp((const char *)s->notes.last(), "that spans multiple lines\n") == 0,
+  tassert(strcmp((const char *)s->notes.last(), "that spans multiple lines") == 0,
           "bad notes 2");
   delete pm;
 }
@@ -173,9 +173,15 @@ void test_load_song_list() {
   List<Song *> &all = pm->all_songs->songs;
 
   tassert(pm->song_lists.length() == 3, "bad num song lists");
-  SongList *sl = (SongList *)pm->song_lists.last();
-  tassert(sl->name == "Song List Two", "bad song list name");
 
+  SongList *sl = (SongList *)pm->song_lists.at(1);
+  tassert(sl->name == "Song List One", "bad song list name");
+  tassert(sl->songs.length() == 2, "bad num songs in song list");
+  tassert(sl->songs.first() == all.first(), "wrong song");
+  tassert(sl->songs.last() == all.last(), "wrong song");
+
+  sl = (SongList *)pm->song_lists.last();
+  tassert(sl->name == "Song List Two", "bad song list name");
   tassert(sl->songs.length() == 2, "bad num songs in song list");
   tassert(sl->songs.first() == all.last(), "wrong song");
   tassert(sl->songs.last() == all.first(), "wrong song");
@@ -187,7 +193,7 @@ void test_load() {
   test_run(test_load_messages);
   test_run(test_load_triggers);
   test_run(test_load_songs);
-  // test_run(test_load_notes);
+  test_run(test_load_notes);
   test_run(test_load_patches);
   test_run(test_load_connections);
   test_run(test_load_bank);

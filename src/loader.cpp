@@ -8,11 +8,15 @@
 #include "loader.h"
 #include "debug.h"
 
+#define SECTION_IGNORE -1
 #define SECTION_INSTRUMENTS 0
 #define SECTION_SONGS 1
 #define SECTION_SET_LISTS 2
 #define DEFINE_INPUT 0
 #define DEFINE_OUTPUT 1
+#define NOTES_OUTSIDE -1
+#define NOTES_SKIPPING_BLANK_LINES 0
+#define NOTES_COLLECTING 1
 
 const char * const whitespace = " \t";
 
@@ -34,10 +38,7 @@ int Loader::load(const char *path) {
     return 1;
   }
 
-  section = -1;
-  song = 0;
-  patch = 0;
-  song_list = 0;
+  clear();
   while (fgets(line, BUFSIZ, fp) != 0) {
     strip_newline(line);
     parse_line(line);
@@ -47,23 +48,36 @@ int Loader::load(const char *path) {
   return 0;
 }
 
-void Loader::parse_line(char *line) {
-  // FIXME do not skip indentation in notes
-  int start = strspn(line, whitespace);
-  // FIXME do not skip blank lines in notes
-  if (line[start] == 0 || line[start] == '#') // whitespace only or comment
-    return;
+void Loader::clear() {
+  section = SECTION_IGNORE;
+  notes_state = NOTES_OUTSIDE;
+  song = 0;
+  patch = 0;
+  conn = 0;
+  song_list = 0;
+}
 
-  line += start;                // strip leading whitespace
+void Loader::parse_line(char *line) {
+  if (notes_state == NOTES_OUTSIDE) {
+    int start = strspn(line, whitespace);
+    if (line[start] == 0 || strncmp(line + start, "# ", 2) == 0) // whitespace only or comment
+      return;
+
+    line += start;              // strip leading whitespace
+  }
+
   if (strncmp(line, "* Instruments", 13) == 0) {
+    clear();
     section = SECTION_INSTRUMENTS;
     return;
   }
   if (strncmp(line, "* Songs", 7) == 0) {
+    clear();
     section = SECTION_SONGS;
     return;
   }
   if (strncmp(line, "* Set Lists", 11) == 0) {
+    clear();
     section = SECTION_SET_LISTS;
     return;
   }
@@ -95,6 +109,8 @@ void Loader::parse_song_line(char *line) {
     load_patch(line + 4);
   else if (strncmp("** ", line, 3) == 0)
     load_song(line + 3);
+  else if (notes_state != NOTES_OUTSIDE)
+    load_notes_line(line);
   else if (strncmp("- ", line, 2) == 0 && conn != 0) {
     line += 2;
     char ch = line[0];
@@ -124,7 +140,7 @@ void Loader::parse_song_line(char *line) {
 void Loader::parse_set_list_line(char *line) {
   if (strncmp("** ", line, 3) == 0)
     load_song_list(line + 3);
-  else if (strncmp("- ", line, 2) == 0 && conn != 0)
+  else if (strncmp("- ", line, 2) == 0)
     load_song_list_song(line + 2);
 }
 
@@ -167,14 +183,25 @@ int Loader::load_song(char *line) {
   song = s;
   patch = 0;
   conn = 0;
+  notes_state = NOTES_SKIPPING_BLANK_LINES;
   return 0;
 }
 
-int Loader::load_notes() {
-  char line[BUFSIZ];
-  while (fgets(line, BUFSIZ, fp) != 0 && strncmp(line, "end", 3) != 0)
-    song->append_notes(line);
+int Loader::load_notes_line(char *line) {
+  if (notes_state == NOTES_SKIPPING_BLANK_LINES && strlen(line) == 0)
+    return 0;
+
+  notes_state = NOTES_COLLECTING;
+  song->append_notes(line);
   return 0;
+}
+
+void Loader::stop_collecting_notes() {
+  if (song != 0) {              // remove trailing blank lines
+    while (song->notes.length() > 0 && strlen(song->notes.last()) == 0)
+      song->notes.remove_at(song->notes.length()-1);
+  }
+  notes_state = NOTES_OUTSIDE;
 }
 
 int Loader::load_patch(char *line) {
@@ -182,6 +209,7 @@ int Loader::load_patch(char *line) {
   song->patches << p;
   patch = p;
   conn = 0;
+  stop_collecting_notes();
   return 0;
 }
 

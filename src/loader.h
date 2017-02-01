@@ -15,11 +15,13 @@ private:
   FILE *fp;
   PatchMaster &pm;
   int section;
+  int notes_state;
   Song *song;
   Patch *patch;
   Connection *conn;
   SongList *song_list;
 
+  void clear();
   void parse_line(char *);
   void parse_instrument_line(char *);
   void parse_song_line(char *);
@@ -37,7 +39,8 @@ private:
   int load_message(char *);
   int load_trigger(char *);
   int load_song(char *);
-  int load_notes();
+  int load_notes_line(char *);
+  void stop_collecting_notes();
   int load_patch(char *);
   int load_connection(char *);
   int load_bank(char *);
