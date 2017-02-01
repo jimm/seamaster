@@ -21,7 +21,7 @@ GUI::~GUI() {
 void GUI::run() {
   config_curses();
   create_windows();
-  run();
+  event_loop();
   clear();
   refresh();
   close_screen();
