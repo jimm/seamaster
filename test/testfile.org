@@ -1,0 +1,63 @@
+* Instruments
+
+# comment: short names for inputs and outputs
+# don't have to be same or different
+
+- input port one, one, first input
+- input port two, two, second input
+- output port one, one, first output
+- output port two, two, second output
+
+* Songs
+
+# indentation doesn't matter
+
+** To Each His Own
+
+*** Vanilla Through, Filter Two's Sustain
+**** one, all, one, all
+**** two, all, two, all
+
+     - bank 3, 2
+     - pc 12
+     - filter 64
+
+*** One Up One Octave and CC Vol -> Pan, Two Down One Octave
+**** one, all, one, all
+     - xpose 12
+     - map 7, 10
+**** two, all, two, all
+     - xpose -12
+
+** Another Song
+
+this song has note text
+that spans multiple lines
+
+*** Two Inputs Merging
+**** one, 3, two, 4
+     - xpose 12
+     - zone 0, 63
+**** two, 1, two, 5
+     - zone 64, 127
+     - xpose -12
+
+*** Split Into Two Outputs
+**** one, 3, one, 4
+     - xpose 12
+     - zone 0, 63
+**** one, 1, two, 5
+     - zone 64, 127
+     - xpose -12
+
+* Set Lists
+
+** Song List One
+
+- To Each His Own
+- Another Song
+
+** Song List Two
+
+- Another Song
+- To Each His Own

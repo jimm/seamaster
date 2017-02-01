@@ -2,7 +2,7 @@
 #include "../src/loader.h"
 #include "cursor_test.h"
 
-#define TEST_FILE "test/testfile.sm"
+#define TEST_FILE "test/testfile.org"
 
 const char *BAD_SONG_LIST = "bad song list";
 const char *BAD_SONG = "bad song";

@@ -3,7 +3,7 @@
 #include "../src/loader.h"
 #include "loader_test.h"
 
-#define TEST_FILE "test/testfile.sm"
+#define TEST_FILE "test/testfile.org"
 
 PatchMaster *load_test_file() {
   PatchMaster *pm = create_pm();
@@ -24,6 +24,7 @@ void test_load_instruments() {
   Output *out = (Output *)pm->outputs.last();
   tassert(out->sym == "two", "bad output sym");
   tassert(out->name == "second output", "bad output name");
+
   delete pm;
 }
 
@@ -129,6 +130,22 @@ void test_load_xpose() {
   delete pm;
 }
 
+void test_load_zone() {
+  PatchMaster *pm = load_test_file();
+  Song *s = (Song *)pm->all_songs->songs.first();
+  Patch *p = (Patch *)s->patches.first();
+  Connection *conn = (Connection *)p->connections.first();
+  tassert(conn->zone.low == -1, "bad default zone low");
+  tassert(conn->zone.high == -1, "bad default zone high");
+
+  p = (Patch *)s->patches.last();
+  conn = (Connection *)p->connections.first();
+  tassert(conn->zone.low = 32, "bad zone low");
+  conn = (Connection *)p->connections.last();
+  tassert(conn->zone.high = 64, "bad zone high");
+  delete pm;
+}
+
 void test_load_filter() {
   PatchMaster *pm = load_test_file();
   Song *s = (Song *)pm->all_songs->songs.first();
@@ -170,12 +187,13 @@ void test_load() {
   test_run(test_load_messages);
   test_run(test_load_triggers);
   test_run(test_load_songs);
-  test_run(test_load_notes);
+  // test_run(test_load_notes);
   test_run(test_load_patches);
   test_run(test_load_connections);
   test_run(test_load_bank);
   test_run(test_load_prog_chg);
   test_run(test_load_xpose);
+  test_run(test_load_zone);
   test_run(test_load_filter);
   test_run(test_load_map);
   test_run(test_load_song_list);

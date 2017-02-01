@@ -14,14 +14,18 @@ public:
 private:
   FILE *fp;
   PatchMaster &pm;
+  int section;
   Song *song;
   Patch *patch;
   Connection *conn;
   SongList *song_list;
 
   void parse_line(char *);
+  void parse_instrument_line(char *);
+  void parse_song_line(char *);
+  void parse_set_list_line(char *);
   char *skip_first_word(char *);
-  List<char *> *comma_sep_args(char *);
+  List<char *> *comma_sep_args(char *, bool);
   int chan_from_word(char *);
   void strip_newline(char *);
 
@@ -39,9 +43,11 @@ private:
   int load_bank(char *);
   int load_prog(char *);
   int load_xpose(char *);
+  int load_zone(char *);
   int load_filter(char *);
   int load_map(char *);
   int load_song_list(char *);
+  int load_song_list_song(char *);
 };
 
 #endif /* LOAD_H */

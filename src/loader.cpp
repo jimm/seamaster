@@ -8,6 +8,12 @@
 #include "loader.h"
 #include "debug.h"
 
+#define SECTION_INSTRUMENTS 0
+#define SECTION_SONGS 1
+#define SECTION_SET_LISTS 2
+#define DEFINE_INPUT 0
+#define DEFINE_OUTPUT 1
+
 const char * const whitespace = " \t";
 
 Loader::Loader(PatchMaster &pmaster)
@@ -28,7 +34,7 @@ int Loader::load(const char *path) {
     return 1;
   }
 
-  pm = pm;
+  section = -1;
   song = 0;
   patch = 0;
   song_list = 0;
@@ -42,66 +48,88 @@ int Loader::load(const char *path) {
 }
 
 void Loader::parse_line(char *line) {
+  // FIXME do not skip indentation in notes
   int start = strspn(line, whitespace);
+  // FIXME do not skip blank lines in notes
   if (line[start] == 0 || line[start] == '#') // whitespace only or comment
     return;
 
   line += start;                // strip leading whitespace
-  int ch = line[0];
-  switch (ch) {
-  case 'i': case 'o':
-    load_instrument(line, ch);
+  if (strncmp(line, "* Instruments", 13) == 0) {
+    section = SECTION_INSTRUMENTS;
+    return;
+  }
+  if (strncmp(line, "* Songs", 7) == 0) {
+    section = SECTION_SONGS;
+    return;
+  }
+  if (strncmp(line, "* Set Lists", 11) == 0) {
+    section = SECTION_SET_LISTS;
+    return;
+  }
+
+  switch (section) {
+  case SECTION_INSTRUMENTS:
+    parse_instrument_line(line);
     break;
-  case 'm':
-    if (line[1] == 'e')
-      load_message(line);
-    else
-      load_map(line);
+  case SECTION_SONGS:
+    parse_song_line(line);
     break;
-  case 't':
-    load_trigger(line);
+  case SECTION_SET_LISTS:
+    parse_set_list_line(line);
     break;
-  case 's':
-    switch (line[1]) {
-    case 'o':                   // song
-      load_song(line);
-      break;
-    case 'e':                   // set
-      load_song_list(line);
-      break;
-    }
-    break;
-  case 'p':
-    switch (line[1]) {
-    case 'a':                   // patch
-      load_patch(line);
-      break;
-    case 'c': case 'r':         // program change
-      load_prog(line);
-      break;
-    }
-    break;
-  case 'c':
-    load_connection(line);
-    break;
-  case 'x':
-    load_xpose(line);
-    break;
-  case 'f':
-    load_filter(line);
-    break;
-  case 'n':
-    load_notes();
-    break;
-  case 'l':
-    load_song_list(line);
-    break;
-  // TODO patch start and stop messages
   }
 }
 
+void Loader::parse_instrument_line(char *line) {
+  if (strncmp("- input ", line, 8) == 0)
+    load_instrument(line + 2, DEFINE_INPUT);
+  else if (strncmp("- output ", line, 9) == 0)
+    load_instrument(line + 2, DEFINE_OUTPUT);
+}
+
+void Loader::parse_song_line(char *line) {
+  if (strncmp("**** ", line, 5) == 0)
+    load_connection(line + 5);
+  else if (strncmp("*** ", line, 4) == 0)
+    load_patch(line + 4);
+  else if (strncmp("** ", line, 3) == 0)
+    load_song(line + 3);
+  else if (strncmp("- ", line, 2) == 0 && conn != 0) {
+    line += 2;
+    char ch = line[0];
+    switch (ch) {
+    case 'b':
+      load_bank(line);
+      break;
+    case 'p':
+      load_prog(line);
+      break;
+    case 'x':
+      load_xpose(line);
+      break;
+    case 'z':
+      load_zone(line);
+      break;
+    case 'f':
+      load_filter(line);
+      break;
+    case 'm':
+      load_map(line);
+      break;
+    }
+  }
+}
+
+void Loader::parse_set_list_line(char *line) {
+  if (strncmp("** ", line, 3) == 0)
+    load_song_list(line + 3);
+  else if (strncmp("- ", line, 2) == 0 && conn != 0)
+    load_song_list_song(line + 2);
+}
+
 int Loader::load_instrument(char *line, int type) {
-  List<char *> *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line, false);
   PmDeviceID devid = find_device((char *)args->at(0), type);
 
   if (devid == pmNoDevice && !pm.testing)
@@ -111,10 +139,10 @@ int Loader::load_instrument(char *line, int type) {
   char *name = (char *)args->at(2);
 
   switch (type) {
-  case 'i':
+  case DEFINE_INPUT:
     pm.inputs << new Input(sym, name, devid);
     break;
-  case 'o':
+  case DEFINE_OUTPUT:
     pm.outputs << new Output(sym, name, devid);
     break;
   }
@@ -134,8 +162,7 @@ int Loader::load_trigger(char *line) {
 }
 
 int Loader::load_song(char *line) {
-  char *name = skip_first_word(line);
-  Song *s = new Song(name);
+  Song *s = new Song(line);
   pm.all_songs->songs << s;
   song = s;
   patch = 0;
@@ -151,8 +178,7 @@ int Loader::load_notes() {
 }
 
 int Loader::load_patch(char *line) {
-  char *name = skip_first_word(line);
-  Patch *p = new Patch(name);
+  Patch *p = new Patch(line);
   song->patches << p;
   patch = p;
   conn = 0;
@@ -160,7 +186,7 @@ int Loader::load_patch(char *line) {
 }
 
 int Loader::load_connection(char *line) {
-  List<char *> *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line, false);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), (char *)args->at(0));
   int in_chan = chan_from_word((char *)args->at(1));
   Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), (char *)args->at(2));
@@ -180,7 +206,7 @@ int Loader::load_prog(char *line) {
 }
 
 int Loader::load_bank(char *line) {
-  List<char *> *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line, true);
   conn->prog.bank_msb = atoi((char *)args->at(0));
   conn->prog.bank_lsb = atoi((char *)args->at(1));
   return 0;
@@ -192,6 +218,13 @@ int Loader::load_xpose(char *line) {
   return 0;
 }
 
+int Loader::load_zone(char *line) {
+  List<char *> *args = comma_sep_args(line, true);
+  conn->zone.low = atoi((char *)args->at(0));
+  conn->zone.high = atoi((char *)args->at(1));
+  return 0;
+}
+
 int Loader::load_filter(char *line) {
   int controller = atoi(skip_first_word(line));
   conn->cc_maps[controller] = -1;
@@ -199,28 +232,26 @@ int Loader::load_filter(char *line) {
 }
 
 int Loader::load_map(char *line) {
-  List<char *> *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line, true);
   conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
   delete args;
   return 0;
 }
 
 int Loader::load_song_list(char *line) {
-  char *name = skip_first_word(line);
-  SongList *sl = new SongList(name);
-  pm.song_lists << sl;
+  song_list = new SongList(line);
+  pm.song_lists << song_list;
+  return 0;
+}
 
-  char song_name[BUFSIZ];
-  while (fgets(song_name, BUFSIZ, fp) != 0 && strncmp(song_name, "end\n", 4) != 0) {
-    strip_newline(song_name);
-    Song *s = find_song(pm.all_songs->songs, song_name);
-    if (s == 0)
-      fprintf(stderr, "error in set: can not find song named \"%s\"\n", song_name);
-    else
-      sl->songs << find_song(pm.all_songs->songs, song_name);
+int Loader::load_song_list_song(char *line) {
+  Song *s = find_song(pm.all_songs->songs, line);
+  if (s == 0) {
+    fprintf(stderr, "error in set: can not find song named \"%s\"\n", line);
+    return 1;
   }
-  song_list = sl;
 
+  song_list->songs << find_song(pm.all_songs->songs, line);
   return 0;
 }
 
@@ -241,9 +272,9 @@ char *Loader::skip_first_word(char *line) {
  * list as a list of strings. The contents should NOT be freed, since they
  * are a destructive mutation of `line`.
  */
-List<char *> *Loader::comma_sep_args(char *line) {
+List<char *> *Loader::comma_sep_args(char *line, bool skip_word) {
   List<char *> *l = new List<char *>();
-  char *args_start = skip_first_word(line);
+  char *args_start = skip_word ? skip_first_word(line) : line;
 
   char *word;
   for (word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
