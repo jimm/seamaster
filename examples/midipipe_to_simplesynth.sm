@@ -1,9 +1,0 @@
-input MidiPipe Output 1, mp, MidiPipe
-output SimpleSynth virtual input, ss, SimpleSynth
-
-song To Each His Own
-patch Vanilla Through
-conn mp, all, ss, all
-patch Up One Octave
-conn mp, all, ss, all
-xpose 12

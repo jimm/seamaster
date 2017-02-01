@@ -1,0 +1,14 @@
+* Instruments
+
+- input MidiPipe Output 1, mp, MidiPipe
+- output SimpleSynth virtual input, ss, SimpleSynth
+
+* Songs
+
+** To Each His Own
+*** Vanilla Through
+****  mp, all, ss, all
+
+** Up One Octave
+*** mp, all, ss, all
+    - xpose 12
