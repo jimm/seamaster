@@ -164,14 +164,20 @@ void GUI::refresh_all() {
 }
 
 void GUI::set_window_data() {
-  song_lists->set_contents("Song Lists", &pm.song_lists, pm.cursor->song_list());
+  song_lists->set_contents("Song Lists",
+                           reinterpret_cast<List<Named *> *>(&pm.song_lists),
+                           pm.cursor->song_list());
 
   SongList *sl = pm.cursor->song_list();
-  song_list->set_contents(sl->name.c_str(), &sl->songs, pm.cursor->song());
+  song_list->set_contents(sl->name.c_str(),
+                          reinterpret_cast<List<Named *> *>(&sl->songs),
+                          pm.cursor->song());
 
   Song *s = pm.cursor->song();
   if (s != 0) {
-    song->set_contents(s->name.c_str(), &s->patches, pm.cursor->patch());
+    song->set_contents(s->name.c_str(),
+                       reinterpret_cast<List<Named *> *>(&s->patches),
+                       pm.cursor->patch());
     info->set_contents(&s->notes);
     Patch *p = pm.cursor->patch();
     patch->set_contents(p);

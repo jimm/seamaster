@@ -101,7 +101,7 @@ void Loader::parse_line(char *line) {
 }
 
 int Loader::load_instrument(char *line, int type) {
-  List *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line);
   PmDeviceID devid = find_device((char *)args->at(0), type);
 
   if (devid == pmNoDevice && !pm.testing)
@@ -160,10 +160,10 @@ int Loader::load_patch(char *line) {
 }
 
 int Loader::load_connection(char *line) {
-  List *args = comma_sep_args(line);
-  Input *in = (Input *)find_by_sym(pm.inputs, (char *)args->at(0));
+  List<char *> *args = comma_sep_args(line);
+  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), (char *)args->at(0));
   int in_chan = chan_from_word((char *)args->at(1));
-  Output *out = (Output *)find_by_sym(pm.outputs, (char *)args->at(2));
+  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), (char *)args->at(2));
   int out_chan = chan_from_word((char *)args->at(3));
 
   conn = new Connection(in, in_chan, out, out_chan);
@@ -180,7 +180,7 @@ int Loader::load_prog(char *line) {
 }
 
 int Loader::load_bank(char *line) {
-  List *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line);
   conn->prog.bank_msb = atoi((char *)args->at(0));
   conn->prog.bank_lsb = atoi((char *)args->at(1));
   return 0;
@@ -199,7 +199,7 @@ int Loader::load_filter(char *line) {
 }
 
 int Loader::load_map(char *line) {
-  List *args = comma_sep_args(line);
+  List<char *> *args = comma_sep_args(line);
   conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
   delete args;
   return 0;
@@ -241,8 +241,8 @@ char *Loader::skip_first_word(char *line) {
  * list as a list of strings. The contents should NOT be freed, since they
  * are a destructive mutation of `line`.
  */
-List *Loader::comma_sep_args(char *line) {
-  List *l = new List();
+List<char *> *Loader::comma_sep_args(char *line) {
+  List<char *> *l = new List<char *>();
   char *args_start = skip_first_word(line);
 
   char *word;
@@ -270,7 +270,7 @@ PmDeviceID Loader::find_device(char *name, char in_or_out) {
   return pmNoDevice;
 }
 
-Instrument *Loader::find_by_sym(List &list, char *name) {
+Instrument *Loader::find_by_sym(List<Instrument *> &list, char *name) {
   for (int i = 0; i < list.length(); ++i) {
     Instrument *inst = (Instrument *)list[i];
     if (inst->sym == name)
@@ -279,7 +279,7 @@ Instrument *Loader::find_by_sym(List &list, char *name) {
   return 0;
 }
 
-Song *Loader::find_song(List &list, char *name) {
+Song *Loader::find_song(List<Song *> &list, char *name) {
   for (int i = 0; i < list.length(); ++i) {
     Song *s = (Song *)list[i];
     if (s->name == name)

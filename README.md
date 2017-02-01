@@ -6,12 +6,13 @@ More docs to come.
 
 # To Do
 
-Support backslashes in .sm file to escape commas. Or maybe a parser, or
-perhaps titles on a separate line.
+Fix ListWindow bounding/scrolling problem.
+
+Remove casts wherever Lists are used.
+
+Convert to .org mode for files.
 
 "use midi" flag in PM, replace "testing".
-
-Should PatchMsater be returned by load()? What does that do to reload?
 
 Display controller filters and maps.
 

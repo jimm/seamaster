@@ -84,7 +84,7 @@ void Input::read(PmEvent *buf, int len) {
     // note off messages must be sent to their original connections, so for
     // incoming note on messages we store the current connections in
     // note_off_conns.
-    List conns;
+    List<Connection *> conns;
     switch (high_nibble) {
     case NOTE_OFF:
       conns = notes_off_conns[chan][note];

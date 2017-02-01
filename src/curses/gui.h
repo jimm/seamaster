@@ -2,9 +2,9 @@
 #define GUI_H
 
 #include "../patchmaster.h"
+#include "list_window.h"
 
 class InfoWindow;
-class ListWindow;
 class PatchWindow;
 class TriggerWindow;
 class Window;

@@ -19,15 +19,34 @@ test/loader_test.o: test/loader_test.cpp /usr/include/string.h \
   /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h \
   /usr/include/sys/_types/_uintptr_t.h /usr/include/_types/_intmax_t.h \
   /usr/include/_types/_uintmax_t.h test/../src/list.h \
+  /usr/include/stdlib.h /usr/include/sys/wait.h \
+  /usr/include/sys/_types/_pid_t.h /usr/include/sys/_types/_id_t.h \
+  /usr/include/sys/signal.h /usr/include/sys/appleapiopts.h \
+  /usr/include/machine/signal.h /usr/include/i386/signal.h \
+  /usr/include/machine/_mcontext.h /usr/include/i386/_mcontext.h \
+  /usr/include/mach/i386/_structs.h \
+  /usr/include/sys/_pthread/_pthread_attr_t.h \
+  /usr/include/sys/_types/_sigaltstack.h \
+  /usr/include/sys/_types/_ucontext.h \
+  /usr/include/sys/_types/_sigset_t.h /usr/include/sys/_types/_uid_t.h \
+  /usr/include/sys/resource.h /usr/include/sys/_types/_timeval.h \
+  /usr/include/machine/endian.h /usr/include/i386/endian.h \
+  /usr/include/sys/_endian.h /usr/include/libkern/_OSByteOrder.h \
+  /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
+  /usr/include/sys/_types/_ct_rune_t.h /usr/include/sys/_types/_rune_t.h \
+  /usr/include/sys/_types/_wchar_t.h /usr/include/machine/types.h \
+  /usr/include/i386/types.h /usr/include/sys/_types/_u_int8_t.h \
+  /usr/include/sys/_types/_u_int16_t.h \
+  /usr/include/sys/_types/_u_int32_t.h \
+  /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
+  /usr/include/sys/_types/_mode_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  test/../src/patchmaster.h test/../src/song_list.h test/../src/song.h \
-  test/../src/patch.h test/../src/named.h \
+  test/../src/debug.h test/../src/patchmaster.h test/../src/song_list.h \
+  test/../src/song.h test/../src/patch.h test/../src/named.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
   /usr/include/wchar.h /usr/include/sys/_types/_mbstate_t.h \
-  /usr/include/sys/_types/_ct_rune_t.h /usr/include/sys/_types/_rune_t.h \
-  /usr/include/sys/_types/_wchar_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
   /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
@@ -63,7 +82,6 @@ test/loader_test.o: test/loader_test.cpp /usr/include/string.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
   test/../src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
-  /usr/include/sys/_pthread/_pthread_attr_t.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -74,10 +92,9 @@ test/loader_test.o: test/loader_test.cpp /usr/include/string.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  /usr/include/sys/_types/_sigset_t.h test/../src/instrument.h \
-  test/../src/consts.h test/../src/trigger.h test/../src/output.h \
-  test/../src/message.h test/../src/cursor.h test/../src/loader.h \
-  test/loader_test.h
+  test/../src/consts.h test/../src/instrument.h test/../src/trigger.h \
+  test/../src/output.h test/../src/message.h test/../src/cursor.h \
+  test/../src/loader.h test/loader_test.h
 
 /usr/include/string.h:
 
@@ -159,7 +176,79 @@ test/../src/connection.h:
 
 test/../src/list.h:
 
+/usr/include/stdlib.h:
+
+/usr/include/sys/wait.h:
+
+/usr/include/sys/_types/_pid_t.h:
+
+/usr/include/sys/_types/_id_t.h:
+
+/usr/include/sys/signal.h:
+
+/usr/include/sys/appleapiopts.h:
+
+/usr/include/machine/signal.h:
+
+/usr/include/i386/signal.h:
+
+/usr/include/machine/_mcontext.h:
+
+/usr/include/i386/_mcontext.h:
+
+/usr/include/mach/i386/_structs.h:
+
+/usr/include/sys/_pthread/_pthread_attr_t.h:
+
+/usr/include/sys/_types/_sigaltstack.h:
+
+/usr/include/sys/_types/_ucontext.h:
+
+/usr/include/sys/_types/_sigset_t.h:
+
+/usr/include/sys/_types/_uid_t.h:
+
+/usr/include/sys/resource.h:
+
+/usr/include/sys/_types/_timeval.h:
+
+/usr/include/machine/endian.h:
+
+/usr/include/i386/endian.h:
+
+/usr/include/sys/_endian.h:
+
+/usr/include/libkern/_OSByteOrder.h:
+
+/usr/include/libkern/i386/_OSByteOrder.h:
+
+/usr/include/alloca.h:
+
+/usr/include/sys/_types/_ct_rune_t.h:
+
+/usr/include/sys/_types/_rune_t.h:
+
+/usr/include/sys/_types/_wchar_t.h:
+
+/usr/include/machine/types.h:
+
+/usr/include/i386/types.h:
+
+/usr/include/sys/_types/_u_int8_t.h:
+
+/usr/include/sys/_types/_u_int16_t.h:
+
+/usr/include/sys/_types/_u_int32_t.h:
+
+/usr/include/sys/_types/_u_int64_t.h:
+
+/usr/include/sys/_types/_dev_t.h:
+
+/usr/include/sys/_types/_mode_t.h:
+
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+test/../src/debug.h:
 
 test/../src/patchmaster.h:
 
@@ -180,12 +269,6 @@ test/../src/named.h:
 /usr/include/wchar.h:
 
 /usr/include/sys/_types/_mbstate_t.h:
-
-/usr/include/sys/_types/_ct_rune_t.h:
-
-/usr/include/sys/_types/_rune_t.h:
-
-/usr/include/sys/_types/_wchar_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
 
@@ -271,8 +354,6 @@ test/../src/input.h:
 
 /usr/include/pthread/sched.h:
 
-/usr/include/sys/_pthread/_pthread_attr_t.h:
-
 /usr/include/sys/_pthread/_pthread_cond_t.h:
 
 /usr/include/sys/_pthread/_pthread_condattr_t.h:
@@ -297,11 +378,9 @@ test/../src/input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-/usr/include/sys/_types/_sigset_t.h:
+test/../src/consts.h:
 
 test/../src/instrument.h:
-
-test/../src/consts.h:
 
 test/../src/trigger.h:
 

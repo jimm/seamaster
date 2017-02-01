@@ -11,15 +11,15 @@ class Cursor;
 
 class PatchMaster {
 public:
-  List inputs;
-  List outputs;
+  List<Input *> inputs;
+  List<Output *> outputs;
   SongList *all_songs;
-  List song_lists;
+  List<SongList *> song_lists;
   Cursor *cursor;
   bool running;
   bool testing;
-  List messages;
-  List triggers;
+  List<Message *> messages;
+  List<Trigger *> triggers;
 
   PatchMaster();
   ~PatchMaster();

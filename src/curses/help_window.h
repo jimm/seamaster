@@ -6,7 +6,7 @@
 
 class HelpWindow : public Window {
 public:
-  List *lines;
+  List<char *> *lines;
 
   HelpWindow(struct rect, const char *);
   ~HelpWindow();

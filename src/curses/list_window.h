@@ -7,14 +7,14 @@
 
 class ListWindow : public Window {
 public:
-  List *list;
+  List<Named *> *list;
   int offset;
   Named *curr_item;
 
   ListWindow(struct rect, const char *);
   ~ListWindow();
 
-  void set_contents(const char *title, List *, Named *curr_item);
+  void set_contents(const char *title, List<Named *> *, Named *curr_item);
   void draw();
 
 #ifdef DEBUG

@@ -6,8 +6,8 @@
 
 class Song : public Named {
 public:
-  List patches;
-  List notes;
+  List<Patch *> patches;
+  List<char *> notes;
 
   Song(const char *name);
   ~Song();

@@ -80,7 +80,7 @@ src/curses/info_window.o: src/curses/info_window.cpp \
   /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h \
   src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/help_window.h
+  src/curses/../debug.h src/curses/help_window.h
 
 /usr/include/stdlib.h:
 
@@ -325,5 +325,7 @@ src/curses/geometry.h:
 src/curses/../list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+src/curses/../debug.h:
 
 src/curses/help_window.h:

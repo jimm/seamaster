@@ -19,8 +19,8 @@ Patch::~Patch() {
     delete (Connection *)connections[i];
 }
 
-List *Patch::inputs() {
-  List *inputs = new List();
+List<Input *> *Patch::inputs() {
+  List<Input *> *inputs = new List<Input *>();
   for (int i = 0; i < connections.length(); ++i)
     inputs->append(((Connection *)connections[i])->input);
   return inputs;

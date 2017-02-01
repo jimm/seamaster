@@ -81,7 +81,7 @@ src/curses/patch_window.o: src/curses/patch_window.cpp \
   src/curses/../patch.h /usr/local/include/portmidi.h \
   src/curses/../named.h src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/../connection.h src/curses/../input.h \
+  src/curses/../debug.h src/curses/../connection.h src/curses/../input.h \
   /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
   /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
@@ -94,7 +94,7 @@ src/curses/patch_window.o: src/curses/patch_window.cpp \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/curses/../instrument.h src/curses/../consts.h \
+  src/curses/../consts.h src/curses/../instrument.h \
   src/curses/../trigger.h src/curses/../output.h
 
 /usr/include/stdlib.h:
@@ -347,6 +347,8 @@ src/curses/../list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
+src/curses/../debug.h:
+
 src/curses/../connection.h:
 
 src/curses/../input.h:
@@ -381,9 +383,9 @@ src/curses/../input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-src/curses/../instrument.h:
-
 src/curses/../consts.h:
+
+src/curses/../instrument.h:
 
 src/curses/../trigger.h:
 

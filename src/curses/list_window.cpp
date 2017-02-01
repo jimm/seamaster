@@ -2,17 +2,14 @@
 #include "list_window.h"
 
 ListWindow::ListWindow(struct rect r, const char *title_prefix)
-  : Window(r, title_prefix)
+  : Window(r, title_prefix), list(0), offset(0), curr_item(0)
 {
-  list = 0;
-  offset = 0;
-  curr_item = 0;
 }
 
 ListWindow::~ListWindow() {
 }
 
-void ListWindow::set_contents(const char *title_str, List *l,
+void ListWindow::set_contents(const char *title_str, List<Named *> *l,
                               Named *curr_item_ptr)
 {
   title = title_str;

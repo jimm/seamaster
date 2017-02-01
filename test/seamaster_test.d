@@ -36,9 +36,11 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h test/seamaster_test.h \
-  test/../src/loader.h test/../src/patchmaster.h test/../src/song_list.h \
-  test/../src/list.h \
+  test/../src/loader.h test/../src/list.h /usr/include/string.h \
+  /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
+  /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
+  test/../src/debug.h test/../src/patchmaster.h test/../src/song_list.h \
   test/../src/song.h test/../src/patch.h /usr/local/include/portmidi.h \
   test/../src/named.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
@@ -52,8 +54,6 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /usr/include/_types/_wctype_t.h /usr/include/ctype.h \
   /usr/include/runetype.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring \
-  /usr/include/string.h /usr/include/sys/_types/_rsize_t.h \
-  /usr/include/sys/_types/_errno_t.h /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwchar \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwctype \
@@ -92,7 +92,7 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  test/../src/instrument.h test/../src/consts.h test/../src/trigger.h \
+  test/../src/consts.h test/../src/instrument.h test/../src/trigger.h \
   test/../src/output.h test/../src/message.h test/../src/cursor.h \
   test/list_test.h test/loader_test.h test/cursor_test.h \
   test/connection_test.h test/input_test.h
@@ -233,13 +233,23 @@ test/seamaster_test.h:
 
 test/../src/loader.h:
 
+test/../src/list.h:
+
+/usr/include/string.h:
+
+/usr/include/sys/_types/_rsize_t.h:
+
+/usr/include/sys/_types/_errno_t.h:
+
+/usr/include/strings.h:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+test/../src/debug.h:
+
 test/../src/patchmaster.h:
 
 test/../src/song_list.h:
-
-test/../src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 test/../src/song.h:
 
@@ -280,14 +290,6 @@ test/../src/named.h:
 /usr/include/runetype.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring:
-
-/usr/include/string.h:
-
-/usr/include/sys/_types/_rsize_t.h:
-
-/usr/include/sys/_types/_errno_t.h:
-
-/usr/include/strings.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio:
 
@@ -377,9 +379,9 @@ test/../src/input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-test/../src/instrument.h:
-
 test/../src/consts.h:
+
+test/../src/instrument.h:
 
 test/../src/trigger.h:
 

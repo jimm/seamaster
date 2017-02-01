@@ -77,7 +77,7 @@ src/patch.o: src/patch.cpp /usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
   src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/connection.h src/input.h /usr/include/pthread.h \
+  src/debug.h src/connection.h src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
@@ -89,7 +89,7 @@ src/patch.o: src/patch.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/instrument.h src/consts.h src/trigger.h src/debug.h
+  src/consts.h src/instrument.h src/trigger.h
 
 /usr/include/stdlib.h:
 
@@ -327,6 +327,8 @@ src/list.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
+src/debug.h:
+
 src/connection.h:
 
 src/input.h:
@@ -361,10 +363,8 @@ src/input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-src/instrument.h:
-
 src/consts.h:
 
-src/trigger.h:
+src/instrument.h:
 
-src/debug.h:
+src/trigger.h:

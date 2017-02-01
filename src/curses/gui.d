@@ -39,9 +39,11 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /usr/include/unctrl.h /usr/include/curses.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
   src/curses/gui.h src/curses/../patchmaster.h src/curses/../song_list.h \
-  src/curses/../list.h \
+  src/curses/../list.h /usr/include/string.h \
+  /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
+  /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/curses/../song.h src/curses/../patch.h \
+  src/curses/../debug.h src/curses/../song.h src/curses/../patch.h \
   /usr/local/include/portmidi.h src/curses/../named.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
@@ -53,8 +55,6 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /usr/include/_types/_wctype_t.h /usr/include/ctype.h \
   /usr/include/runetype.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring \
-  /usr/include/string.h /usr/include/sys/_types/_rsize_t.h \
-  /usr/include/sys/_types/_errno_t.h /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwchar \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cwctype \
@@ -94,10 +94,10 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/curses/../instrument.h src/curses/../consts.h \
+  src/curses/../consts.h src/curses/../instrument.h \
   src/curses/../trigger.h src/curses/../output.h src/curses/../message.h \
-  src/curses/geometry.h src/curses/help_window.h src/curses/window.h \
-  src/curses/info_window.h src/curses/list_window.h \
+  src/curses/list_window.h src/curses/window.h src/curses/geometry.h \
+  src/curses/help_window.h src/curses/info_window.h \
   src/curses/patch_window.h src/curses/trigger_window.h \
   src/curses/../cursor.h
 
@@ -251,7 +251,17 @@ src/curses/../song_list.h:
 
 src/curses/../list.h:
 
+/usr/include/string.h:
+
+/usr/include/sys/_types/_rsize_t.h:
+
+/usr/include/sys/_types/_errno_t.h:
+
+/usr/include/strings.h:
+
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
+
+src/curses/../debug.h:
 
 src/curses/../song.h:
 
@@ -290,14 +300,6 @@ src/curses/../named.h:
 /usr/include/runetype.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstring:
-
-/usr/include/string.h:
-
-/usr/include/sys/_types/_rsize_t.h:
-
-/usr/include/sys/_types/_errno_t.h:
-
-/usr/include/strings.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/cstdio:
 
@@ -387,9 +389,9 @@ src/curses/../input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-src/curses/../instrument.h:
-
 src/curses/../consts.h:
+
+src/curses/../instrument.h:
 
 src/curses/../trigger.h:
 
@@ -397,15 +399,15 @@ src/curses/../output.h:
 
 src/curses/../message.h:
 
+src/curses/list_window.h:
+
+src/curses/window.h:
+
 src/curses/geometry.h:
 
 src/curses/help_window.h:
 
-src/curses/window.h:
-
 src/curses/info_window.h:
-
-src/curses/list_window.h:
 
 src/curses/patch_window.h:
 

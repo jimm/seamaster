@@ -3,19 +3,19 @@
 
 #include <pthread.h>
 #include <portmidi.h>
-#include "instrument.h"
 #include "consts.h"
 #include "list.h"
+#include "instrument.h"
 #include "connection.h"
 #include "trigger.h"
 
 class Input : public Instrument {
 public:
-  List connections;
-  List triggers;
+  List<Connection *> connections;
+  List<Trigger *> triggers;
   bool running;
   pthread_t portmidi_thread;
-  List notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
+  List<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
 
   Input(const char *sym, const char *name, int port_num);
   ~Input();

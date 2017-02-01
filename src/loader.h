@@ -1,6 +1,7 @@
 #ifndef LOAD_H
 #define LOAD_H
 
+#include "list.h"
 #include "patchmaster.h"
 
 class Loader {
@@ -20,13 +21,13 @@ private:
 
   void parse_line(char *);
   char *skip_first_word(char *);
-  List *comma_sep_args(char *);
+  List<char *> *comma_sep_args(char *);
   int chan_from_word(char *);
   void strip_newline(char *);
 
   PmDeviceID find_device(char *, char);
-  Instrument *find_by_sym(List &, char *);
-  Song *find_song(List &, char *);
+  Instrument *find_by_sym(List<Instrument *> &, char *);
+  Song *find_song(List<Song *> &, char *);
 
   int load_instrument(char *, int);
   int load_message(char *);

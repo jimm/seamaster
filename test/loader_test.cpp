@@ -41,7 +41,7 @@ void test_load_triggers() {
 
 void test_load_songs() {
   PatchMaster *pm = load_test_file();
-  List &all = pm->all_songs->songs;
+  List<Song *> &all = pm->all_songs->songs;
   tassert(all.length() == 2, "wrong num songs loaded");
 
   Song *s = (Song *)all.first();
@@ -153,7 +153,7 @@ void test_load_map() {
 
 void test_load_song_list() {
   PatchMaster *pm = load_test_file();
-  List &all = pm->all_songs->songs;
+  List<Song *> &all = pm->all_songs->songs;
 
   tassert(pm->song_lists.length() == 3, "bad num song lists");
   SongList *sl = (SongList *)pm->song_lists.last();
