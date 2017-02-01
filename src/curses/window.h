@@ -24,7 +24,7 @@ public:
   char *make_fit(const char *, int);
 
 #ifdef DEBUG
-  void window_debug(window *);
+  void debug();
 #endif
 
 private:

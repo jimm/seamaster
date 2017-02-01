@@ -10,13 +10,22 @@ public:
 
   void copy(const List &src);
 
-  int length();
-  void *at(int i);
-  void at_set(int i, void *);
+  inline int length() { return num_elements; }
+  inline void *at(int i) {
+    if (i < 0)
+      i = num_elements + i;
+    return (i >= 0 && i < num_elements) ? nodes[i] : 0;
+  }
+  inline void at_set(int i, void *val) {
+    grow(i);
+    nodes[i] = val;
+  }
   int index_of(void *); // -1 if not found
 
-  void *first();
-  void *last();
+  inline void *first() { return nodes[0]; }
+  inline void *last() { return num_elements > 0 ? nodes[num_elements-1] : 0; }
+
+  List *slice(int start, int length);
 
   void clear(void (*content_freeing_func)(void *)); // func may be 0
 
@@ -29,6 +38,8 @@ public:
 
   void apply(void (*f)(void *));
   List *map(void *(*f)(void *));
+
+  char *join(const char *);
 
   void debug(const char *);
 

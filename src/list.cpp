@@ -21,19 +21,6 @@ void List::copy(const List &src) {
   num_elements = src.num_elements;
 }
 
-int List::length() {
-  return num_elements;
-}
-
-void *List::at(int i) {
-  return (i >= 0 && i < num_elements) ? nodes[i] : 0;
-}
-
-void List::at_set(int i, void *val) {
-  grow(i);
-  nodes[i] = val;
-}
-
 int List::index_of(void *node) {
   for (int i = 0; i < num_elements; ++i)
     if (node == nodes[i])
@@ -41,12 +28,26 @@ int List::index_of(void *node) {
   return -1;
 }
 
-void *List::first() {
-  return nodes[0];
-}
+/*
+ * Returns a new list containing elements from start for length len. Start
+ * may be negative. If start is out of bounds, returns 0.
+ *
+ * As a special case, if len is negative the rest of the array is returned.
+ */
+List *List::slice(int start, int len) {
+  if (start < 0)
+    start = num_elements - start;
+  if (start < 0 || start >= num_elements)
+    return 0;
 
-void *List::last() {
-  return num_elements > 0 ? nodes[num_elements-1] : 0;
+  int end = len < 0 ? num_elements : start + len;
+  if (end > num_elements)
+    end = num_elements;
+
+  List *l = new List();
+  for (int i = start; i < end; ++i)
+    l->append(nodes[i]);
+  return l;
 }
 
 // func may be 0
@@ -114,6 +115,28 @@ List *List::map(void *(*f)(void *)) {
   return list;
 }
 
+char *List::join(const char *sep) {
+  int sep_len = strlen(sep);
+  int len = sep_len * num_elements;
+
+  for (int i = 0; i < num_elements; ++i)
+    len += strlen((char *)nodes[i]);
+
+  char *joined = (char *)malloc(len + 1);
+  char *p = joined;
+  for (int i = 0; i < num_elements; ++i) {
+    if (i > 0) {
+      strcpy(p, sep);
+      p += sep_len;
+    }
+    char *node_str = (char *)nodes[i];
+    int node_len = strlen(node_str);
+    strcpy(p, node_str);
+    p += node_len;
+  }
+  return joined;
+}
+
 void List::grow(int min_size) {
   if (num_allocated >= min_size)
     return;
@@ -139,7 +162,7 @@ void List::debug(const char *msg) {
     return;
   }
   for (int i = 0; i < num_elements && i < 10; ++i)
-    vdebug("  %3i: %p\n", i, nodes[i]);
+    vdebug("  %3i %p\n", i, nodes[i]);
   if (num_elements > 10)
     vdebug("  ...\n");
 }

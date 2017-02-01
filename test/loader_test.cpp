@@ -1,7 +1,7 @@
 #include <string.h>
 #include "test_helper.h"
 #include "../src/loader.h"
-#include "load_test.h"
+#include "loader_test.h"
 
 #define TEST_FILE "test/testfile.sm"
 

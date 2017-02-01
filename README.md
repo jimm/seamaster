@@ -6,6 +6,9 @@ More docs to come.
 
 # To Do
 
+Support backslashes in .sm file to escape commas. Or maybe a parser, or
+perhaps titles on a separate line.
+
 "use midi" flag in PM, replace "testing".
 
 Should PatchMsater be returned by load()? What does that do to reload?

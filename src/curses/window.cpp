@@ -67,8 +67,8 @@ void Window::set_max_contents_len(int width) {
 #ifdef DEBUG
 
 void Window::debug() {
-  fprintf(stderr, "window %p, win %p, title_prefix %s, title %s\n", w, win,
-          title_prefix, title);
+  fprintf(stderr, "window %p, win %p, title_prefix %s, title %s\n",
+          this, win, title_prefix.c_str(), title.c_str());
 }
 
 #endif

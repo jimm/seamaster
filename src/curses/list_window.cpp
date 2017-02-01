@@ -56,9 +56,10 @@ void ListWindow::draw() {
 
 void ListWindow::debug() {
   fprintf(stderr, "list_window %p, offset %d, ", this, offset);
-  window_debug(w);
+  Window::debug();
   fprintf(stderr, "  list in list window %p:\n", this);
-  list_debug(list, "list in list window");
+  list->debug("list in list window");
   fprintf(stderr, "  address of curr_item = %p\r\n", curr_item);
 }
+
 #endif

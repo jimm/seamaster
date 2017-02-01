@@ -1,4 +1,4 @@
-test/load_test.o: test/load_test.cpp /usr/include/string.h \
+test/loader_test.o: test/loader_test.cpp /usr/include/string.h \
   /usr/include/_types.h /usr/include/sys/_types.h \
   /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/machine/_types.h \
@@ -77,7 +77,7 @@ test/load_test.o: test/load_test.cpp /usr/include/string.h \
   /usr/include/sys/_types/_sigset_t.h test/../src/instrument.h \
   test/../src/consts.h test/../src/trigger.h test/../src/output.h \
   test/../src/message.h test/../src/cursor.h test/../src/loader.h \
-  test/load_test.h
+  test/loader_test.h
 
 /usr/include/string.h:
 
@@ -313,4 +313,4 @@ test/../src/cursor.h:
 
 test/../src/loader.h:
 
-test/load_test.h:
+test/loader_test.h:
