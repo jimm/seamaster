@@ -34,9 +34,11 @@ void PatchWindow::draw() {
 
 void PatchWindow::draw_headers() {
   wattron(win, A_REVERSE);
-  const char *str = " Input            Chan | Output           Chan | Zone      | Xpose | Prog";
-  waddstr(win, str);
-  for (int i = 0; i < getmaxx(win) - 2 - strlen(str); ++i)
+  string str =
+    " Input            Chan | Output           Chan | Zone      | Xpose | Prog            | CC Filters/Maps";
+  make_fit(str, 0);
+  waddstr(win, str.c_str());
+  for (int i = 0; i < getmaxx(win) - 2 - str.length(); ++i)
     waddch(win, ' ');
   wattroff(win, A_REVERSE);
 }
@@ -49,6 +51,7 @@ void PatchWindow::draw_connection(Connection *conn) {
   format_zone(conn, buf);
   format_xpose(conn, buf);
   format_prog(conn, buf);
+  format_filters_and_maps(conn, buf);
 
   make_fit(buf, 1, fitbuf);
   waddstr(win, fitbuf);
@@ -71,26 +74,6 @@ void PatchWindow::format_chans(Connection *conn, char *buf) {
           conn->output->name.c_str(), outchan);
 }
 
-void PatchWindow::format_prog(Connection *conn, char *buf) {
-  int has_msb = conn->prog.bank_msb != -1;
-  int has_lsb = conn->prog.bank_lsb != -1;
-  int has_bank = has_msb || has_lsb;
-
-  if (has_bank)
-    strcat(buf, " [");
-  if (has_msb)
-    sprintf(buf+strlen(buf), "%d", conn->prog.bank_msb);
-  if (has_bank)
-    strcat(buf, ",");
-  if (has_lsb)
-    sprintf(buf+strlen(buf), "%d", conn->prog.bank_lsb);
-  if (has_bank)
-    strcat(buf, "]");
-
-  if (conn->prog.prog != -1)
-    sprintf(buf + strlen(buf), " %d", conn->prog.prog);
-}
-
 void PatchWindow::format_zone(Connection *conn, char *buf) {
   if (conn->zone.low != -1 || conn->zone.high != -1)
     sprintf(buf + strlen(buf), " %3d - %3d |", conn->zone.low, conn->zone.high);
@@ -100,7 +83,69 @@ void PatchWindow::format_zone(Connection *conn, char *buf) {
 
 void PatchWindow::format_xpose(Connection *conn, char *buf) {
   if (conn->xpose != -1)
-    sprintf(buf + strlen(buf), "  %s%2d |", conn->xpose < 0 ? "-" : " ", abs(conn->xpose));
+    sprintf(buf + strlen(buf), "   %c%2d |", conn->xpose < 0 ? '-' : ' ', abs(conn->xpose));
   else
-    strcat(buf, "      |");
+    strcat(buf, "       |");
+}
+
+void PatchWindow::format_prog(Connection *conn, char *buf) {
+  int has_msb = conn->prog.bank_msb != -1;
+  int has_lsb = conn->prog.bank_lsb != -1;
+  int has_bank = has_msb || has_lsb;
+
+  buf += strlen(buf);
+
+  sprintf(buf, " %c", has_bank ? '[' : ' ');
+  buf += 2;
+
+  if (has_msb)
+    sprintf(buf, "%3d", conn->prog.bank_msb);
+  else
+    strcat(buf, "   ");
+  buf += 3;
+
+  sprintf(buf, "%c ", has_bank ? ',' : ' ');
+  buf += 2;
+
+  if (has_lsb)
+    sprintf(buf, "%3d", conn->prog.bank_lsb);
+  else
+    strcat(buf, "   ");
+  buf += 3;
+
+  sprintf(buf, "%c ", has_bank ? ']' : ' ');
+  buf += 2;
+
+  if (conn->prog.prog != -1)
+    sprintf(buf, " %3d |", conn->prog.prog);
+  else
+    strcat(buf, "     |");
+}
+
+void PatchWindow::format_filters_and_maps(Connection *conn, char *buf) {
+  int first = true;
+
+  buf += strlen(buf);
+  *(buf++) = ' ';
+  for (int i = 0; i < 128; ++i) {
+    int m = conn->cc_maps[i];
+    if (m == -1) {
+      if (first) first = false; else { strcat(buf, ", "); buf += 2; }
+      format_filter(i, buf);
+      buf += strlen(buf);
+    }
+    else if (m != i) {
+      if (first) first = false; else { strcat(buf, ", "); buf += 2; }
+      format_map(i, m, buf);
+      buf += strlen(buf);
+    }
+  }
+}
+
+void PatchWindow::format_filter(int i, char *buf) {
+  sprintf(buf, "%dx", i);
+}
+
+void PatchWindow::format_map(int from, int to, char *buf) {
+  sprintf(buf, "%d->%d", from, to);
 }

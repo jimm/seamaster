@@ -13,7 +13,6 @@ public:
   string title_prefix;
   string title;
   rect rect;
-  int max_contents_len;
 
   Window(struct rect r, const char *title_prefix);
   virtual ~Window();
@@ -21,14 +20,12 @@ public:
   void move_and_resize(struct rect);
   void draw();
   int visible_height();
+  void make_fit(string &, int);
   void make_fit(const char *, int, char *);
 
 #ifdef DEBUG
   void debug();
 #endif
-
-private:
-  void set_max_contents_len(int);
 };
 
 #endif /* SM_WINDOW_H */

@@ -6,11 +6,13 @@ More docs to come.
 
 # To Do
 
+Names for connections.
+
+Patch win: shrink input/output to max lengths of those names.
+
+Zones should read and display note names.
+
 Simple play display mode: show song title, patches, and notes.
-
-"use midi" flag in PM, replace "testing".
-
-Display controller filters and maps.
 
 Load should be more robust. Count args (e.g. input and output creation) and
 make sure not null.

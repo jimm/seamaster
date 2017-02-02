@@ -41,8 +41,9 @@ void ListWindow::draw() {
     if (thing == curr_item)
       wattron(win, A_REVERSE);
     waddch(win, ' ');
-    make_fit(thing->name.c_str(), 1, fitted);
-    waddstr(win, fitted);
+    string list_entry = thing->name;
+    make_fit(list_entry, 2);
+    waddstr(win, list_entry.c_str());
     waddch(win, ' ');
     if (thing == curr_item)
       wattroff(win, A_REVERSE);

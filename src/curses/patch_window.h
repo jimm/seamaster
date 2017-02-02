@@ -22,6 +22,9 @@ private:
   void format_zone(Connection *, char *);
   void format_xpose(Connection *, char *);
   void format_prog(Connection *, char *);
+  void format_filters_and_maps(Connection *, char *);
+  void format_filter(int, char *);
+  void format_map(int, int, char *);
 };
 
 #endif /* PATCH_WINDOW_H */

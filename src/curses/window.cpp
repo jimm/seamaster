@@ -9,7 +9,6 @@ Window::Window(struct rect r, const char *title_prefix_str)
   title = "";
   win = newwin(r.height, r.width, r.row, r.col);
   rect = r;
-  set_max_contents_len(r.width);
 }
 
 Window::~Window() {
@@ -20,7 +19,6 @@ void Window::move_and_resize(struct rect r) {
   rect = r;
   wmove(win, r.row, r.col);
   wresize(win, r.height, r.width);
-  Window::set_max_contents_len(r.width);
 }
 
 void Window::draw() {
@@ -37,8 +35,7 @@ void Window::draw() {
   if (title.length() > 0)
     win_title += title;
   win_title += " ";
-  if (win_title.length() > getmaxx(win) - 2)
-    win_title.resize(getmaxx(win) - 2, ' ');
+  make_fit(win_title, 0);
 
   wmove(win, 0, 1);
   wattron(win, A_REVERSE);
@@ -51,18 +48,25 @@ int Window::visible_height() {
 }
 
 /*
- * Copies str into outbuf to the maximum window width minus `reduce_max_len_by`.
+ * MODIFIES str by fitting it to the maximum window display width (which is
+ * the window width minus two for the borders) minus `reduce_max_len_by`.
+ */
+void Window::make_fit(string &str, int reduce_max_len_by) {
+  int w_maxlen = getmaxx(win) - (2 + reduce_max_len_by);
+  if (str.length() > w_maxlen)
+    str.resize(w_maxlen, ' ');
+}
+
+/*
+ * Copies str into outbuf to the maximum window display width (which is the
+ * window width minus two for the borders) minus `reduce_max_len_by`.
  */
 void Window::make_fit(const char *str, int reduce_max_len_by, char *outbuf) {
   int len = strlen(str);
-  int w_maxlen = max_contents_len - reduce_max_len_by;
+  int w_maxlen = getmaxx(win) - (2 + reduce_max_len_by);
   int newlen = len < w_maxlen ? len : w_maxlen;
   strncpy(outbuf, str, newlen);
   outbuf[newlen] = 0;
-}
-
-void Window::set_max_contents_len(int width) {
-  max_contents_len = width - 3; /* 2 for borders */
 }
 
 #ifdef DEBUG

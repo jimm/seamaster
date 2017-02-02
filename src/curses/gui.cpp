@@ -66,7 +66,7 @@ void GUI::event_loop() {
         pm.goto_song_list(name_regex);
       break;
     case 'h': case '?':
-      gui_help();
+      help();
       break;
     case '\e':                  /* escape */
       show_message("Sending panic note off messages...");
@@ -210,7 +210,7 @@ void GUI::close_screen() {
   endwin();
 }
 
-void GUI::gui_help() {
+void GUI::help() {
   rect r = geom_help_rect();
   HelpWindow hw(r, "Help");
   hw.draw();

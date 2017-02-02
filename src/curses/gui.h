@@ -34,7 +34,7 @@ private:
   void refresh_all();
   void set_window_data();
   void close_screen();
-  void gui_help();
+  void help();
   void show_message(const char *);
 };
 
