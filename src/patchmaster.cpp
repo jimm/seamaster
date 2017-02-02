@@ -16,17 +16,17 @@ PatchMaster::PatchMaster() {
 
 PatchMaster::~PatchMaster() {
   for (int i = 0; i < inputs.length(); ++i)
-    delete (Input *)inputs[i];
+    delete inputs[i];
   for (int i = 0; i < outputs.length(); ++i)
-    delete (Output *)outputs[i];
+    delete outputs[i];
   for (int i = 0; i < all_songs->songs.length(); ++i)
-    delete (Song *)all_songs->songs[i];
+    delete all_songs->songs[i];
   for (int i = 0; i < song_lists.length(); ++i)
-    delete (SongList *)song_lists[i];
+    delete song_lists[i];
   for (int i = 0; i < messages.length(); ++i)
-    delete (Message *)messages[i];
+    delete messages[i];
   for (int i = 0; i < triggers.length(); ++i)
-    delete (Trigger *)triggers[i];
+    delete triggers[i];
 }
 
 // ================ running ================
@@ -34,7 +34,7 @@ PatchMaster::~PatchMaster() {
 void PatchMaster::start() {
   vdebug("patchmaster_start\n");
   for (int i = 0; i < inputs.length(); ++i)
-    ((Input *)inputs[i])->start();
+    inputs[i]->start();
   cursor->init();
   if (cursor->patch() != 0)
     cursor->patch()->start();
@@ -46,7 +46,7 @@ void PatchMaster::stop() {
   if (cursor->patch() != 0)
     cursor->patch()->stop();
   for (int i = 0; i < inputs.length(); ++i)
-    ((Input *)inputs[i])->stop();
+    inputs[i]->stop();
   running = false;
 }
 
@@ -108,11 +108,11 @@ void PatchMaster::goto_song_list(string name_regex) {
 void PatchMaster::debug() {
   vdebug("patchmaster %p, running %d\n", this, running);
   for (int i = 0; i < inputs.length(); ++i)
-    ((Input *)inputs[i])->debug();
+    inputs[i]->debug();
   for (int i = 0; i < outputs.length(); ++i)
-    ((Output *)outputs[i])->debug();
+    outputs[i]->debug();
   for (int i = 0; i < all_songs->songs.length(); ++i)
-    ((Song *)all_songs->songs[i])->debug();
+    all_songs->songs[i]->debug();
   song_lists.debug("song_lists");
   messages.debug("messages");
   triggers.debug("triggers");

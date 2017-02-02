@@ -166,8 +166,8 @@ int Loader::load_instrument(char *line, int type) {
   if (devid == pmNoDevice && !pm.testing)
     return 1;
 
-  char *sym = (char *)args->at(1);
-  char *name = (char *)args->at(2);
+  char *sym = args->at(1);
+  char *name = args->at(2);
 
   switch (type) {
   case INSTRUMENT_INPUT:
@@ -231,9 +231,9 @@ int Loader::load_patch(char *line) {
 int Loader::load_connection(char *line) {
   List<char *> *args = comma_sep_args(line, false);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), (char *)args->at(0));
-  int in_chan = chan_from_word((char *)args->at(1));
+  int in_chan = chan_from_word(args->at(1));
   Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), (char *)args->at(2));
-  int out_chan = chan_from_word((char *)args->at(3));
+  int out_chan = chan_from_word(args->at(3));
 
   conn = new Connection(in, in_chan, out, out_chan);
   patch->connections << conn;
@@ -250,8 +250,8 @@ int Loader::load_prog(char *line) {
 
 int Loader::load_bank(char *line) {
   List<char *> *args = comma_sep_args(line, true);
-  conn->prog.bank_msb = atoi((char *)args->at(0));
-  conn->prog.bank_lsb = atoi((char *)args->at(1));
+  conn->prog.bank_msb = atoi(args->at(0));
+  conn->prog.bank_lsb = atoi(args->at(1));
   return 0;
 }
 
@@ -263,8 +263,8 @@ int Loader::load_xpose(char *line) {
 
 int Loader::load_zone(char *line) {
   List<char *> *args = comma_sep_args(line, true);
-  conn->zone.low = atoi((char *)args->at(0));
-  conn->zone.high = atoi((char *)args->at(1));
+  conn->zone.low = atoi(args->at(0));
+  conn->zone.high = atoi(args->at(1));
   return 0;
 }
 
@@ -276,7 +276,7 @@ int Loader::load_filter(char *line) {
 
 int Loader::load_map(char *line) {
   List<char *> *args = comma_sep_args(line, true);
-  conn->cc_maps[atoi((char *)args->at(0))] = atoi((char *)args->at(1));
+  conn->cc_maps[atoi(args->at(0))] = atoi(args->at(1));
   delete args;
   return 0;
 }
@@ -345,19 +345,15 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
 }
 
 Instrument *Loader::find_by_sym(List<Instrument *> &list, char *name) {
-  for (int i = 0; i < list.length(); ++i) {
-    Instrument *inst = (Instrument *)list[i];
-    if (inst->sym == name)
-      return inst;
-  }
+  for (int i = 0; i < list.length(); ++i)
+    if (list[i]->sym == name)
+      return list[i];
   return 0;
 }
 
 Song *Loader::find_song(List<Song *> &list, char *name) {
-  for (int i = 0; i < list.length(); ++i) {
-    Song *s = (Song *)list[i];
-    if (s->name == name)
-      return s;
-  }
+  for (int i = 0; i < list.length(); ++i)
+    if (list[i]->name == name)
+      return list[i];
   return 0;
 }

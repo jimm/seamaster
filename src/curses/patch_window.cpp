@@ -28,7 +28,7 @@ void PatchWindow::draw() {
 
   for (int i = 0; i < patch->connections.length(); ++i) {
     wmove(win, i+2, 1);
-    draw_connection((Connection *)patch->connections.at(i));
+    draw_connection(patch->connections.at(i));
   }
 }
 

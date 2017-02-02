@@ -16,13 +16,13 @@ Patch::~Patch() {
   if (stop_messages != 0)
     free(stop_messages);
   for (int i = 0; i < connections.length(); ++i)
-    delete (Connection *)connections[i];
+    delete connections[i];
 }
 
 List<Input *> *Patch::inputs() {
   List<Input *> *inputs = new List<Input *>();
   for (int i = 0; i < connections.length(); ++i)
-    inputs->append(((Connection *)connections[i])->input);
+    inputs->append(connections[i]->input);
   return inputs;
 }
 
@@ -32,7 +32,7 @@ void Patch::start() {
     return;
 
   for (int i = 0; i < connections.length(); ++i)
-    ((Connection *)connections[i])->start(start_messages, num_start_messages);
+    connections[i]->start(start_messages, num_start_messages);
   running = true;
 }
 
@@ -46,12 +46,12 @@ void Patch::stop() {
     return;
 
   for (int i = 0; i < connections.length(); ++i)
-    ((Connection *)connections[i])->stop(stop_messages, num_stop_messages);
+    connections[i]->stop(stop_messages, num_stop_messages);
   running = false;
 }
 
 void Patch::debug() {
   vdebug("patch %s\n", name.c_str());
   for (int i = 0; i < connections.length(); ++i)
-    ((Connection *)connections[i])->debug();
+    connections[i]->debug();
 }

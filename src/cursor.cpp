@@ -46,7 +46,7 @@ void Cursor::init() {
 
 SongList *Cursor::song_list() {
   if (song_list_index != UNDEFINED)
-    return (SongList *)pm->song_lists[song_list_index];
+    return pm->song_lists[song_list_index];
   else
     return 0;
 }
@@ -55,14 +55,14 @@ Song *Cursor::song() {
   SongList *sl = song_list();
   if (sl == 0 || song_index == UNDEFINED)
     return 0;
-  return (Song *)sl->songs[song_index];
+  return sl->songs[song_index];
 }
 
 Patch *Cursor::patch() {
   Song *s = song();
   if (s == 0 || patch_index == UNDEFINED)
     return 0;
-  return (Patch *)s->patches[patch_index];
+  return s->patches[patch_index];
 }
 
 void Cursor::next_song() {

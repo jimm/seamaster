@@ -65,7 +65,7 @@ void Input::read(PmEvent *buf, int len) {
 
   // triggers
   for (int i = 0; i < triggers.length(); ++i)
-    ((Trigger *)triggers[i])->signal(buf, len);
+    triggers[i]->signal(buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;
@@ -99,7 +99,7 @@ void Input::read(PmEvent *buf, int len) {
     }
 
     for (int j = 0; j < conns.length(); ++j)
-      ((Connection *)conns[j])->midi_in(msg);
+      conns[j]->midi_in(msg);
   }
 }
 
