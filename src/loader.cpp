@@ -7,16 +7,9 @@
 #include "patchmaster.h"
 #include "loader.h"
 #include "debug.h"
-
-#define SECTION_IGNORE -1
-#define SECTION_INSTRUMENTS 0
-#define SECTION_SONGS 1
-#define SECTION_SET_LISTS 2
+  
 #define INSTRUMENT_INPUT 0
 #define INSTRUMENT_OUTPUT 1
-#define NOTES_OUTSIDE -1
-#define NOTES_SKIPPING_BLANK_LINES 0
-#define NOTES_COLLECTING 1
 
 const char * const whitespace = " \t";
 
@@ -49,16 +42,21 @@ int Loader::load(const char *path) {
 }
 
 void Loader::clear() {
-  section = SECTION_IGNORE;
-  notes_state = NOTES_OUTSIDE;
+  section = IGNORE;
+  notes_state = OUTSIDE;
   song = 0;
   patch = 0;
   conn = 0;
   song_list = 0;
 }
 
+void Loader::enter_section(Section sec) {
+  clear();
+  section = sec;
+}
+
 void Loader::parse_line(char *line) {
-  if (notes_state == NOTES_OUTSIDE) {
+  if (notes_state == OUTSIDE) {
     int start = strspn(line, whitespace);
     if (line[start] == 0 || strncmp(line + start, "# ", 2) == 0) // whitespace only or comment
       return;
@@ -67,30 +65,39 @@ void Loader::parse_line(char *line) {
   }
 
   if (strncmp(line, "* Instruments", 13) == 0) {
-    clear();
-    section = SECTION_INSTRUMENTS;
+    enter_section(INSTRUMENTS);
     return;
   }
   if (strncmp(line, "* Songs", 7) == 0) {
-    clear();
-    section = SECTION_SONGS;
+    enter_section(SONGS);
     return;
   }
   if (strncmp(line, "* Set Lists", 11) == 0) {
-    clear();
-    section = SECTION_SET_LISTS;
+    enter_section(SET_LISTS);
+    return;
+  }
+  if (strncmp(line, "* ", 2) == 0) {
+    enter_section(IGNORE);
     return;
   }
 
   switch (section) {
-  case SECTION_INSTRUMENTS:
+  case INSTRUMENTS:
     parse_instrument_line(line);
     break;
-  case SECTION_SONGS:
+  case MESSAGES:
+    parse_message_line(line);
+    break;
+  case TRIGGERS:
+    parse_trigger_line(line);
+    break;
+  case SONGS:
     parse_song_line(line);
     break;
-  case SECTION_SET_LISTS:
+  case SET_LISTS:
     parse_set_list_line(line);
+    break;
+  default:
     break;
   }
 }
@@ -102,6 +109,14 @@ void Loader::parse_instrument_line(char *line) {
     load_instrument(line + 2, INSTRUMENT_OUTPUT);
 }
 
+void Loader::parse_message_line(char *line) {
+  // TODO
+}
+
+void Loader::parse_trigger_line(char *line) {
+  // TODO
+}
+
 void Loader::parse_song_line(char *line) {
   if (strncmp("**** ", line, 5) == 0)
     load_connection(line + 5);
@@ -109,7 +124,7 @@ void Loader::parse_song_line(char *line) {
     load_patch(line + 4);
   else if (strncmp("** ", line, 3) == 0)
     load_song(line + 3);
-  else if (notes_state != NOTES_OUTSIDE)
+  else if (notes_state != OUTSIDE)
     load_notes_line(line);
   else if (strncmp("- ", line, 2) == 0 && conn != 0) {
     line += 2;
@@ -183,15 +198,15 @@ int Loader::load_song(char *line) {
   song = s;
   patch = 0;
   conn = 0;
-  notes_state = NOTES_SKIPPING_BLANK_LINES;
+  notes_state = SKIPPING_BLANK_LINES;
   return 0;
 }
 
 int Loader::load_notes_line(char *line) {
-  if (notes_state == NOTES_SKIPPING_BLANK_LINES && strlen(line) == 0)
+  if (notes_state == SKIPPING_BLANK_LINES && strlen(line) == 0)
     return 0;
 
-  notes_state = NOTES_COLLECTING;
+  notes_state = COLLECTING;
   song->append_notes(line);
   return 0;
 }
@@ -201,7 +216,7 @@ void Loader::stop_collecting_notes() {
     while (song->notes.length() > 0 && strlen(song->notes.last()) == 0)
       song->notes.remove_at(song->notes.length()-1);
   }
-  notes_state = NOTES_OUTSIDE;
+  notes_state = OUTSIDE;
 }
 
 int Loader::load_patch(char *line) {

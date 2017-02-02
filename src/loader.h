@@ -4,6 +4,21 @@
 #include "list.h"
 #include "patchmaster.h"
 
+typedef enum Section {
+  IGNORE,
+  INSTRUMENTS,
+  MESSAGES,
+  TRIGGERS,
+  SONGS,
+  SET_LISTS
+} Section;
+
+typedef enum NoteState {
+  OUTSIDE,
+  SKIPPING_BLANK_LINES,
+  COLLECTING
+} NoteState;
+
 class Loader {
 public:
   Loader(PatchMaster &pm);
@@ -14,16 +29,19 @@ public:
 private:
   FILE *fp;
   PatchMaster &pm;
-  int section;
-  int notes_state;
+  Section section;
+  NoteState notes_state;
   Song *song;
   Patch *patch;
   Connection *conn;
   SongList *song_list;
 
   void clear();
+  void enter_section(Section);
   void parse_line(char *);
   void parse_instrument_line(char *);
+  void parse_message_line(char *);
+  void parse_trigger_line(char *);
   void parse_song_line(char *);
   void parse_set_list_line(char *);
   char *skip_first_word(char *);

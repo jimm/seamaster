@@ -50,6 +50,19 @@ that spans multiple lines
      - zone 64, 127
      - xpose -12
 
+* Ignore This Section
+
+Any section that isn't one of
+- Instruments
+- Songs
+- Set Lists
+should be ignored. Let's see:
+
+** This is Not a Song
+
+*** This is Not a Patch
+**** bad, 2, bader, 99
+
 * Set Lists
 
 ** Song List One
