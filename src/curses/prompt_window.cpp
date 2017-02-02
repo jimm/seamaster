@@ -2,23 +2,13 @@
 #include <ncurses.h>
 #include "prompt_window.h"
 
-#define MAX_WIDTH 30
-
 static struct rect empty_rect = {0, 0, 0, 0};
 
 PromptWindow::PromptWindow(const char *title_str, const char *prompt_str)
-  : Window(empty_rect, 0)
+  : Window(geom_prompt_rect(), 0)
 {
   title = title_str;
   prompt = prompt_str;
-
-  int width = COLS / 2;
-  if (width > MAX_WIDTH)
-    width = MAX_WIDTH;
-  rect.height = 4;
-  rect.width = width;
-  rect.row = LINES / 3;
-  rect.col = (COLS - width) / 2;
 }
 
 PromptWindow::~PromptWindow() {

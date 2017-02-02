@@ -29,16 +29,20 @@ void Window::draw() {
   if (title.length() == 0 && title.length() == 0)
     return;
 
-  wmove(win, 0, 1);
-  wattron(win, A_REVERSE);
-  waddch(win, ' ');
+  string win_title = " ";
   if (title_prefix.length() > 0) {
-    waddstr(win, title_prefix.c_str());
-    waddstr(win, ": ");
+    win_title += title_prefix;
+    win_title += ": ";
   }
   if (title.length() > 0)
-    waddstr(win, title.c_str());
-  waddch(win, ' ');
+    win_title += title;
+  win_title += " ";
+  if (win_title.length() > getmaxx(win) - 2)
+    win_title.resize(getmaxx(win) - 2, ' ');
+
+  wmove(win, 0, 1);
+  wattron(win, A_REVERSE);
+  waddstr(win, win_title.c_str());
   wattroff(win, A_REVERSE);
 }
 

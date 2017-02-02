@@ -2,6 +2,8 @@
 #include <ncurses.h>
 #include "geometry.h"
 
+#define MAX_PROMPT_WINDOW_WIDTH 40
+
 int TOP_HEIGHT() { return (LINES - 1) * 2 / 3; }
 int BOT_HEIGHT() { return (LINES - 1) - TOP_HEIGHT(); }
 int TOP_WIDTH() { return COLS / 3; }
@@ -85,5 +87,17 @@ rect geom_help_rect() {
   r.col = 3;
   r.height = LINES - 6;
   r.width = COLS - 6;
+  return r;
+}
+
+rect geom_prompt_rect() {
+  rect r;
+
+  r.height = 4;
+  r.width = COLS / 2;
+  if (r.width > MAX_PROMPT_WINDOW_WIDTH)
+    r.width = MAX_PROMPT_WINDOW_WIDTH;
+  r.row = LINES / 3;
+  r.col = (COLS - r.width) / 2;
   return r;
 }
