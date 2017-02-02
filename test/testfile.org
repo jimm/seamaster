@@ -39,7 +39,7 @@ that spans multiple lines
      - xpose 12
      - zone 0, 63
 **** two, 1, two, 5
-     - zone 64, 127
+     - zone e4, G9
      - xpose -12
 
 *** Split Into Two Outputs

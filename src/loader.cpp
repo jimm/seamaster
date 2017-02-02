@@ -6,6 +6,7 @@
 #include "portmidi.h"
 #include "patchmaster.h"
 #include "loader.h"
+#include "formatter.h"
 #include "debug.h"
   
 #define INSTRUMENT_INPUT 0
@@ -263,8 +264,8 @@ int Loader::load_xpose(char *line) {
 
 int Loader::load_zone(char *line) {
   List<char *> *args = comma_sep_args(line, true);
-  conn->zone.low = atoi(args->at(0));
-  conn->zone.high = atoi(args->at(1));
+  conn->zone.low = note_name_to_num(args->at(0));
+  conn->zone.high = note_name_to_num(args->at(1));
   return 0;
 }
 

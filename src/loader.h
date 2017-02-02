@@ -44,14 +44,6 @@ private:
   void parse_trigger_line(char *);
   void parse_song_line(char *);
   void parse_set_list_line(char *);
-  char *skip_first_word(char *);
-  List<char *> *comma_sep_args(char *, bool);
-  int chan_from_word(char *);
-  void strip_newline(char *);
-
-  PmDeviceID find_device(char *, int);
-  Instrument *find_by_sym(List<Instrument *> &, char *);
-  Song *find_song(List<Song *> &, char *);
 
   int load_instrument(char *, int);
   int load_message(char *);
@@ -69,6 +61,15 @@ private:
   int load_map(char *);
   int load_song_list(char *);
   int load_song_list_song(char *);
+
+  char *skip_first_word(char *);
+  List<char *> *comma_sep_args(char *, bool);
+  int chan_from_word(char *);
+  void strip_newline(char *);
+
+  PmDeviceID find_device(char *, int);
+  Instrument *find_by_sym(List<Instrument *> &, char *);
+  Song *find_song(List<Song *> &, char *);
 };
 
 #endif /* LOAD_H */

@@ -3,6 +3,7 @@
 #include "seamaster_test.h"
 #include "../src/loader.h"
 #include "../src/cursor.h"
+#include "formatter_test.h"
 #include "list_test.h"
 #include "loader_test.h"
 #include "cursor_test.h"
@@ -33,6 +34,7 @@ int test_num_errors() {
 }
 
 void run_tests() {
+  test_formatter();
   test_list();
   test_load();
   test_cursor();
