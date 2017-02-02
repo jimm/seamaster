@@ -333,6 +333,9 @@ int Loader::chan_from_word(char *word) {
 }
 
 PmDeviceID Loader::find_device(char *name, int device_type) {
+  if (pm.testing)
+    return pmNoDevice;
+
   int num_devices = Pm_CountDevices();
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
