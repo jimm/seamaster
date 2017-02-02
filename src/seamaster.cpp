@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <libgen.h>
 #include "patchmaster.h"
 #include "loader.h"
 #include "curses/gui.h"
@@ -33,34 +35,55 @@ void cleanup() {
   Pm_Terminate();
 }
 
-void check_sizes() {
-  if (sizeof(void *) < sizeof(PmMessage)) {
-    fprintf(stderr, "error: code assumes PmMessage struct fits inside void *\n");
-    fprintf(stderr, "exiting (sorry, it's me, it's not you)\n");
-    exit(1);
-  }
+void usage(char *prog_name) {
+  fprintf(stderr,
+          "usage: %s [-l] [-n] [-?|-h] file\n"
+          "\n"
+          "    -l     List all attached MIDI ports\n"
+          "    -n     No MIDI (ignores bad/unknown MIDI ports)\n"
+          "    -?, -h This help\n",
+          basename(prog_name));
 }
 
-int main(int argc, const char **argv) {
+int main(int argc, char * const *argv) {
+  PatchMaster pm;
+  int ch, testing = false;
+  char *prog_name = argv[0];
+
+  while ((ch = getopt(argc, argv, "lnh?")) != -1) {
+    switch (ch) {
+    case 'l':
+      list_all_devices();
+      exit(0);
+    case 'n':
+      testing = true;
+      break;
+    case '?': case 'h': default:
+      usage(prog_name);
+      exit(ch == '?' || ch == 'h' ? 0 : 1);
+    }
+  }
+  argc -= optind;
+  argv += optind;
+
+  if (argc == 0) {
+    usage(prog_name);
+    exit(1);
+  }
+
   Pm_Initialize();
   atexit(cleanup);
 
-  if (argc > 1 && strncmp("-l", argv[1], 2) == 0)
-    list_all_devices();
-  else {
-    check_sizes();
+  pm.testing = testing;
 
-    PatchMaster pm;
-    if (argc > 1) {
-      Loader loader(pm);
-      if (loader.load(argv[1]) != 0)
-        exit(1);                /* error already printed */
-    }
-    pm.start();
-    GUI gui(pm);
-    gui.run();
-    pm.stop();
-  }
+  Loader loader(pm);
+  if (loader.load(argv[0]) != 0)
+    exit(1);                    // error already printed
+
+  pm.start();
+  GUI gui(pm);
+  gui.run();
+  pm.stop();
 
   exit(0);
   return 0;

@@ -37,7 +37,7 @@ public:
   void debug();
 
 private:
-  Named *find_in_list(List<Named *>, string regex);
+  Named *find_in_list(List<Named *> *, string regex);
 };
 
 #endif /* CURSOR_H */

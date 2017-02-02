@@ -7,6 +7,7 @@
 #include "info_window.h"
 #include "list_window.h"
 #include "patch_window.h"
+#include "prompt_window.h"
 #include "trigger_window.h"
 #include "../cursor.h"
 
@@ -31,6 +32,8 @@ void GUI::run() {
 void GUI::event_loop() {
   bool done = FALSE;
   int ch, prev_cmd = 0;
+  PromptWindow *pwin;
+  string name_regex;
 
   while (!done) {
     refresh_all();
@@ -49,16 +52,16 @@ void GUI::event_loop() {
       pm.prev_song();
       break;
     case 'g':
-      PromptWindow *pw = new PromptWindow.new("Go To Song", "Go to song:");
-      string name_regex = pw.gets();
-      delete pw;
+      pwin = new PromptWindow("Go To Song", "Go to song:");
+      name_regex = pwin->gets();
+      delete pwin;
       if (name_regex.length() > 0)
         pm.goto_song(name_regex);
       break;
     case 't':
-      PromptWindow *pw = new PromptWindow.new("Go To Song List", "Go to song list:");
-      string name_regex = pw.gets();
-      delete pw;
+      pwin = new PromptWindow("Go To Song List", "Go to song list:");
+      name_regex = pwin->gets();
+      delete pwin;
       if (name_regex.length() > 0)
         pm.goto_song_list(name_regex);
       break;
