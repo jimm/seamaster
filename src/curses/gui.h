@@ -36,6 +36,7 @@ private:
   void close_screen();
   void help();
   void show_message(const char *);
+  int max_name_len(List<Named *> *);
 };
 
 #endif /* GUI_H */

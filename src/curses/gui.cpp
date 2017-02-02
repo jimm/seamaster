@@ -126,7 +126,9 @@ void GUI::create_windows() {
   song_lists = new ListWindow(geom_song_lists_rect(), 0);
   song_list = new ListWindow(geom_song_list_rect(), "Song List");
   song = new ListWindow(geom_song_rect(), "Song");
-  patch = new PatchWindow(geom_patch_rect(), "Patch");
+  patch = new PatchWindow(geom_patch_rect(), "Patch",
+                          max_name_len(reinterpret_cast<List<Named *> *>(&pm.inputs)),
+                          max_name_len(reinterpret_cast<List<Named *> *>(&pm.outputs)));
   message = new Window(geom_message_rect(), "");
   trigger = new TriggerWindow(geom_trigger_rect(), "");
   info = new InfoWindow(geom_info_rect(), "");
@@ -224,4 +226,14 @@ void GUI::show_message(const char *msg) {
   wclear(win);
   waddstr(win, msg);
   wrefresh(win);
+}
+
+int GUI::max_name_len(List<Named *> *list) {
+  int maxlen = 0;
+  for (int i = 0; i < list->length(); ++i) {
+    int len = list->at(i)->name.length();
+    if (len > maxlen)
+      maxlen = len;
+  }
+  return maxlen;
 }

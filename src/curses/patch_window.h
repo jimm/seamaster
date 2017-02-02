@@ -7,8 +7,10 @@
 class PatchWindow : public Window {
 public:
   Patch *patch;
+  int max_input_name_len;
+  int max_output_name_len;
 
-  PatchWindow(struct rect, const char *);
+  PatchWindow(struct rect, const char *, int, int);
   ~PatchWindow();
 
   void set_contents(Patch *patch);

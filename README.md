@@ -8,8 +8,6 @@ More docs to come.
 
 Names for connections.
 
-Patch win: shrink input/output to max lengths of those names.
-
 Zones should read and display note names.
 
 Simple play display mode: show song title, patches, and notes.

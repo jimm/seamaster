@@ -4,10 +4,9 @@
 #include "../input.h"
 #include "../output.h"
 
-PatchWindow::PatchWindow(struct rect r, const char *title_prefix)
-  : Window(r, title_prefix)
+PatchWindow::PatchWindow(struct rect r, const char *title_prefix, int imaxlen, int omaxlen)
+  : Window(r, title_prefix), patch(0), max_input_name_len(imaxlen), max_output_name_len(omaxlen)
 {
-  patch = 0;
 }
 
 PatchWindow::~PatchWindow() {
@@ -34,8 +33,13 @@ void PatchWindow::draw() {
 
 void PatchWindow::draw_headers() {
   wattron(win, A_REVERSE);
-  string str =
-    " Input            Chan | Output           Chan | Zone      | Xpose | Prog            | CC Filters/Maps";
+  string str = " Input";
+  for (int i = 0; i < (max_input_name_len - 6); ++i)
+    str += ' ';
+  str += "  Chan | Output";
+  for (int i = 0; i < (max_output_name_len - 7); ++i)
+    str += ' ';
+  str += "  Chan | Zone      | Xpose | Prog            | CC Filters/Maps";
   make_fit(str, 0);
   waddstr(win, str.c_str());
   for (int i = 0; i < getmaxx(win) - 2 - str.length(); ++i)
@@ -69,9 +73,9 @@ void PatchWindow::format_chans(Connection *conn, char *buf) {
   else
     sprintf(outchan, "%3d", conn->output_chan + 1);
 
-  sprintf(buf, " %16s  %3s | %16s  %3s |",
-          conn->input->name.c_str(), inchan,
-          conn->output->name.c_str(), outchan);
+  sprintf(buf, " %*s  %3s | %*s  %3s |",
+          max_input_name_len, conn->input->name.c_str(), inchan,
+          max_output_name_len, conn->output->name.c_str(), outchan);
 }
 
 void PatchWindow::format_zone(Connection *conn, char *buf) {
@@ -126,7 +130,8 @@ void PatchWindow::format_filters_and_maps(Connection *conn, char *buf) {
   int first = true;
 
   buf += strlen(buf);
-  *(buf++) = ' ';
+  strcat(buf, " ");
+  buf += 1;
   for (int i = 0; i < 128; ++i) {
     int m = conn->cc_maps[i];
     if (m == -1) {
