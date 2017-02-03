@@ -15,4 +15,8 @@ rect geom_info_rect();
 rect geom_help_rect();
 rect geom_prompt_rect();
 
+rect geom_play_song_rect();
+rect geom_play_notes_rect();
+rect geom_play_patch_rect();
+
 #endif /* GEOMETRY_H */

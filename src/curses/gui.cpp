@@ -12,7 +12,7 @@
 #include "../cursor.h"
 
 GUI::GUI(PatchMaster &pmaster)
-  : pm(pmaster)
+  : pm(pmaster), layout(NORMAL)
 {
 }
 
@@ -96,6 +96,9 @@ void GUI::event_loop() {
       /*   show_message("No file loaded"); */
       /* end */
       break;
+    case 'v':
+      toggle_view();
+      break;
     case 'q':
       done = TRUE;
       break;
@@ -133,6 +136,12 @@ void GUI::create_windows() {
   trigger = new TriggerWindow(geom_trigger_rect(), "");
   info = new InfoWindow(geom_info_rect(), "");
 
+  play_song = new ListWindow(geom_play_song_rect(), "");
+  play_notes = new InfoWindow(geom_play_notes_rect(), "");
+  play_patch = new PatchWindow(geom_play_patch_rect(), "Patch",
+                               max_name_len(reinterpret_cast<List<Named *> *>(&pm.inputs)),
+                               max_name_len(reinterpret_cast<List<Named *> *>(&pm.outputs)));
+
   scrollok(stdscr, false);
   scrollok(message->win, false);
 }
@@ -145,6 +154,10 @@ void GUI::resize_windows() {
   message->move_and_resize(geom_message_rect());
   trigger->move_and_resize(geom_trigger_rect());
   info->move_and_resize(geom_info_rect());
+
+  play_song->move_and_resize(geom_play_song_rect());
+  play_notes->move_and_resize(geom_play_notes_rect());
+  play_patch->move_and_resize(geom_patch_rect());
 }
 
 void GUI::free_windows() {
@@ -155,24 +168,53 @@ void GUI::free_windows() {
   delete message;
   delete trigger;
   delete info;
+
+  delete play_song;
+  delete play_notes;
+  delete play_patch;
+}
+
+void GUI::toggle_view() {
+  layout = layout == NORMAL ? PLAY : NORMAL;
 }
 
 void GUI::refresh_all() {
   set_window_data();
-  song_lists->draw();
-  song_list->draw();
-  song->draw();
-  patch->draw();
-  message->draw();
-  trigger->draw();
-  info->draw();
+  switch (layout) {
+  case NORMAL:
+    song_lists->draw();
+    song_list->draw();
+    song->draw();
+    patch->draw();
+    message->draw();
+    trigger->draw();
+    info->draw();
+    break;
+  case PLAY:
+    play_song->draw();
+    play_notes->draw();
+    play_patch->draw();
+    break;
+  }
+
   wnoutrefresh(stdscr);
-  wnoutrefresh(song_lists->win);
-  wnoutrefresh(song_list->win);
-  wnoutrefresh(song->win);
-  wnoutrefresh(patch->win);
-  wnoutrefresh(info->win);
-  wnoutrefresh(trigger->win);
+
+  switch (layout) {
+  case NORMAL:
+    wnoutrefresh(song_lists->win);
+    wnoutrefresh(song_list->win);
+    wnoutrefresh(song->win);
+    wnoutrefresh(patch->win);
+    wnoutrefresh(info->win);
+    wnoutrefresh(trigger->win);
+    break;
+  case PLAY:
+    wnoutrefresh(play_song->win);
+    wnoutrefresh(play_notes->win);
+    wnoutrefresh(play_patch->win);
+    break;
+  }
+
   doupdate();
 }
 
@@ -187,18 +229,31 @@ void GUI::set_window_data() {
                           pm.cursor->song());
 
   Song *s = pm.cursor->song();
+  Patch *p = pm.cursor->patch();
   if (s != 0) {
     song->set_contents(s->name.c_str(),
                        reinterpret_cast<List<Named *> *>(&s->patches),
                        pm.cursor->patch());
     info->set_contents(&s->notes);
-    Patch *p = pm.cursor->patch();
     patch->set_contents(p);
   }
   else {
     song->set_contents(0, 0, 0);
     info->set_contents(0);
     patch->set_contents(0);
+  }
+
+  if (s != 0) {
+    play_song->set_contents(s->name.c_str(),
+                            reinterpret_cast<List<Named *> *>(&s->patches),
+                            pm.cursor->patch());
+    play_notes->set_contents(&s->notes);
+    play_patch->set_contents(p);
+  }
+  else {
+    play_song->set_contents(0, 0, 0);
+    play_notes->set_contents(0);
+    play_patch->set_contents(0);
   }
 }
 

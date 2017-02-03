@@ -37,5 +37,7 @@ const char *help_window_read_help() {
 "l    - load\n" \
 "r    - reload\n" \
 "\n" \
+"v    - toggle view\n" \
+"\n" \
 "q    - quit";
 }

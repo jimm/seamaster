@@ -9,6 +9,10 @@ class PatchWindow;
 class TriggerWindow;
 class Window;
 
+typedef enum WindowLayout {
+  NORMAL, PLAY
+} WindowLayout;
+
 class GUI {
 public:
   GUI(PatchMaster &);
@@ -18,18 +22,29 @@ public:
 
 private:
   PatchMaster &pm;
+
+  Window *message;
+
+  // normal screen
   ListWindow *song_lists;
   ListWindow *song_list;
   ListWindow *song;
   PatchWindow *patch;
-  Window *message;
   TriggerWindow *trigger;
   InfoWindow *info;
+
+  // play screen
+  ListWindow *play_song;
+  InfoWindow *play_notes;
+  PatchWindow *play_patch;
+
+  WindowLayout layout;
 
   void event_loop();
   void config_curses();
   void create_windows();
   void resize_windows();
+  void toggle_view();
   void free_windows();
   void refresh_all();
   void set_window_data();

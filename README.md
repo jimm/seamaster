@@ -6,9 +6,9 @@ More docs to come.
 
 # To Do
 
-Names for connections.
+Panic.
 
-Simple play display mode: show song title, patches, and notes.
+Fix window resizing.
 
 Load should be more robust. Count args (e.g. input and output creation) and
 make sure not null.
@@ -19,3 +19,5 @@ It wouldn't be difficult to have the loader support Markdown as well as Org
 mode. Besides heading character changes, comments couldn't start with '#'.
 
 Documentation.
+
+Names for connections.
