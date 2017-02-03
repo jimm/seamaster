@@ -143,6 +143,58 @@ void test_cursor_patch() {
   delete pm;
 }
 
+void test_cursor_goto_song() {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+
+  c->goto_song("nother");
+  Song *s = c->song();
+  tassert(s != 0, 0);
+  tassert(s->name == "Another Song", 0);
+
+  delete pm;
+}
+
+void test_cursor_goto_song_no_such_song() {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+
+  Song *before = c->song();
+  tassert(before != 0, 0);
+
+  c->goto_song("nosuch");
+  Song *s = c->song();
+  tassert(s == before, 0);
+
+  delete pm;
+}
+
+void test_cursor_goto_song_list() {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+
+  c->goto_song_list("two");
+  SongList *sl = c->song_list();
+  tassert(sl != 0, 0);
+  tassert(sl->name == "Song List Two", 0);
+
+  delete pm;
+}
+
+void test_cursor_goto_song_list_no_such_song_list() {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+
+  SongList *before = c->song_list();
+  tassert(before != 0, 0);
+
+  c->goto_song_list("nosuch");
+  SongList *sl = c->song_list();
+  tassert(sl == before, 0);
+
+  delete pm;
+}
+
 void test_cursor() {
   test_run(test_cursor_init_empty);
   test_run(test_cursor_init);
@@ -157,4 +209,8 @@ void test_cursor() {
   test_run(test_cursor_song_list);
   test_run(test_cursor_song);
   test_run(test_cursor_patch);
+  test_run(test_cursor_goto_song);
+  test_run(test_cursor_goto_song_no_such_song);
+  test_run(test_cursor_goto_song_list);
+  test_run(test_cursor_goto_song_list_no_such_song_list);
 }

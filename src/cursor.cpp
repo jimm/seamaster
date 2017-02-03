@@ -116,6 +116,10 @@ void Cursor::goto_song(string name_regex) {
                          name_regex);
     new_song = reinterpret_cast<Song *>(named);
   }
+
+  if (new_song == 0)
+    return;
+
   Patch *new_patch = new_song == 0 ? 0 : new_song->patches.first();
 
   SongList *new_song_list = 0;
@@ -134,6 +138,9 @@ void Cursor::goto_song(string name_regex) {
 
 void Cursor::goto_song_list(string name_regex) {
   Named *named = find_in_list(reinterpret_cast<List<Named *> *>(&pm->song_lists), name_regex);
+  if (named == 0)
+    return;
+
   SongList *new_song_list = reinterpret_cast<SongList *>(named);
   if (new_song_list != song_list()) {
     song_list_index = pm->song_lists.index_of(new_song_list);
