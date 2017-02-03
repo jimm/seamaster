@@ -97,7 +97,7 @@ rect geom_help_rect() {
 rect geom_prompt_rect() {
   rect r;
 
-  r.height = 4;
+  r.height = 3;
   r.width = COLS / 2;
   if (r.width > MAX_PROMPT_WINDOW_WIDTH)
     r.width = MAX_PROMPT_WINDOW_WIDTH;

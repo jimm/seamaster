@@ -38,6 +38,18 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
   /usr/include/unctrl.h /usr/include/curses.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
+  /usr/include/unistd.h /usr/include/sys/unistd.h \
+  /usr/include/sys/_types/_posix_vdisable.h \
+  /usr/include/sys/_types/_seek_set.h /usr/include/sys/_types/_gid_t.h \
+  /usr/include/sys/_types/_useconds_t.h /usr/include/sys/select.h \
+  /usr/include/sys/_types/_fd_def.h /usr/include/sys/_types/_timespec.h \
+  /usr/include/sys/_types/_time_t.h \
+  /usr/include/sys/_types/_suseconds_t.h \
+  /usr/include/sys/_types/_fd_setsize.h \
+  /usr/include/sys/_types/_fd_set.h /usr/include/sys/_types/_fd_clr.h \
+  /usr/include/sys/_types/_fd_isset.h /usr/include/sys/_types/_fd_zero.h \
+  /usr/include/sys/_types/_fd_copy.h /usr/include/sys/_select.h \
+  /usr/include/sys/_types/_uuid_t.h /usr/include/gethostuuid.h \
   src/curses/gui.h src/curses/../patchmaster.h src/curses/../song_list.h \
   src/curses/../list.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
@@ -50,7 +62,6 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
   /usr/include/wchar.h /usr/include/sys/_types/_mbstate_t.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
-  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/_wctype.h /usr/include/sys/_types/_wint_t.h \
   /usr/include/_types/_wctype_t.h /usr/include/ctype.h \
   /usr/include/runetype.h \
@@ -243,6 +254,46 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
 
+/usr/include/unistd.h:
+
+/usr/include/sys/unistd.h:
+
+/usr/include/sys/_types/_posix_vdisable.h:
+
+/usr/include/sys/_types/_seek_set.h:
+
+/usr/include/sys/_types/_gid_t.h:
+
+/usr/include/sys/_types/_useconds_t.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/sys/_types/_fd_def.h:
+
+/usr/include/sys/_types/_timespec.h:
+
+/usr/include/sys/_types/_time_t.h:
+
+/usr/include/sys/_types/_suseconds_t.h:
+
+/usr/include/sys/_types/_fd_setsize.h:
+
+/usr/include/sys/_types/_fd_set.h:
+
+/usr/include/sys/_types/_fd_clr.h:
+
+/usr/include/sys/_types/_fd_isset.h:
+
+/usr/include/sys/_types/_fd_zero.h:
+
+/usr/include/sys/_types/_fd_copy.h:
+
+/usr/include/sys/_select.h:
+
+/usr/include/sys/_types/_uuid_t.h:
+
+/usr/include/gethostuuid.h:
+
 src/curses/gui.h:
 
 src/curses/../patchmaster.h:
@@ -284,10 +335,6 @@ src/curses/../named.h:
 /usr/include/time.h:
 
 /usr/include/sys/_types/_clock_t.h:
-
-/usr/include/sys/_types/_time_t.h:
-
-/usr/include/sys/_types/_timespec.h:
 
 /usr/include/_wctype.h:
 

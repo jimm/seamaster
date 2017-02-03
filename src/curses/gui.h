@@ -20,9 +20,14 @@ public:
 
   void run();
 
+  void clear_message();
+  int clear_message_seconds() { return clear_msg_secs; }
+  int clear_message_id() { return clear_msg_id; }
+
 private:
   PatchMaster &pm;
 
+  WindowLayout layout;
   Window *message;
 
   // normal screen
@@ -38,7 +43,8 @@ private:
   InfoWindow *play_notes;
   PatchWindow *play_patch;
 
-  WindowLayout layout;
+  int clear_msg_secs;
+  int clear_msg_id;
 
   void event_loop();
   void config_curses();
@@ -48,9 +54,12 @@ private:
   void free_windows();
   void refresh_all();
   void set_window_data();
+  void set_normal_window_data();
+  void set_play_window_data();
   void close_screen();
   void help();
-  void show_message(const char *);
+  void show_message(string);
+  void clear_message_after(int);
   int max_name_len(List<Named *> *);
 };
 

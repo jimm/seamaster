@@ -25,7 +25,6 @@ void InfoWindow::set_contents(List<char *> *text_lines) {
     title = "SeaMaster Help";
     display_list = help_lines;
   }
-  draw();
 }
 
 void InfoWindow::draw() {

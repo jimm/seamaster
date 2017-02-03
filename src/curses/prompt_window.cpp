@@ -4,11 +4,10 @@
 
 static struct rect empty_rect = {0, 0, 0, 0};
 
-PromptWindow::PromptWindow(const char *title_str, const char *prompt_str)
+PromptWindow::PromptWindow(const char *title_str)
   : Window(geom_prompt_rect(), 0)
 {
   title = title_str;
-  prompt = prompt_str;
 }
 
 PromptWindow::~PromptWindow() {
@@ -30,9 +29,6 @@ void PromptWindow::draw() {
   wattroff(win, A_REVERSE);
 
   wmove(win, 1, 1);
-  waddstr(win, prompt.c_str());
-
-  wmove(win, 2, 1);
   refresh();
 }
 

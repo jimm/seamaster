@@ -5,9 +5,7 @@
 
 class PromptWindow : public Window {
 public:
-  string prompt;
-
-  PromptWindow(const char *title, const char *prompt);
+  PromptWindow(const char *title);
   ~PromptWindow();
 
   string gets();

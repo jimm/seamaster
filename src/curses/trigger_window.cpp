@@ -14,7 +14,6 @@ TriggerWindow::~TriggerWindow() {
 void TriggerWindow::set_contents(const char *title, Trigger *trigger) {
   title = title;
   trigger = trigger;
-  draw();
 }
 
 void TriggerWindow::draw() {

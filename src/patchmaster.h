@@ -37,6 +37,8 @@ public:
   void goto_song(string name_regex);
   void goto_song_list(string name_regex);
 
+  void panic(bool send_notes_off);
+
   void debug();
 };
 

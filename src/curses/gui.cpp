@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <ncurses.h>
+#include <unistd.h>
 #include "gui.h"
 #include "../patchmaster.h"
 #include "geometry.h"
@@ -12,7 +13,7 @@
 #include "../cursor.h"
 
 GUI::GUI(PatchMaster &pmaster)
-  : pm(pmaster), layout(NORMAL)
+  : pm(pmaster), layout(NORMAL), clear_msg_id(0)
 {
 }
 
@@ -52,14 +53,14 @@ void GUI::event_loop() {
       pm.prev_song();
       break;
     case 'g':
-      pwin = new PromptWindow("Go To Song", "Go to song:");
+      pwin = new PromptWindow("Go To Song");
       name_regex = pwin->gets();
       delete pwin;
       if (name_regex.length() > 0)
         pm.goto_song(name_regex);
       break;
     case 't':
-      pwin = new PromptWindow("Go To Song List", "Go to song list:");
+      pwin = new PromptWindow("Go To Song List");
       name_regex = pwin->gets();
       delete pwin;
       if (name_regex.length() > 0)
@@ -69,15 +70,14 @@ void GUI::event_loop() {
       help();
       break;
     case '\e':                  /* escape */
-      show_message("Sending panic note off messages...");
-      // TODO, panic
-      /* # Twice in a row sends individual note-off commands */
-      /* @pm.panic(@prev_cmd == 27) */
+      show_message("Sending panic...");
+      pm.panic(prev_cmd == '\e');
       show_message("Panic sent");
+      clear_message_after(5);
       break;
     case 'l':
       // TODO load file
-      /* file = PromptWindow.new('Load', 'Load file:').gets */
+      /* file = PromptWindow.new('Load File').gets */
       /* if file.length > 0 */
       /*   begin */
       /*     load(file) */
@@ -219,17 +219,29 @@ void GUI::refresh_all() {
 }
 
 void GUI::set_window_data() {
+  switch (layout) {
+  case NORMAL:
+    set_normal_window_data();
+    break;
+  case PLAY:
+    set_play_window_data();
+    break;
+  }
+}
+
+void GUI::set_normal_window_data() {
+  SongList *sl = pm.cursor->song_list();
+  Song *s = pm.cursor->song();
+  Patch *p = pm.cursor->patch();
+
   song_lists->set_contents("Song Lists",
                            reinterpret_cast<List<Named *> *>(&pm.song_lists),
                            pm.cursor->song_list());
 
-  SongList *sl = pm.cursor->song_list();
   song_list->set_contents(sl->name.c_str(),
                           reinterpret_cast<List<Named *> *>(&sl->songs),
                           pm.cursor->song());
 
-  Song *s = pm.cursor->song();
-  Patch *p = pm.cursor->patch();
   if (s != 0) {
     song->set_contents(s->name.c_str(),
                        reinterpret_cast<List<Named *> *>(&s->patches),
@@ -242,6 +254,11 @@ void GUI::set_window_data() {
     info->set_contents(0);
     patch->set_contents(0);
   }
+}
+
+void GUI::set_play_window_data() {
+  Song *s = pm.cursor->song();
+  Patch *p = pm.cursor->patch();
 
   if (s != 0) {
     play_song->set_contents(s->name.c_str(),
@@ -276,11 +293,40 @@ void GUI::help() {
   getch();                      /* wait for key and eat it */
 }
 
-void GUI::show_message(const char *msg) {
+void GUI::show_message(string msg) {
   WINDOW *win = message->win;
   wclear(win);
-  waddstr(win, msg);
+  message->make_fit(msg, 0);
+  waddstr(win, msg.c_str());
   wrefresh(win);
+  doupdate();
+}
+
+void GUI::clear_message() {
+  WINDOW *win = message->win;
+  wclear(win);
+  wrefresh(win);
+  doupdate();
+}
+
+void *clear_message_thread(void *gui_vptr) {
+  GUI *gui = (GUI *)gui_vptr;
+  int clear_message_id = gui->clear_message_id();
+
+  sleep(gui->clear_message_seconds());
+
+  // Only clear the window if the id hasn't changed
+  if (gui->clear_message_id() == clear_message_id)
+    gui->clear_message();
+  return 0;
+}
+
+void GUI::clear_message_after(int secs) {
+  clear_msg_secs = secs;
+  clear_msg_id++;
+
+  pthread_t pthread;
+  pthread_create(&pthread, 0, clear_message_thread, this);
 }
 
 int GUI::max_name_len(List<Named *> *list) {

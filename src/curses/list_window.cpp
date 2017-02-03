@@ -18,7 +18,6 @@ void ListWindow::set_contents(const char *title_str, List<Named *> *l,
     offset = 0;
   }
   curr_item = curr_item_ptr;
-  draw();
 }
 
 void ListWindow::draw() {

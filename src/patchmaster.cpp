@@ -102,6 +102,28 @@ void PatchMaster::goto_song_list(string name_regex) {
     cursor->patch()->start();
 }
 
+// ================ doing things ================
+
+void PatchMaster::panic(bool send_notes_off) {
+  PmEvent buf[128];
+
+  memset(buf, 0, 128 * sizeof(PmEvent));
+  if (send_notes_off) {
+    for (int i = 0; i < 16; ++i) {
+      for (int j = 0; j < 128; ++j)
+        buf[j].message = Pm_Message(NOTE_OFF + i, j, 0);
+      for (int j = 0; j < outputs.length(); ++j)
+        outputs[j]->write(buf, 128);
+    }
+  }
+  else {
+    for (int i = 0; i < 16; ++i)
+      buf[i].message = Pm_Message(CONTROLLER + i, CM_ALL_NOTES_OFF, 0);
+    for (int i = 0; i < outputs.length(); ++i)
+      outputs[i]->write(buf, 16);
+  }
+}
+
 
 // ================ vdebugging ================
 

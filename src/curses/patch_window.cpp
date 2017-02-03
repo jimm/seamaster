@@ -15,7 +15,6 @@ PatchWindow::~PatchWindow() {
 void PatchWindow::set_contents(Patch *p) {
   title = p == 0 ? 0 : p->name;
   patch = p;
-  draw();
 }
 
 void PatchWindow::draw() {
