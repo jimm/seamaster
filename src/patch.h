@@ -19,8 +19,6 @@ public:
   Patch(const char *name);
   ~Patch();
 
-  List<Input *> *inputs();
-
   void start();
   bool is_running();
   void stop();

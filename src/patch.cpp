@@ -19,13 +19,6 @@ Patch::~Patch() {
     delete connections[i];
 }
 
-List<Input *> *Patch::inputs() {
-  List<Input *> *inputs = new List<Input *>();
-  for (int i = 0; i < connections.length(); ++i)
-    inputs->append(connections[i]->input);
-  return inputs;
-}
-
 void Patch::start() {
   vdebug("Patch::start %s\n", name.c_str());
   if (running)
