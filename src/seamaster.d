@@ -37,7 +37,7 @@ src/seamaster.o: src/seamaster.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
   /usr/include/string.h /usr/include/sys/_types/_rsize_t.h \
   /usr/include/sys/_types/_errno_t.h /usr/include/strings.h \
-  /usr/include/unistd.h /usr/include/sys/unistd.h \
+  /usr/include/getopt.h /usr/include/unistd.h /usr/include/sys/unistd.h \
   /usr/include/sys/_types/_posix_vdisable.h \
   /usr/include/sys/_types/_seek_set.h /usr/include/sys/_types/_gid_t.h \
   /usr/include/sys/_types/_useconds_t.h /usr/include/sys/select.h \
@@ -245,6 +245,8 @@ src/seamaster.o: src/seamaster.cpp /usr/include/stdlib.h \
 /usr/include/sys/_types/_errno_t.h:
 
 /usr/include/strings.h:
+
+/usr/include/getopt.h:
 
 /usr/include/unistd.h:
 

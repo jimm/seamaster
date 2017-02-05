@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+#include <getopt.h>
 #include <libgen.h>
 #include "patchmaster.h"
 #include "loader.h"
@@ -37,11 +37,16 @@ void cleanup() {
 
 void usage(char *prog_name) {
   fprintf(stderr,
-          "usage: %s [-l] [-n] [-?|-h] file\n"
+          "usage: %s [-l] [-n] [-h] file\n"
           "\n"
-          "    -l     List all attached MIDI ports\n"
-          "    -n     No MIDI (ignores bad/unknown MIDI ports)\n"
-          "    -?, -h This help\n",
+          "    -l or --list-ports\n"
+          "        List all attached MIDI ports\n"
+          "\n"
+          "    -n or --no-midi\n"
+          "        No MIDI (ignores bad/unknown MIDI ports)\n"
+          "\n"
+          "    -h or --help\n"
+          "        This help\n",
           basename(prog_name));
 }
 
@@ -49,8 +54,15 @@ int main(int argc, char * const *argv) {
   PatchMaster pm;
   int ch, testing = false;
   char *prog_name = argv[0];
+  int do_list = false;
+  static struct option longopts[] = {
+    {"list", no_argument, 0, 'l'},
+    {"no-midi", no_argument, 0, 'n'},
+    {"help", no_argument, 0, 'h'},
+    {0, 0, 0, 0}
+  };
 
-  while ((ch = getopt(argc, argv, "lnh?")) != -1) {
+  while ((ch = getopt_long(argc, argv, "lnh", longopts, 0)) != -1) {
     switch (ch) {
     case 'l':
       list_all_devices();
@@ -58,7 +70,7 @@ int main(int argc, char * const *argv) {
     case 'n':
       testing = true;
       break;
-    case '?': case 'h': default:
+    case 'h': default:
       usage(prog_name);
       exit(ch == '?' || ch == 'h' ? 0 : 1);
     }

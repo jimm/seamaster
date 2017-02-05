@@ -59,7 +59,7 @@ void Loader::enter_section(Section sec) {
 void Loader::parse_line(char *line) {
   if (notes_state == OUTSIDE) {
     int start = strspn(line, whitespace);
-    if (line[start] == 0 || strncmp(line + start, "# ", 2) == 0) // whitespace only or comment
+    if (line[start] == 0)
       return;
 
     line += start;              // strip leading whitespace

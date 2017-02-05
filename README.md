@@ -6,18 +6,23 @@ More docs to come.
 
 # To Do
 
-Panic.
+- Start and stop messages for patches.
 
-Fix window resizing.
+- Messages.
 
-Load should be more robust. Count args (e.g. input and output creation) and
-make sure not null.
+- Triggers.
 
-Info window should bold "\*text\*" and italicize "\_text\_".
+- Fix window resizing.
 
-It wouldn't be difficult to have the loader support Markdown as well as Org
-mode. Besides heading character changes, comments couldn't start with '#'.
+- Load should be more robust. Count args (e.g. input and output creation)
+  and make sure not null.
 
-Documentation.
+- Info window should bold "\*text\*" and italicize "\_text\_".
 
-Names for connections.
+- It wouldn't be difficult to have the loader support Markdown as well as
+  Org mode. Besides heading character changes, comments couldn't start with
+  the '#' character.
+
+- Documentation.
+
+- Names for connections.

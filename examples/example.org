@@ -1,4 +1,21 @@
+* Introduction
+
+SeaMaster uses [Org mode](http://orgmode.org/) for its input files that
+describe your setup, songs, and patches.. It is a text file with formatting
+similar to Markdown. Only a few top-level sections are read by SeaMaster,
+any others such as this one are ignored. They must be in the following
+order, though ignored sections may appear between them.
+
+- Instruments
+- Messages
+- Triggers
+- Songs
+- Set Lists
+
 * Instruments
+
+Short names for inputs and outputs don't have to be same or different. This
+text is ignored.
 
 - input MIDISPORT 4x4 Anniv Port A, kk, Kronos
 - input MIDISPORT 4x4 Anniv Port B, ws, Wavestation
@@ -6,6 +23,9 @@
 - output MIDISPORT 4x4 Anniv Port B, ws, Wavestation
 
 * Songs
+
+Indentation doesn't matter. Again, this text is ignored. Song notes appear
+after the song heading and before the first patch heading.
 
 ** To Each His Own
 *** Vanilla Through

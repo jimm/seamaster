@@ -1,7 +1,7 @@
 * Instruments
 
-# comment: short names for inputs and outputs
-# don't have to be same or different
+short names for inputs and outputs don't have to be same or different. This
+text is ignored.
 
 - input port one, one, first input
 - input port two, two, second input
@@ -10,7 +10,8 @@
 
 * Songs
 
-# indentation doesn't matter
+Indentation doesn't matter. Again, this text is ignored. Song notes appear
+after the song heading and before the first patch heading.
 
 ** To Each His Own
 
