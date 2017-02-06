@@ -11,6 +11,7 @@
   
 #define INSTRUMENT_INPUT 0
 #define INSTRUMENT_OUTPUT 1
+#define ORG_MODE_BLOCK_PREFIX "#+"
 
 const char * const whitespace = " \t";
 
@@ -59,11 +60,13 @@ void Loader::enter_section(Section sec) {
 void Loader::parse_line(char *line) {
   if (notes_state == OUTSIDE) {
     int start = strspn(line, whitespace);
-    if (line[start] == 0)
+    if (line[start] == 0 || is_org_mode_block_command(line))
       return;
 
     line += start;              // strip leading whitespace
   }
+  else if (is_org_mode_block_command(line))
+    return;
 
   if (strncmp(line, "* Instruments", 13) == 0) {
     enter_section(INSTRUMENTS);
@@ -204,8 +207,11 @@ int Loader::load_song(char *line) {
 }
 
 int Loader::load_notes_line(char *line) {
-  if (notes_state == SKIPPING_BLANK_LINES && strlen(line) == 0)
-    return 0;
+  if (notes_state == SKIPPING_BLANK_LINES) {
+    int start = strspn(line, whitespace);
+    if (line[start] == 0)
+      return 0;
+  }
 
   notes_state = COLLECTING;
   song->append_notes(line);
@@ -360,4 +366,9 @@ Song *Loader::find_song(List<Song *> &list, char *name) {
     if (list[i]->name == name)
       return list[i];
   return 0;
+}
+
+bool Loader::is_org_mode_block_command(const char *line) {
+  return strlen(line) > 2 &&
+    strncmp(line, ORG_MODE_BLOCK_PREFIX, strlen(ORG_MODE_BLOCK_PREFIX)) == 0;
 }

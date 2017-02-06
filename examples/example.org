@@ -22,19 +22,59 @@ text is ignored.
 - output MIDISPORT 4x4 Anniv Port A, kk, Kronos
 - output MIDISPORT 4x4 Anniv Port B, ws, Wavestation
 
+* Messages
+
+Bytes can be hex or decimal and can span multiple lines. Commas are ignored.
+Sorry, no symbolic names yet.
+
+** Tune Request
+
+#+begin_example
+  0xf6
+#+end_example
+
+* Triggers
+
+Trigger actions are "next/prev(ious) song/patch" and "send message". "Send
+message" requires a message name.
+
+Commas are optional.
+
+** next song
+0xb0, 50, 127
+
+** prev song
+0xb0, 51, 127
+
+** next patch
+0xb0, 52, 127
+
+** prev patch
+0xb0, 53, 127
+
+** send message Tune Request
+0xb0, 54, 127
+
 * Songs
 
 Indentation doesn't matter. Again, this text is ignored. Song notes appear
 after the song heading and before the first patch heading.
 
 ** To Each His Own
+
+These are optional song notes.
+
 *** Vanilla Through
 **** kk, all, kk, all
 **** ws, all, ws, all
 
 ** Kronos -> Wavestation
 
-Kronos channel 1 sent to Wavestation
+#+begin_example
+Kronos channel 1 sent to Wavestation.
+
+The begin/end example Org mode commands are ignored.
+#+end_example
 
 *** patch K to W
 **** kk, all, ws, all

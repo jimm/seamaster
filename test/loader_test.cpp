@@ -59,11 +59,14 @@ void test_load_notes() {
   tassert(s->notes.length() == 0, "extra notes?");
 
   s = pm->all_songs->songs.last();
-  tassert(s->notes.length() == 2, "bad notes length");
-  tassert(strcmp((const char *)s->notes.first(), "this song has note text") == 0,
+  tassert(s->notes.length() == 3, "bad notes length");
+  tassert(strcmp((const char *)s->notes[0],
+                 "the line before begin_example contains only whitespace") == 0,
           "bad notes 1");
-  tassert(strcmp((const char *)s->notes.last(), "that spans multiple lines") == 0,
+  tassert(strcmp((const char *)s->notes[1], "this song has note text") == 0,
           "bad notes 2");
+  tassert(strcmp((const char *)s->notes[2], "that spans multiple lines") == 0,
+          "bad notes 3");
   delete pm;
 }
 

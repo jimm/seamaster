@@ -70,6 +70,7 @@ private:
   PmDeviceID find_device(char *, int);
   Instrument *find_by_sym(List<Instrument *> &, char *);
   Song *find_song(List<Song *> &, char *);
+  bool is_org_mode_block_command(const char *);
 };
 
 #endif /* LOAD_H */

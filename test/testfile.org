@@ -1,12 +1,45 @@
 * Instruments
 
-short names for inputs and outputs don't have to be same or different. This
+Short names for inputs and outputs don't have to be same or different. This
 text is ignored.
 
 - input port one, one, first input
 - input port two, two, second input
 - output port one, one, first output
 - output port two, two, second output
+
+* Messages
+
+Bytes can be hex or decimal and can span multiple lines. Commas are ignored.
+Sorry, no symbolic names yet.
+
+** Tune Request
+
+#+begin_example
+  0xf6
+#+end_example
+
+* Triggers
+
+Trigger actions are "next/prev(ious) song/patch" and "send message". "Send
+message" requires a message name.
+
+Commas are optional.
+
+** next song
+0xb0, 50, 127
+
+** previous song
+0xb0, 51, 127
+
+** next patch
+0xb0, 52, 127
+
+** prev patch
+0xb0, 53, 127
+
+** send message Tune Request
+0xb0, 54, 127
 
 * Songs
 
@@ -31,9 +64,12 @@ after the song heading and before the first patch heading.
      - xpose -12
 
 ** Another Song
-
+   
+#+begin_example
+the line before begin_example contains only whitespace
 this song has note text
 that spans multiple lines
+#+end_example
 
 *** Two Inputs Merging
 **** one, 3, two, 4
