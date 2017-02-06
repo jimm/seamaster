@@ -68,19 +68,27 @@ void Loader::parse_line(char *line) {
   else if (is_org_mode_block_command(line))
     return;
 
-  if (strncmp(line, "* Instruments", 13) == 0) {
+  if (is_header(line, "Instruments", 1)) {
     enter_section(INSTRUMENTS);
     return;
   }
-  if (strncmp(line, "* Songs", 7) == 0) {
+  if (is_header(line, "Messages", 1)) {
+    enter_section(MESSAGES);
+    return;
+  }
+  if (is_header(line, "Triggers", 1)) {
+    enter_section(TRIGGERS);
+    return;
+  }
+  if (is_header(line, "Songs", 1)) {
     enter_section(SONGS);
     return;
   }
-  if (strncmp(line, "* Set Lists", 11) == 0) {
+  if (is_header(line, "Set Lists", 1)) {
     enter_section(SET_LISTS);
     return;
   }
-  if (strncmp(line, "* ", 2) == 0) {
+  if (is_header_level(line, 1)) {
     enter_section(IGNORE);
     return;
   }
@@ -107,14 +115,16 @@ void Loader::parse_line(char *line) {
 }
 
 void Loader::parse_instrument_line(char *line) {
-  if (strncmp("- input ", line, 8) == 0)
+  if (is_list_item(line, "input "))
     load_instrument(line + 2, INSTRUMENT_INPUT);
-  else if (strncmp("- output ", line, 9) == 0)
+  if (is_list_item(line, "output "))
     load_instrument(line + 2, INSTRUMENT_OUTPUT);
 }
 
 void Loader::parse_message_line(char *line) {
   // TODO
+  if (is_header_level(line, 2)) {
+  }
 }
 
 void Loader::parse_trigger_line(char *line) {
@@ -122,15 +132,15 @@ void Loader::parse_trigger_line(char *line) {
 }
 
 void Loader::parse_song_line(char *line) {
-  if (strncmp("**** ", line, 5) == 0)
-    load_connection(line + 5);
-  else if (strncmp("*** ", line, 4) == 0)
-    load_patch(line + 4);
-  else if (strncmp("** ", line, 3) == 0)
+  if (is_header_level(line, 2))
     load_song(line + 3);
+  else if (is_header_level(line, 3))
+    load_patch(line + 4);
+  else if (is_header_level(line, 4))
+    load_connection(line + 5);
   else if (notes_state != OUTSIDE)
     load_notes_line(line);
-  else if (strncmp("- ", line, 2) == 0 && conn != 0) {
+  else if (is_list_item(line, 0) && conn != 0) {
     line += 2;
     char ch = line[0];
     switch (ch) {
@@ -157,9 +167,9 @@ void Loader::parse_song_line(char *line) {
 }
 
 void Loader::parse_set_list_line(char *line) {
-  if (strncmp("** ", line, 3) == 0)
+  if (is_header_level(line, 2))
     load_song_list(line + 3);
-  else if (strncmp("- ", line, 2) == 0)
+  else if (is_list_item(line, 0))
     load_song_list_song(line + 2);
 }
 
@@ -366,6 +376,25 @@ Song *Loader::find_song(List<Song *> &list, char *name) {
     if (list[i]->name == name)
       return list[i];
   return 0;
+}
+
+bool Loader::is_header(const char *line, const char *header, int level) {
+  if (!is_header_level(line, level))
+    return false;
+  return strcmp(line + level + 1, header) == 0;
+}
+
+bool Loader::is_header_level(const char *line, int level) {
+  for (int i = 0; i < level; ++i)
+    if (line[i] != '*')
+      return false;
+  return line[level] == ' ';
+}
+
+// If item_begins_with is not 0, only return true if it matches.
+bool Loader::is_list_item(const char *line, const char *item_begins_with) {
+  return line[0] == '-' && line[1] == ' ' &&
+    (item_begins_with == 0 || strncmp(line+2, item_begins_with, strlen(item_begins_with)) == 0);
 }
 
 bool Loader::is_org_mode_block_command(const char *line) {
