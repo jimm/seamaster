@@ -79,7 +79,7 @@ src/curses/trigger_window.o: src/curses/trigger_window.cpp \
   /usr/include/ncurses.h /usr/include/ncurses_dll.h \
   /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h \
   src/curses/../trigger.h /usr/local/include/portmidi.h \
-  src/curses/../named.h src/curses/../list.h \
+  src/curses/../message.h src/curses/../named.h src/curses/../list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/curses/../debug.h
 
@@ -326,6 +326,8 @@ src/curses/geometry.h:
 src/curses/../trigger.h:
 
 /usr/local/include/portmidi.h:
+
+src/curses/../message.h:
 
 src/curses/../named.h:
 

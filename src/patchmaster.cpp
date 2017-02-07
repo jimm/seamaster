@@ -3,6 +3,12 @@
 #include "cursor.h"
 #include "debug.h"
 
+static PatchMaster *pm_instance;
+
+PatchMaster *PatchMaster_instance() {
+  return pm_instance;
+}
+
 // ================ allocation ================
 
 PatchMaster::PatchMaster() {
@@ -11,6 +17,7 @@ PatchMaster::PatchMaster() {
   all_songs = new SongList((char *)"All Songs"); /* TODO sorted song list */
   song_lists << all_songs;
   cursor = new Cursor(this);
+  pm_instance = this;
   debug();
 }
 

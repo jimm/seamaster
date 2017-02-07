@@ -9,6 +9,8 @@
 
 class Cursor;
 
+PatchMaster *PatchMaster_instance();
+
 class PatchMaster {
 public:
   List<Input *> inputs;

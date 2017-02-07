@@ -95,7 +95,7 @@ src/curses/patch_window.o: src/curses/patch_window.cpp \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   src/curses/../consts.h src/curses/../instrument.h \
-  src/curses/../trigger.h src/curses/../output.h
+  src/curses/../trigger.h src/curses/../message.h src/curses/../output.h
 
 /usr/include/stdlib.h:
 
@@ -388,5 +388,7 @@ src/curses/../consts.h:
 src/curses/../instrument.h:
 
 src/curses/../trigger.h:
+
+src/curses/../message.h:
 
 src/curses/../output.h:

@@ -106,7 +106,7 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   src/curses/../consts.h src/curses/../instrument.h \
-  src/curses/../trigger.h src/curses/../output.h src/curses/../message.h \
+  src/curses/../trigger.h src/curses/../message.h src/curses/../output.h \
   src/curses/list_window.h src/curses/window.h src/curses/geometry.h \
   src/curses/help_window.h src/curses/info_window.h \
   src/curses/patch_window.h src/curses/prompt_window.h \
@@ -442,9 +442,9 @@ src/curses/../instrument.h:
 
 src/curses/../trigger.h:
 
-src/curses/../output.h:
-
 src/curses/../message.h:
+
+src/curses/../output.h:
 
 src/curses/list_window.h:
 

@@ -89,7 +89,7 @@ src/connection.o: src/connection.cpp /usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
-  src/trigger.h src/output.h
+  src/trigger.h src/message.h src/output.h
 
 /usr/include/stdlib.h:
 
@@ -366,5 +366,7 @@ src/named.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept:
 
 src/trigger.h:
+
+src/message.h:
 
 src/output.h:

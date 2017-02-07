@@ -101,7 +101,7 @@ src/seamaster.o: src/seamaster.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/consts.h src/instrument.h src/trigger.h src/output.h src/message.h \
+  src/consts.h src/instrument.h src/trigger.h src/message.h src/output.h \
   src/loader.h src/curses/gui.h src/curses/list_window.h \
   src/curses/window.h /usr/include/ncurses.h /usr/include/ncurses_dll.h \
   /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h
@@ -430,9 +430,9 @@ src/instrument.h:
 
 src/trigger.h:
 
-src/output.h:
-
 src/message.h:
+
+src/output.h:
 
 src/loader.h:
 

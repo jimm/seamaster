@@ -91,7 +91,7 @@ src/loader.o: src/loader.cpp /usr/include/stdio.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/consts.h src/instrument.h src/trigger.h src/output.h src/message.h \
+  src/consts.h src/instrument.h src/trigger.h src/message.h src/output.h \
   src/loader.h src/formatter.h
 
 /usr/include/stdio.h:
@@ -384,9 +384,9 @@ src/instrument.h:
 
 src/trigger.h:
 
-src/output.h:
-
 src/message.h:
+
+src/output.h:
 
 src/loader.h:
 

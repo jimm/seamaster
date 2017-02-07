@@ -34,6 +34,7 @@ private:
   Song *song;
   Patch *patch;
   Connection *conn;
+  Trigger *trigger;
   SongList *song_list;
 
   void clear();
@@ -47,7 +48,7 @@ private:
 
   int load_instrument(char *, int);
   int load_message(char *);
-  int load_trigger(char *);
+  PmMessage message_from_bytes(const char *);
   int load_song(char *);
   int load_notes_line(char *);
   void stop_collecting_notes();
@@ -64,15 +65,19 @@ private:
 
   char *skip_first_word(char *);
   List<char *> *comma_sep_args(char *, bool);
+  List<char *> *table_columns(char *);
   int chan_from_word(char *);
   void strip_newline(char *);
+  char *trim(char *);
 
   PmDeviceID find_device(char *, int);
   Instrument *find_by_sym(List<Instrument *> &, char *);
   Song *find_song(List<Song *> &, char *);
+  Message *find_message(List<Message *> &, char *);
   bool is_header(const char *, const char *, int);
   bool is_header_level(const char *, int);
   bool is_list_item(const char *, const char *);
+  bool is_table_row(const char *);
   bool is_org_mode_block_command(const char *);
 };
 

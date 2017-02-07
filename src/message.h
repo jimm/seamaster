@@ -5,12 +5,17 @@
 #include "named.h"
 #include "list.h"
 
+class Output;
+
 class Message : public Named {
 public:
-  List<PmMessage> messages;
+  PmEvent *events;
+  int num_events;
 
   Message(const char *name);
   ~Message();
+
+  void send(Output &);
 };
 
 #endif /* MESSAGE_H */

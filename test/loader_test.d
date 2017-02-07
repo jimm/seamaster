@@ -93,7 +93,7 @@ test/loader_test.o: test/loader_test.cpp /usr/include/string.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
   test/../src/consts.h test/../src/instrument.h test/../src/trigger.h \
-  test/../src/output.h test/../src/message.h test/../src/cursor.h \
+  test/../src/message.h test/../src/output.h test/../src/cursor.h \
   test/../src/loader.h test/loader_test.h
 
 /usr/include/string.h:
@@ -384,9 +384,9 @@ test/../src/instrument.h:
 
 test/../src/trigger.h:
 
-test/../src/output.h:
-
 test/../src/message.h:
+
+test/../src/output.h:
 
 test/../src/cursor.h:
 

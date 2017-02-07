@@ -46,10 +46,11 @@ int Loader::load(const char *path) {
 void Loader::clear() {
   section = IGNORE;
   notes_state = OUTSIDE;
+  song_list = 0;
   song = 0;
   patch = 0;
   conn = 0;
-  song_list = 0;
+  trigger = 0;
 }
 
 void Loader::enter_section(Section sec) {
@@ -128,7 +129,53 @@ void Loader::parse_message_line(char *line) {
 }
 
 void Loader::parse_trigger_line(char *line) {
-  // TODO
+  if (!is_table_row(line))
+    return;
+
+  List<char *> *cols = table_columns(line);
+  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), cols->at(0));
+  if (in == 0) {
+    delete cols;
+    return;
+  }
+
+  PmMessage trigger_msg = message_from_bytes(cols->at(1));
+  Message *output_msg = 0;
+  TriggerAction action;
+  if (strcmp(cols->at(2), "next song") == 0)
+    action = NEXT_SONG;
+  else if (strcmp(cols->at(2), "prev song") == 0 || strcmp(cols->at(2), "previous song") == 0)
+    action = PREV_SONG;
+  else if (strcmp(cols->at(2), "next patch") == 0)
+    action = NEXT_PATCH;
+  else if (strcmp(cols->at(2), "prev patch") == 0 || strcmp(cols->at(2), "previous patch") == 0)
+    action = PREV_PATCH;
+  else if (strcmp(cols->at(2), "message") == 0) {
+    action = MESSAGE;
+    output_msg = find_message(pm.messages, cols->at(3));
+  }
+  
+  pm.triggers << new Trigger(trigger_msg, action, output_msg);
+
+  delete cols;
+}
+
+PmMessage Loader::message_from_bytes(const char *str) {
+  int bytes[3];
+  int i = 0;
+
+  for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != 0; word = strtok(0, ", ")) {
+    if (i < 3) {
+      word += strspn(word, whitespace);
+      if (strlen(word) > 2 && strncmp(word, "0x", 2) == 0)
+        bytes[i] = (int)strtol(word, 0, 16);
+      else
+        bytes[i] = atoi(word);
+      ++i;
+    }
+  }
+
+  return Pm_Message(bytes[0], bytes[1], bytes[2]);
 }
 
 void Loader::parse_song_line(char *line) {
@@ -201,11 +248,6 @@ int Loader::load_message(char *line) {
   return 0;
 }
 
-int Loader::load_trigger(char *line) {
-  // TODO
-  return 0;
-}
-
 int Loader::load_song(char *line) {
   Song *s = new Song(line);
   pm.all_songs->songs << s;
@@ -247,9 +289,9 @@ int Loader::load_patch(char *line) {
 
 int Loader::load_connection(char *line) {
   List<char *> *args = comma_sep_args(line, false);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), (char *)args->at(0));
+  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), args->at(0));
   int in_chan = chan_from_word(args->at(1));
-  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), (char *)args->at(2));
+  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), args->at(2));
   int out_chan = chan_from_word(args->at(3));
 
   conn = new Connection(in, in_chan, out, out_chan);
@@ -321,6 +363,17 @@ void Loader::strip_newline(char *line) {
     line[len-1] = 0;
 }
 
+char *Loader::trim(char *line) {
+  line += strspn(line, whitespace);
+  char *p = line + strlen(line) - 1;
+
+  while (p >= line && isspace(*p))
+    --p;
+  if (p >= line)
+    *p = 0;
+  return line;
+}
+
 char *Loader::skip_first_word(char *line) {
   char *after_leading_spaces = line + strspn(line, whitespace);
   char *after_word = after_leading_spaces + strcspn(line, whitespace);
@@ -336,10 +389,24 @@ List<char *> *Loader::comma_sep_args(char *line, bool skip_word) {
   List<char *> *l = new List<char *>();
   char *args_start = skip_word ? skip_first_word(line) : line;
 
-  char *word;
-  for (word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
+  for (char *word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
     word += strspn(word, whitespace);
     l->append(word);
+  }
+
+  return l;
+}
+
+List<char *> *Loader::table_columns(char *line) {
+  List<char *> *l = new List<char *>();
+
+  line += strspn(line, whitespace);
+  bool first = true;
+  for (char *word = strtok(line, "|"); word != 0; word = strtok(0, "|")) {
+    if (first)
+      first = false;
+    else
+      l->append(trim(word));
   }
 
   return l;
@@ -378,6 +445,13 @@ Song *Loader::find_song(List<Song *> &list, char *name) {
   return 0;
 }
 
+Message *Loader::find_message(List<Message *> &list, char *name) {
+  for (int i = 0; i < list.length(); ++i)
+    if (list[i]->name == name)
+      return list[i];
+  return 0;
+}
+
 bool Loader::is_header(const char *line, const char *header, int level) {
   if (!is_header_level(line, level))
     return false;
@@ -395,6 +469,11 @@ bool Loader::is_header_level(const char *line, int level) {
 bool Loader::is_list_item(const char *line, const char *item_begins_with) {
   return line[0] == '-' && line[1] == ' ' &&
     (item_begins_with == 0 || strncmp(line+2, item_begins_with, strlen(item_begins_with)) == 0);
+}
+
+bool Loader::is_table_row(const char *line) {
+  int start = strspn(line, whitespace);
+  return line[start] == '|' && line[start+1] != '-';
 }
 
 bool Loader::is_org_mode_block_command(const char *line) {
