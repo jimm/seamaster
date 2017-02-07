@@ -155,7 +155,7 @@ void Loader::parse_trigger_line(char *line) {
     output_msg = find_message(pm.messages, cols->at(3));
   }
   
-  pm.triggers << new Trigger(trigger_msg, action, output_msg);
+  in->triggers << new Trigger(trigger_msg, action, output_msg);
 
   delete cols;
 }
@@ -370,7 +370,7 @@ char *Loader::trim(char *line) {
   while (p >= line && isspace(*p))
     --p;
   if (p >= line)
-    *p = 0;
+    *(p+1) = 0;
   return line;
 }
 
@@ -401,13 +401,8 @@ List<char *> *Loader::table_columns(char *line) {
   List<char *> *l = new List<char *>();
 
   line += strspn(line, whitespace);
-  bool first = true;
-  for (char *word = strtok(line, "|"); word != 0; word = strtok(0, "|")) {
-    if (first)
-      first = false;
-    else
-      l->append(trim(word));
-  }
+  for (char *column = strtok(line, "|"); column != 0; column = strtok(0, "|"))
+    l->append(trim(column));
 
   return l;
 }

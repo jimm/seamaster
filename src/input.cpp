@@ -20,6 +20,8 @@ Input::Input(const char *sym, const char *name, int port_num)
 }
 
 Input::~Input() {
+  for (int i = 0; i < triggers.length(); ++i)
+    delete triggers[i];
 }
 
 void Input::add_connection(Connection *conn) {
@@ -30,14 +32,6 @@ void Input::add_connection(Connection *conn) {
 void Input::remove_connection(Connection *conn) {
   vdebug("input %p removing connection %p\n", this, conn);
   connections.remove(conn);
-}
-
-void Input::add_trigger(Trigger *trigger) {
-  triggers << trigger;
-}
-
-void Input::remove_trigger(Trigger *trigger) {
-  triggers.remove(trigger);
 }
 
 void Input::start() {
@@ -128,4 +122,5 @@ void Input::debug() {
     vdebug("    %p\n", connections[i]);
   vdebug("  running: %d\n", running);
   vdebug("  thread: %p\n", portmidi_thread);
+  triggers.debug("input triggers");
 }

@@ -14,8 +14,6 @@ More docs to come.
 
 - Messages.
 
-- Triggers.
-
 - Fix window resizing.
 
 - Load should be more robust. Count args (e.g. input and output creation)

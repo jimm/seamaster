@@ -21,7 +21,6 @@ public:
   bool running;
   bool testing;
   List<Message *> messages;
-  List<Trigger *> triggers;
 
   PatchMaster();
   ~PatchMaster();

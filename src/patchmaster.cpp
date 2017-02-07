@@ -32,8 +32,6 @@ PatchMaster::~PatchMaster() {
     delete song_lists[i];
   for (int i = 0; i < messages.length(); ++i)
     delete messages[i];
-  for (int i = 0; i < triggers.length(); ++i)
-    delete triggers[i];
 }
 
 // ================ running ================
@@ -144,6 +142,5 @@ void PatchMaster::debug() {
     all_songs->songs[i]->debug();
   song_lists.debug("song_lists");
   messages.debug("messages");
-  triggers.debug("triggers");
   cursor->debug();
 }

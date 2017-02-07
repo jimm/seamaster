@@ -36,7 +36,24 @@ void test_load_messages() {
 
 void test_load_triggers() {
   PatchMaster *pm = load_test_file();
-  tassert(pm->triggers.length() == 0, "no trigger loading yet!");
+  Input *in = pm->inputs[0];
+  tassert(in->triggers.length() == 5, 0);
+
+  Trigger *t = in->triggers[0];
+  tassert(t->trigger_message == Pm_Message(0xb0, 50, 127), 0);
+  tassert(t->action == NEXT_SONG, 0);
+  tassert(t->output_message == 0, 0);
+
+  // make sure trigger added to first input
+  tassert(in->triggers.includes(t), 0);
+
+  t = in->triggers[4];
+  tassert(t->trigger_message == Pm_Message(0xb0, 54, 127), 0);
+  tassert(t->action == MESSAGE, 0);
+  // TODO when messages implemented
+  // tassert(t->output_message != 0, 0);
+  // tassert(t->output_message->name == "Tune Request", 0);
+
   delete pm;
 }
 
