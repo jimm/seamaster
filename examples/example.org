@@ -24,14 +24,21 @@ text is ignored.
 
 * Messages
 
-Bytes can be hex or decimal and can span multiple lines. Commas are ignored.
-Sorry, no symbolic names yet.
+Bytes can be hex or decimal and can span multiple lines. One message (one-
+to three-byte MIDI message) per line. Sysex is not yet supported. Commas are
+ignored. Sorry, no symbolic names yet.
 
 ** Tune Request
 
 #+begin_example
   0xf6
 #+end_example
+
+** Multiple Note-Offs
+
+0x80, 64, 0
+0x81, 64, 0
+0x82, 42, 0
 
 * Triggers
 

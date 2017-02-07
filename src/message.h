@@ -9,13 +9,19 @@ class Output;
 
 class Message : public Named {
 public:
-  PmEvent *events;
-  int num_events;
+  List<PmMessage> messages;
+
 
   Message(const char *name);
   ~Message();
 
   void send(Output &);
+
+private:
+  PmEvent *events;
+  int num_events;
+
+  void convert_messages();
 };
 
 #endif /* MESSAGE_H */

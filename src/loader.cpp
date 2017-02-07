@@ -50,7 +50,7 @@ void Loader::clear() {
   song = 0;
   patch = 0;
   conn = 0;
-  trigger = 0;
+  message = 0;
 }
 
 void Loader::enter_section(Section sec) {
@@ -123,9 +123,16 @@ void Loader::parse_instrument_line(char *line) {
 }
 
 void Loader::parse_message_line(char *line) {
-  // TODO
   if (is_header_level(line, 2)) {
+    message = new Message(line + 3);
+    pm.messages << message;
+    return;
   }
+
+  if (message == 0)             // introductory text
+    return;
+
+  message->messages << message_from_bytes(line);
 }
 
 void Loader::parse_trigger_line(char *line) {
@@ -161,7 +168,7 @@ void Loader::parse_trigger_line(char *line) {
 }
 
 PmMessage Loader::message_from_bytes(const char *str) {
-  int bytes[3];
+  int bytes[3] = {0, 0, 0};
   int i = 0;
 
   for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != 0; word = strtok(0, ", ")) {

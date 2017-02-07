@@ -34,7 +34,7 @@ private:
   Song *song;
   Patch *patch;
   Connection *conn;
-  Trigger *trigger;
+  Message *message;
   SongList *song_list;
 
   void clear();

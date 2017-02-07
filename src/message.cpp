@@ -14,6 +14,17 @@ Message::~Message() {
 }
 
 void Message::send(Output &out) {
-  if (num_events > 0)
-    out.write(events, num_events);
+  if (events == 0)
+    convert_messages();
+  out.write(events, num_events);
+}
+
+void Message::convert_messages() {
+  num_events = messages.length();
+  if (num_events == 0)
+    return;
+
+  events = (PmEvent *)calloc(num_events, sizeof(PmEvent));
+  for (int i = 0; i < num_events; ++i)
+    events[i].message = messages[i];
 }

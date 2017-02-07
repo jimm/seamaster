@@ -30,7 +30,18 @@ void test_load_instruments() {
 
 void test_load_messages() {
   PatchMaster *pm = load_test_file();
-  tassert(pm->messages.length() == 0, "no message loading yet!");
+  tassert(pm->messages.length() == 2, 0);
+
+  Message *msg = pm->messages[0];
+  tassert(msg->name == "Tune Request", 0);
+  tassert(msg->messages[0] == Pm_Message(0xf6, 0, 0), 0);
+
+  msg = pm->messages[1];
+  tassert(msg->name == "Multiple Note-Offs", 0);
+  tassert(msg->messages[0] == Pm_Message(0x80, 64, 0), 0);
+  tassert(msg->messages[1] == Pm_Message(0x81, 64, 0), 0);
+  tassert(msg->messages[2] == Pm_Message(0x82, 42, 127), 0);
+
   delete pm;
 }
 
@@ -50,9 +61,8 @@ void test_load_triggers() {
   t = in->triggers[4];
   tassert(t->trigger_message == Pm_Message(0xb0, 54, 127), 0);
   tassert(t->action == MESSAGE, 0);
-  // TODO when messages implemented
-  // tassert(t->output_message != 0, 0);
-  // tassert(t->output_message->name == "Tune Request", 0);
+  tassert(t->output_message != 0, 0);
+  tassert(t->output_message->name == "Tune Request", 0);
 
   delete pm;
 }

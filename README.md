@@ -12,7 +12,7 @@ More docs to come.
 
 - Start and stop messages for patches.
 
-- Messages.
+- Sysex in messages.
 
 - Fix window resizing.
 
