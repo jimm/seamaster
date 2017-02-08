@@ -10,9 +10,8 @@
 class Patch : public Named {
 public:
   List<Connection *> connections;
-  PmMessage *start_messages;
-  int num_start_messages;
-  PmMessage *stop_messages;
+  List<PmMessage> start_messages;
+  List<PmMessage> stop_messages;
   int num_stop_messages;
   bool running;
 

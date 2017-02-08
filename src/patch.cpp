@@ -5,16 +5,10 @@
 Patch::Patch(const char *patch_name)
   : Named(patch_name)
 {
-  start_messages = stop_messages = 0;
-  num_start_messages = num_stop_messages = 0;
   running = false;
 }
 
 Patch::~Patch() {
-  if (start_messages != 0)
-    free(start_messages);
-  if (stop_messages != 0)
-    free(stop_messages);
   for (int i = 0; i < connections.length(); ++i)
     delete connections[i];
 }
@@ -25,7 +19,7 @@ void Patch::start() {
     return;
 
   for (int i = 0; i < connections.length(); ++i)
-    connections[i]->start(start_messages, num_start_messages);
+    connections[i]->start(start_messages);
   running = true;
 }
 
@@ -39,7 +33,7 @@ void Patch::stop() {
     return;
 
   for (int i = 0; i < connections.length(); ++i)
-    connections[i]->stop(stop_messages, num_stop_messages);
+    connections[i]->stop(stop_messages);
   running = false;
 }
 

@@ -18,10 +18,10 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
 Connection::~Connection() {
 }
 
-void Connection::start(PmMessage *buf, int len) {
+void Connection::start(List<PmMessage> &messages) {
   vdebug("connection_start %p\n", this);
-  for (int i = 0; i < len; ++i)
-    midi_out(buf[i]);
+  for (int i = 0; i < messages.length(); ++i)
+    midi_out(messages[i]);
   if (prog.bank_msb >= 0)
     midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_MSB, prog.bank_msb));
   if (prog.bank_lsb >= 0)
@@ -32,10 +32,10 @@ void Connection::start(PmMessage *buf, int len) {
   input->add_connection(this);
 }
 
-void Connection::stop(PmMessage *buf, int len) {
+void Connection::stop(List<PmMessage> &messages) {
   vdebug("connection_stop %p\n", this);
-  for (int i = 0; i < len; ++i)
-    midi_out(buf[i]);
+  for (int i = 0; i < messages.length(); ++i)
+    midi_out(messages[i]);
   input->remove_connection(this);
 }
 

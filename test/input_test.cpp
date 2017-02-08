@@ -48,7 +48,8 @@ void test_input_two_connections() {
 
   Output *out2 = new Output("out2", "output2 name", -1);
   Connection *conn2 = new Connection(in, 0, out2, 0);
-  conn2->start(0, 0);
+  List<PmMessage> empty;
+  conn2->start(empty);
 
   PmEvent *buf = events();
   in->read(buf, 4);
@@ -75,10 +76,11 @@ void test_input_connection_switch_routes_offs_correctly() {
   Connection *conn2 = new Connection(in, 0, out2, 0);
 
   PmEvent *buf = events();
+  List<PmMessage> empty;
 
   in->read(buf, 2);             // note on, controller
-  conn->stop(0, 0);
-  conn2->start(0, 0);
+  conn->stop(empty);
+  conn2->start(empty);
   in->read(buf+2, 2);           // note off, tune request
 
   // Make sure note off was sent to original output
