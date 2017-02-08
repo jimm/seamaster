@@ -4,11 +4,11 @@ SeaMaster is a C version of [PatchMaster](https://patchmaster.org/).
 
 More docs to come.
 
-# To Do
+# Notes
 
-- Default pass-through patch if none defined for a song. Maps all channels
-  of all inputs to output with matching short name. If there is not at least
-  one such pair, that is an error that causes loading to fail.
+Default patch.
+
+# To Do
 
 - Start and stop messages for patches.
 
