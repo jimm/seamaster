@@ -58,12 +58,12 @@ void test_cursor_next_patch_at_end_of_song() {
 void test_cursor_next_patch_at_end_of_song_list() {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
-  c->song_index = 1;
-  c->patch_index = 1;
+  c->song_index = 2;
+  c->patch_index = 0;
   c->next_patch();
   tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 1, BAD_SONG);
-  tassert(c->patch_index == 1, BAD_PATCH);
+  tassert(c->song_index == 2, BAD_SONG);
+  tassert(c->patch_index == 0, BAD_PATCH);
   delete pm;
 }
 

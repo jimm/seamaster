@@ -70,13 +70,17 @@ void test_load_triggers() {
 void test_load_songs() {
   PatchMaster *pm = load_test_file();
   List<Song *> &all = pm->all_songs->songs;
-  tassert(all.length() == 2, "wrong num songs loaded");
+  tassert(all.length() == 3, "wrong num songs loaded");
 
   Song *s = all.first();
   tassert(s->name == "To Each His Own", "bad song title");
 
-  s = all.last();
+  s = all[1];
   tassert(s->name == "Another Song", "bad song title");
+
+  s = all.last();
+  tassert(s->name == "Song Without Explicit Patch", 0);
+
   delete pm;
 }
 
@@ -85,7 +89,7 @@ void test_load_notes() {
   Song *s = pm->all_songs->songs.first();
   tassert(s->notes.length() == 0, "extra notes?");
 
-  s = pm->all_songs->songs.last();
+  s = pm->all_songs->songs[1];
   tassert(s->notes.length() == 3, "bad notes length");
   tassert(strcmp((const char *)s->notes[0],
                  "the line before begin_example contains only whitespace") == 0,
@@ -119,7 +123,7 @@ void test_load_connections() {
   tassert(conn->output == pm->outputs.first(), "wrong conn output");
   tassert(conn->output_chan == -1, "wrong conn output channel");
 
-  s = pm->all_songs->songs.last();
+  s = pm->all_songs->songs[1];
   p = s->patches.last();
   tassert(p->connections.length() == 2, "bad num conns");
   conn = p->connections.first();
@@ -213,14 +217,25 @@ void test_load_song_list() {
   tassert(sl->name == "Song List One", "bad song list name");
   tassert(sl->songs.length() == 2, "bad num songs in song list");
   tassert(sl->songs.first() == all.first(), "wrong song");
-  tassert(sl->songs.last() == all.last(), "wrong song");
+  tassert(sl->songs.last() == all[1], "wrong song");
 
   sl = pm->song_lists.last();
   tassert(sl->name == "Song List Two", "bad song list name");
   tassert(sl->songs.length() == 2, "bad num songs in song list");
-  tassert(sl->songs.first() == all.last(), "wrong song");
+  tassert(sl->songs.first() == all[1], "wrong song");
   tassert(sl->songs.last() == all.first(), "wrong song");
   delete pm;
+}
+
+void test_load_auto_patch() {
+  PatchMaster *pm = load_test_file();
+  Song *s = pm->all_songs->songs.last();
+  tassert(s->patches.length() == 1, 0);
+  Patch *p = s->patches[0];
+  tassert(p->name == "Default Patch", 0);
+  tassert(p->connections.length() == 2, 0);
+  tassert(p->connections[0]->input->sym == "one", 0);
+  tassert(p->connections[1]->input->sym == "two", 0);
 }
 
 void test_load() {
@@ -238,4 +253,5 @@ void test_load() {
   test_run(test_load_filter);
   test_run(test_load_map);
   test_run(test_load_song_list);
+  test_run(test_load_auto_patch);
 }

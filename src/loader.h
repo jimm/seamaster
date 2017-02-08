@@ -63,6 +63,8 @@ private:
   int load_song_list(char *);
   int load_song_list_song(char *);
 
+  void ensure_song_has_patch();
+
   char *skip_first_word(char *);
   List<char *> *comma_sep_args(char *, bool);
   List<char *> *table_columns(char *);

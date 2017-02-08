@@ -13,10 +13,11 @@
 #define INSTRUMENT_OUTPUT 1
 #define ORG_MODE_BLOCK_PREFIX "#+"
 
+const char * const default_patch_name = "Default Patch";
 const char * const whitespace = " \t";
 
 Loader::Loader(PatchMaster &pmaster)
-  : pm(pmaster)
+  : pm(pmaster), song(0)
 {
 }
 
@@ -24,7 +25,7 @@ Loader::~Loader() {
 }
 
 int Loader::load(const char *path) {
-  int rc;
+  int retval = 0;
   char line[BUFSIZ];
 
   fp = fopen(path, "r");
@@ -38,12 +39,18 @@ int Loader::load(const char *path) {
     strip_newline(line);
     parse_line(line);
   }
+  if (song != 0)
+    ensure_song_has_patch();
+
   fclose(fp);
   pm.debug();
-  return 0;
+  return retval;
 }
 
 void Loader::clear() {
+  if (song != 0)
+    ensure_song_has_patch();
+
   section = IGNORE;
   notes_state = OUTSIDE;
   song_list = 0;
@@ -256,6 +263,9 @@ int Loader::load_message(char *line) {
 }
 
 int Loader::load_song(char *line) {
+  if (song != 0)
+    ensure_song_has_patch();
+
   Song *s = new Song(line);
   pm.all_songs->songs << s;
   song = s;
@@ -362,6 +372,24 @@ int Loader::load_song_list_song(char *line) {
 
   song_list->songs << find_song(pm.all_songs->songs, line);
   return 0;
+}
+
+void Loader::ensure_song_has_patch() {
+  if (song == 0 || song->patches.length() > 0)
+    return;
+
+  Patch *p = new Patch(default_patch_name);
+  song->patches << p;
+
+  for (int i = 0; i < pm.inputs.length(); ++i) {
+    Input *in = pm.inputs[i];
+    Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs),
+                                        (char *)in->sym.c_str());
+    if (out != 0) {
+      Connection *conn = new Connection(in, -1, out, -1);
+      p->connections << conn;
+    }
+  }
 }
 
 void Loader::strip_newline(char *line) {

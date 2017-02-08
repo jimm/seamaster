@@ -84,6 +84,8 @@ that spans multiple lines
      - zone 64, 127
      - xpose -12
 
+** Song Without Explicit Patch
+
 * Ignore This Section
 
 Any section that isn't one of
