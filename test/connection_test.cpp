@@ -1,9 +1,6 @@
 #include "test_helper.h"
 #include "connection_test.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-
 void test_connection_start_msgs() {
   Connection *conn = create_conn();
 
@@ -43,8 +40,6 @@ void test_connection_stop_msgs() {
 
   delete conn;
 }
-
-#pragma clang diagnostic pop
 
 void test_connection_stop_empty_msgs() {
   Connection *conn = create_conn();

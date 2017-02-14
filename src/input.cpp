@@ -51,9 +51,6 @@ void Input::stop() {
     running = false;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-
 void Input::read(PmEvent *buf, int len) {
   vdebug("input_read %d events\n", len);
 
@@ -96,8 +93,6 @@ void Input::read(PmEvent *buf, int len) {
       conns[j]->midi_in(msg);
   }
 }
-
-#pragma clang diagnostic pop
 
 void *input_thread(void *in_voidptr) {
   Input *in = (Input *)in_voidptr;

@@ -17,9 +17,6 @@ Output::Output(const char *sym, const char *name, int port_num)
 Output::~Output() {
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-
 void Output::write(PmEvent *buf, int len) {
   if (real_port())
     Pm_Write(stream, buf, len);
@@ -28,8 +25,6 @@ void Output::write(PmEvent *buf, int len) {
       io_messages[num_io_messages++] = buf[i].message;
   }
 }
-
-#pragma clang diagnostic pop
 
 void Output::debug() {
   Instrument::debug();
