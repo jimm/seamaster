@@ -2,7 +2,7 @@ NAME = seamaster
 # DEBUG = -DDEBUG -DDEBUG_STDERR
 MACOS_VER = 10.9
 CPPFLAGS += -mmacosx-version-min=$(MACOS_VER) -MD -MP -g $(DEBUG)
-LIBS = -lc -lc++ -lncurses -lportmidi -lsqlite3
+LIBS = -lc -lc++ -lncurses -lportmidi
 LDFLAGS += $(LIBS) -macosx_version_min $(MACOS_VER)
 
 SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp)
