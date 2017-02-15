@@ -123,10 +123,20 @@ void Loader::parse_line(char *line) {
 }
 
 void Loader::parse_instrument_line(char *line) {
-  if (is_list_item(line, "input "))
-    load_instrument(line + 2, INSTRUMENT_INPUT);
-  if (is_list_item(line, "output "))
-    load_instrument(line + 2, INSTRUMENT_OUTPUT);
+  if (!is_table_row(line))
+    return;
+
+  List<char *> *cols = table_columns(line);
+  switch (cols->at(0)[0]) {
+  case 'i':
+    load_instrument(*cols, INSTRUMENT_INPUT);
+    break;
+  case 'o':
+    load_instrument(*cols, INSTRUMENT_OUTPUT);
+    break;
+  }
+
+  delete cols;
 }
 
 void Loader::parse_message_line(char *line) {
@@ -234,15 +244,14 @@ void Loader::parse_set_list_line(char *line) {
     load_song_list_song(line + 2);
 }
 
-int Loader::load_instrument(char *line, int type) {
-  List<char *> *args = comma_sep_args(skip_first_word(line), false);
-  PmDeviceID devid = find_device(args->at(0), type);
+int Loader::load_instrument(List<char *> &cols, int type) {
+  PmDeviceID devid = find_device(cols[1], type);
 
   if (devid == pmNoDevice && !pm.testing)
     return 1;
 
-  char *sym = args->at(1);
-  char *name = args->at(2);
+  char *sym = cols[2];
+  char *name = cols[3];
 
   switch (type) {
   case INSTRUMENT_INPUT:
@@ -253,7 +262,6 @@ int Loader::load_instrument(char *line, int type) {
     break;
   }
 
-  delete args;
   return 0;
 }
 

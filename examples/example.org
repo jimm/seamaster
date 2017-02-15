@@ -17,10 +17,13 @@ order, though ignored sections may appear between them.
 Short names for inputs and outputs don't have to be same or different. This
 text is ignored.
 
-- input MIDISPORT 4x4 Anniv Port A, kk, Kronos
-- input MIDISPORT 4x4 Anniv Port B, ws, Wavestation
-- output MIDISPORT 4x4 Anniv Port A, kk, Kronos
-- output MIDISPORT 4x4 Anniv Port B, ws, Wavestation
+| I/O | port                       | short | name        |
+|-----+----------------------------+-------+-------------|
+| in  | MIDISPORT 4x4 Anniv Port A | kk    | Kronos      |
+| in  | MIDISPORT 4x4 Anniv Port B | ws    | Wavestation |
+|-----+----------------------------+-------+-------------|
+| out | MIDISPORT 4x4 Anniv Port A | kk    | Kronos      |
+| out | MIDISPORT 4x4 Anniv Port B | ws    | Wavestation |
 
 * Messages
 

@@ -46,7 +46,7 @@ private:
   void parse_song_line(char *);
   void parse_set_list_line(char *);
 
-  int load_instrument(char *, int);
+  int load_instrument(List<char *> &, int);
   int load_message(char *);
   PmMessage message_from_bytes(const char *);
   int load_song(char *);

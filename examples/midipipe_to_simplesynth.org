@@ -10,8 +10,10 @@ input. This file describes a simple setup that uses these two programs.
 
 * Instruments
 
-- input MidiPipe Output 1, mp, MidiPipe
-- output SimpleSynth virtual input, ss, SimpleSynth
+| I/O | port                      | short | name        |
+|-----+---------------------------+-------+-------------|
+| in  | MidiPipe Output 1         | mp    | MidiPipe    |
+| out | SimpleSynth virtual input | ss    | SimpleSynth |
 
 * Songs
 
