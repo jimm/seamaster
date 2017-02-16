@@ -9,9 +9,9 @@ const char *BAD_SONG = "bad song";
 const char *BAD_PATCH = "bad patch";
 
 PatchMaster *cursor_pm() {
-  PatchMaster *pm = create_pm();
-  Loader loader(*pm);
-  loader.load(TEST_FILE);
+  Loader loader;
+  PatchMaster *pm = loader.load(TEST_FILE, true);
+  pm->testing = true;
   pm->cursor->init();
   return pm;
 }

@@ -8,7 +8,6 @@
 #include "../src/output.h"
 #include "../src/cursor.h"
 
-PatchMaster *create_pm();
 Connection *create_conn();
 
 #endif /* TEST_HELPER_H */

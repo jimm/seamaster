@@ -6,9 +6,9 @@
 #define TEST_FILE "test/testfile.org"
 
 PatchMaster *load_test_file() {
-  PatchMaster *pm = create_pm();
-  Loader loader(*pm);
-  loader.load(TEST_FILE);
+  Loader loader;
+  PatchMaster *pm = loader.load(TEST_FILE, true);
+  pm->testing = true;
   return pm;
 }
 

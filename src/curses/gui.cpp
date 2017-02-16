@@ -12,7 +12,7 @@
 #include "trigger_window.h"
 #include "../cursor.h"
 
-GUI::GUI(PatchMaster &pmaster)
+GUI::GUI(PatchMaster *pmaster)
   : pm(pmaster), layout(NORMAL), clear_msg_id(0)
 {
 }
@@ -41,37 +41,37 @@ void GUI::event_loop() {
     ch = getch();
     switch (ch) {
     case 'j': case KEY_DOWN: case ' ':
-      pm.next_patch();
+      pm->next_patch();
       break;
     case 'k': case KEY_UP:
-      pm.prev_patch();
+      pm->prev_patch();
       break;
     case 'n': case KEY_RIGHT:
-      pm.next_song();
+      pm->next_song();
       break;
     case 'p': case KEY_LEFT:
-      pm.prev_song();
+      pm->prev_song();
       break;
     case 'g':
       pwin = new PromptWindow("Go To Song");
       name_regex = pwin->gets();
       delete pwin;
       if (name_regex.length() > 0)
-        pm.goto_song(name_regex);
+        pm->goto_song(name_regex);
       break;
     case 't':
       pwin = new PromptWindow("Go To Song List");
       name_regex = pwin->gets();
       delete pwin;
       if (name_regex.length() > 0)
-        pm.goto_song_list(name_regex);
+        pm->goto_song_list(name_regex);
       break;
     case 'h': case '?':
       help();
       break;
     case '\e':                  /* escape */
       show_message("Sending panic...");
-      pm.panic(prev_cmd == '\e');
+      pm->panic(prev_cmd == '\e');
       show_message("Panic sent");
       clear_message_after(5);
       break;
@@ -89,9 +89,9 @@ void GUI::event_loop() {
       break;
     case 'r':
       // TODO reload file
-      /* if @pm.loaded_file && @pm.loaded_file.length > 0 */
-      /*   load(@pm.loaded_file) */
-      /*   show_message("Reloaded #{@pm.loaded_file}") */
+      /* if @pm->loaded_file && @pm->loaded_file.length > 0 */
+      /*   load(@pm->loaded_file) */
+      /*   show_message("Reloaded #{@pm->loaded_file}") */
       /* else */
       /*   show_message("No file loaded"); */
       /* end */
@@ -109,9 +109,9 @@ void GUI::event_loop() {
     prev_cmd = ch;
 
     // TODO messages and code keys
-    /* msg_name = @pm.message_bindings[ch]; */
-    /* @pm.send_message(msg_name) if msg_name; */
-    /* code_key = @pm.code_bindings[ch]; */
+    /* msg_name = @pm->message_bindings[ch]; */
+    /* @pm->send_message(msg_name) if msg_name; */
+    /* code_key = @pm->code_bindings[ch]; */
     /* code_key.call if code_key; */
   }
 }
@@ -130,8 +130,8 @@ void GUI::create_windows() {
   song_list = new ListWindow(geom_song_list_rect(), "Song List");
   song = new ListWindow(geom_song_rect(), "Song");
   patch = new PatchWindow(geom_patch_rect(), "Patch",
-                          max_name_len(reinterpret_cast<List<Named *> *>(&pm.inputs)),
-                          max_name_len(reinterpret_cast<List<Named *> *>(&pm.outputs)));
+                          max_name_len(reinterpret_cast<List<Named *> *>(&pm->inputs)),
+                          max_name_len(reinterpret_cast<List<Named *> *>(&pm->outputs)));
   message = new Window(geom_message_rect(), "");
   trigger = new TriggerWindow(geom_trigger_rect(), "");
   info = new InfoWindow(geom_info_rect(), "");
@@ -139,8 +139,8 @@ void GUI::create_windows() {
   play_song = new ListWindow(geom_play_song_rect(), "");
   play_notes = new InfoWindow(geom_play_notes_rect(), "");
   play_patch = new PatchWindow(geom_play_patch_rect(), "Patch",
-                               max_name_len(reinterpret_cast<List<Named *> *>(&pm.inputs)),
-                               max_name_len(reinterpret_cast<List<Named *> *>(&pm.outputs)));
+                               max_name_len(reinterpret_cast<List<Named *> *>(&pm->inputs)),
+                               max_name_len(reinterpret_cast<List<Named *> *>(&pm->outputs)));
 
   scrollok(stdscr, false);
   scrollok(message->win, false);
@@ -230,22 +230,22 @@ void GUI::set_window_data() {
 }
 
 void GUI::set_normal_window_data() {
-  SongList *sl = pm.cursor->song_list();
-  Song *s = pm.cursor->song();
-  Patch *p = pm.cursor->patch();
+  SongList *sl = pm->cursor->song_list();
+  Song *s = pm->cursor->song();
+  Patch *p = pm->cursor->patch();
 
   song_lists->set_contents("Song Lists",
-                           reinterpret_cast<List<Named *> *>(&pm.song_lists),
-                           pm.cursor->song_list());
+                           reinterpret_cast<List<Named *> *>(&pm->song_lists),
+                           pm->cursor->song_list());
 
   song_list->set_contents(sl->name.c_str(),
                           reinterpret_cast<List<Named *> *>(&sl->songs),
-                          pm.cursor->song());
+                          pm->cursor->song());
 
   if (s != 0) {
     song->set_contents(s->name.c_str(),
                        reinterpret_cast<List<Named *> *>(&s->patches),
-                       pm.cursor->patch());
+                       pm->cursor->patch());
     info->set_contents(&s->notes);
     patch->set_contents(p);
   }
@@ -257,13 +257,13 @@ void GUI::set_normal_window_data() {
 }
 
 void GUI::set_play_window_data() {
-  Song *s = pm.cursor->song();
-  Patch *p = pm.cursor->patch();
+  Song *s = pm->cursor->song();
+  Patch *p = pm->cursor->patch();
 
   if (s != 0) {
     play_song->set_contents(s->name.c_str(),
                             reinterpret_cast<List<Named *> *>(&s->patches),
-                            pm.cursor->patch());
+                            pm->cursor->patch());
     play_notes->set_contents(&s->notes);
     play_patch->set_contents(p);
   }

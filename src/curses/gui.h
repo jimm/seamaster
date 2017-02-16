@@ -15,7 +15,7 @@ typedef enum WindowLayout {
 
 class GUI {
 public:
-  GUI(PatchMaster &);
+  GUI(PatchMaster *);
   ~GUI();
 
   void run();
@@ -25,7 +25,7 @@ public:
   int clear_message_id() { return clear_msg_id; }
 
 private:
-  PatchMaster &pm;
+  PatchMaster *pm;
 
   WindowLayout layout;
   Window *message;

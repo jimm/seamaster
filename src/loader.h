@@ -21,14 +21,14 @@ typedef enum NoteState {
 
 class Loader {
 public:
-  Loader(PatchMaster &pm);
+  Loader();
   ~Loader();
 
-  int load(const char *path);
+  PatchMaster *load(const char *path, bool testing);
 
 private:
   FILE *fp;
-  PatchMaster &pm;
+  PatchMaster *pm;
   Section section;
   NoteState notes_state;
   Song *song;

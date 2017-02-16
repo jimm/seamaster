@@ -16,24 +16,26 @@
 const char * const default_patch_name = "Default Patch";
 const char * const whitespace = " \t";
 
-Loader::Loader(PatchMaster &pmaster)
-  : pm(pmaster), song(0)
+Loader::Loader()
+  : song(0)
 {
 }
 
 Loader::~Loader() {
 }
 
-int Loader::load(const char *path) {
+PatchMaster *Loader::load(const char *path, bool testing) {
   int retval = 0;
   char line[BUFSIZ];
 
   fp = fopen(path, "r");
   if (fp == 0) {
     err(errno, "%s", path);
-    return 1;
+    return 0;
   }
 
+  pm = new PatchMaster();       // side-effect: PatchMaster static instance set
+  pm->testing = testing;
   clear();
   while (fgets(line, BUFSIZ, fp) != 0) {
     strip_newline(line);
@@ -43,8 +45,9 @@ int Loader::load(const char *path) {
     ensure_song_has_patch();
 
   fclose(fp);
-  pm.debug();
-  return retval;
+  pm->debug();
+
+  return pm;
 }
 
 void Loader::clear() {
@@ -127,14 +130,10 @@ void Loader::parse_instrument_line(char *line) {
     return;
 
   List<char *> *cols = table_columns(line);
-  switch (cols->at(0)[0]) {
-  case 'i':
+  if (strncmp(cols->at(0), "in", 2) == 0)
     load_instrument(*cols, INSTRUMENT_INPUT);
-    break;
-  case 'o':
+  else if (strncmp(cols->at(0), "out", 3) == 0)
     load_instrument(*cols, INSTRUMENT_OUTPUT);
-    break;
-  }
 
   delete cols;
 }
@@ -142,7 +141,7 @@ void Loader::parse_instrument_line(char *line) {
 void Loader::parse_message_line(char *line) {
   if (is_header_level(line, 2)) {
     message = new Message(line + 3);
-    pm.messages << message;
+    pm->messages << message;
     return;
   }
 
@@ -157,7 +156,7 @@ void Loader::parse_trigger_line(char *line) {
     return;
 
   List<char *> *cols = table_columns(line);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), cols->at(0));
+  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), cols->at(0));
   if (in == 0) {
     delete cols;
     return;
@@ -176,7 +175,7 @@ void Loader::parse_trigger_line(char *line) {
     action = PREV_PATCH;
   else if (strcmp(cols->at(2), "message") == 0) {
     action = MESSAGE;
-    output_msg = find_message(pm.messages, cols->at(3));
+    output_msg = find_message(pm->messages, cols->at(3));
   }
   
   in->triggers << new Trigger(trigger_msg, action, output_msg);
@@ -247,7 +246,7 @@ void Loader::parse_set_list_line(char *line) {
 int Loader::load_instrument(List<char *> &cols, int type) {
   PmDeviceID devid = find_device(cols[1], type);
 
-  if (devid == pmNoDevice && !pm.testing)
+  if (devid == pmNoDevice && !pm->testing)
     return 1;
 
   char *sym = cols[2];
@@ -255,10 +254,10 @@ int Loader::load_instrument(List<char *> &cols, int type) {
 
   switch (type) {
   case INSTRUMENT_INPUT:
-    pm.inputs << new Input(sym, name, devid);
+    pm->inputs << new Input(sym, name, devid);
     break;
   case INSTRUMENT_OUTPUT:
-    pm.outputs << new Output(sym, name, devid);
+    pm->outputs << new Output(sym, name, devid);
     break;
   }
 
@@ -275,7 +274,7 @@ int Loader::load_song(char *line) {
     ensure_song_has_patch();
 
   Song *s = new Song(line);
-  pm.all_songs->songs << s;
+  pm->all_songs->songs << s;
   song = s;
   patch = 0;
   conn = 0;
@@ -314,9 +313,9 @@ int Loader::load_patch(char *line) {
 
 int Loader::load_connection(char *line) {
   List<char *> *args = comma_sep_args(line, false);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.inputs), args->at(0));
+  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), args->at(0));
   int in_chan = chan_from_word(args->at(1));
-  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs), args->at(2));
+  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs), args->at(2));
   int out_chan = chan_from_word(args->at(3));
 
   conn = new Connection(in, in_chan, out, out_chan);
@@ -367,18 +366,18 @@ int Loader::load_map(char *line) {
 
 int Loader::load_song_list(char *line) {
   song_list = new SongList(line);
-  pm.song_lists << song_list;
+  pm->song_lists << song_list;
   return 0;
 }
 
 int Loader::load_song_list_song(char *line) {
-  Song *s = find_song(pm.all_songs->songs, line);
+  Song *s = find_song(pm->all_songs->songs, line);
   if (s == 0) {
     fprintf(stderr, "error in set: can not find song named \"%s\"\n", line);
     return 1;
   }
 
-  song_list->songs << find_song(pm.all_songs->songs, line);
+  song_list->songs << find_song(pm->all_songs->songs, line);
   return 0;
 }
 
@@ -389,9 +388,9 @@ void Loader::ensure_song_has_patch() {
   Patch *p = new Patch(default_patch_name);
   song->patches << p;
 
-  for (int i = 0; i < pm.inputs.length(); ++i) {
-    Input *in = pm.inputs[i];
-    Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm.outputs),
+  for (int i = 0; i < pm->inputs.length(); ++i) {
+    Input *in = pm->inputs[i];
+    Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs),
                                         (char *)in->sym.c_str());
     if (out != 0) {
       Connection *conn = new Connection(in, -1, out, -1);
@@ -455,7 +454,7 @@ int Loader::chan_from_word(char *word) {
 }
 
 PmDeviceID Loader::find_device(char *name, int device_type) {
-  if (pm.testing)
+  if (pm->testing)
     return pmNoDevice;
 
   int num_devices = Pm_CountDevices();

@@ -51,7 +51,6 @@ void usage(char *prog_name) {
 }
 
 int main(int argc, char * const *argv) {
-  PatchMaster pm;
   int ch, testing = false;
   char *prog_name = argv[0];
   int do_list = false;
@@ -86,16 +85,14 @@ int main(int argc, char * const *argv) {
   Pm_Initialize();
   atexit(cleanup);
 
-  pm.testing = testing;
-
-  Loader loader(pm);
-  if (loader.load(argv[0]) != 0)
+  Loader loader;
+  if (loader.load(argv[0], testing) == 0)
     exit(1);                    // error already printed
 
-  pm.start();
-  GUI gui(pm);
+  PatchMaster_instance()->start();
+  GUI gui(PatchMaster_instance());
   gui.run();
-  pm.stop();
+  PatchMaster_instance()->stop();
 
   exit(0);
   return 0;

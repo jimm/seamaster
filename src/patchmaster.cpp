@@ -133,7 +133,7 @@ void PatchMaster::panic(bool send_notes_off) {
 // ================ vdebugging ================
 
 void PatchMaster::debug() {
-  vdebug("patchmaster %p, running %d\n", this, running);
+  vdebug("patchmaster %p, running %d, testing %d\n", this, running, testing);
   for (int i = 0; i < inputs.length(); ++i)
     inputs[i]->debug();
   for (int i = 0; i < outputs.length(); ++i)
