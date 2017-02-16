@@ -108,9 +108,10 @@ src/curses/gui.o: src/curses/gui.cpp /usr/include/stdlib.h \
   src/curses/../consts.h src/curses/../instrument.h \
   src/curses/../trigger.h src/curses/../message.h src/curses/../output.h \
   src/curses/list_window.h src/curses/window.h src/curses/geometry.h \
-  src/curses/help_window.h src/curses/info_window.h \
-  src/curses/patch_window.h src/curses/prompt_window.h \
-  src/curses/trigger_window.h src/curses/../cursor.h
+  src/curses/../loader.h src/curses/help_window.h \
+  src/curses/info_window.h src/curses/patch_window.h \
+  src/curses/prompt_window.h src/curses/trigger_window.h \
+  src/curses/../cursor.h
 
 /usr/include/stdlib.h:
 
@@ -451,6 +452,8 @@ src/curses/list_window.h:
 src/curses/window.h:
 
 src/curses/geometry.h:
+
+src/curses/../loader.h:
 
 src/curses/help_window.h:
 

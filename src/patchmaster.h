@@ -21,6 +21,7 @@ public:
   bool running;
   bool testing;
   List<Message *> messages;
+  string loaded_from_file;
 
   PatchMaster();
   ~PatchMaster();

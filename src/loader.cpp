@@ -34,7 +34,8 @@ PatchMaster *Loader::load(const char *path, bool testing) {
     return 0;
   }
 
-  pm = new PatchMaster();       // side-effect: PatchMaster static instance set
+  pm = new PatchMaster();    // side-effect: PatchMaster static instance set
+  pm->loaded_from_file = path;
   pm->testing = testing;
   clear();
   while (fgets(line, BUFSIZ, fp) != 0) {

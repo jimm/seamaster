@@ -134,6 +134,7 @@ void PatchMaster::panic(bool send_notes_off) {
 
 void PatchMaster::debug() {
   vdebug("patchmaster %p, running %d, testing %d\n", this, running, testing);
+  vdebug("  loaded from file %s\n", loaded_from_file.c_str());
   for (int i = 0; i < inputs.length(); ++i)
     inputs[i]->debug();
   for (int i = 0; i < outputs.length(); ++i)

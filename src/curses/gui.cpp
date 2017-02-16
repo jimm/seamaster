@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "gui.h"
 #include "../patchmaster.h"
+#include "../loader.h"
 #include "geometry.h"
 #include "help_window.h"
 #include "info_window.h"
@@ -76,25 +77,10 @@ void GUI::event_loop() {
       clear_message_after(5);
       break;
     case 'l':
-      // TODO load file
-      /* file = PromptWindow.new('Load File').gets */
-      /* if file.length > 0 */
-      /*   begin */
-      /*     load(file) */
-      /*     show_message("Loaded #{file}") */
-      /*   rescue => ex */
-      /*     show_message(ex.to_s) */
-      /*   end */
-      /* end */
+      load();
       break;
     case 'r':
-      // TODO reload file
-      /* if @pm->loaded_file && @pm->loaded_file.length > 0 */
-      /*   load(@pm->loaded_file) */
-      /*   show_message("Reloaded #{@pm->loaded_file}") */
-      /* else */
-      /*   show_message("No file loaded"); */
-      /* end */
+      reload();
       break;
     case 'v':
       toggle_view();
@@ -282,6 +268,34 @@ void GUI::close_screen() {
   nocbreak();
   refresh();
   endwin();
+}
+
+void GUI::load() {
+  PromptWindow *pwin = new PromptWindow("Load File");
+  string path = pwin->gets();
+  delete pwin;
+
+  load(path);
+}
+
+void GUI::load(string path) {
+  if (path.length() == 0) {
+    show_message("No file loaded");
+    return;
+  }
+
+  bool testing = pm->testing;
+  delete pm;
+  Loader loader;
+  pm = loader.load(path.c_str(), testing);
+  pm->start();
+
+  string msg("Loaded ");
+  show_message(msg + path);
+}
+
+void GUI::reload() {
+  load(pm->loaded_from_file);
 }
 
 void GUI::help() {

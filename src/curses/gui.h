@@ -58,6 +58,9 @@ private:
   void set_play_window_data();
   void close_screen();
   void help();
+  void load();
+  void load(string path);
+  void reload();
   void show_message(string);
   void clear_message_after(int);
   int max_name_len(List<Named *> *);
