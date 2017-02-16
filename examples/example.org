@@ -1,21 +1,37 @@
 * Introduction
 
-SeaMaster uses [Org mode](http://orgmode.org/) for its input files that
-describe your setup, songs, and patches.. It is a text file with formatting
-similar to Markdown. Only a few top-level sections are read by SeaMaster,
-any others such as this one are ignored. They must be in the following
-order, though ignored sections may appear between them.
+This is an example [[https://github.com/jimm/seamaster][SeaMaster]] file. It is an [[http://orgmode.org/][Org mode]] file, which is a plain
+text file format similar to Markdown. This file describes your MIDI setup,
+songs, and patches. Only a few top-level sections are read by SeaMaster, any
+others such as this one are ignored. They must be in the following order,
+though ignored sections may appear anywhere, including between them.
 
 - Instruments
-- Messages
-- Triggers
+- Messages (/optional/)
+- Triggers (/optional/)
 - Songs
-- Set Lists
+- Set Lists (/optional/)
+
+This sections, since it isn't one of those, is ignored.
+
+In general, indentation doesn't matter. Beginning whitespace is ignored,
+except within song notes.
 
 * Instruments
 
-Short names for inputs and outputs don't have to be same or different. This
-text is ignored.
+This section describes the instruments in your MIDI setup by listing input
+and output MIDI ports. Each one specifies the port name, a short name you
+use below to refer to the port, and a longer display name.
+
+The short names for inputs and outputs need to be unique within the type
+(input or output), but an input and an output can share the same short and
+long names.
+
+The header row and separator rows are optional. The first few letters of the
+first column determines if the row describes an input or output. If they
+match "in" or "out" then the row describes a MIDI port.
+
+All text except the table itself is ignored.
 
 | I/O | port                       | short | name        |
 |-----+----------------------------+-------+-------------|
@@ -27,9 +43,14 @@ text is ignored.
 
 * Messages
 
-Bytes can be hex or decimal and can span multiple lines. One message (one-
-to three-byte MIDI message) per line. Sysex is not yet supported. Commas are
-ignored. Sorry, no symbolic names yet.
+A message is a named list of MIDI one- to three-byte messages. Bytes can be
+hex or decimal. There can be multiple messages but each one must appear on a
+separate line. Sysex is not yet supported. Commas are ignored. Sorry, there
+is not yet support for symbolic names such as "CONTROLLER" or "TUNE_REQUEST"
+for bytes yet.
+
+Within each message only Org mode block delimiters ("#+begin_" and "#_end_"
+lines) are ignored; all other lines are assumed to be MIDI messages.
 
 ** Tune Request
 
@@ -48,25 +69,23 @@ ignored. Sorry, no symbolic names yet.
 Triggers listen for a particular message from an input instrument and, when
 that message is seen, perform some action.
 
-Trigger actions are "next/prev(ious) song/patch" or "message". "Message"
-requires a message name.
+The title and separator lines are ignored. Actually, any line where the
+first column isn't a legal input instrument short name is ignored.
 
-Trigger headers consist of a comma-separated list of an input short name, an
-action name, and in the case of the "send message" action, the message name.
+The first column contains the input instrument short name. The second is a
+one- to three-byte MIDI message that triggers the action or message send.
 
-The message to listen for is in the body under the header. It consists of
-one to three bytes separated by whitespace and optional commas. Each byte
-may be expressed as decimal or "0xff"-style hex numbers (case is ignored).
+The third column is one of "next song", "next patch", "prev (or 'previous')
+song", "prev patch", or "message". "Message" requires a message name.
 
-Commas are optional.
 
   | input | bytes         | action     | message      |
   |-------+---------------+------------+--------------|
-  | one   | 0xb0, 50, 127 | next song  |              |
-  | one   | 0xb0, 51, 127 | prev song  |              |
-  | one   | 0xb0, 52, 127 | next patch |              |
-  | one   | 0xb0, 53, 127 | prev patch |              |
-  | one   | 0xb0, 54, 127 | message    | Tune Request |
+  | kk    | 0xb0, 50, 127 | next song  |              |
+  | kk    | 0xb0, 51, 127 | prev song  |              |
+  | kk    | 0xb0, 52, 127 | next patch |              |
+  | kk    | 0xb0, 53, 127 | prev patch |              |
+  | ws    | 0xb0, 50, 127 | message    | Tune Request |
 
 * Songs
 
@@ -76,6 +95,7 @@ after the song heading and before the first patch heading.
 ** To Each His Own
 
 These are optional song notes.
+They will be displayed on-screen.
 
 *** Vanilla Through
 **** kk, all, kk, all
@@ -86,7 +106,7 @@ These are optional song notes.
 #+begin_example
 Kronos channel 1 sent to Wavestation.
 
-The begin/end example Org mode commands are ignored.
+The Org mode block begin/end commands are ignored.
 #+end_example
 
 *** patch K to W

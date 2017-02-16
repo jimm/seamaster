@@ -1,0 +1,62 @@
+* Instruments
+
+| I/O | port                       | short | name        |
+|-----+----------------------------+-------+-------------|
+| in  | MIDISPORT 4x4 Anniv Port A | kk    | Kronos      |
+| in  | MIDISPORT 4x4 Anniv Port B | ws    | Wavestation |
+|-----+----------------------------+-------+-------------|
+| out | MIDISPORT 4x4 Anniv Port A | kk    | Kronos      |
+| out | MIDISPORT 4x4 Anniv Port B | ws    | Wavestation |
+
+* Messages
+
+** Tune Request
+
+#+begin_example
+  0xf6
+#+end_example
+
+** Multiple Note-Offs
+
+0x80, 64, 0
+0x81, 64, 0
+0x82, 42, 0
+
+* Triggers
+
+  | input | bytes         | action     | message      |
+  |-------+---------------+------------+--------------|
+  | one   | 0xb0, 50, 127 | next song  |              |
+  | one   | 0xb0, 51, 127 | prev song  |              |
+  | one   | 0xb0, 52, 127 | next patch |              |
+  | one   | 0xb0, 53, 127 | prev patch |              |
+  | one   | 0xb0, 54, 127 | message    | Tune Request |
+
+* Songs
+
+** To Each His Own
+
+These are optional song notes.
+
+*** Vanilla Through
+**** kk, all, kk, all
+**** ws, all, ws, all
+
+** Kronos -> Wavestation
+
+#+begin_example
+Kronos channel 1 sent to Wavestation.
+
+The begin/end example Org mode commands are ignored.
+#+end_example
+
+*** patch K to W
+**** kk, all, ws, all
+**** ws, all, kk, all
+
+* Set Lists
+
+** Tonight's Song List
+
+- To Each His Own
+- Kronos -> WaveStation
