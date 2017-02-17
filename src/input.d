@@ -34,11 +34,11 @@ src/input.o: src/input.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h src/input.h \
-  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h /usr/include/time.h \
-  /usr/include/sys/_types/_clock_t.h /usr/include/sys/_types/_time_t.h \
-  /usr/include/sys/_types/_timespec.h \
+  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
+  /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
+  /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
+  src/input.h /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
+  /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -223,14 +223,6 @@ src/input.o: src/input.cpp /usr/include/stdlib.h \
 
 /usr/include/strings.h:
 
-src/input.h:
-
-/usr/include/pthread.h:
-
-/usr/include/pthread/pthread_impl.h:
-
-/usr/include/pthread/sched.h:
-
 /usr/include/time.h:
 
 /usr/include/sys/_types/_clock_t.h:
@@ -238,6 +230,14 @@ src/input.h:
 /usr/include/sys/_types/_time_t.h:
 
 /usr/include/sys/_types/_timespec.h:
+
+src/input.h:
+
+/usr/include/pthread.h:
+
+/usr/include/pthread/pthread_impl.h:
+
+/usr/include/pthread/sched.h:
 
 /usr/include/sys/_pthread/_pthread_cond_t.h:
 

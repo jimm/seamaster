@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "input.h"
 #include "trigger.h"
 #include "consts.h"
 #include "debug.h"
+
+// 10 milliseconds, in nanoseconds
+#define SLEEP_NANOSECS 1e7
 
 void *input_thread(void *);
 
@@ -96,12 +100,20 @@ void Input::read(PmEvent *buf, int len) {
 
 void *input_thread(void *in_voidptr) {
   Input *in = (Input *)in_voidptr;
+  struct timespec rqtp = {0, SLEEP_NANOSECS};
+
   while (in->running) {
     if (Pm_Poll(in->stream) == TRUE) {
       PmEvent buf[MIDI_BUFSIZ];
       int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
       vdebug("%d events seen, sending to Input::read\n", n);
       in->read(buf, n);
+    }
+    else {
+      if (nanosleep(&rqtp, 0) == -1) {
+        vdebug("input interrupted, exiting\n");
+        pthread_exit(0);
+      }
     }
   }
 
