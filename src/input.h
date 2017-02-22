@@ -14,8 +14,6 @@ public:
   List<Connection *> connections;
   List<Trigger *> triggers;
   bool running;
-  pthread_t portmidi_thread;
-  List<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
 
   Input(const char *sym, const char *name, int port_num);
   ~Input();
@@ -32,6 +30,13 @@ public:
   void read(PmEvent *buf, int len);
 
   void debug();
+
+private:
+  pthread_t portmidi_thread;
+  List<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
+  List<Connection *> sustain_off_conns[MIDI_CHANNELS];
+
+  List<Connection *> &connections_for_message(PmMessage msg);
 };
 
 #endif /* INPUT_H */

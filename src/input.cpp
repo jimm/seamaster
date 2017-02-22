@@ -71,28 +71,7 @@ void Input::read(PmEvent *buf, int len) {
     if (!real_port() && num_io_messages < MIDI_BUFSIZ-1)
       io_messages[num_io_messages++] = msg;
 
-    unsigned char status = Pm_MessageStatus(msg);
-    unsigned char high_nibble = status & 0xf0;
-    unsigned char chan = status & 0x0f;
-    unsigned char note = Pm_MessageData1(msg);
-
-    // note off messages must be sent to their original connections, so for
-    // incoming note on messages we store the current connections in
-    // note_off_conns.
-    List<Connection *> conns;
-    switch (high_nibble) {
-    case NOTE_OFF:
-      conns = notes_off_conns[chan][note];
-      break;
-    case NOTE_ON:
-      conns = connections;
-      notes_off_conns[chan][note] = connections;
-      break;
-    default:
-      conns = connections;
-      break;
-    }
-
+    List <Connection *> &conns = connections_for_message(msg);
     for (int j = 0; j < conns.length(); ++j)
       conns[j]->midi_in(msg);
   }
@@ -119,6 +98,42 @@ void *input_thread(void *in_voidptr) {
 
   vdebug("input exiting\n");
   pthread_exit(0);
+}
+
+// Return connections to use for `msg`. Normally it's the same as our list
+// of connections. However for every note on we store those connections, and
+// use those connections for the corresponding note off. Same for sustain
+// controller messages.
+List<Connection *> &Input::connections_for_message(PmMessage msg) {
+  unsigned char status = Pm_MessageStatus(msg);
+  unsigned char high_nibble = status & 0xf0;
+  unsigned char chan = status & 0x0f;
+  unsigned char note = Pm_MessageData1(msg);
+
+  // note off messages must be sent to their original connections, so for
+  // incoming note on messages we store the current connections in
+  // note_off_conns.
+  switch (high_nibble) {
+  case NOTE_OFF:
+    return notes_off_conns[chan][note];
+  case NOTE_ON:
+    notes_off_conns[chan][note] = connections;
+    return connections;
+  case CONTROLLER:
+    if (Pm_MessageData1(msg) == CC_SUSTAIN) {
+      if (Pm_MessageData2(msg) == 0)
+        return sustain_off_conns[chan];
+      else {
+        sustain_off_conns[chan] = connections;
+        return connections;
+      }
+    }
+    else
+      return connections;
+    break;
+  default:
+    return connections;
+  }
 }
 
 void Input::debug() {
