@@ -335,23 +335,13 @@ void Loader::load_connection(char *line) {
   List<char *> *args = comma_sep_args(line, false);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), args->at(0));
   if (in == 0) {
-    ostringstream es;
-    es << "song " << song->name
-       << ", patch " << patch->name
-       << ": input instrument " << args->at(0)
-       << " not found";
-    error_str = es.str();
+    instrument_not_found("input", args->at(0));
     return;
   }
   int in_chan = chan_from_word(args->at(1));
   Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs), args->at(2));
   if (out == 0) {
-    ostringstream es;
-    es << "song " << song->name
-       << ", patch " << patch->name
-       << ": output instrument " << args->at(2)
-       << " not found";
-    error_str = es.str();
+    instrument_not_found("output", args->at(2));
     return;
   }
   int out_chan = chan_from_word(args->at(3));
@@ -361,6 +351,15 @@ void Loader::load_connection(char *line) {
 
   delete args;
   return;
+}
+
+void Loader::instrument_not_found(const char *type_name, const char *sym) {
+    ostringstream es;
+    es << "song " << song->name
+       << ", patch " << patch->name
+       << ": " << type_name << ' ' << sym
+       << " not found";
+    error_str = es.str();
 }
 
 void Loader::load_prog(char *line) {
