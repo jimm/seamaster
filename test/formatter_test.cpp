@@ -22,19 +22,25 @@ void test_note_num_to_name() {
 }
 
 void test_note_name_to_num() {
-  tassert(note_name_to_num((char *)"c-1") == 0, 0);
-  tassert(note_name_to_num((char *)"C#-1") == 1, 0);
-  tassert(note_name_to_num((char *)"e4") == 64, 0);
-  tassert(note_name_to_num((char *)"e3") == 52, 0);
-  tassert(note_name_to_num((char *)"fs3") == 54, 0);
-  tassert(note_name_to_num((char *)"f#3") == 54, 0);
-  tassert(note_name_to_num((char *)"ef3") == 51, 0);
-  tassert(note_name_to_num((char *)"eb3") == 51, 0);
-  tassert(note_name_to_num((char *)"g9") == 127, 0);
-  tassert(note_name_to_num((char *)"G9") == 127, 0);
+  tassert(note_name_to_num("c-1") == 0, 0);
+  tassert(note_name_to_num("C#-1") == 1, 0);
+  tassert(note_name_to_num("e4") == 64, 0);
+  tassert(note_name_to_num("e3") == 52, 0);
+  tassert(note_name_to_num("fs3") == 54, 0);
+  tassert(note_name_to_num("f#3") == 54, 0);
+  tassert(note_name_to_num("ef3") == 51, 0);
+  tassert(note_name_to_num("eb3") == 51, 0);
+  tassert(note_name_to_num("g9") == 127, 0);
+  tassert(note_name_to_num("G9") == 127, 0);
+}
+
+void test_note_name_to_num_given_num() {
+  tassert(note_name_to_num("0") == 0, 0);
+  tassert(note_name_to_num("42") == 42, 0);
 }
 
 void test_formatter() {
   test_run(test_note_num_to_name);
   test_run(test_note_name_to_num);
+  test_run(test_note_name_to_num_given_num);
 }

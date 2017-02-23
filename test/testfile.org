@@ -84,7 +84,7 @@ that spans multiple lines
      - xpose 12
      - zone 0, 63
 **** one, 1, two, 5
-     - zone 64, 127
+     - zone e4, g9
      - xpose -12
 
 ** Song Without Explicit Patch

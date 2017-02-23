@@ -16,7 +16,7 @@ void note_num_to_name(int num, char *buf) {
 }
 
 // str may point to an integer string like "64" as well
-int note_name_to_num(char *str) {
+int note_name_to_num(const char *str) {
   char ch = str[0];
 
   if (isdigit(ch))
@@ -27,7 +27,7 @@ int note_name_to_num(char *str) {
     return 0;
 
   int from_c = NOTE_OFFSETS[ch - 'a'];
-  char *num_start = str+1;
+  const char *num_start = str+1;
   int accidental = 0;
   switch (tolower(*num_start)) {
   case 's': case '#':
