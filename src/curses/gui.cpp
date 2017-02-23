@@ -1,3 +1,4 @@
+#include <sstream>
 #include <stdlib.h>
 #include <ncurses.h>
 #include <unistd.h>
@@ -280,7 +281,7 @@ void GUI::load() {
 
 void GUI::load(string path) {
   if (path.length() == 0) {
-    show_message("No file loaded");
+    show_message("error: no file loaded");
     return;
   }
 
@@ -288,10 +289,17 @@ void GUI::load(string path) {
   delete pm;
   Loader loader;
   pm = loader.load(path.c_str(), testing);
+  ostringstream ostr;
+  if (loader.has_error()) {
+    ostr << "error: " << loader.error();
+    show_message(ostr.str());
+    return;
+  }
+
   pm->start();
 
-  string msg("Loaded ");
-  show_message(msg + path);
+  ostr << "loaded file " << path;
+  show_message(ostr.str());
 }
 
 void GUI::reload() {

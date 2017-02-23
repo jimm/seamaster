@@ -1,6 +1,7 @@
 #ifndef LOAD_H
 #define LOAD_H
 
+#include <string>
 #include "list.h"
 #include "patchmaster.h"
 
@@ -25,6 +26,8 @@ public:
   ~Loader();
 
   PatchMaster *load(const char *path, bool testing);
+  bool has_error();
+  string error();
 
 private:
   FILE *fp;
@@ -36,6 +39,7 @@ private:
   Connection *conn;
   Message *message;
   SongList *song_list;
+  string error_str;
 
   void clear();
   void enter_section(Section);
@@ -46,22 +50,22 @@ private:
   void parse_song_line(char *);
   void parse_set_list_line(char *);
 
-  int load_instrument(List<char *> &, int);
-  int load_message(char *);
+  void load_instrument(List<char *> &, int);
+  void load_message(char *);
   PmMessage message_from_bytes(const char *);
-  int load_song(char *);
-  int load_notes_line(char *);
+  void load_song(char *);
+  void load_notes_line(char *);
   void stop_collecting_notes();
-  int load_patch(char *);
-  int load_connection(char *);
-  int load_bank(char *);
-  int load_prog(char *);
-  int load_xpose(char *);
-  int load_zone(char *);
-  int load_filter(char *);
-  int load_map(char *);
-  int load_song_list(char *);
-  int load_song_list_song(char *);
+  void load_patch(char *);
+  void load_connection(char *);
+  void load_bank(char *);
+  void load_prog(char *);
+  void load_xpose(char *);
+  void load_zone(char *);
+  void load_filter(char *);
+  void load_map(char *);
+  void load_song_list(char *);
+  void load_song_list_song(char *);
 
   void ensure_song_has_patch();
 

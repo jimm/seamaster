@@ -1,6 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
 #include <getopt.h>
 #include <libgen.h>
 #include "patchmaster.h"
@@ -36,18 +34,17 @@ void cleanup() {
 }
 
 void usage(char *prog_name) {
-  fprintf(stderr,
-          "usage: %s [-l] [-n] [-h] file\n"
-          "\n"
-          "    -l or --list-ports\n"
-          "        List all attached MIDI ports\n"
-          "\n"
-          "    -n or --no-midi\n"
-          "        No MIDI (ignores bad/unknown MIDI ports)\n"
-          "\n"
-          "    -h or --help\n"
-          "        This help\n",
-          basename(prog_name));
+  cerr << "usage: " << basename(prog_name) << " [-l] [-n] [-h] file\n"
+       << "\n"
+       << "    -l or --list-ports\n"
+       << "        List all attached MIDI ports\n"
+       << "\n"
+       << "    -n or --no-midi\n"
+       << "        No MIDI (ignores bad/unknown MIDI ports)\n"
+       << "\n"
+       << "    -h or --help\n"
+       << "        This help"
+       << endl;
 }
 
 int main(int argc, char * const *argv) {
@@ -86,12 +83,18 @@ int main(int argc, char * const *argv) {
   atexit(cleanup);
 
   Loader loader;
-  if (loader.load(argv[0], testing) == 0)
-    exit(1);                    // error already printed
+  if (loader.load(argv[0], testing) == 0) // sets PM instance as a side-effect
+    exit(1);                              // error already printed
+  if (loader.has_error()) {
+    cerr << "error: " << loader.error() << endl;
+    exit(1);
+  }
 
   PatchMaster_instance()->start();
   GUI gui(PatchMaster_instance());
   gui.run();
+  // Don't use PM returned by Loader::load here. User might have loaded a
+  // new one.
   PatchMaster_instance()->stop();
 
   exit(0);

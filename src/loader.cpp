@@ -1,6 +1,5 @@
-#include <stdio.h>
+#include <sstream>
 #include <stdlib.h>
-#include <string.h>
 #include <errno.h>
 #include <err.h>
 #include "portmidi.h"
@@ -28,9 +27,11 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   int retval = 0;
   char line[BUFSIZ];
 
+  error_str = "";
+
   fp = fopen(path, "r");
   if (fp == 0) {
-    err(errno, "%s", path);
+    error_str = strerror(errno);
     return 0;
   }
 
@@ -38,7 +39,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   pm->loaded_from_file = path;
   pm->testing = testing;
   clear();
-  while (fgets(line, BUFSIZ, fp) != 0) {
+  while (!has_error() && fgets(line, BUFSIZ, fp) != 0) {
     strip_newline(line);
     parse_line(line);
   }
@@ -49,6 +50,14 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   pm->debug();
 
   return pm;
+}
+
+bool Loader::has_error() {
+  return error_str != "";
+}
+
+string Loader::error() {
+  return error_str;
 }
 
 void Loader::clear() {
@@ -158,7 +167,7 @@ void Loader::parse_trigger_line(char *line) {
 
   List<char *> *cols = table_columns(line);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), cols->at(0));
-  if (in == 0) {
+  if (in == 0) {                // might be table header, not an error
     delete cols;
     return;
   }
@@ -177,6 +186,12 @@ void Loader::parse_trigger_line(char *line) {
   else if (strcmp(cols->at(2), "message") == 0) {
     action = MESSAGE;
     output_msg = find_message(pm->messages, cols->at(3));
+    if (output_msg == 0) {
+      ostringstream es;
+      es << "trigger can not find message named " << cols->at(3);
+      error_str = es.str();
+      return;
+    }
   }
   
   in->triggers << new Trigger(trigger_msg, action, output_msg);
@@ -244,11 +259,15 @@ void Loader::parse_set_list_line(char *line) {
     load_song_list_song(line + 2);
 }
 
-int Loader::load_instrument(List<char *> &cols, int type) {
+void Loader::load_instrument(List<char *> &cols, int type) {
   PmDeviceID devid = find_device(cols[1], type);
 
-  if (devid == pmNoDevice && !pm->testing)
-    return 1;
+  if (devid == pmNoDevice && !pm->testing) {
+    ostringstream es;
+    es << "MIDI port " << cols[1] << " not found";
+    error_str = es.str();
+    return;
+  }
 
   char *sym = cols[2];
   char *name = cols[3];
@@ -262,15 +281,15 @@ int Loader::load_instrument(List<char *> &cols, int type) {
     break;
   }
 
-  return 0;
+  return;
 }
 
-int Loader::load_message(char *line) {
+void Loader::load_message(char *line) {
   // TODO
-  return 0;
+  return;
 }
 
-int Loader::load_song(char *line) {
+void Loader::load_song(char *line) {
   if (song != 0)
     ensure_song_has_patch();
 
@@ -280,19 +299,19 @@ int Loader::load_song(char *line) {
   patch = 0;
   conn = 0;
   notes_state = SKIPPING_BLANK_LINES;
-  return 0;
+  return;
 }
 
-int Loader::load_notes_line(char *line) {
+void Loader::load_notes_line(char *line) {
   if (notes_state == SKIPPING_BLANK_LINES) {
     int start = strspn(line, whitespace);
     if (line[start] == 0)
-      return 0;
+      return;
   }
 
   notes_state = COLLECTING;
   song->append_notes(line);
-  return 0;
+  return;
 }
 
 void Loader::stop_collecting_notes() {
@@ -303,83 +322,103 @@ void Loader::stop_collecting_notes() {
   notes_state = OUTSIDE;
 }
 
-int Loader::load_patch(char *line) {
+void Loader::load_patch(char *line) {
   Patch *p = new Patch(line);
   song->patches << p;
   patch = p;
   conn = 0;
   stop_collecting_notes();
-  return 0;
+  return;
 }
 
-int Loader::load_connection(char *line) {
+void Loader::load_connection(char *line) {
   List<char *> *args = comma_sep_args(line, false);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), args->at(0));
+  if (in == 0) {
+    ostringstream es;
+    es << "song " << song->name
+       << ", patch " << patch->name
+       << ": input instrument " << args->at(0)
+       << " not found";
+    error_str = es.str();
+    return;
+  }
   int in_chan = chan_from_word(args->at(1));
   Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs), args->at(2));
+  if (out == 0) {
+    ostringstream es;
+    es << "song " << song->name
+       << ", patch " << patch->name
+       << ": output instrument " << args->at(2)
+       << " not found";
+    error_str = es.str();
+    return;
+  }
   int out_chan = chan_from_word(args->at(3));
 
   conn = new Connection(in, in_chan, out, out_chan);
   patch->connections << conn;
 
   delete args;
-  return 0;
+  return;
 }
 
-int Loader::load_prog(char *line) {
+void Loader::load_prog(char *line) {
   char *prog_chg = skip_first_word(line);
   conn->prog.prog = atoi(prog_chg);
-  return 0;
+  return;
 }
 
-int Loader::load_bank(char *line) {
+void Loader::load_bank(char *line) {
   List<char *> *args = comma_sep_args(line, true);
   conn->prog.bank_msb = atoi(args->at(0));
   conn->prog.bank_lsb = atoi(args->at(1));
-  return 0;
+  return;
 }
 
-int Loader::load_xpose(char *line) {
+void Loader::load_xpose(char *line) {
   char *amount = skip_first_word(line);
   conn->xpose = atoi(amount);
-  return 0;
+  return;
 }
 
-int Loader::load_zone(char *line) {
+void Loader::load_zone(char *line) {
   List<char *> *args = comma_sep_args(line, true);
   conn->zone.low = note_name_to_num(args->at(0));
   conn->zone.high = note_name_to_num(args->at(1));
-  return 0;
+  return;
 }
 
-int Loader::load_filter(char *line) {
+void Loader::load_filter(char *line) {
   int controller = atoi(skip_first_word(line));
   conn->cc_maps[controller] = -1;
-  return 0;
+  return;
 }
 
-int Loader::load_map(char *line) {
+void Loader::load_map(char *line) {
   List<char *> *args = comma_sep_args(line, true);
   conn->cc_maps[atoi(args->at(0))] = atoi(args->at(1));
   delete args;
-  return 0;
+  return;
 }
 
-int Loader::load_song_list(char *line) {
+void Loader::load_song_list(char *line) {
   song_list = new SongList(line);
   pm->song_lists << song_list;
-  return 0;
+  return;
 }
 
-int Loader::load_song_list_song(char *line) {
+void Loader::load_song_list_song(char *line) {
   Song *s = find_song(pm->all_songs->songs, line);
   if (s == 0) {
-    fprintf(stderr, "error in set: can not find song named \"%s\"\n", line);
-    return 1;
+    ostringstream es;
+    es << "set list" << song_list->name << " can not find song named " << line;
+    error_str = es.str();
+    return;
   }
 
   song_list->songs << find_song(pm->all_songs->songs, line);
-  return 0;
+  return;
 }
 
 void Loader::ensure_song_has_patch() {

@@ -108,19 +108,19 @@ List<Connection *> &Input::connections_for_message(PmMessage msg) {
   unsigned char status = Pm_MessageStatus(msg);
   unsigned char high_nibble = status & 0xf0;
   unsigned char chan = status & 0x0f;
-  unsigned char note = Pm_MessageData1(msg);
+  unsigned char data1 = Pm_MessageData1(msg);
 
   // note off messages must be sent to their original connections, so for
   // incoming note on messages we store the current connections in
   // note_off_conns.
   switch (high_nibble) {
   case NOTE_OFF:
-    return notes_off_conns[chan][note];
+    return notes_off_conns[chan][data1];
   case NOTE_ON:
-    notes_off_conns[chan][note] = connections;
+    notes_off_conns[chan][data1] = connections;
     return connections;
   case CONTROLLER:
-    if (Pm_MessageData1(msg) == CC_SUSTAIN) {
+    if (data1 == CC_SUSTAIN) {
       if (Pm_MessageData2(msg) == 0)
         return sustain_off_conns[chan];
       else {
