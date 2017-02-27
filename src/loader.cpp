@@ -7,13 +7,12 @@
 #include "loader.h"
 #include "formatter.h"
 #include "debug.h"
-  
-#define INSTRUMENT_INPUT 0
-#define INSTRUMENT_OUTPUT 1
-#define ORG_MODE_BLOCK_PREFIX "#+"
 
-const char * const default_patch_name = "Default Patch";
-const char * const whitespace = " \t";
+static const markup org_mode_markup = {'*', "-", "#+"};
+static const markup markdown_mode_markup = {'#', "-*", "```"};
+
+static const char * const default_patch_name = "Default Patch";
+static const char * const whitespace = " \t";
 
 Loader::Loader()
   : song(0)
@@ -34,6 +33,8 @@ PatchMaster *Loader::load(const char *path, bool testing) {
     error_str = strerror(errno);
     return 0;
   }
+
+  determine_markup(path);
 
   pm = new PatchMaster();    // side-effect: PatchMaster static instance set
   pm->loaded_from_file = path;
@@ -81,12 +82,12 @@ void Loader::enter_section(Section sec) {
 void Loader::parse_line(char *line) {
   if (notes_state == OUTSIDE) {
     int start = strspn(line, whitespace);
-    if (line[start] == 0 || is_org_mode_block_command(line))
+    if (line[start] == 0 || is_markup_block_command(line))
       return;
 
     line += start;              // strip leading whitespace
   }
-  else if (is_org_mode_block_command(line))
+  else if (is_markup_block_command(line))
     return;
 
   if (is_header(line, "Instruments", 1)) {
@@ -141,9 +142,9 @@ void Loader::parse_instrument_line(char *line) {
 
   List<char *> *cols = table_columns(line);
   if (strncmp(cols->at(0), "in", 2) == 0)
-    load_instrument(*cols, INSTRUMENT_INPUT);
+    load_instrument(*cols, INPUT);
   else if (strncmp(cols->at(0), "out", 3) == 0)
-    load_instrument(*cols, INSTRUMENT_OUTPUT);
+    load_instrument(*cols, OUTPUT);
 
   delete cols;
 }
@@ -226,7 +227,7 @@ void Loader::parse_song_line(char *line) {
     load_connection(line + 5);
   else if (notes_state != OUTSIDE)
     load_notes_line(line);
-  else if (is_list_item(line, 0) && conn != 0) {
+  else if (is_list_item(line) && conn != 0) {
     line += 2;
     char ch = line[0];
     switch (ch) {
@@ -255,7 +256,7 @@ void Loader::parse_song_line(char *line) {
 void Loader::parse_set_list_line(char *line) {
   if (is_header_level(line, 2))
     load_song_list(line + 3);
-  else if (is_list_item(line, 0))
+  else if (is_list_item(line))
     load_song_list_song(line + 2);
 }
 
@@ -273,10 +274,10 @@ void Loader::load_instrument(List<char *> &cols, int type) {
   char *name = cols[3];
 
   switch (type) {
-  case INSTRUMENT_INPUT:
+  case INPUT:
     pm->inputs << new Input(sym, name, devid);
     break;
-  case INSTRUMENT_OUTPUT:
+  case OUTPUT:
     pm->outputs << new Output(sym, name, devid);
     break;
   }
@@ -499,9 +500,9 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
   int num_devices = Pm_CountDevices();
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-    if (device_type == INSTRUMENT_INPUT && info->input && strcmp(name, info->name) == 0)
+    if (device_type == INPUT && info->input && strcmp(name, info->name) == 0)
       return i;
-    if (device_type == INSTRUMENT_OUTPUT && info->output && strcmp(name, info->name) == 0)
+    if (device_type == OUTPUT && info->output && strcmp(name, info->name) == 0)
       return i;
   }
   return pmNoDevice;
@@ -536,15 +537,14 @@ bool Loader::is_header(const char *line, const char *header, int level) {
 
 bool Loader::is_header_level(const char *line, int level) {
   for (int i = 0; i < level; ++i)
-    if (line[i] != '*')
+    if (line[i] != markup.header_char)
       return false;
   return line[level] == ' ';
 }
 
 // If item_begins_with is not 0, only return true if it matches.
-bool Loader::is_list_item(const char *line, const char *item_begins_with) {
-  return line[0] == '-' && line[1] == ' ' &&
-    (item_begins_with == 0 || strncmp(line+2, item_begins_with, strlen(item_begins_with)) == 0);
+bool Loader::is_list_item(const char *line) {
+  return strrchr(markup.list_chars, line[0]) != 0 && line[1] == ' ';
 }
 
 bool Loader::is_table_row(const char *line) {
@@ -552,7 +552,16 @@ bool Loader::is_table_row(const char *line) {
   return line[start] == '|' && line[start+1] != '-';
 }
 
-bool Loader::is_org_mode_block_command(const char *line) {
-  return strlen(line) > 2 &&
-    strncmp(line, ORG_MODE_BLOCK_PREFIX, strlen(ORG_MODE_BLOCK_PREFIX)) == 0;
+bool Loader::is_markup_block_command(const char *line) {
+  return strncmp(line, markup.block_marker_prefix, strlen(markup.block_marker_prefix)) == 0;
+}
+
+void Loader::determine_markup(const char *path) {
+  char *extension = strrchr(path, '.');
+  if (extension == 0)
+    markup = org_mode_markup;
+  else if (strncmp(extension, ".markdown", 9) == 0 || strncmp(extension, ".md", 3) == 0)
+    markup = markdown_mode_markup;
+  else
+    markup = org_mode_markup;
 }

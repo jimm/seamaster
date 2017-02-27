@@ -5,6 +5,11 @@
 #include "list.h"
 #include "patchmaster.h"
 
+typedef enum InstrumentDirection {
+  INPUT,
+  OUTPUT
+} InstrumentDirection;
+
 typedef enum Section {
   IGNORE,
   INSTRUMENTS,
@@ -19,6 +24,12 @@ typedef enum NoteState {
   SKIPPING_BLANK_LINES,
   COLLECTING
 } NoteState;
+
+typedef struct markup {
+  char header_char;
+  const char *list_chars;
+  const char *block_marker_prefix;
+} markup;
 
 class Loader {
 public:
@@ -40,6 +51,7 @@ private:
   Message *message;
   SongList *song_list;
   string error_str;
+  markup markup;
 
   void clear();
   void enter_section(Section);
@@ -83,9 +95,10 @@ private:
   Message *find_message(List<Message *> &, char *);
   bool is_header(const char *, const char *, int);
   bool is_header_level(const char *, int);
-  bool is_list_item(const char *, const char *);
+  bool is_list_item(const char *);
   bool is_table_row(const char *);
-  bool is_org_mode_block_command(const char *);
+  bool is_markup_block_command(const char *);
+  void determine_markup(const char *);
 };
 
 #endif /* LOAD_H */

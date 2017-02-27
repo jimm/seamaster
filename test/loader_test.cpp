@@ -3,11 +3,14 @@
 #include "../src/loader.h"
 #include "loader_test.h"
 
-#define TEST_FILE "test/testfile.org"
+#define ORG_MODE_TEST_FILE "test/testfile.org"
+#define MARKDOWN_TEST_FILE "test/testfile.md"
+
+static const char *test_file;
 
 PatchMaster *load_test_file() {
   Loader loader;
-  PatchMaster *pm = loader.load(TEST_FILE, true);
+  PatchMaster *pm = loader.load(test_file, true);
   pm->testing = true;
   return pm;
 }
@@ -238,7 +241,8 @@ void test_load_auto_patch() {
   tassert(p->connections[1]->input->sym == "two", 0);
 }
 
-void test_load() {
+void test_load_run_tests(const char *path) {
+  test_file = path;
   test_run(test_load_instruments);
   test_run(test_load_messages);
   test_run(test_load_triggers);
@@ -254,4 +258,9 @@ void test_load() {
   test_run(test_load_map);
   test_run(test_load_song_list);
   test_run(test_load_auto_patch);
+}
+
+void test_load() {
+  test_load_run_tests(ORG_MODE_TEST_FILE);
+  test_load_run_tests(MARKDOWN_TEST_FILE);
 }
