@@ -4,10 +4,10 @@ Short names for inputs and outputs don't have to be same or different. This
 text is ignored.
 
 | I/O | port            | short | name          |
-|-----+-----------------+-------+---------------|
+| --- | --------------- | ----- | --------------|
 | in  | input port one  | one   | first input   |
 | in  | input port two  | two   | second input  |
-|-----+-----------------+-------+---------------|
+|:---:| --------------- | ----- | --------------|
 | out | output port one | one   | first output  |
 | out | output port two | two   | second output |
 

@@ -549,7 +549,9 @@ bool Loader::is_list_item(const char *line) {
 
 bool Loader::is_table_row(const char *line) {
   int start = strspn(line, whitespace);
-  return line[start] == '|' && line[start+1] != '-';
+  return line[start] == '|' &&
+    // make sure this is not a separator line
+    (line[start+2] != '-' || strchr(" :-", line[start+1]) == 0);
 }
 
 bool Loader::is_markup_block_command(const char *line) {
