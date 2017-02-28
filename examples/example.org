@@ -117,8 +117,8 @@ The Org mode block begin/end commands are ignored.
 
 * Set Lists
 
-Two other bullet list characters are accepted: "*" and "+". Org mode
-requires that lists using "*" are indented, else they will be seen as
+Two other bullet list characters are accepted: "\*" and "+". Org mode
+requires that lists using "\*" are indented, else they will be seen as
 top-level headlines.
 
 ** Tonight's Song List
