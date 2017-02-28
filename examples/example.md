@@ -11,6 +11,8 @@ though ignored sections may appear anywhere, including between them.
 - Messages (/optional/)
 - Triggers (/optional/)
 - Songs
+    - Patches
+        - Connections
 - Set Lists (/optional/)
 
 This sections, since it isn't one of those, is ignored.
@@ -116,7 +118,9 @@ The Org mode block begin/end commands are ignored.
 
 # Set Lists
 
+List items can start with either "-" or "*".
+
 ## Tonight's Song List
 
-- To Each His Own
-- Kronos -> Wavestation
+* To Each His Own
+* Kronos -> Wavestation

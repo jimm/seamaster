@@ -10,6 +10,8 @@ though ignored sections may appear anywhere, including between them.
 - Messages (/optional/)
 - Triggers (/optional/)
 - Songs
+  - Patches
+    - Connections
 - Set Lists (/optional/)
 
 This sections, since it isn't one of those, is ignored.

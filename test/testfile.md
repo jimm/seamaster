@@ -91,8 +91,10 @@ that spans multiple lines
 
 # Ignore This Section
 
-Any section that isn't one of
+Any top-level section that isn't one of
 - Instruments
+- Messages
+- Triggers
 - Songs
 - Set Lists
 should be ignored. Let's see:
@@ -100,7 +102,7 @@ should be ignored. Let's see:
 ## This is Not a Song
 
 ### This is Not a Patch
-#### bad, 2, bader, 99
+#### bad, 2, badder, 99
 
 # Set Lists
 
