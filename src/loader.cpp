@@ -8,8 +8,8 @@
 #include "formatter.h"
 #include "debug.h"
 
-static const markup org_mode_markup = {'*', "-", "#+"};
-static const markup markdown_mode_markup = {'#', "-*", "```"};
+static const markup org_mode_markup = {'*', "-*+", "#+"};
+static const markup markdown_mode_markup = {'#', "-*+", "```"};
 
 static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
@@ -80,15 +80,17 @@ void Loader::enter_section(Section sec) {
 }
 
 void Loader::parse_line(char *line) {
+  int start = 0;
   if (notes_state == OUTSIDE) {
-    int start = strspn(line, whitespace);
+    start = strspn(line, whitespace);
     if (line[start] == 0 || is_markup_block_command(line))
       return;
-
-    line += start;              // strip leading whitespace
   }
   else if (is_markup_block_command(line))
     return;
+
+  // Header lines must start at beginning of the line, so don't skip past
+  // whitespace quite yet.
 
   if (is_header(line, "Instruments", 1)) {
     enter_section(INSTRUMENTS);
@@ -114,6 +116,9 @@ void Loader::parse_line(char *line) {
     enter_section(IGNORE);
     return;
   }
+
+  // Now we can strip leading whitespace.
+  line += start;
 
   switch (section) {
   case INSTRUMENTS:

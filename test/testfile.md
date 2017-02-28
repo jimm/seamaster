@@ -106,12 +106,14 @@ should be ignored. Let's see:
 
 # Set Lists
 
+Two other bullet list characters are accepted: "*" and "+".
+
 ## Song List One
 
-- To Each His Own
-- Another Song
+* To Each His Own
+* Another Song
 
 ## Song List Two
 
-- Another Song
-- To Each His Own
++ Another Song
++ To Each His Own
