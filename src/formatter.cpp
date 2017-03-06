@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "connection.h"
 
 static const char * NOTE_NAMES[] = {
   "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
@@ -43,3 +44,36 @@ int note_name_to_num(const char *str) {
   int octave = (atoi(num_start) + 1) * 12;
   return octave + from_c + accidental;
 }
+
+void format_program(program prog, char *buf) {
+  int has_msb = prog.bank_msb != -1;
+  int has_lsb = prog.bank_lsb != -1;
+  int has_bank = has_msb || has_lsb;
+
+  sprintf(buf, " %c", has_bank ? '[' : ' ');
+  buf += 2;
+
+  if (has_msb)
+    sprintf(buf, "%3d", prog.bank_msb);
+  else
+    strcat(buf, "   ");
+  buf += 3;
+
+  sprintf(buf, "%c ", has_bank ? ',' : ' ');
+  buf += 2;
+
+  if (has_lsb)
+    sprintf(buf, "%3d", prog.bank_lsb);
+  else
+    strcat(buf, "   ");
+  buf += 3;
+
+  sprintf(buf, "%c ", has_bank ? ']' : ' ');
+  buf += 2;
+
+  if (prog.prog != -1)
+    sprintf(buf, " %3d", prog.prog);
+  else
+    strcat(buf, "    ");
+}
+

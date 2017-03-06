@@ -3,6 +3,7 @@
 #include "patch_window.h"
 #include "../input.h"
 #include "../output.h"
+#include "../formatter.h"
 
 PatchWindow::PatchWindow(struct rect r, const char *title_prefix, int imaxlen, int omaxlen)
   : Window(r, title_prefix), patch(0), max_input_name_len(imaxlen), max_output_name_len(omaxlen)
@@ -92,37 +93,8 @@ void PatchWindow::format_xpose(Connection *conn, char *buf) {
 }
 
 void PatchWindow::format_prog(Connection *conn, char *buf) {
-  int has_msb = conn->prog.bank_msb != -1;
-  int has_lsb = conn->prog.bank_lsb != -1;
-  int has_bank = has_msb || has_lsb;
-
-  buf += strlen(buf);
-
-  sprintf(buf, " %c", has_bank ? '[' : ' ');
-  buf += 2;
-
-  if (has_msb)
-    sprintf(buf, "%3d", conn->prog.bank_msb);
-  else
-    strcat(buf, "   ");
-  buf += 3;
-
-  sprintf(buf, "%c ", has_bank ? ',' : ' ');
-  buf += 2;
-
-  if (has_lsb)
-    sprintf(buf, "%3d", conn->prog.bank_lsb);
-  else
-    strcat(buf, "   ");
-  buf += 3;
-
-  sprintf(buf, "%c ", has_bank ? ']' : ' ');
-  buf += 2;
-
-  if (conn->prog.prog != -1)
-    sprintf(buf, " %3d |", conn->prog.prog);
-  else
-    strcat(buf, "     |");
+  format_program(conn->prog, buf + strlen(buf));
+  strcat(buf, " |");
 }
 
 void PatchWindow::format_filters_and_maps(Connection *conn, char *buf) {

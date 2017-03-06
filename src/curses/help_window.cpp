@@ -31,6 +31,7 @@ const char *help_window_read_help() {
 "g    - goto song\n" \
 "t    - goto song list\n" \
 "\n" \
+"c    - show program changes\n" \
 "h, ? - help\n" \
 "ESC  - panic\n" \
 "\n" \

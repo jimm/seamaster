@@ -24,7 +24,7 @@ void Window::move_and_resize(struct rect r) {
 void Window::draw() {
   wclear(win);
   box(win, ACS_VLINE, ACS_HLINE);
-  if (title.length() == 0 && title.length() == 0)
+  if (title_prefix.length() == 0 && title.length() == 0)
     return;
 
   string win_title = " ";

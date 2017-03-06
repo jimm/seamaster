@@ -17,6 +17,10 @@ Input::Input(const char *sym, const char *name, int port_num)
   running = false;
   portmidi_thread = 0;
 
+  for (int i = 0; i < MIDI_CHANNELS; ++i)
+    seen_progs[i].bank_msb = seen_progs[i].bank_lsb =
+      seen_progs[i].prog = -1;
+
   if (real_port()) {
     int err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     // TODO check error
@@ -71,6 +75,8 @@ void Input::read(PmEvent *buf, int len) {
     if (!real_port() && num_io_messages < MIDI_BUFSIZ-1)
       io_messages[num_io_messages++] = msg;
 
+    remember_program_change_messages(msg);
+
     List <Connection *> &conns = connections_for_message(msg);
     for (int j = 0; j < conns.length(); ++j)
       conns[j]->midi_in(msg);
@@ -98,6 +104,28 @@ void *input_thread(void *in_voidptr) {
 
   vdebug("input exiting\n");
   pthread_exit(0);
+}
+
+void Input::remember_program_change_messages(PmMessage msg) {
+  unsigned char status = Pm_MessageStatus(msg);
+  unsigned char high_nibble = status & 0xf0;
+  unsigned char chan = status & 0x0f;
+  unsigned char data1 = Pm_MessageData1(msg);
+
+  switch (high_nibble) {
+  case PROGRAM_CHANGE:
+    seen_progs[chan].prog = data1;
+    break;
+  case CONTROLLER:
+    switch (data1) {
+    case CC_BANK_SELECT_MSB:
+      seen_progs[chan].bank_msb = Pm_MessageData2(msg);
+      break;
+    case CC_BANK_SELECT_LSB:
+      seen_progs[chan].bank_lsb = Pm_MessageData2(msg);
+      break;
+    }
+  }
 }
 
 // Return connections to use for `msg`. Normally it's the same as our list

@@ -58,6 +58,7 @@ private:
   void set_play_window_data();
   void close_screen();
   void help();
+  void prog_changes_seen();
   void load();
   void load(string path);
   void reload();

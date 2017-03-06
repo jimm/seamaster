@@ -31,11 +31,15 @@ public:
 
   void debug();
 
+  program last_program_change_seen(int chan) { return seen_progs[chan]; }
+
 private:
   pthread_t portmidi_thread;
   List<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
   List<Connection *> sustain_off_conns[MIDI_CHANNELS];
+  program seen_progs[MIDI_CHANNELS];
 
+  void remember_program_change_messages(PmMessage msg);
   List<Connection *> &connections_for_message(PmMessage msg);
 };
 
