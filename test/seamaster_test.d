@@ -80,9 +80,9 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   test/../src/debug.h test/../src/patchmaster.h test/../src/song_list.h \
   test/../src/song.h test/../src/patch.h /usr/local/include/portmidi.h \
-  test/../src/named.h test/../src/connection.h test/../src/input.h \
-  /usr/include/pthread.h /usr/include/pthread/pthread_impl.h \
-  /usr/include/pthread/sched.h \
+  test/../src/named.h test/../src/connection.h test/../src/controller.h \
+  test/../src/input.h /usr/include/pthread.h \
+  /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
   /usr/include/sys/_pthread/_pthread_key_t.h \
@@ -96,7 +96,8 @@ test/seamaster_test.o: test/seamaster_test.cpp /usr/include/stdio.h \
   test/../src/consts.h test/../src/instrument.h test/../src/trigger.h \
   test/../src/message.h test/../src/output.h test/../src/cursor.h \
   test/formatter_test.h test/list_test.h test/loader_test.h \
-  test/cursor_test.h test/connection_test.h test/input_test.h
+  test/cursor_test.h test/controller_test.h test/connection_test.h \
+  test/input_test.h
 
 /usr/include/stdio.h:
 
@@ -348,6 +349,8 @@ test/../src/named.h:
 
 test/../src/connection.h:
 
+test/../src/controller.h:
+
 test/../src/input.h:
 
 /usr/include/pthread.h:
@@ -399,6 +402,8 @@ test/list_test.h:
 test/loader_test.h:
 
 test/cursor_test.h:
+
+test/controller_test.h:
 
 test/connection_test.h:
 

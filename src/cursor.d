@@ -79,7 +79,7 @@ src/cursor.o: src/cursor.cpp /usr/include/stdio.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
-  src/connection.h src/input.h /usr/include/pthread.h \
+  src/connection.h src/controller.h src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
@@ -342,6 +342,8 @@ src/named.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept:
 
 src/connection.h:
+
+src/controller.h:
 
 src/input.h:
 

@@ -75,14 +75,14 @@ private:
   void load_prog(char *);
   void load_xpose(char *);
   void load_zone(char *);
-  void load_filter(char *);
-  void load_map(char *);
+  void load_controller(char *);
   void load_song_list(char *);
   void load_song_list_song(char *);
 
   void ensure_song_has_patch();
 
   char *skip_first_word(char *);
+  List<char *> *whitespace_sep_args(char *, bool);
   List<char *> *comma_sep_args(char *, bool);
   List<char *> *table_columns(char *);
   int chan_from_word(char *);

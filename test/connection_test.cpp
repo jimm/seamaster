@@ -125,23 +125,12 @@ void test_connection_zone_poly_pressure() {
   delete conn;
 }
 
-void test_connection_filter_controller() {
+void test_connection_cc_processed() {
   Connection *conn = create_conn();
-  conn->cc_maps[7] = -1;
+  conn->cc_maps[7].filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
 
   tassert(conn->output->num_io_messages == 0, "bad num msgs");
-
-  delete conn;
-}
-
-void test_connection_map_controller() {
-  Connection *conn = create_conn();
-  conn->cc_maps[7] = 10;
-  conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
-
-  tassert(conn->output->num_io_messages == 1, "bad num msgs");
-  tassert(conn->output->io_messages[0] == Pm_Message(CONTROLLER, 10, 127), 0);
 
   delete conn;
 }
@@ -157,6 +146,5 @@ void test_connection() {
   test_run(test_connection_xpose);
   test_run(test_connection_zone);
   test_run(test_connection_zone_poly_pressure);
-  test_run(test_connection_filter_controller);
-  test_run(test_connection_map_controller);
+  test_run(test_connection_cc_processed);
 }

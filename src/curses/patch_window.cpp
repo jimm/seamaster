@@ -55,7 +55,7 @@ void PatchWindow::draw_connection(Connection *conn) {
   format_zone(conn, buf);
   format_xpose(conn, buf);
   format_prog(conn, buf);
-  format_filters_and_maps(conn, buf);
+  format_controllers(conn, buf);
 
   make_fit(buf, 1, fitbuf);
   waddstr(win, fitbuf);
@@ -97,24 +97,27 @@ void PatchWindow::format_prog(Connection *conn, char *buf) {
   strcat(buf, " |");
 }
 
-void PatchWindow::format_filters_and_maps(Connection *conn, char *buf) {
+void PatchWindow::format_controllers(Connection *conn, char *buf) {
   int first = true;
 
   buf += strlen(buf);
   strcat(buf, " ");
   buf += 1;
   for (int i = 0; i < 128; ++i) {
-    int m = conn->cc_maps[i];
-    if (m == -1) {
+    Controller cc = conn->cc_maps[i];
+    if (!cc.filtered) {
       if (first) first = false; else { strcat(buf, ", "); buf += 2; }
-      format_filter(i, buf);
+      format_filter(cc.cc_num, buf);
       buf += strlen(buf);
     }
-    else if (m != i) {
+    else if (cc.cc_num != cc.translated_cc_num) {
       if (first) first = false; else { strcat(buf, ", "); buf += 2; }
-      format_map(i, m, buf);
+      format_map(cc.cc_num, cc.translated_cc_num, buf);
       buf += strlen(buf);
     }
+
+    if (cc.min != 0 || cc.max != 127)
+      sprintf(buf, " [%d, %d]", cc.min, cc.max);
   }
 }
 

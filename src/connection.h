@@ -3,6 +3,7 @@
 
 #include <portmidi.h>
 #include "list.h"
+#include "controller.h"
 
 class Input;
 class Output;
@@ -27,7 +28,7 @@ public:
   program prog;
   zone zone;
   int xpose;
-  int cc_maps[128];           // -1 == filter out, else dest. controller number
+  Controller cc_maps[128]; // -1 == filter out, else dest. controller number
 
   Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
@@ -45,4 +46,4 @@ private:
   void midi_out(PmMessage msg);
 };
 
-#endif /* H */
+#endif /* CONNECTION_H */

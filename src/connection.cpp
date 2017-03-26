@@ -12,7 +12,7 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   zone.low = zone.high = -1;
   xpose = 0;
   for (int i = 0; i < 128; ++i)
-    cc_maps[i] = i;
+    cc_maps[i].cc_num = i;
 }
 
 Connection::~Connection() {
@@ -44,6 +44,7 @@ void Connection::midi_in(PmMessage msg) {
   if (!accept_from_input(msg))
       return;
 
+  PmMessage cc_msg;
   int status = Pm_MessageStatus(msg);
   int high_nibble = status & 0xf0;
   int data1 = Pm_MessageData1(msg);
@@ -58,11 +59,14 @@ void Connection::midi_in(PmMessage msg) {
     data1 += xpose;
     midi_out(Pm_Message(status, data1, data2));
     break;
-  case CONTROLLER: case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
+  case CONTROLLER:
+    cc_msg = cc_maps[data1].process(msg, output_chan);
+    if (cc_msg != -1)
+      midi_out(cc_msg);
+    break;
+  case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
     if (output_chan != -1)
       status = high_nibble + output_chan;
-    if (high_nibble == CONTROLLER) /* map controller number */
-      data1 = cc_maps[data1]; /* won't be -1, that's already filtered */
     midi_out(Pm_Message(status, data1, data2));
     break;
   default:
@@ -83,7 +87,7 @@ int Connection::accept_from_input(PmMessage msg) {
 
   if ((status & 0xf0) == CONTROLLER) {
     unsigned char controller = Pm_MessageData1(msg);
-    if (cc_maps[controller] == -1)
+    if (cc_maps[controller].filtered)
       return false;
   }
   return true;

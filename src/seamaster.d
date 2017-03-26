@@ -141,11 +141,11 @@ src/seamaster.o: src/seamaster.cpp \
   src/song_list.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/debug.h src/song.h src/patch.h /usr/local/include/portmidi.h \
-  src/named.h src/connection.h src/input.h src/consts.h src/instrument.h \
-  src/trigger.h src/message.h src/output.h src/loader.h src/curses/gui.h \
-  src/curses/list_window.h src/curses/window.h /usr/include/ncurses.h \
-  /usr/include/ncurses_dll.h /usr/include/unctrl.h /usr/include/curses.h \
-  src/curses/geometry.h
+  src/named.h src/connection.h src/controller.h src/input.h src/consts.h \
+  src/instrument.h src/trigger.h src/message.h src/output.h src/loader.h \
+  src/curses/gui.h src/curses/list_window.h src/curses/window.h \
+  /usr/include/ncurses.h /usr/include/ncurses_dll.h \
+  /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream:
 
@@ -568,6 +568,8 @@ src/patch.h:
 src/named.h:
 
 src/connection.h:
+
+src/controller.h:
 
 src/input.h:
 

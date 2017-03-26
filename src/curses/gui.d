@@ -144,9 +144,10 @@ src/curses/gui.o: src/curses/gui.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/curses/../debug.h src/curses/../song.h src/curses/../patch.h \
   /usr/local/include/portmidi.h src/curses/../named.h \
-  src/curses/../connection.h src/curses/../input.h \
-  src/curses/../consts.h src/curses/../instrument.h \
-  src/curses/../trigger.h src/curses/../message.h src/curses/../output.h \
+  src/curses/../connection.h src/curses/../controller.h \
+  src/curses/../input.h src/curses/../consts.h \
+  src/curses/../instrument.h src/curses/../trigger.h \
+  src/curses/../message.h src/curses/../output.h \
   src/curses/list_window.h src/curses/window.h src/curses/geometry.h \
   src/curses/../loader.h src/curses/help_window.h \
   src/curses/info_window.h src/curses/patch_window.h \
@@ -580,6 +581,8 @@ src/curses/../patch.h:
 src/curses/../named.h:
 
 src/curses/../connection.h:
+
+src/curses/../controller.h:
 
 src/curses/../input.h:
 

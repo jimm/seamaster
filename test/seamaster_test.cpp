@@ -7,6 +7,7 @@
 #include "list_test.h"
 #include "loader_test.h"
 #include "cursor_test.h"
+#include "controller_test.h"
 #include "connection_test.h"
 #include "input_test.h"
 
@@ -38,6 +39,7 @@ void run_tests() {
   test_list();
   test_load();
   test_cursor();
+  test_controller();
   test_connection();
   test_input();
   printf("\n\nTests run: %d, tests passed: %d, tests failed: %d\n",
