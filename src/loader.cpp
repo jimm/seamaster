@@ -248,11 +248,8 @@ void Loader::parse_song_line(char *line) {
     case 'z':
       load_zone(line);
       break;
-    case 'f':
-      load_filter(line);
-      break;
-    case 'm':
-      load_map(line);
+    case 'c':
+      load_controller(line);
       break;
     }
   }
@@ -394,15 +391,23 @@ void Loader::load_zone(char *line) {
   return;
 }
 
-void Loader::load_filter(char *line) {
-  int controller = atoi(skip_first_word(line));
-  conn->cc_maps[controller] = -1;
-  return;
-}
-
-void Loader::load_map(char *line) {
-  List<char *> *args = comma_sep_args(line, true);
-  conn->cc_maps[atoi(args->at(0))] = atoi(args->at(1));
+void Loader::load_controller(char *line) {
+  List<char *> *args = whitespace_sep_args(line, true);
+  Controller &cc = conn->cc_maps[atoi(args->at(0))];
+  for (int i = 1; i < args->length(); ++i) {
+    switch (args->at(i)[0]) {
+    case 'f':                   // filter
+      cc.filtered = true;
+      break;
+    case 'm':                   // map
+      cc.translated_cc_num = atoi(args->at(++i));
+      break;
+    case 'l':                   // limit
+      cc.min = atoi(args->at(++i));
+      cc.max = atoi(args->at(++i));
+      break;
+    }
+  }
   delete args;
   return;
 }
@@ -465,6 +470,23 @@ char *Loader::skip_first_word(char *line) {
   char *after_leading_spaces = line + strspn(line, whitespace);
   char *after_word = after_leading_spaces + strcspn(line, whitespace);
   return after_word + strspn(after_word, whitespace);
+}
+
+/*
+ * Skips first word on line, splits rest of line on whitespace, and returns
+ * the list as a list of strings. The contents should NOT be freed, since
+ * they are a destructive mutation of `line`.
+ */
+List<char *> *Loader::whitespace_sep_args(char *line, bool skip_word) {
+  List<char *> *l = new List<char *>();
+  char *args_start = skip_word ? skip_first_word(line) : line;
+
+  for (char *word = strtok(args_start, whitespace); word != 0; word = strtok(0, whitespace)) {
+    word += strspn(word, whitespace);
+    l->append(word);
+  }
+
+  return l;
 }
 
 /*

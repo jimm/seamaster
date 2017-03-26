@@ -37,7 +37,7 @@ src/connection.o: src/connection.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  src/debug.h src/input.h /usr/include/pthread.h \
+  src/debug.h src/controller.h src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
   /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
@@ -234,6 +234,8 @@ src/list.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 src/debug.h:
+
+src/controller.h:
 
 src/input.h:
 

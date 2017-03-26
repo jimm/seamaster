@@ -137,8 +137,8 @@ src/loader.o: src/loader.cpp \
   src/song_list.h src/list.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
   src/debug.h src/song.h src/patch.h src/named.h src/connection.h \
-  src/input.h src/consts.h src/instrument.h src/trigger.h src/message.h \
-  src/output.h src/loader.h src/formatter.h
+  src/controller.h src/input.h src/consts.h src/instrument.h \
+  src/trigger.h src/message.h src/output.h src/loader.h src/formatter.h
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/sstream:
 
@@ -543,6 +543,8 @@ src/patch.h:
 src/named.h:
 
 src/connection.h:
+
+src/controller.h:
 
 src/input.h:
 

@@ -188,25 +188,40 @@ void test_load_zone() {
   delete pm;
 }
 
-void test_load_filter() {
+void test_load_cc_filter() {
   PatchMaster *pm = load_test_file();
   Song *s = pm->all_songs->songs.first();
   Patch *p = s->patches.first();
   Connection *conn = p->connections.last();
-  tassert(conn->cc_maps[64] == -1, "bad cc filter");
+  tassert(conn->cc_maps[64].filtered == true, "bad cc filter");
   delete pm;
 }
 
-void test_load_map() {
+void test_load_cc_map() {
   PatchMaster *pm = load_test_file();
   Song *s = pm->all_songs->songs.first();
   Patch *p = s->patches.first();
   Connection *conn = p->connections.first();
-  tassert(conn->cc_maps[7] == 7, "bad default map");
+  tassert(conn->cc_maps[7].translated_cc_num == -1, "bad default map");
 
   p = s->patches.last();
   conn = p->connections.first();
-  tassert(conn->cc_maps[7] == 10, "bad cc remapping");
+  tassert(conn->cc_maps[7].translated_cc_num == 10, "bad cc remapping");
+  delete pm;
+}
+
+void test_load_cc_limit() {
+  PatchMaster *pm = load_test_file();
+  Song *s = pm->all_songs->songs.first();
+  Patch *p = s->patches.first();
+  Connection *conn = p->connections.first();
+  tassert(conn->cc_maps[7].min == 0, "bad default cc min");
+  tassert(conn->cc_maps[7].max == 127, "bad default cc max");
+
+  p = s->patches.last();
+  conn = p->connections.first();
+  tassert(conn->cc_maps[7].min == 1, "bad cc min remapping");
+  tassert(conn->cc_maps[7].max == 120, "bad cc max remapping");
   delete pm;
 }
 
@@ -254,8 +269,9 @@ void test_load_run_tests(const char *path) {
   test_run(test_load_prog_chg);
   test_run(test_load_xpose);
   test_run(test_load_zone);
-  test_run(test_load_filter);
-  test_run(test_load_map);
+  test_run(test_load_cc_filter);
+  test_run(test_load_cc_map);
+  test_run(test_load_cc_limit);
   test_run(test_load_song_list);
   test_run(test_load_auto_patch);
 }

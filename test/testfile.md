@@ -54,12 +54,12 @@ after the song heading and before the first patch heading.
 
      - bank 3, 2
      - pc 12
-     - filter 64
+     - cc 64 filter
 
 ### One Up One Octave and CC Vol -> Pan, Two Down One Octave
 #### one, all, one, all
      - xpose 12
-     - map 7, 10
+     - cc 7 map 10, limit 1 120
 #### two, all, two, all
      - xpose -12
 

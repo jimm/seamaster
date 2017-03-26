@@ -41,8 +41,9 @@ test/input_test.o: test/input_test.cpp /usr/include/stdlib.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
   /usr/include/strings.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h \
-  test/../src/debug.h test/../src/patchmaster.h test/../src/song_list.h \
-  test/../src/song.h test/../src/patch.h test/../src/named.h \
+  test/../src/debug.h test/../src/controller.h test/../src/patchmaster.h \
+  test/../src/song_list.h test/../src/song.h test/../src/patch.h \
+  test/../src/named.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
@@ -249,6 +250,8 @@ test/../src/list.h:
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdbool.h:
 
 test/../src/debug.h:
+
+test/../src/controller.h:
 
 test/../src/patchmaster.h:
 
