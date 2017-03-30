@@ -115,6 +115,20 @@ void test_load_patches() {
   delete pm;
 }
 
+void test_load_start_and_stop_messages() {
+  PatchMaster *pm = load_test_file();
+  Song *s = pm->all_songs->songs[1];
+  Patch *p = s->patches.last();
+
+  tassert(p->start_messages.length() == 2, 0);
+  tassert(p->start_messages.at(0) == Pm_Message(0xb0, 7, 127), "badly-read start message 1");
+  tassert(p->start_messages.at(1) == Pm_Message(0xb1, 7, 127), "badly-read start message 2");
+
+  tassert(p->stop_messages.length() == 2, 0);
+  tassert(p->stop_messages.at(0) == Pm_Message(0xb2, 7, 127), "badly-read stop message 1");
+  tassert(p->stop_messages.at(1) == Pm_Message(0xb3, 7, 127), "badly-read stop message 2");
+}
+
 void test_load_connections() {
   PatchMaster *pm = load_test_file();
   Song *s = pm->all_songs->songs.first();
@@ -264,6 +278,7 @@ void test_load_run_tests(const char *path) {
   test_run(test_load_songs);
   test_run(test_load_notes);
   test_run(test_load_patches);
+  test_run(test_load_start_and_stop_messages);
   test_run(test_load_connections);
   test_run(test_load_bank);
   test_run(test_load_prog_chg);

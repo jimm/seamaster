@@ -20,6 +20,7 @@ Loader::Loader()
 }
 
 Loader::~Loader() {
+  notes.clear((void (*)(char *))free);
 }
 
 PatchMaster *Loader::load(const char *path, bool testing) {
@@ -231,7 +232,7 @@ void Loader::parse_song_line(char *line) {
   else if (is_header_level(line, 4))
     load_connection(line + 5);
   else if (notes_state != OUTSIDE)
-    load_notes_line(line);
+    save_notes_line(line);
   else if (is_list_item(line) && conn != 0) {
     line += 2;
     char ch = line[0];
@@ -301,11 +302,11 @@ void Loader::load_song(char *line) {
   song = s;
   patch = 0;
   conn = 0;
-  notes_state = SKIPPING_BLANK_LINES;
+  start_collecting_notes();
   return;
 }
 
-void Loader::load_notes_line(char *line) {
+void Loader::save_notes_line(char *line) {
   if (notes_state == SKIPPING_BLANK_LINES) {
     int start = strspn(line, whitespace);
     if (line[start] == 0)
@@ -313,28 +314,46 @@ void Loader::load_notes_line(char *line) {
   }
 
   notes_state = COLLECTING;
-  song->append_notes(line);
-  return;
+  char *str = (char *)malloc(strlen(line) + 1);
+  strncpy(str, line, strlen(line)+1);
+  notes << str;
+}
+
+void Loader::start_collecting_notes() {
+  notes_state = SKIPPING_BLANK_LINES;
+  notes.clear((void (*)(char *))free);
 }
 
 void Loader::stop_collecting_notes() {
-  if (song != 0) {              // remove trailing blank lines
-    while (song->notes.length() > 0 && strlen(song->notes.last()) == 0)
-      song->notes.remove_at(song->notes.length()-1);
+  // remove trailing blank lines
+  while (notes.length() > 0 && strlen(notes.last()) == 0) {
+    char *str = notes.last();
+    notes.remove_at(notes.length() - 1);
+    free(str);
   }
   notes_state = OUTSIDE;
 }
 
 void Loader::load_patch(char *line) {
+  stop_collecting_notes();
+  if (notes.length() > 0 && song != 0) {
+    song->take_notes(notes);
+    notes.clear(0);
+  }
+
   Patch *p = new Patch(line);
   song->patches << p;
   patch = p;
   conn = 0;
-  stop_collecting_notes();
-  return;
+
+  start_collecting_notes();
 }
 
 void Loader::load_connection(char *line) {
+  stop_collecting_notes();
+  if (notes.length() > 0 && conn == 0) // first conn, interpret start/stop in notes
+    start_and_stop_messages_from_notes();
+
   List<char *> *args = comma_sep_args(line, false);
   Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), args->at(0));
   if (in == 0) {
@@ -354,6 +373,34 @@ void Loader::load_connection(char *line) {
 
   delete args;
   return;
+}
+
+void Loader::start_and_stop_messages_from_notes() {
+  StartStopState state = UNSTARTED;
+  for (int i = 0; i < notes.length(); ++i) {
+    char *str = notes[i] + strspn(notes[i], whitespace);
+    if (strlen(str) == 0)
+      continue;
+
+    if (strncmp(str, "start", 5) == 0)
+      state = START_MESSAGES;
+    else if (strncmp(str, "stop", 4) == 0)
+      state = STOP_MESSAGES;
+    else {
+      switch (state) {
+      case START_MESSAGES:
+        patch->start_messages << message_from_bytes(str);
+        break;
+      case STOP_MESSAGES:
+        patch->stop_messages << message_from_bytes(str);
+        break;
+      case UNSTARTED:
+        break;
+      }
+    }
+  }
+
+  notes.clear((void (*)(char *))free);
 }
 
 void Loader::instrument_not_found(const char *type_name, const char *sym) {

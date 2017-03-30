@@ -25,6 +25,12 @@ typedef enum NoteState {
   COLLECTING
 } NoteState;
 
+typedef enum StartStopState {
+  UNSTARTED,
+  START_MESSAGES,
+  STOP_MESSAGES
+} StartStopState;
+
 typedef struct markup {
   char header_char;
   const char *list_chars;
@@ -52,6 +58,7 @@ private:
   SongList *song_list;
   string error_str;
   markup markup;
+  List<char *> notes;
 
   void clear();
   void enter_section(Section);
@@ -67,10 +74,12 @@ private:
   void load_message(char *);
   PmMessage message_from_bytes(const char *);
   void load_song(char *);
-  void load_notes_line(char *);
+  void save_notes_line(char *);
+  void start_collecting_notes();
   void stop_collecting_notes();
   void load_patch(char *);
   void load_connection(char *);
+  void start_and_stop_messages_from_notes();
   void load_bank(char *);
   void load_prog(char *);
   void load_xpose(char *);

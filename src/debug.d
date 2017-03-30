@@ -1,5 +1,5 @@
 src/debug.o: src/debug.cpp \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdarg.h \
   /usr/include/stdio.h /usr/include/sys/cdefs.h \
   /usr/include/sys/_symbol_aliasing.h \
   /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
@@ -11,7 +11,7 @@ src/debug.o: src/debug.cpp \
   /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
   src/debug.h
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdarg.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdarg.h:
 
 /usr/include/stdio.h:
 

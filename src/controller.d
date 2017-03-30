@@ -1,6 +1,6 @@
 src/controller.o: src/controller.cpp src/consts.h src/controller.h \
   /usr/local/include/portmidi.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdint.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdint.h \
   /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h \
   /usr/include/sys/_types/_int16_t.h /usr/include/sys/_types/_int32_t.h \
   /usr/include/sys/_types/_int64_t.h /usr/include/_types/_uint8_t.h \
@@ -19,7 +19,7 @@ src/controller.h:
 
 /usr/local/include/portmidi.h:
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.0.0/include/stdint.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdint.h:
 
 /usr/include/stdint.h:
 
