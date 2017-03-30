@@ -11,12 +11,13 @@ Song::Song(const char *name)
 Song::~Song() {
   for (int i = 0; i < patches.length(); ++i)
     delete patches[i];
+  for (int i = 0; i < notes.length(); ++i)
+    free(notes[i]);
 }
 
-void Song::append_notes(char *text) {
-  char *str = (char *)malloc(strlen(text) + 1);
-  strcpy(str, text);
-  notes << str;
+// Take over ownership of list of malloc'd char*.
+void Song::take_notes(List<char *> &strs) {
+  notes.copy(strs);
 }
 
 void Song::debug() {

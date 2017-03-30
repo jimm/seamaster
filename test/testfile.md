@@ -80,6 +80,17 @@ that spans multiple lines
      - xpose -12
 
 ### Split Into Two Outputs
+
+start
+
+0xb0 7 127
+0xb1, 7, 127
+
+stop
+
+0xb2 7 127
+0xb3, 7, 127
+
 #### one, 3, one, 4
      - xpose 12
      - zone 0, 63

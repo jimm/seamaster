@@ -1,19 +1,14 @@
-src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
-  /usr/include/Availability.h /usr/include/AvailabilityInternal.h \
-  /usr/include/_types.h /usr/include/sys/_types.h \
-  /usr/include/sys/cdefs.h /usr/include/sys/_symbol_aliasing.h \
-  /usr/include/sys/_posix_availability.h /usr/include/machine/_types.h \
+test/patch_test.o: test/patch_test.cpp test/test_helper.h \
+  test/seamaster_test.h /usr/include/stdio.h /usr/include/sys/cdefs.h \
+  /usr/include/sys/_symbol_aliasing.h \
+  /usr/include/sys/_posix_availability.h /usr/include/Availability.h \
+  /usr/include/AvailabilityInternal.h /usr/include/_types.h \
+  /usr/include/sys/_types.h /usr/include/machine/_types.h \
   /usr/include/i386/_types.h /usr/include/sys/_pthread/_pthread_types.h \
-  /usr/include/sys/wait.h /usr/include/sys/_types/_pid_t.h \
-  /usr/include/sys/_types/_id_t.h /usr/include/sys/signal.h \
-  /usr/include/sys/appleapiopts.h /usr/include/machine/signal.h \
-  /usr/include/i386/signal.h /usr/include/machine/_mcontext.h \
-  /usr/include/i386/_mcontext.h /usr/include/mach/i386/_structs.h \
-  /usr/include/sys/_pthread/_pthread_attr_t.h \
-  /usr/include/sys/_types/_sigaltstack.h \
-  /usr/include/sys/_types/_ucontext.h \
-  /usr/include/sys/_types/_sigset_t.h /usr/include/sys/_types/_size_t.h \
-  /usr/include/sys/_types/_uid_t.h /usr/include/sys/resource.h \
+  /usr/include/sys/_types/_va_list.h /usr/include/sys/_types/_size_t.h \
+  /usr/include/sys/_types/_null.h /usr/include/sys/stdio.h \
+  /usr/include/sys/_types/_off_t.h /usr/include/sys/_types/_ssize_t.h \
+  test/../src/connection.h /usr/local/include/portmidi.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdint.h \
   /usr/include/stdint.h /usr/include/sys/_types/_int8_t.h \
   /usr/include/sys/_types/_int16_t.h /usr/include/sys/_types/_int32_t.h \
@@ -21,28 +16,39 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
   /usr/include/_types/_uint16_t.h /usr/include/_types/_uint32_t.h \
   /usr/include/_types/_uint64_t.h /usr/include/sys/_types/_intptr_t.h \
   /usr/include/sys/_types/_uintptr_t.h /usr/include/_types/_intmax_t.h \
-  /usr/include/_types/_uintmax_t.h /usr/include/sys/_types/_timeval.h \
+  /usr/include/_types/_uintmax_t.h test/../src/list.h \
+  /usr/include/stdlib.h /usr/include/sys/wait.h \
+  /usr/include/sys/_types/_pid_t.h /usr/include/sys/_types/_id_t.h \
+  /usr/include/sys/signal.h /usr/include/sys/appleapiopts.h \
+  /usr/include/machine/signal.h /usr/include/i386/signal.h \
+  /usr/include/machine/_mcontext.h /usr/include/i386/_mcontext.h \
+  /usr/include/mach/i386/_structs.h \
+  /usr/include/sys/_pthread/_pthread_attr_t.h \
+  /usr/include/sys/_types/_sigaltstack.h \
+  /usr/include/sys/_types/_ucontext.h \
+  /usr/include/sys/_types/_sigset_t.h /usr/include/sys/_types/_uid_t.h \
+  /usr/include/sys/resource.h /usr/include/sys/_types/_timeval.h \
   /usr/include/machine/endian.h /usr/include/i386/endian.h \
   /usr/include/sys/_endian.h /usr/include/libkern/_OSByteOrder.h \
   /usr/include/libkern/i386/_OSByteOrder.h /usr/include/alloca.h \
   /usr/include/sys/_types/_ct_rune_t.h /usr/include/sys/_types/_rune_t.h \
-  /usr/include/sys/_types/_wchar_t.h /usr/include/sys/_types/_null.h \
-  /usr/include/machine/types.h /usr/include/i386/types.h \
-  /usr/include/sys/_types/_u_int8_t.h \
+  /usr/include/sys/_types/_wchar_t.h /usr/include/machine/types.h \
+  /usr/include/i386/types.h /usr/include/sys/_types/_u_int8_t.h \
   /usr/include/sys/_types/_u_int16_t.h \
   /usr/include/sys/_types/_u_int32_t.h \
   /usr/include/sys/_types/_u_int64_t.h /usr/include/sys/_types/_dev_t.h \
   /usr/include/sys/_types/_mode_t.h /usr/include/string.h \
   /usr/include/sys/_types/_rsize_t.h /usr/include/sys/_types/_errno_t.h \
-  /usr/include/sys/_types/_ssize_t.h /usr/include/strings.h \
-  src/trigger.h /usr/local/include/portmidi.h src/message.h src/named.h \
+  /usr/include/strings.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
+  test/../src/debug.h test/../src/controller.h test/../src/patchmaster.h \
+  test/../src/song_list.h test/../src/song.h test/../src/patch.h \
+  test/../src/named.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iosfwd \
   /usr/include/wchar.h /usr/include/sys/_types/_mbstate_t.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdarg.h \
-  /usr/include/stdio.h /usr/include/sys/_types/_va_list.h \
-  /usr/include/sys/stdio.h /usr/include/sys/_types/_off_t.h \
   /usr/include/time.h /usr/include/sys/_types/_clock_t.h \
   /usr/include/sys/_types/_time_t.h /usr/include/sys/_types/_timespec.h \
   /usr/include/_wctype.h /usr/include/sys/_types/_wint_t.h \
@@ -75,10 +81,7 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__debug \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/tuple \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept \
-  src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
-  src/debug.h src/patchmaster.h src/song_list.h src/song.h src/patch.h \
-  src/connection.h src/controller.h src/input.h /usr/include/pthread.h \
+  test/../src/input.h /usr/include/pthread.h \
   /usr/include/pthread/pthread_impl.h /usr/include/pthread/sched.h \
   /usr/include/sys/_pthread/_pthread_cond_t.h \
   /usr/include/sys/_pthread/_pthread_condattr_t.h \
@@ -90,9 +93,21 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
   /usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
   /usr/include/sys/_pthread/_pthread_t.h /usr/include/pthread/qos.h \
   /usr/include/sys/qos.h /usr/include/sys/_types/_mach_port_t.h \
-  src/consts.h src/instrument.h src/output.h
+  test/../src/consts.h test/../src/instrument.h test/../src/trigger.h \
+  test/../src/message.h test/../src/output.h test/../src/cursor.h \
+  test/patch_test.h
 
-/usr/include/stdlib.h:
+test/test_helper.h:
+
+test/seamaster_test.h:
+
+/usr/include/stdio.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/sys/_symbol_aliasing.h:
+
+/usr/include/sys/_posix_availability.h:
 
 /usr/include/Availability.h:
 
@@ -102,51 +117,27 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
 
 /usr/include/sys/_types.h:
 
-/usr/include/sys/cdefs.h:
-
-/usr/include/sys/_symbol_aliasing.h:
-
-/usr/include/sys/_posix_availability.h:
-
 /usr/include/machine/_types.h:
 
 /usr/include/i386/_types.h:
 
 /usr/include/sys/_pthread/_pthread_types.h:
 
-/usr/include/sys/wait.h:
-
-/usr/include/sys/_types/_pid_t.h:
-
-/usr/include/sys/_types/_id_t.h:
-
-/usr/include/sys/signal.h:
-
-/usr/include/sys/appleapiopts.h:
-
-/usr/include/machine/signal.h:
-
-/usr/include/i386/signal.h:
-
-/usr/include/machine/_mcontext.h:
-
-/usr/include/i386/_mcontext.h:
-
-/usr/include/mach/i386/_structs.h:
-
-/usr/include/sys/_pthread/_pthread_attr_t.h:
-
-/usr/include/sys/_types/_sigaltstack.h:
-
-/usr/include/sys/_types/_ucontext.h:
-
-/usr/include/sys/_types/_sigset_t.h:
+/usr/include/sys/_types/_va_list.h:
 
 /usr/include/sys/_types/_size_t.h:
 
-/usr/include/sys/_types/_uid_t.h:
+/usr/include/sys/_types/_null.h:
 
-/usr/include/sys/resource.h:
+/usr/include/sys/stdio.h:
+
+/usr/include/sys/_types/_off_t.h:
+
+/usr/include/sys/_types/_ssize_t.h:
+
+test/../src/connection.h:
+
+/usr/local/include/portmidi.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdint.h:
 
@@ -176,6 +167,42 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
 
 /usr/include/_types/_uintmax_t.h:
 
+test/../src/list.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/sys/wait.h:
+
+/usr/include/sys/_types/_pid_t.h:
+
+/usr/include/sys/_types/_id_t.h:
+
+/usr/include/sys/signal.h:
+
+/usr/include/sys/appleapiopts.h:
+
+/usr/include/machine/signal.h:
+
+/usr/include/i386/signal.h:
+
+/usr/include/machine/_mcontext.h:
+
+/usr/include/i386/_mcontext.h:
+
+/usr/include/mach/i386/_structs.h:
+
+/usr/include/sys/_pthread/_pthread_attr_t.h:
+
+/usr/include/sys/_types/_sigaltstack.h:
+
+/usr/include/sys/_types/_ucontext.h:
+
+/usr/include/sys/_types/_sigset_t.h:
+
+/usr/include/sys/_types/_uid_t.h:
+
+/usr/include/sys/resource.h:
+
 /usr/include/sys/_types/_timeval.h:
 
 /usr/include/machine/endian.h:
@@ -195,8 +222,6 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
 /usr/include/sys/_types/_rune_t.h:
 
 /usr/include/sys/_types/_wchar_t.h:
-
-/usr/include/sys/_types/_null.h:
 
 /usr/include/machine/types.h:
 
@@ -220,17 +245,23 @@ src/trigger.o: src/trigger.cpp /usr/include/stdlib.h \
 
 /usr/include/sys/_types/_errno_t.h:
 
-/usr/include/sys/_types/_ssize_t.h:
-
 /usr/include/strings.h:
 
-src/trigger.h:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
 
-/usr/local/include/portmidi.h:
+test/../src/debug.h:
 
-src/message.h:
+test/../src/controller.h:
 
-src/named.h:
+test/../src/patchmaster.h:
+
+test/../src/song_list.h:
+
+test/../src/song.h:
+
+test/../src/patch.h:
+
+test/../src/named.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/string:
 
@@ -243,14 +274,6 @@ src/named.h:
 /usr/include/sys/_types/_mbstate_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdarg.h:
-
-/usr/include/stdio.h:
-
-/usr/include/sys/_types/_va_list.h:
-
-/usr/include/sys/stdio.h:
-
-/usr/include/sys/_types/_off_t.h:
 
 /usr/include/time.h:
 
@@ -326,25 +349,7 @@ src/named.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/stdexcept:
 
-src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
-
-src/debug.h:
-
-src/patchmaster.h:
-
-src/song_list.h:
-
-src/song.h:
-
-src/patch.h:
-
-src/connection.h:
-
-src/controller.h:
-
-src/input.h:
+test/../src/input.h:
 
 /usr/include/pthread.h:
 
@@ -376,8 +381,16 @@ src/input.h:
 
 /usr/include/sys/_types/_mach_port_t.h:
 
-src/consts.h:
+test/../src/consts.h:
 
-src/instrument.h:
+test/../src/instrument.h:
 
-src/output.h:
+test/../src/trigger.h:
+
+test/../src/message.h:
+
+test/../src/output.h:
+
+test/../src/cursor.h:
+
+test/patch_test.h:

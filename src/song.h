@@ -12,7 +12,7 @@ public:
   Song(const char *name);
   ~Song();
 
-  void append_notes(char *);
+  void take_notes(List<char *> &);
 
   void debug();
 };
