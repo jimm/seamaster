@@ -30,8 +30,11 @@ public:
   }
 
   void at_set(int i, T val) {
-    grow(i);
+    int min_len = i + 1;
+    grow(min_len);
     nodes[i] = val;
+    if (min_len > num_elements)
+      num_elements = min_len;
   }
 
   // -1 if not found

@@ -4,6 +4,7 @@
 #include <err.h>
 #include "portmidi.h"
 #include "patchmaster.h"
+#include "cursor.h"
 #include "loader.h"
 #include "formatter.h"
 #include "debug.h"
@@ -37,6 +38,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
 
   determine_markup(path);
 
+  PatchMaster *old_pm = PatchMaster_instance();
   pm = new PatchMaster();    // side-effect: PatchMaster static instance set
   pm->loaded_from_file = path;
   pm->testing = testing;
@@ -49,6 +51,9 @@ PatchMaster *Loader::load(const char *path, bool testing) {
     ensure_song_has_patch();
 
   fclose(fp);
+
+  if (old_pm)
+    pm->cursor->attempt_goto(old_pm->cursor);
   pm->debug();
 
   return pm;

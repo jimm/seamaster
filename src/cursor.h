@@ -12,9 +12,6 @@ public:
   int song_list_index;
   int song_index;
   int patch_index;
-  string song_list_name;
-  string song_name;
-  string patch_name;
 
   Cursor(PatchMaster *pm);
   ~Cursor();
@@ -33,11 +30,15 @@ public:
 
   void goto_song(string name_regex);
   void goto_song_list(string name_regex);
+  void attempt_goto(Cursor *old_cursor);
 
   void debug();
 
 private:
   Named *find_in_list(List<Named *> *, string regex);
+  int find_nearest_match_index(List<Named *> *, string str);
+  int damerau_levenshtein(string str1, string str2);
+  string downcased_copy(string str);
 };
 
 #endif /* CURSOR_H */

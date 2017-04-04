@@ -58,8 +58,20 @@ void test_list_join() {
   free(joined);
 }
 
+void test_list_grow() {
+  List<int> list;
+
+  list.at_set(0, 42);
+  list.at_set(100, 99);
+  tassert(list.length() == 101, "bad reallocated length");
+  tassert(list.at(0) == 42, "bad old val put into reallocated list");
+  tassert(list.at(100) == 99, "bad new val put into reallocated list");
+}
+
+
 void test_list() {
   test_run(test_list_index_of);
   test_run(test_list_slice);
   test_run(test_list_join);
+  test_run(test_list_grow);
 }

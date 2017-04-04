@@ -138,7 +138,8 @@ src/loader.o: src/loader.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
   src/debug.h src/song.h src/patch.h src/named.h src/connection.h \
   src/controller.h src/input.h src/consts.h src/instrument.h \
-  src/trigger.h src/message.h src/output.h src/loader.h src/formatter.h
+  src/trigger.h src/message.h src/output.h src/cursor.h src/loader.h \
+  src/formatter.h
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/sstream:
 
@@ -557,6 +558,8 @@ src/trigger.h:
 src/message.h:
 
 src/output.h:
+
+src/cursor.h:
 
 src/loader.h:
 

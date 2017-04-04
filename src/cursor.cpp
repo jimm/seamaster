@@ -149,6 +149,31 @@ void Cursor::goto_song_list(string name_regex) {
   }
 }
 
+// Attempt to go to the same song list, song, and patch that old_cursor
+// points to. Called when (re)loading a file.
+void Cursor::attempt_goto(Cursor *c) {
+  init();
+
+  if (c->song_list() != 0)
+    song_list_index =
+      find_nearest_match_index(reinterpret_cast<List<Named *> *>(&pm->song_lists),
+                               c->song_list()->name);
+
+  if (c->song() == 0)
+    return;
+
+  song_index =
+    find_nearest_match_index(reinterpret_cast<List<Named *> *>(&pm->all_songs->songs),
+                             c->song()->name);
+  if (c->patch() != 0)
+    patch_index =
+      find_nearest_match_index(reinterpret_cast<List<Named *> *>(&song()->patches),
+                               c->patch()->name);
+  else
+    patch_index = 0;
+}
+
+
 Named *Cursor::find_in_list(List<Named *> *list, string regex) {
   regex_t re;
   regmatch_t pm;
@@ -162,6 +187,68 @@ Named *Cursor::find_in_list(List<Named *> *list, string regex) {
     }
   }
   return 0;
+}
+
+int Cursor::find_nearest_match_index(List<Named *> *list, string str) {
+  string target = downcased_copy(str);
+  List<int> *distances = new List<int>();
+  for (int i = 0; i < list->length(); ++i)
+    distances->append(damerau_levenshtein(target, downcased_copy(list->at(i)->name)));
+
+  int min_dist = 9999, min_index = -1;
+  
+  for (int i = 0; i < list->length(); ++i) {
+    if (distances->at(i) < min_dist) {
+      min_dist = distances->at(i);
+      min_index = i;
+    }
+  }
+
+  delete(distances);
+  return min_index;
+}
+
+int Cursor::damerau_levenshtein(string str1, string str2) {
+  List<int> *oneago = 0;
+  List<int> *thisrow = new List<int>();
+  for (int i = 0; i < str2.length(); ++i)
+    thisrow->append(i+1);
+  thisrow->append(0);
+
+  for (int x = 0; x < str1.length(); ++x) {
+    List<int> *twoago = oneago;
+    oneago = thisrow;
+    thisrow = new List<int>();
+    for (int i = 0; i < str1.length(); ++i)
+      thisrow->append(0);
+    thisrow->append(x+1);
+
+    for (int y = 0; y < str2.length(); ++y) {
+      int delcost = oneago->at(y) + 1;
+      int addcost = thisrow->at(y-1) + 1;
+      int subcost = oneago->at(y-1) + ((str1[x] != str2[y]) ? 1 : 0);
+
+      int minval = delcost < addcost ? delcost : addcost;
+      minval = subcost < minval ? subcost : minval;
+      thisrow->at_set(y, minval);
+
+      if (x > 0 && y > 0 && str1[x] == str2[y-1] && str1[x-1] == str2[y] && str1[x] != str2[y]) {
+        minval = thisrow->at(y) < (twoago->at(y-2) + 1) ? thisrow->at(y) : (twoago->at(y-2) + 1);
+        thisrow->at_set(y, minval);
+      }
+    }
+  }
+
+  if (oneago) delete(oneago);
+  delete(thisrow);
+  return thisrow->at(str2.length() - 1);
+}
+
+string Cursor::downcased_copy(string str) {
+  string downcased = string(str);
+  for (string::iterator i = downcased.begin(); i != downcased.end(); ++i)
+    *i = tolower(*i);
+  return downcased;
 }
 
 void Cursor::debug() {
