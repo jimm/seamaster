@@ -152,9 +152,9 @@ void Loader::parse_instrument_line(char *line) {
     return;
 
   List<char *> *cols = table_columns(line);
-  if (strncmp(cols->at(0), "in", 2) == 0)
+  if (strncasecmp(cols->at(0), "in", 2) == 0)
     load_instrument(*cols, INPUT);
-  else if (strncmp(cols->at(0), "out", 3) == 0)
+  else if (strncasecmp(cols->at(0), "out", 3) == 0)
     load_instrument(*cols, OUTPUT);
 
   delete cols;
@@ -187,15 +187,15 @@ void Loader::parse_trigger_line(char *line) {
   PmMessage trigger_msg = message_from_bytes(cols->at(1));
   Message *output_msg = 0;
   TriggerAction action;
-  if (strcmp(cols->at(2), "next song") == 0)
+  if (strncasecmp(cols->at(2), "next song", 9) == 0)
     action = NEXT_SONG;
-  else if (strcmp(cols->at(2), "prev song") == 0 || strcmp(cols->at(2), "previous song") == 0)
+  else if (strncasecmp(cols->at(2), "prev song", 9) == 0 || strncasecmp(cols->at(2), "previous song", 13) == 0)
     action = PREV_SONG;
-  else if (strcmp(cols->at(2), "next patch") == 0)
+  else if (strncasecmp(cols->at(2), "next patch", 10) == 0)
     action = NEXT_PATCH;
-  else if (strcmp(cols->at(2), "prev patch") == 0 || strcmp(cols->at(2), "previous patch") == 0)
+  else if (strncasecmp(cols->at(2), "prev patch", 10) == 0 || strncasecmp(cols->at(2), "previous patch", 14) == 0)
     action = PREV_PATCH;
-  else if (strcmp(cols->at(2), "message") == 0) {
+  else if (strncasecmp(cols->at(2), "message", 7) == 0) {
     action = MESSAGE;
     output_msg = find_message(pm->messages, cols->at(3));
     if (output_msg == 0) {
@@ -218,7 +218,7 @@ PmMessage Loader::message_from_bytes(const char *str) {
   for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != 0; word = strtok(0, ", ")) {
     if (i < 3) {
       word += strspn(word, whitespace);
-      if (strlen(word) > 2 && strncmp(word, "0x", 2) == 0)
+      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0)
         bytes[i] = (int)strtol(word, 0, 16);
       else
         bytes[i] = atoi(word);
@@ -387,9 +387,9 @@ void Loader::start_and_stop_messages_from_notes() {
     if (strlen(str) == 0)
       continue;
 
-    if (strncmp(str, "start", 5) == 0)
+    if (strncasecmp(str, "start", 5) == 0)
       state = START_MESSAGES;
-    else if (strncmp(str, "stop", 4) == 0)
+    else if (strncasecmp(str, "stop", 4) == 0)
       state = STOP_MESSAGES;
     else {
       switch (state) {
@@ -474,7 +474,7 @@ void Loader::load_song_list_song(char *line) {
   Song *s = find_song(pm->all_songs->songs, line);
   if (s == 0) {
     ostringstream es;
-    es << "set list" << song_list->name << " can not find song named " << line;
+    es << "set list " << song_list->name << " can not find song named " << line;
     error_str = es.str();
     return;
   }
@@ -569,7 +569,7 @@ List<char *> *Loader::table_columns(char *line) {
 }
 
 int Loader::chan_from_word(char *word) {
-  return strcmp(word, "all") == 0 ? -1 : atoi(word) - 1;
+  return strncasecmp(word, "all", 3) == 0 ? -1 : atoi(word) - 1;
 }
 
 PmDeviceID Loader::find_device(char *name, int device_type) {
@@ -579,9 +579,9 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
   int num_devices = Pm_CountDevices();
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-    if (device_type == INPUT && info->input && strcmp(name, info->name) == 0)
+    if (device_type == INPUT && info->input && strncasecmp(name, info->name, strlen(info->name)) == 0)
       return i;
-    if (device_type == OUTPUT && info->output && strcmp(name, info->name) == 0)
+    if (device_type == OUTPUT && info->output && strncasecmp(name, info->name, strlen(info->name)) == 0)
       return i;
   }
   return pmNoDevice;
@@ -589,21 +589,21 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
 
 Instrument *Loader::find_by_sym(List<Instrument *> &list, char *name) {
   for (int i = 0; i < list.length(); ++i)
-    if (list[i]->sym == name)
+    if (strncasecmp(list[i]->sym.c_str(), name, list[i]->sym.length()) == 0)
       return list[i];
   return 0;
 }
 
 Song *Loader::find_song(List<Song *> &list, char *name) {
   for (int i = 0; i < list.length(); ++i)
-    if (list[i]->name == name)
+    if (strncasecmp(list[i]->name.c_str(), name, list[i]->name.length()) == 0)
       return list[i];
   return 0;
 }
 
 Message *Loader::find_message(List<Message *> &list, char *name) {
   for (int i = 0; i < list.length(); ++i)
-    if (list[i]->name == name)
+    if (strncasecmp(list[i]->name.c_str(), name, list[i]->name.length()) == 0)
       return list[i];
   return 0;
 }
@@ -611,7 +611,7 @@ Message *Loader::find_message(List<Message *> &list, char *name) {
 bool Loader::is_header(const char *line, const char *header, int level) {
   if (!is_header_level(line, level))
     return false;
-  return strcmp(line + level + 1, header) == 0;
+  return strncasecmp(line + level + 1, header, strlen(header)) == 0;
 }
 
 bool Loader::is_header_level(const char *line, int level) {
@@ -634,14 +634,14 @@ bool Loader::is_table_row(const char *line) {
 }
 
 bool Loader::is_markup_block_command(const char *line) {
-  return strncmp(line, markup.block_marker_prefix, strlen(markup.block_marker_prefix)) == 0;
+  return strncasecmp(line, markup.block_marker_prefix, strlen(markup.block_marker_prefix)) == 0;
 }
 
 void Loader::determine_markup(const char *path) {
   char *extension = strrchr(path, '.');
   if (extension == 0)
     markup = org_mode_markup;
-  else if (strncmp(extension, ".markdown", 9) == 0 || strncmp(extension, ".md", 3) == 0)
+  else if (strncasecmp(extension, ".markdown", 9) == 0 || strncasecmp(extension, ".md", 3) == 0)
     markup = markdown_mode_markup;
   else
     markup = org_mode_markup;
