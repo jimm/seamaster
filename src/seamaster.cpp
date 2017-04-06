@@ -5,6 +5,11 @@
 #include "loader.h"
 #include "curses/gui.h"
 
+struct opts {
+  bool list_devices;
+  bool testing;
+} opts;
+
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
   printf("%s:\n", title);
   for (int i = 0; i < num_devices; ++i)
@@ -33,8 +38,31 @@ void cleanup() {
   Pm_Terminate();
 }
 
-void usage(char *prog_name) {
-  cerr << "usage: " << basename(prog_name) << " [-l] [-n] [-h] file\n"
+void initialize() {
+  Pm_Initialize();
+  atexit(cleanup);
+}
+
+void load(const char *path, bool testing) {
+  Loader loader;
+  if (loader.load(path, testing) == 0) // sets PM instance as a side-effect
+    exit(1);                           // error already printed
+  if (loader.has_error()) {
+    cerr << "error: " << loader.error() << endl;
+    exit(1);
+  }
+}
+
+void run() {
+  PatchMaster_instance()->start();
+  GUI gui(PatchMaster_instance());
+  gui.run();
+  // Don't save PM above and use it here. User might have loaded a new one.
+  PatchMaster_instance()->stop();
+}
+
+void usage(const char *prog_name) {
+  cerr << "usage: " << basename((char *)prog_name) << " [-l] [-n] [-h] file\n"
        << "\n"
        << "    -l or --list-ports\n"
        << "        List all attached MIDI ports\n"
@@ -47,10 +75,9 @@ void usage(char *prog_name) {
        << endl;
 }
 
-int main(int argc, char * const *argv) {
+void parse_command_line(int argc, char * const *argv, struct opts *opts) {
   int ch, testing = false;
   char *prog_name = argv[0];
-  int do_list = false;
   static struct option longopts[] = {
     {"list", no_argument, 0, 'l'},
     {"no-midi", no_argument, 0, 'n'},
@@ -58,44 +85,43 @@ int main(int argc, char * const *argv) {
     {0, 0, 0, 0}
   };
 
+  opts->list_devices = opts->testing = false;
   while ((ch = getopt_long(argc, argv, "lnh", longopts, 0)) != -1) {
     switch (ch) {
     case 'l':
-      list_all_devices();
-      exit(0);
+      opts->list_devices = true;
+      break;
     case 'n':
-      testing = true;
+      opts->testing = true;
       break;
     case 'h': default:
       usage(prog_name);
       exit(ch == '?' || ch == 'h' ? 0 : 1);
     }
   }
+}
+
+int main(int argc, char * const *argv) {
+  struct opts opts;
+  const char *prog_name = argv[0];
+
+  parse_command_line(argc, argv, &opts);
   argc -= optind;
   argv += optind;
+
+  if (opts.list_devices) {
+    list_all_devices();
+    exit(0);
+  }
 
   if (argc == 0) {
     usage(prog_name);
     exit(1);
   }
 
-  Pm_Initialize();
-  atexit(cleanup);
-
-  Loader loader;
-  if (loader.load(argv[0], testing) == 0) // sets PM instance as a side-effect
-    exit(1);                              // error already printed
-  if (loader.has_error()) {
-    cerr << "error: " << loader.error() << endl;
-    exit(1);
-  }
-
-  PatchMaster_instance()->start();
-  GUI gui(PatchMaster_instance());
-  gui.run();
-  // Don't use PM returned by Loader::load here. User might have loaded a
-  // new one.
-  PatchMaster_instance()->stop();
+  initialize();
+  load(argv[0], opts.testing);
+  run();
 
   exit(0);
   return 0;
