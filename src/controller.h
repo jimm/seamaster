@@ -14,7 +14,11 @@ public:
   Controller();
   ~Controller();
 
-  // returns -1 if nothing to send
+  // Returns true if this controller will modify the original by filtering,
+  // translating, or clamping.
+  bool will_modify();
+
+  // Returns -1 if nothing to send.
   PmMessage process(PmMessage msg, int output_channel);
 
 private:

@@ -25,8 +25,6 @@ private:
   void format_xpose(Connection *, char *);
   void format_prog(Connection *, char *);
   void format_controllers(Connection *, char *);
-  void format_filter(int, char *);
-  void format_map(int, int, char *);
 };
 
 #endif /* PATCH_WINDOW_H */

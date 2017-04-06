@@ -9,6 +9,10 @@ Controller::Controller()
 Controller::~Controller() {
 }
 
+bool Controller::will_modify() {
+  return filtered || translated_cc_num != -1 || min != 0 || max != 127;
+}
+
 PmMessage Controller::process(PmMessage msg, int output_chan) {
   if (filtered)
     return -1;
