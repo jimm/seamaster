@@ -17,13 +17,3 @@ For more information see the [wiki](https://github.com/jimm/seamaster/wiki).
 # To Do
 
 See the [To Do](https://github.com/jimm/seamaster/wiki/To-Do) list on the Wiki.
-
-Ideas for how start/stop messages should appear:
-
-## Song
-### Patch
-
-Use a definition list. Not sure how that works in Markdown.
-
-- start :: b1, b2, b3, ...
-- stop :: b1, b2, b3, ...
