@@ -8,13 +8,6 @@
 
 static const char *test_file;
 
-PatchMaster *load_test_file() {
-  Loader loader;
-  PatchMaster *pm = loader.load(test_file, true);
-  pm->testing = true;
-  return pm;
-}
-
 void test_load_instruments() {
   PatchMaster *pm = load_test_file();
   tassert(pm->inputs.length() == 2, "bad num inputs");

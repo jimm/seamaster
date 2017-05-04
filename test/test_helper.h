@@ -8,6 +8,8 @@
 #include "../src/output.h"
 #include "../src/cursor.h"
 
+PatchMaster *load_test_file();
+PatchMaster *load_test_file(const char *path);
 Connection *create_conn();
 
 #endif /* TEST_HELPER_H */

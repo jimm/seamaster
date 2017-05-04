@@ -291,9 +291,11 @@ void GUI::load(string path) {
   }
 
   bool testing = pm->testing;
-  delete pm;
+  PatchMaster *old_pm = pm;
   Loader loader;
   pm = loader.load(path.c_str(), testing);
+  delete old_pm;
+
   ostringstream ostr;
   if (loader.has_error()) {
     ostr << "error: " << loader.error();

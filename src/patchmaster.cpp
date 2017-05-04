@@ -22,6 +22,9 @@ PatchMaster::PatchMaster() {
 }
 
 PatchMaster::~PatchMaster() {
+  if (pm_instance == this)
+    pm_instance = 0;
+
   for (int i = 0; i < inputs.length(); ++i)
     delete inputs[i];
   for (int i = 0; i < outputs.length(); ++i)
