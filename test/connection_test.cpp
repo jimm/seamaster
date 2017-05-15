@@ -4,9 +4,9 @@
 void test_connection_start_msgs() {
   Connection *conn = create_conn();
 
-  List<PmMessage> msgs;
-  msgs << Pm_Message(TUNE_REQUEST, 0, 0);
-  msgs << Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127);
+  vector<PmMessage> msgs;
+  msgs.push_back(Pm_Message(TUNE_REQUEST, 0, 0));
+  msgs.push_back(Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127));
 
   conn->start(msgs);
   tassert(conn->output->num_io_messages == 2, "bad num start messages");
@@ -19,7 +19,7 @@ void test_connection_start_msgs() {
 void test_connection_start_empty_msgs() {
   Connection *conn = create_conn();
 
-  List<PmMessage> empty;
+  vector<PmMessage> empty;
   conn->start(empty);
   tassert(conn->output->num_io_messages == 0, "bad num start messages");
 
@@ -29,9 +29,9 @@ void test_connection_start_empty_msgs() {
 void test_connection_stop_msgs() {
   Connection *conn = create_conn();
 
-  List<PmMessage> msgs;
-  msgs << Pm_Message(TUNE_REQUEST, 0, 0);
-  msgs << Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127);
+  vector<PmMessage> msgs;
+  msgs.push_back(Pm_Message(TUNE_REQUEST, 0, 0));
+  msgs.push_back(Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127));
 
   conn->stop(msgs);
   tassert(conn->output->num_io_messages == 2, "bad num stop messages");
@@ -44,7 +44,7 @@ void test_connection_stop_msgs() {
 void test_connection_stop_empty_msgs() {
   Connection *conn = create_conn();
 
-  List<PmMessage> empty;
+  vector<PmMessage> empty;
   conn->stop(empty);
   tassert(conn->output->num_io_messages == 0, "bad num stop messages");
 

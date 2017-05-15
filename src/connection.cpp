@@ -3,7 +3,6 @@
 #include "connection.h"
 #include "input.h"
 #include "output.h"
-#include "debug.h"
 
 Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   : input(in), input_chan(in_chan), output(out), output_chan(out_chan)
@@ -18,10 +17,9 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
 Connection::~Connection() {
 }
 
-void Connection::start(List<PmMessage> &messages) {
-  vdebug("connection_start %p\n", this);
-  for (int i = 0; i < messages.length(); ++i)
-    midi_out(messages[i]);
+void Connection::start(vector<PmMessage> &messages) {
+  for (vector<PmMessage>::iterator i = messages.begin(); i != messages.end(); ++i)
+    midi_out(*i);
   if (prog.bank_msb >= 0)
     midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_MSB, prog.bank_msb));
   if (prog.bank_lsb >= 0)
@@ -32,15 +30,13 @@ void Connection::start(List<PmMessage> &messages) {
   input->add_connection(this);
 }
 
-void Connection::stop(List<PmMessage> &messages) {
-  vdebug("connection_stop %p\n", this);
-  for (int i = 0; i < messages.length(); ++i)
-    midi_out(messages[i]);
+void Connection::stop(vector<PmMessage> &messages) {
+  for (vector<PmMessage>::iterator i = messages.begin(); i != messages.end(); ++i)
+    midi_out(*i);
   input->remove_connection(this);
 }
 
 void Connection::midi_in(PmMessage msg) {
-  vdebug("connection_midi_in %p, message %p\n", this, msg);
   if (!accept_from_input(msg))
       return;
 
@@ -103,19 +99,6 @@ int Connection::inside_zone(PmMessage msg) {
 }
 
 void Connection::midi_out(PmMessage message) {
-  vdebug("connection_midi_out %p, message %p\n", this, message);
   PmEvent event = {message, 0};
   output->write(&event, 1);
-}
-
-void Connection::debug() {
-  const char *input_name = input ? input->name.c_str() : "(null input)";
-  const char *output_name = output ? output->name.c_str() : "(null output)";
-  vdebug("conn (%p), in [%s, %d], out [%s, %d], prog [%d, %d, %d], zone [%d, %d], xpose %d\n",
-         this,
-         input_name, input ? input_chan : 0,
-         output_name, output ? output_chan : 0,
-         prog.bank_msb, prog.bank_lsb, prog.prog,
-         zone.low, zone.high,
-         xpose);
 }

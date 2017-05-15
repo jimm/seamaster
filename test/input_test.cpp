@@ -48,7 +48,7 @@ void test_input_two_connections() {
 
   Output *out2 = new Output("out2", "output2 name", -1);
   Connection *conn2 = new Connection(in, 0, out2, 0);
-  List<PmMessage> empty;
+  vector<PmMessage> empty;
   conn2->start(empty);
 
   PmEvent *buf = test_events();
@@ -76,7 +76,7 @@ void test_input_connection_switch_routes_offs_correctly() {
   Connection *conn2 = new Connection(in, 0, out2, 0);
 
   PmEvent *buf = test_events();
-  List<PmMessage> empty;
+  vector<PmMessage> empty;
 
   in->read(buf, 2);             // note on, controller
   conn->stop(empty);
@@ -118,7 +118,7 @@ void test_input_connection_switch_sustains_correctly() {
     buf[i].message = m[i];
     buf[i].timestamp = 0;
   }
-  List<PmMessage> empty;
+  vector<PmMessage> empty;
 
   in->read(buf, 2);             // note on, sustain on
   conn->stop(empty);

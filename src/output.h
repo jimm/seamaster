@@ -4,7 +4,6 @@
 #include <portmidi.h>
 #include "instrument.h"
 #include "input.h"
-#include "list.h"
 
 class Output : public Instrument {
 public:
@@ -12,8 +11,6 @@ public:
   ~Output();
 
   void write(PmEvent *buf, int len);
-
-  void debug();
 };
 
 #endif /* OUTPUT_H */

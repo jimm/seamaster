@@ -138,9 +138,9 @@ src/seamaster.o: src/seamaster.cpp \
   /usr/include/sys/_types/_seek_set.h /usr/include/sys/select.h \
   /usr/include/sys/_select.h /usr/include/sys/_types/_uuid_t.h \
   /usr/include/gethostuuid.h /usr/include/libgen.h src/patchmaster.h \
-  src/song_list.h src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
-  src/debug.h src/song.h src/patch.h /usr/local/include/portmidi.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer \
+  src/song_list.h src/song.h src/patch.h /usr/local/include/portmidi.h \
   src/named.h src/connection.h src/controller.h src/input.h src/consts.h \
   src/instrument.h src/trigger.h src/message.h src/output.h src/loader.h \
   src/curses/gui.h src/curses/list_window.h src/curses/window.h \
@@ -551,13 +551,11 @@ src/seamaster.o: src/seamaster.cpp \
 
 src/patchmaster.h:
 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer:
+
 src/song_list.h:
-
-src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
-
-src/debug.h:
 
 src/song.h:
 

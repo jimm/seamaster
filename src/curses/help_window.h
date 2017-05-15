@@ -1,12 +1,12 @@
 #ifndef HELP_WINDOW_H
 #define HELP_WINDOW_H
 
+#include <vector>
 #include "window.h"
-#include "../list.h"
 
 class HelpWindow : public Window {
 public:
-  List<char *> *lines;
+  vector<char *> *lines;
 
   HelpWindow(struct rect, const char *);
   ~HelpWindow();

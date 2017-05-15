@@ -8,7 +8,7 @@
 #include "program_change_window.h"
 #include "info_window.h"
 
-ProgramChangeWindow::ProgramChangeWindow(struct rect r, const char *pc_title, List<Input *> &ilist)
+ProgramChangeWindow::ProgramChangeWindow(struct rect r, const char *pc_title, vector<Input *> &ilist)
   : Window(r, 0), inputs(ilist)
 {
   title = pc_title;
@@ -19,9 +19,9 @@ ProgramChangeWindow::~ProgramChangeWindow() {
 
 void ProgramChangeWindow::draw() {
   Window::draw();
-  for (int i = 0; i < inputs.length(); ++i)
-    if (something_to_draw(inputs[i]))
-      draw_input(inputs[i]);
+  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i)
+    if (something_to_draw(*i))
+      draw_input(*i);
 }
 
 void ProgramChangeWindow::draw_input(Input *in) {

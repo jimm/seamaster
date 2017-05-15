@@ -4,7 +4,6 @@
 #include "input.h"
 #include "trigger.h"
 #include "consts.h"
-#include "debug.h"
 
 // 10 milliseconds, in nanoseconds
 #define SLEEP_NANOSECS 1e7
@@ -28,24 +27,22 @@ Input::Input(const char *sym, const char *name, int port_num)
 }
 
 Input::~Input() {
-  for (int i = 0; i < triggers.length(); ++i)
-    delete triggers[i];
+  for (vector<Trigger *>::iterator i = triggers.begin(); i != triggers.end(); ++i)
+    delete *i;
 }
 
 void Input::add_connection(Connection *conn) {
-  vdebug("input %p adding connection %p\n", this, conn);
-  connections << conn;
+  connections.push_back(conn);
 }
 
 void Input::remove_connection(Connection *conn) {
-  vdebug("input %p removing connection %p\n", this, conn);
-  connections.remove(conn);
+  connections.erase(remove(connections.begin(), connections.end(), conn),
+                    connections.end());
 }
 
 void Input::start() {
   int status;
 
-  vdebug("input_start\n");
   running = true;
   if (real_port()) {
     status = pthread_create(&portmidi_thread, 0, input_thread, this);
@@ -54,17 +51,14 @@ void Input::start() {
 }
 
 void Input::stop() {
-  vdebug("input_stop\n");
   if (running)
     running = false;
 }
 
 void Input::read(PmEvent *buf, int len) {
-  vdebug("input_read %d events\n", len);
-
   // triggers
-  for (int i = 0; i < triggers.length(); ++i)
-    triggers[i]->signal(buf, len);
+  for (vector<Trigger *>::iterator i = triggers.begin(); i != triggers.end(); ++i)
+    (*i)->signal(buf, len);
 
   for (int i = 0; i < len; ++i) {
     PmMessage msg = buf[i].message;
@@ -77,9 +71,9 @@ void Input::read(PmEvent *buf, int len) {
 
     remember_program_change_messages(msg);
 
-    List <Connection *> &conns = connections_for_message(msg);
-    for (int j = 0; j < conns.length(); ++j)
-      conns[j]->midi_in(msg);
+    vector<Connection *> &conns = connections_for_message(msg);
+    for (vector<Connection *>::iterator i = conns.begin(); i != conns.end(); ++i)
+      (*i)->midi_in(msg);
   }
 }
 
@@ -91,18 +85,14 @@ void *input_thread(void *in_voidptr) {
     if (Pm_Poll(in->stream) == TRUE) {
       PmEvent buf[MIDI_BUFSIZ];
       int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
-      vdebug("%d events seen, sending to Input::read\n", n);
       in->read(buf, n);
     }
     else {
-      if (nanosleep(&rqtp, 0) == -1) {
-        vdebug("input interrupted, exiting\n");
+      if (nanosleep(&rqtp, 0) == -1)
         pthread_exit(0);
-      }
     }
   }
 
-  vdebug("input exiting\n");
   pthread_exit(0);
 }
 
@@ -132,7 +122,7 @@ void Input::remember_program_change_messages(PmMessage msg) {
 // of connections. However for every note on we store those connections, and
 // use those connections for the corresponding note off. Same for sustain
 // controller messages.
-List<Connection *> &Input::connections_for_message(PmMessage msg) {
+vector<Connection *> &Input::connections_for_message(PmMessage msg) {
   unsigned char status = Pm_MessageStatus(msg);
   unsigned char high_nibble = status & 0xf0;
   unsigned char chan = status & 0x0f;
@@ -162,15 +152,4 @@ List<Connection *> &Input::connections_for_message(PmMessage msg) {
   default:
     return connections;
   }
-}
-
-void Input::debug() {
-  Instrument::debug();
-  vdebug("  ...is an input\n");
-  vdebug("  connections:");
-  for (int i = 0; i < connections.length(); ++i)
-    vdebug("    %p\n", connections[i]);
-  vdebug("  running: %d\n", running);
-  vdebug("  thread: %p\n", portmidi_thread);
-  triggers.debug("input triggers");
 }

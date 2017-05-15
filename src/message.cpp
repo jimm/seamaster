@@ -20,7 +20,7 @@ void Message::send(Output &out) {
 }
 
 void Message::convert_messages() {
-  num_events = messages.length();
+  num_events = messages.size();
   if (num_events == 0)
     return;
 

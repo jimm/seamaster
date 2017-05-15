@@ -1,9 +1,11 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include <vector>
 #include <portmidi.h>
-#include "list.h"
 #include "controller.h"
+
+using namespace std;
 
 class Input;
 class Output;
@@ -33,12 +35,10 @@ public:
   Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
 
-  void start(List<PmMessage> &);
-  void stop(List<PmMessage> &);
+  void start(vector<PmMessage> &);
+  void stop(vector<PmMessage> &);
 
   void midi_in(PmMessage msg);
-
-  void debug();
 
 private:
   int accept_from_input(PmMessage msg);

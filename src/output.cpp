@@ -3,7 +3,6 @@
 #include <portmidi.h>
 #include "output.h"
 #include "trigger.h"
-#include "debug.h"
 
 Output::Output(const char *sym, const char *name, int port_num)
   : Instrument(sym, name, port_num)
@@ -24,9 +23,4 @@ void Output::write(PmEvent *buf, int len) {
     for (int i = 0; i < len && num_io_messages < MIDI_BUFSIZ-1; ++i)
       io_messages[num_io_messages++] = buf[i].message;
   }
-}
-
-void Output::debug() {
-  Instrument::debug();
-  vdebug("  ...is an output\n");
 }

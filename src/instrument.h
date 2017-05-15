@@ -3,7 +3,6 @@
 
 #include <portmidi.h>
 #include "named.h"
-#include "list.h"
 
 #define MIDI_BUFSIZ 128
 
@@ -20,8 +19,6 @@ public:
   virtual ~Instrument();
 
   bool real_port();
-
-  virtual void debug();
 
   void clear();                 // testing only
 };

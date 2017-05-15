@@ -139,10 +139,10 @@ src/curses/gui.o: src/curses/gui.cpp \
   /usr/include/sys/_types/_seek_set.h /usr/include/sys/select.h \
   /usr/include/sys/_select.h /usr/include/sys/_types/_uuid_t.h \
   /usr/include/gethostuuid.h src/curses/gui.h \
-  src/curses/../patchmaster.h src/curses/../song_list.h \
-  src/curses/../list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
-  src/curses/../debug.h src/curses/../song.h src/curses/../patch.h \
+  src/curses/../patchmaster.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer \
+  src/curses/../song_list.h src/curses/../song.h src/curses/../patch.h \
   /usr/local/include/portmidi.h src/curses/../named.h \
   src/curses/../connection.h src/curses/../controller.h \
   src/curses/../input.h src/curses/../consts.h \
@@ -564,13 +564,11 @@ src/curses/gui.h:
 
 src/curses/../patchmaster.h:
 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer:
+
 src/curses/../song_list.h:
-
-src/curses/../list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
-
-src/curses/../debug.h:
 
 src/curses/../song.h:
 

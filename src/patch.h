@@ -1,17 +1,17 @@
 #ifndef PATCH_H
 #define PATCH_H
 
+#include <vector>
 #include <portmidi.h>
 #include "named.h"
-#include "list.h"
 #include "connection.h"
 #include "input.h"
 
 class Patch : public Named {
 public:
-  List<Connection *> connections;
-  List<PmMessage> start_messages;
-  List<PmMessage> stop_messages;
+  vector<Connection *> connections;
+  vector<PmMessage> start_messages;
+  vector<PmMessage> stop_messages;
   int num_stop_messages;
   bool running;
 
@@ -21,8 +21,6 @@ public:
   void start();
   bool is_running();
   void stop();
-
-  void debug();
 };
 
 #endif /* PATCH_H */

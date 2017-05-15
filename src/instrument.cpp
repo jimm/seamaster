@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "instrument.h"
-#include "debug.h"
 
 Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_num)
   : Named(name), sym(sym_str)
@@ -17,11 +16,6 @@ Instrument::~Instrument() {
 
 bool Instrument::real_port() {
   return port_num != pmNoDevice;
-}
-
-void Instrument::debug() {
-  vdebug("instrument %s %s (%p)\n", sym.c_str(), name.c_str(), this);
-  vdebug("  port_num %d stream %p\n", port_num, stream);
 }
 
 // only used during testing

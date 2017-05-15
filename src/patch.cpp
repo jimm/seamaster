@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "patch.h"
-#include "debug.h"
 
 Patch::Patch(const char *patch_name)
   : Named(patch_name)
@@ -9,17 +8,16 @@ Patch::Patch(const char *patch_name)
 }
 
 Patch::~Patch() {
-  for (int i = 0; i < connections.length(); ++i)
-    delete connections[i];
+  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
+    delete *i;
 }
 
 void Patch::start() {
-  vdebug("Patch::start %s\n", name.c_str());
   if (running)
     return;
 
-  for (int i = 0; i < connections.length(); ++i)
-    connections[i]->start(start_messages);
+  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
+    (*i)->start(start_messages);
   running = true;
 }
 
@@ -28,17 +26,10 @@ bool Patch::is_running() {
 }
 
 void Patch::stop() {
-  vdebug("Patch::stop %s\n", name.c_str());
   if (!running)
     return;
 
-  for (int i = 0; i < connections.length(); ++i)
-    connections[i]->stop(stop_messages);
+  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
+    (*i)->stop(stop_messages);
   running = false;
-}
-
-void Patch::debug() {
-  vdebug("patch %s\n", name.c_str());
-  for (int i = 0; i < connections.length(); ++i)
-    connections[i]->debug();
 }

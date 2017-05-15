@@ -39,6 +39,6 @@ void Trigger::perform_action() {
 }
 
 void Trigger::send_message(PatchMaster *pm) {
-  for (int i = 0; i < pm->outputs.length(); ++i)
-    output_message->send(*pm->outputs[i]);
+  for (vector<Output *>::iterator i = pm->outputs.begin(); i != pm->outputs.end(); ++i)
+    output_message->send(**i);
 }

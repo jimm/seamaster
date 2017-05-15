@@ -1,12 +1,14 @@
 #ifndef SONG_LIST_H
 #define SONG_LIST_H
 
-#include "list.h"
+#include <vector>
 #include "song.h"
+
+using namespace std;
 
 class SongList : public Named {
 public:
-  List<Song *> songs;
+  vector<Song *> songs;
 
   SongList(const char *name);
   ~SongList();

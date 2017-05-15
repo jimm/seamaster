@@ -134,10 +134,10 @@ src/curses/program_change_window.o: src/curses/program_change_window.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bit_reference \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/istream \
   src/curses/../consts.h src/curses/../connection.h \
-  /usr/local/include/portmidi.h src/curses/../list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
-  src/curses/../debug.h src/curses/../controller.h src/curses/../input.h \
-  src/curses/../instrument.h src/curses/../named.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer \
+  /usr/local/include/portmidi.h src/curses/../controller.h \
+  src/curses/../input.h src/curses/../instrument.h src/curses/../named.h \
   src/curses/../trigger.h src/curses/../message.h \
   src/curses/../formatter.h src/curses/program_change_window.h \
   src/curses/window.h /usr/include/ncurses.h /usr/include/ncurses_dll.h \
@@ -530,13 +530,11 @@ src/curses/../consts.h:
 
 src/curses/../connection.h:
 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer:
+
 /usr/local/include/portmidi.h:
-
-src/curses/../list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
-
-src/curses/../debug.h:
 
 src/curses/../controller.h:
 

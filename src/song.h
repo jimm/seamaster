@@ -1,20 +1,20 @@
 #ifndef SONG_H
 #define SONG_H
 
-#include "list.h"
+#include <vector>
 #include "patch.h"
+
+using namespace std;
 
 class Song : public Named {
 public:
-  List<Patch *> patches;
-  List<char *> notes;
+  vector<Patch *> patches;
+  vector<char *> notes;
 
   Song(const char *name);
   ~Song();
 
-  void take_notes(List<char *> &);
-
-  void debug();
+  void take_notes(vector<char *> &);
 };
 
 #endif /* SONG_H */

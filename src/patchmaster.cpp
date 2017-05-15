@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "patchmaster.h"
 #include "cursor.h"
-#include "debug.h"
 
 static PatchMaster *pm_instance;
 
@@ -15,34 +14,32 @@ PatchMaster::PatchMaster() {
   running = false;
   testing = false;
   all_songs = new SongList((char *)"All Songs"); /* TODO sorted song list */
-  song_lists << all_songs;
+  song_lists.push_back(all_songs);
   cursor = new Cursor(this);
   pm_instance = this;
-  debug();
 }
 
 PatchMaster::~PatchMaster() {
   if (pm_instance == this)
     pm_instance = 0;
 
-  for (int i = 0; i < inputs.length(); ++i)
-    delete inputs[i];
-  for (int i = 0; i < outputs.length(); ++i)
-    delete outputs[i];
-  for (int i = 0; i < all_songs->songs.length(); ++i)
-    delete all_songs->songs[i];
-  for (int i = 0; i < song_lists.length(); ++i)
-    delete song_lists[i];
-  for (int i = 0; i < messages.length(); ++i)
-    delete messages[i];
+  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i)
+    delete *i;
+  for (vector<Output *>::iterator i = outputs.begin(); i != outputs.end(); ++i)
+    delete *i;
+  for (vector<Song *>::iterator i = all_songs->songs.begin(); i != all_songs->songs.end(); ++i)
+    delete *i;
+  for (vector<SongList *>::iterator i = song_lists.begin(); i != song_lists.end(); ++i)
+    delete *i;
+  for (vector<Message *>::iterator i = messages.begin(); i != messages.end(); ++i)
+    delete *i;
 }
 
 // ================ running ================
 
 void PatchMaster::start() {
-  vdebug("patchmaster_start\n");
-  for (int i = 0; i < inputs.length(); ++i)
-    inputs[i]->start();
+  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i)
+    (*i)->start();
   cursor->init();
   if (cursor->patch() != 0)
     cursor->patch()->start();
@@ -50,11 +47,10 @@ void PatchMaster::start() {
 }
 
 void PatchMaster::stop() {
-  vdebug("patchmaster_stop\n");
   if (cursor->patch() != 0)
     cursor->patch()->stop();
-  for (int i = 0; i < inputs.length(); ++i)
-    inputs[i]->stop();
+  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i)
+    (*i)->stop();
   running = false;
 }
 
@@ -120,31 +116,14 @@ void PatchMaster::panic(bool send_notes_off) {
     for (int i = 0; i < 16; ++i) {
       for (int j = 0; j < 128; ++j)
         buf[j].message = Pm_Message(NOTE_OFF + i, j, 0);
-      for (int j = 0; j < outputs.length(); ++j)
-        outputs[j]->write(buf, 128);
+      for (vector<Output *>::iterator o = outputs.begin(); o != outputs.end(); ++o)
+        (*o)->write(buf, 128);
     }
   }
   else {
     for (int i = 0; i < 16; ++i)
       buf[i].message = Pm_Message(CONTROLLER + i, CM_ALL_NOTES_OFF, 0);
-    for (int i = 0; i < outputs.length(); ++i)
-      outputs[i]->write(buf, 16);
+    for (vector<Output *>::iterator o = outputs.begin(); o != outputs.end(); ++o)
+      (*o)->write(buf, 16);
   }
-}
-
-
-// ================ vdebugging ================
-
-void PatchMaster::debug() {
-  vdebug("patchmaster %p, running %d, testing %d\n", this, running, testing);
-  vdebug("  loaded from file %s\n", loaded_from_file.c_str());
-  for (int i = 0; i < inputs.length(); ++i)
-    inputs[i]->debug();
-  for (int i = 0; i < outputs.length(); ++i)
-    outputs[i]->debug();
-  for (int i = 0; i < all_songs->songs.length(); ++i)
-    all_songs->songs[i]->debug();
-  song_lists.debug("song_lists");
-  messages.debug("messages");
-  cursor->debug();
 }

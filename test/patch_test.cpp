@@ -5,8 +5,8 @@
 void test_patch_start_msgs() {
   Patch p("test patch");
   Connection *conn = create_conn();
-  p.connections << conn;
-  p.start_messages << 0x1234;
+  p.connections.push_back(conn);
+  p.start_messages.push_back(0x1234);
 
   p.start();
   tassert(conn->output->num_io_messages == 1, "bad num start messages");
@@ -16,8 +16,8 @@ void test_patch_start_msgs() {
 void test_patch_stop_msgs() {
   Patch p("test patch");
   Connection *conn = create_conn();
-  p.connections << conn;
-  p.stop_messages << 0x1234;
+  p.connections.push_back(conn);
+  p.stop_messages.push_back(0x1234);
 
   p.stop();
   tassert(conn->output->num_io_messages == 1, "bad num stop messages");

@@ -1,15 +1,17 @@
 #ifndef PROGRAM_CHANGE_WINDOW_H
 #define PROGRAM_CHANGE_WINDOW_H
 
+#include <vector>
 #include "window.h"
 #include "../consts.h"
-#include "../list.h"
+
+using namespace std;
 
 class ProgramChangeWindow : public Window {
 public:
-  List<Input *> &inputs;
+  vector<Input *> &inputs;
 
-  ProgramChangeWindow(struct rect, const char *, List<Input *>&);
+  ProgramChangeWindow(struct rect, const char *, vector<Input *>&);
   ~ProgramChangeWindow();
 
   void draw();

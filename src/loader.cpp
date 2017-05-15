@@ -7,7 +7,8 @@
 #include "cursor.h"
 #include "loader.h"
 #include "formatter.h"
-#include "debug.h"
+
+using namespace std;
 
 static const markup org_mode_markup = {'*', "-*+", "#+"};
 static const markup markdown_mode_markup = {'#', "-*+", "```"};
@@ -21,7 +22,7 @@ Loader::Loader()
 }
 
 Loader::~Loader() {
-  notes.clear((void (*)(char *))free);
+  clear_notes();
 }
 
 PatchMaster *Loader::load(const char *path, bool testing) {
@@ -54,7 +55,6 @@ PatchMaster *Loader::load(const char *path, bool testing) {
 
   if (old_pm)
     pm->cursor->attempt_goto(old_pm->cursor);
-  pm->debug();
 
   return pm;
 }
@@ -151,64 +151,61 @@ void Loader::parse_instrument_line(char *line) {
   if (!is_table_row(line))
     return;
 
-  List<char *> *cols = table_columns(line);
-  if (strncasecmp(cols->at(0), "in", 2) == 0)
-    load_instrument(*cols, INPUT);
-  else if (strncasecmp(cols->at(0), "out", 3) == 0)
-    load_instrument(*cols, OUTPUT);
-
-  delete cols;
+  vector<char *> cols;
+  table_columns(line, cols);
+  if (strncasecmp(cols[0], "in", 2) == 0)
+    load_instrument(cols, INPUT);
+  else if (strncasecmp(cols[0], "out", 3) == 0)
+    load_instrument(cols, OUTPUT);
 }
 
 void Loader::parse_message_line(char *line) {
   if (is_header_level(line, 2)) {
     message = new Message(line + 3);
-    pm->messages << message;
+    pm->messages.push_back(message);
     return;
   }
 
   if (message == 0)             // introductory text
     return;
 
-  message->messages << message_from_bytes(line);
+  message->messages.push_back(message_from_bytes(line));
 }
 
 void Loader::parse_trigger_line(char *line) {
   if (!is_table_row(line))
     return;
 
-  List<char *> *cols = table_columns(line);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), cols->at(0));
+  vector<char *> cols;
+  table_columns(line, cols);
+  Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), cols[0]);
   if (in == 0) {                // might be table header, not an error
-    delete cols;
     return;
   }
 
-  PmMessage trigger_msg = message_from_bytes(cols->at(1));
+  PmMessage trigger_msg = message_from_bytes(cols[1]);
   Message *output_msg = 0;
   TriggerAction action;
-  if (strncasecmp(cols->at(2), "next song", 9) == 0)
+  if (strncasecmp(cols[2], "next song", 9) == 0)
     action = NEXT_SONG;
-  else if (strncasecmp(cols->at(2), "prev song", 9) == 0 || strncasecmp(cols->at(2), "previous song", 13) == 0)
+  else if (strncasecmp(cols[2], "prev song", 9) == 0 || strncasecmp(cols[2], "previous song", 13) == 0)
     action = PREV_SONG;
-  else if (strncasecmp(cols->at(2), "next patch", 10) == 0)
+  else if (strncasecmp(cols[2], "next patch", 10) == 0)
     action = NEXT_PATCH;
-  else if (strncasecmp(cols->at(2), "prev patch", 10) == 0 || strncasecmp(cols->at(2), "previous patch", 14) == 0)
+  else if (strncasecmp(cols[2], "prev patch", 10) == 0 || strncasecmp(cols[2], "previous patch", 14) == 0)
     action = PREV_PATCH;
-  else if (strncasecmp(cols->at(2), "message", 7) == 0) {
+  else if (strncasecmp(cols[2], "message", 7) == 0) {
     action = MESSAGE;
-    output_msg = find_message(pm->messages, cols->at(3));
+    output_msg = find_message(pm->messages, cols[3]);
     if (output_msg == 0) {
       ostringstream es;
-      es << "trigger can not find message named " << cols->at(3);
+      es << "trigger can not find message named " << cols[3];
       error_str = es.str();
       return;
     }
   }
   
-  in->triggers << new Trigger(trigger_msg, action, output_msg);
-
-  delete cols;
+  in->triggers.push_back(new Trigger(trigger_msg, action, output_msg));
 }
 
 PmMessage Loader::message_from_bytes(const char *str) {
@@ -268,7 +265,7 @@ void Loader::parse_set_list_line(char *line) {
     load_song_list_song(line + 2);
 }
 
-void Loader::load_instrument(List<char *> &cols, int type) {
+void Loader::load_instrument(vector<char *> &cols, int type) {
   PmDeviceID devid = find_device(cols[1], type);
 
   if (devid == pmNoDevice && !pm->testing) {
@@ -283,19 +280,16 @@ void Loader::load_instrument(List<char *> &cols, int type) {
 
   switch (type) {
   case INPUT:
-    pm->inputs << new Input(sym, name, devid);
+    pm->inputs.push_back(new Input(sym, name, devid));
     break;
   case OUTPUT:
-    pm->outputs << new Output(sym, name, devid);
+    pm->outputs.push_back(new Output(sym, name, devid));
     break;
   }
-
-  return;
 }
 
 void Loader::load_message(char *line) {
   // TODO
-  return;
 }
 
 void Loader::load_song(char *line) {
@@ -303,12 +297,11 @@ void Loader::load_song(char *line) {
     ensure_song_has_patch();
 
   Song *s = new Song(line);
-  pm->all_songs->songs << s;
+  pm->all_songs->songs.push_back(s);
   song = s;
   patch = 0;
   conn = 0;
   start_collecting_notes();
-  return;
 }
 
 void Loader::save_notes_line(char *line) {
@@ -321,33 +314,32 @@ void Loader::save_notes_line(char *line) {
   notes_state = COLLECTING;
   char *str = (char *)malloc(strlen(line) + 1);
   strncpy(str, line, strlen(line)+1);
-  notes << str;
+  notes.push_back(str);
 }
 
 void Loader::start_collecting_notes() {
   notes_state = SKIPPING_BLANK_LINES;
-  notes.clear((void (*)(char *))free);
+  clear_notes();
 }
 
 void Loader::stop_collecting_notes() {
   // remove trailing blank lines
-  while (notes.length() > 0 && strlen(notes.last()) == 0) {
-    char *str = notes.last();
-    notes.remove_at(notes.length() - 1);
-    free(str);
+  while (!notes.empty() && strlen(notes.back()) == 0) {
+    free(notes.back());
+    notes.erase(notes.end() - 1);
   }
   notes_state = OUTSIDE;
 }
 
 void Loader::load_patch(char *line) {
   stop_collecting_notes();
-  if (notes.length() > 0 && song != 0) {
+  if (!notes.empty() && song != 0) {
     song->take_notes(notes);
-    notes.clear(0);
+    notes.clear();              // do not dealloc
   }
 
   Patch *p = new Patch(line);
-  song->patches << p;
+  song->patches.push_back(p);
   patch = p;
   conn = 0;
 
@@ -356,35 +348,33 @@ void Loader::load_patch(char *line) {
 
 void Loader::load_connection(char *line) {
   stop_collecting_notes();
-  if (notes.length() > 0 && conn == 0) // first conn, interpret start/stop in notes
+  if (!notes.empty() && conn == 0) // first conn, interpret start/stop in notes
     start_and_stop_messages_from_notes();
 
-  List<char *> *args = comma_sep_args(line, false);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->inputs), args->at(0));
+  vector<char *> args;
+  comma_sep_args(line, false, args);
+  Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), args[0]);
   if (in == 0) {
-    instrument_not_found("input", args->at(0));
+    instrument_not_found("input", args[0]);
     return;
   }
-  int in_chan = chan_from_word(args->at(1));
-  Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs), args->at(2));
+  int in_chan = chan_from_word(args[1]);
+  Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs), args[2]);
   if (out == 0) {
-    instrument_not_found("output", args->at(2));
+    instrument_not_found("output", args[2]);
     return;
   }
-  int out_chan = chan_from_word(args->at(3));
+  int out_chan = chan_from_word(args[3]);
 
   conn = new Connection(in, in_chan, out, out_chan);
-  patch->connections << conn;
-
-  delete args;
-  return;
+  patch->connections.push_back(conn);
 }
 
 void Loader::start_and_stop_messages_from_notes() {
   StartStopState state = UNSTARTED;
-  for (int i = 0; i < notes.length(); ++i) {
-    char *str = notes[i] + strspn(notes[i], whitespace);
-    if (strlen(str) == 0)
+  for (vector<char *>::iterator i = notes.begin(); i != notes.end(); ++i) {
+    char *str = *i + strspn(*i, whitespace);
+    if (strlen(str) == 0)       
       continue;
 
     if (strncasecmp(str, "start", 5) == 0)
@@ -394,10 +384,10 @@ void Loader::start_and_stop_messages_from_notes() {
     else {
       switch (state) {
       case START_MESSAGES:
-        patch->start_messages << message_from_bytes(str);
+        patch->start_messages.push_back(message_from_bytes(str));
         break;
       case STOP_MESSAGES:
-        patch->stop_messages << message_from_bytes(str);
+        patch->stop_messages.push_back(message_from_bytes(str));
         break;
       case UNSTARTED:
         break;
@@ -405,7 +395,7 @@ void Loader::start_and_stop_messages_from_notes() {
     }
   }
 
-  notes.clear((void (*)(char *))free);
+  clear_notes();
 }
 
 void Loader::instrument_not_found(const char *type_name, const char *sym) {
@@ -420,54 +410,52 @@ void Loader::instrument_not_found(const char *type_name, const char *sym) {
 void Loader::load_prog(char *line) {
   char *prog_chg = skip_first_word(line);
   conn->prog.prog = atoi(prog_chg);
-  return;
 }
 
 void Loader::load_bank(char *line) {
-  List<char *> *args = comma_sep_args(line, true);
-  conn->prog.bank_msb = atoi(args->at(0));
-  conn->prog.bank_lsb = atoi(args->at(1));
-  return;
+  vector<char *> args;
+
+  comma_sep_args(line, true, args);
+  conn->prog.bank_msb = atoi(args[0]);
+  conn->prog.bank_lsb = atoi(args[1]);
 }
 
 void Loader::load_xpose(char *line) {
   char *amount = skip_first_word(line);
   conn->xpose = atoi(amount);
-  return;
 }
 
 void Loader::load_zone(char *line) {
-  List<char *> *args = comma_sep_args(line, true);
-  conn->zone.low = note_name_to_num(args->at(0));
-  conn->zone.high = note_name_to_num(args->at(1));
-  return;
+  vector<char *> args;
+  comma_sep_args(line, true, args);
+  conn->zone.low = note_name_to_num(args[0]);
+  conn->zone.high = note_name_to_num(args[1]);
 }
 
 void Loader::load_controller(char *line) {
-  List<char *> *args = whitespace_sep_args(line, true);
-  Controller &cc = conn->cc_maps[atoi(args->at(0))];
-  for (int i = 1; i < args->length(); ++i) {
-    switch (args->at(i)[0]) {
+  vector<char *> args;
+  whitespace_sep_args(line, true, args);
+  Controller &cc = conn->cc_maps[atoi(args[0])];
+  whitespace_sep_args(line, true, args);
+  for (vector<char *>::iterator i = args.begin(); i != args.end(); ++i) {
+    switch ((*i)[0]) {
     case 'f':                   // filter
       cc.filtered = true;
       break;
     case 'm':                   // map
-      cc.translated_cc_num = atoi(args->at(++i));
+      cc.translated_cc_num = atoi(*++i);
       break;
     case 'l':                   // limit
-      cc.min = atoi(args->at(++i));
-      cc.max = atoi(args->at(++i));
+      cc.min = atoi(*++i);
+      cc.max = atoi(*++i);
       break;
     }
   }
-  delete args;
-  return;
 }
 
 void Loader::load_song_list(char *line) {
   song_list = new SongList(line);
-  pm->song_lists << song_list;
-  return;
+  pm->song_lists.push_back(song_list);
 }
 
 void Loader::load_song_list_song(char *line) {
@@ -479,24 +467,23 @@ void Loader::load_song_list_song(char *line) {
     return;
   }
 
-  song_list->songs << find_song(pm->all_songs->songs, line);
-  return;
+  song_list->songs.push_back(find_song(pm->all_songs->songs, line));
 }
 
 void Loader::ensure_song_has_patch() {
-  if (song == 0 || song->patches.length() > 0)
+  if (song == 0 || !song->patches.empty())
     return;
 
   Patch *p = new Patch(default_patch_name);
-  song->patches << p;
+  song->patches.push_back(p);
 
-  for (int i = 0; i < pm->inputs.length(); ++i) {
-    Input *in = pm->inputs[i];
-    Output *out = (Output *)find_by_sym(reinterpret_cast<List<Instrument *> &>(pm->outputs),
+  for (vector<Input *>::iterator i = pm->inputs.begin(); i != pm->inputs.end(); ++i) {
+    Input *in = *i;
+    Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs),
                                         (char *)in->sym.c_str());
     if (out != 0) {
       Connection *conn = new Connection(in, -1, out, -1);
-      p->connections << conn;
+      p->connections.push_back(conn);
     }
   }
 }
@@ -529,16 +516,13 @@ char *Loader::skip_first_word(char *line) {
  * the list as a list of strings. The contents should NOT be freed, since
  * they are a destructive mutation of `line`.
  */
-List<char *> *Loader::whitespace_sep_args(char *line, bool skip_word) {
-  List<char *> *l = new List<char *>();
+void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
   for (char *word = strtok(args_start, whitespace); word != 0; word = strtok(0, whitespace)) {
     word += strspn(word, whitespace);
-    l->append(word);
+    v.push_back(word);
   }
-
-  return l;
 }
 
 /*
@@ -546,26 +530,19 @@ List<char *> *Loader::whitespace_sep_args(char *line, bool skip_word) {
  * list as a list of strings. The contents should NOT be freed, since they
  * are a destructive mutation of `line`.
  */
-List<char *> *Loader::comma_sep_args(char *line, bool skip_word) {
-  List<char *> *l = new List<char *>();
+void Loader::comma_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
   for (char *word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
     word += strspn(word, whitespace);
-    l->append(word);
+    v.push_back(word);
   }
-
-  return l;
 }
 
-List<char *> *Loader::table_columns(char *line) {
-  List<char *> *l = new List<char *>();
-
+void Loader::table_columns(char *line, vector<char *> &v) {
   line += strspn(line, whitespace);
   for (char *column = strtok(line, "|"); column != 0; column = strtok(0, "|"))
-    l->append(trim(column));
-
-  return l;
+    v.push_back(trim(column));
 }
 
 int Loader::chan_from_word(char *word) {
@@ -587,24 +564,24 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
   return pmNoDevice;
 }
 
-Instrument *Loader::find_by_sym(List<Instrument *> &list, char *name) {
-  for (int i = 0; i < list.length(); ++i)
-    if (strncasecmp(list[i]->sym.c_str(), name, list[i]->sym.length()) == 0)
-      return list[i];
+Instrument *Loader::find_by_sym(vector<Instrument *> &list, char *name) {
+  for (vector<Instrument *>::iterator i = list.begin(); i != list.end(); ++i)
+    if (strncasecmp((*i)->sym.c_str(), name, (*i)->sym.length()) == 0)
+      return *i;
   return 0;
 }
 
-Song *Loader::find_song(List<Song *> &list, char *name) {
-  for (int i = 0; i < list.length(); ++i)
-    if (strncasecmp(list[i]->name.c_str(), name, list[i]->name.length()) == 0)
-      return list[i];
+Song *Loader::find_song(vector<Song *> &list, char *name) {
+  for (vector<Song *>::iterator i = list.begin(); i != list.end(); ++i)
+    if (strncasecmp((*i)->name.c_str(), name, (*i)->name.length()) == 0)
+      return *i;
   return 0;
 }
 
-Message *Loader::find_message(List<Message *> &list, char *name) {
-  for (int i = 0; i < list.length(); ++i)
-    if (strncasecmp(list[i]->name.c_str(), name, list[i]->name.length()) == 0)
-      return list[i];
+Message *Loader::find_message(vector<Message *> &list, char *name) {
+  for (vector<Message *>::iterator i = list.begin(); i != list.end(); ++i)
+    if (strncasecmp((*i)->name.c_str(), name, (*i)->name.length()) == 0)
+      return *i;
   return 0;
 }
 
@@ -645,4 +622,10 @@ void Loader::determine_markup(const char *path) {
     markup = markdown_mode_markup;
   else
     markup = org_mode_markup;
+}
+
+void Loader::clear_notes() {
+  for (vector<char *>::iterator i = notes.begin(); i != notes.end(); ++i)
+    free(*i);
+  notes.clear();
 }

@@ -4,15 +4,16 @@
 #include <pthread.h>
 #include <portmidi.h>
 #include "consts.h"
-#include "list.h"
 #include "instrument.h"
 #include "connection.h"
 #include "trigger.h"
 
+using namespace std;
+
 class Input : public Instrument {
 public:
-  List<Connection *> connections;
-  List<Trigger *> triggers;
+  vector<Connection *> connections;
+  vector<Trigger *> triggers;
   bool running;
 
   Input(const char *sym, const char *name, int port_num);
@@ -29,18 +30,16 @@ public:
 
   void read(PmEvent *buf, int len);
 
-  void debug();
-
   program last_program_change_seen(int chan) { return seen_progs[chan]; }
 
 private:
   pthread_t portmidi_thread;
-  List<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
-  List<Connection *> sustain_off_conns[MIDI_CHANNELS];
+  vector<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
+  vector<Connection *> sustain_off_conns[MIDI_CHANNELS];
   program seen_progs[MIDI_CHANNELS];
 
   void remember_program_change_messages(PmMessage msg);
-  List<Connection *> &connections_for_message(PmMessage msg);
+  vector<Connection *> &connections_for_message(PmMessage msg);
 };
 
 #endif /* INPUT_H */

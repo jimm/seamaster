@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <regex.h>
 #include "cursor.h"
-#include "debug.h"
 
 #define UNDEFINED -1
 
@@ -33,10 +32,10 @@ void Cursor::init() {
   song_list_index = 0;
 
   SongList *sl = song_list();
-  if (sl != 0 && sl->songs.length() > 0) {
+  if (sl != 0 && sl->songs.size() > 0) {
     song_index = 0;
     Song *s = song();
-    patch_index = (s != 0 && s->patches.length() > 0) ? 0 : UNDEFINED;
+    patch_index = (s != 0 && s->patches.size() > 0) ? 0 : UNDEFINED;
   }
   else {
     song_index = UNDEFINED;
@@ -69,7 +68,7 @@ void Cursor::next_song() {
   if (song_list_index == UNDEFINED)
     return;
   SongList *sl = song_list();
-  if (song_index == sl->songs.length()-1)
+  if (song_index == sl->songs.size()-1)
     return;
 
   ++song_index;
@@ -89,7 +88,7 @@ void Cursor::next_patch() {
   if (s == 0)
     return;
 
-  if (patch_index == s->patches.length()-1)
+  if (patch_index == s->patches.size()-1)
     next_song();
   else
     ++patch_index;
@@ -108,11 +107,11 @@ void Cursor::goto_song(string name_regex) {
   Named *named;
 
   if (sl != 0) {
-    named = find_in_list(reinterpret_cast<List<Named *> *>(&sl->songs), name_regex);
+    named = find_in_list(reinterpret_cast<vector<Named *> *>(&sl->songs), name_regex);
     new_song = reinterpret_cast<Song *>(named);
   }
   if (new_song == 0) {
-    named = find_in_list(reinterpret_cast<List<Named *> *>(&pm->all_songs->songs),
+    named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
                          name_regex);
     new_song = reinterpret_cast<Song *>(named);
   }
@@ -120,30 +119,30 @@ void Cursor::goto_song(string name_regex) {
   if (new_song == 0)
     return;
 
-  Patch *new_patch = new_song == 0 ? 0 : new_song->patches.first();
+  Patch *new_patch = new_song == 0 ? 0 : new_song->patches[0];
 
   SongList *new_song_list = 0;
   Song *curr_song = song();
   if ((new_song != 0 && new_song != curr_song) || (new_song == curr_song && patch() != new_patch)) {
-    if (sl != 0 && sl->songs.includes(new_song))
+    if (sl != 0 && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
       new_song_list = sl;
     else
       new_song_list = pm->all_songs;
   }
 
-  song_list_index = pm->song_lists.index_of(new_song_list);
-  song_index = new_song_list->songs.index_of(new_song);
-  patch_index = new_song->patches.index_of(new_patch);
+  song_list_index = find(pm->song_lists.begin(), pm->song_lists.end(), new_song_list) - pm->song_lists.begin();
+  song_index = find(new_song_list->songs.begin(), new_song_list->songs.end(), new_song) - new_song_list->songs.begin();
+  patch_index = find(new_song->patches.begin(), new_song->patches.end(), new_patch) - new_song->patches.begin();
 }
 
 void Cursor::goto_song_list(string name_regex) {
-  Named *named = find_in_list(reinterpret_cast<List<Named *> *>(&pm->song_lists), name_regex);
+  Named *named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->song_lists), name_regex);
   if (named == 0)
     return;
 
   SongList *new_song_list = reinterpret_cast<SongList *>(named);
   if (new_song_list != song_list()) {
-    song_list_index = pm->song_lists.index_of(new_song_list);
+    song_list_index = find(pm->song_lists.begin(), pm->song_lists.end(), new_song_list) - pm->song_lists.begin();
     song_index = 0;
     patch_index = 0;
   }
@@ -156,92 +155,72 @@ void Cursor::attempt_goto(Cursor *c) {
 
   if (c->song_list() != 0)
     song_list_index =
-      find_nearest_match_index(reinterpret_cast<List<Named *> *>(&pm->song_lists),
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->song_lists),
                                c->song_list()->name);
 
   if (c->song() == 0)
     return;
 
   song_index =
-    find_nearest_match_index(reinterpret_cast<List<Named *> *>(&pm->all_songs->songs),
+    find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
                              c->song()->name);
   if (c->patch() != 0)
     patch_index =
-      find_nearest_match_index(reinterpret_cast<List<Named *> *>(&song()->patches),
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&song()->patches),
                                c->patch()->name);
   else
     patch_index = 0;
 }
 
 
-Named *Cursor::find_in_list(List<Named *> *list, string regex) {
+Named *Cursor::find_in_list(vector<Named *> *list, string regex) {
   regex_t re;
   regmatch_t pm;
 
   if (regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE) != 0)
     return 0;
 
-  for (int i = 0; i < list->length(); ++i) {
-    if (regexec(&re, list->at(i)->name.c_str(), 1, &pm, 0) == 0) {
-      return list->at(i);
+  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i) {
+    if (regexec(&re, (*i)->name.c_str(), 1, &pm, 0) == 0) {
+      return *i;
     }
   }
   return 0;
 }
 
-int Cursor::find_nearest_match_index(List<Named *> *list, string str) {
+int Cursor::find_nearest_match_index(vector<Named *> *list, string str) {
   string target = downcased_copy(str);
-  List<int> *distances = new List<int>();
-  for (int i = 0; i < list->length(); ++i)
-    distances->append(damerau_levenshtein(target, downcased_copy(list->at(i)->name)));
+  vector<int> distances;
+  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i)
+    distances.push_back(damerau_levenshtein(target, downcased_copy((*i)->name)));
 
   int min_dist = 9999, min_index = -1;
   
-  for (int i = 0; i < list->length(); ++i) {
-    if (distances->at(i) < min_dist) {
-      min_dist = distances->at(i);
-      min_index = i;
+  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i) {
+    int di = i - list->begin();
+    if (distances[di] < min_dist) {
+      min_dist = distances[di];
+      min_index = di;
     }
   }
 
-  delete(distances);
   return min_index;
 }
 
-int Cursor::damerau_levenshtein(string str1, string str2) {
-  List<int> *oneago = 0;
-  List<int> *thisrow = new List<int>();
-  for (int i = 0; i < str2.length(); ++i)
-    thisrow->append(i+1);
-  thisrow->append(0);
+// https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#C.2B.2B
+unsigned int Cursor::damerau_levenshtein(const string& s1, const string& s2) {
+  const size_t len1 = s1.size(), len2 = s2.size();
+  vector<vector<unsigned int> > d(len1 + 1, vector<unsigned int>(len2 + 1));
 
-  for (int x = 0; x < str1.length(); ++x) {
-    List<int> *twoago = oneago;
-    oneago = thisrow;
-    thisrow = new List<int>();
-    for (int i = 0; i < str1.length(); ++i)
-      thisrow->append(0);
-    thisrow->append(x+1);
+  d[0][0] = 0;
+  for (unsigned int i = 1; i <= len1; ++i) d[i][0] = i;
+  for (unsigned int i = 1; i <= len2; ++i) d[0][i] = i;
 
-    for (int y = 0; y < str2.length(); ++y) {
-      int delcost = oneago->at(y) + 1;
-      int addcost = thisrow->at(y-1) + 1;
-      int subcost = oneago->at(y-1) + ((str1[x] != str2[y]) ? 1 : 0);
-
-      int minval = delcost < addcost ? delcost : addcost;
-      minval = subcost < minval ? subcost : minval;
-      thisrow->at_set(y, minval);
-
-      if (x > 0 && y > 0 && str1[x] == str2[y-1] && str1[x-1] == str2[y] && str1[x] != str2[y]) {
-        minval = thisrow->at(y) < (twoago->at(y-2) + 1) ? thisrow->at(y) : (twoago->at(y-2) + 1);
-        thisrow->at_set(y, minval);
-      }
-    }
-  }
-
-  if (oneago) delete(oneago);
-  delete(thisrow);
-  return thisrow->at(str2.length() - 1);
+  for (unsigned int i = 1; i <= len1; ++i)
+    for (unsigned int j = 1; j <= len2; ++j)
+      d[i][j] = min(min(d[i - 1][j] + 1, d[i][j - 1] + 1),
+                    d[i - 1][j - 1] + (s1[i - 1] == s2[j - 1] ? 0 : 1));
+  return d[len1][len2];
 }
 
 string Cursor::downcased_copy(string str) {
@@ -249,12 +228,4 @@ string Cursor::downcased_copy(string str) {
   for (string::iterator i = downcased.begin(); i != downcased.end(); ++i)
     *i = tolower(*i);
   return downcased;
-}
-
-void Cursor::debug() {
-  vdebug("cursor %p\n", this);
-  vdebug("  pm %p\n", pm);
-  vdebug("  song_list_index %d\n", song_list_index);
-  vdebug("  song_index %d\n", song_index);
-  vdebug("  patch_index %d\n", patch_index);
 }

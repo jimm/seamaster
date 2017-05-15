@@ -32,12 +32,10 @@ public:
   void goto_song_list(string name_regex);
   void attempt_goto(Cursor *old_cursor);
 
-  void debug();
-
 private:
-  Named *find_in_list(List<Named *> *, string regex);
-  int find_nearest_match_index(List<Named *> *, string str);
-  int damerau_levenshtein(string str1, string str2);
+  Named *find_in_list(vector<Named *> *, string regex);
+  int find_nearest_match_index(vector<Named *> *, string str);
+  unsigned int damerau_levenshtein(const std::string& s1, const std::string& s2);
   string downcased_copy(string str);
 };
 

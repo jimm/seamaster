@@ -25,9 +25,9 @@ void PatchWindow::draw() {
   if (patch == 0)
     return;
 
-  for (int i = 0; i < patch->connections.length(); ++i) {
-    wmove(win, i+2, 1);
-    draw_connection(patch->connections.at(i));
+  for (vector<Connection *>::iterator i = patch->connections.begin(); i != patch->connections.end(); ++i) {
+    wmove(win, i - patch->connections.begin() + 2, 1);
+    draw_connection(*i);
   }
 }
 

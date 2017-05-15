@@ -4,6 +4,8 @@
 #include "../patchmaster.h"
 #include "list_window.h"
 
+using namespace std;
+
 class InfoWindow;
 class PatchWindow;
 class TriggerWindow;
@@ -64,7 +66,7 @@ private:
   void reload();
   void show_message(string);
   void clear_message_after(int);
-  int max_name_len(List<Named *> *);
+  int max_name_len(vector<Named *> *);
 };
 
 #endif /* GUI_H */

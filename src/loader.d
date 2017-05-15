@@ -134,9 +134,9 @@ src/loader.o: src/loader.cpp \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__bit_reference \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/istream \
   /usr/include/err.h /usr/local/include/portmidi.h src/patchmaster.h \
-  src/song_list.h src/list.h \
-  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h \
-  src/debug.h src/song.h src/patch.h src/named.h src/connection.h \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector \
+  /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer \
+  src/song_list.h src/song.h src/patch.h src/named.h src/connection.h \
   src/controller.h src/input.h src/consts.h src/instrument.h \
   src/trigger.h src/message.h src/output.h src/cursor.h src/loader.h \
   src/formatter.h
@@ -529,13 +529,11 @@ src/loader.o: src/loader.cpp \
 
 src/patchmaster.h:
 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__split_buffer:
+
 src/song_list.h:
-
-src/list.h:
-
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../lib/clang/8.1.0/include/stdbool.h:
-
-src/debug.h:
 
 src/song.h:
 

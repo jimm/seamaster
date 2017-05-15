@@ -1,16 +1,17 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <vector>
 #include <portmidi.h>
 #include "named.h"
-#include "list.h"
+
+using namespace std;
 
 class Output;
 
 class Message : public Named {
 public:
-  List<PmMessage> messages;
-
+  vector<PmMessage> messages;
 
   Message(const char *name);
   ~Message();

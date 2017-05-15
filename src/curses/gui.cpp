@@ -122,8 +122,8 @@ void GUI::create_windows() {
   song_list = new ListWindow(geom_song_list_rect(), "Song List");
   song = new ListWindow(geom_song_rect(), "Song");
   patch = new PatchWindow(geom_patch_rect(), "Patch",
-                          max_name_len(reinterpret_cast<List<Named *> *>(&pm->inputs)),
-                          max_name_len(reinterpret_cast<List<Named *> *>(&pm->outputs)));
+                          max_name_len(reinterpret_cast<vector<Named *> *>(&pm->inputs)),
+                          max_name_len(reinterpret_cast<vector<Named *> *>(&pm->outputs)));
   message = new Window(geom_message_rect(), "");
   trigger = new TriggerWindow(geom_trigger_rect(), "");
   info = new InfoWindow(geom_info_rect(), "");
@@ -131,8 +131,8 @@ void GUI::create_windows() {
   play_song = new ListWindow(geom_play_song_rect(), "");
   play_notes = new InfoWindow(geom_play_notes_rect(), "");
   play_patch = new PatchWindow(geom_play_patch_rect(), "Patch",
-                               max_name_len(reinterpret_cast<List<Named *> *>(&pm->inputs)),
-                               max_name_len(reinterpret_cast<List<Named *> *>(&pm->outputs)));
+                               max_name_len(reinterpret_cast<vector<Named *> *>(&pm->inputs)),
+                               max_name_len(reinterpret_cast<vector<Named *> *>(&pm->outputs)));
 
   scrollok(stdscr, false);
   scrollok(message->win, false);
@@ -227,16 +227,16 @@ void GUI::set_normal_window_data() {
   Patch *p = pm->cursor->patch();
 
   song_lists->set_contents("Song Lists",
-                           reinterpret_cast<List<Named *> *>(&pm->song_lists),
+                           reinterpret_cast<vector<Named *> *>(&pm->song_lists),
                            pm->cursor->song_list());
 
   song_list->set_contents(sl->name.c_str(),
-                          reinterpret_cast<List<Named *> *>(&sl->songs),
+                          reinterpret_cast<vector<Named *> *>(&sl->songs),
                           pm->cursor->song());
 
   if (s != 0) {
     song->set_contents(s->name.c_str(),
-                       reinterpret_cast<List<Named *> *>(&s->patches),
+                       reinterpret_cast<vector<Named *> *>(&s->patches),
                        pm->cursor->patch());
     info->set_contents(&s->notes);
     patch->set_contents(p);
@@ -254,7 +254,7 @@ void GUI::set_play_window_data() {
 
   if (s != 0) {
     play_song->set_contents(s->name.c_str(),
-                            reinterpret_cast<List<Named *> *>(&s->patches),
+                            reinterpret_cast<vector<Named *> *>(&s->patches),
                             pm->cursor->patch());
     play_notes->set_contents(&s->notes);
     play_patch->set_contents(p);
@@ -367,10 +367,10 @@ void GUI::clear_message_after(int secs) {
   pthread_create(&pthread, 0, clear_message_thread, this);
 }
 
-int GUI::max_name_len(List<Named *> *list) {
+int GUI::max_name_len(vector<Named *> *list) {
   int maxlen = 0;
-  for (int i = 0; i < list->length(); ++i) {
-    int len = list->at(i)->name.length();
+  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i) {
+    int len = (*i)->name.length();
     if (len > maxlen)
       maxlen = len;
   }
