@@ -131,26 +131,26 @@ int Web::run() {
       fgets(buf, BUFSIZE, stream);
 
     /* parse the uri [crufty] */
-    if (strncmp(uri, "/status", 10) == 0) {
+    if (strncmp(uri, "/status", 7) == 0) {
 DONE_JSON:
       return_status();
       fclose(stream);
       close(childfd);
       continue;
     }
-    if (strncmp(uri, "/next_patch", 10) == 0) {
+    if (strncmp(uri, "/next_patch", 11) == 0) {
       pm->next_patch();
       goto DONE_JSON;
     }
-    else if (strncmp(uri, "/prev_patch", 10) == 0) {
+    else if (strncmp(uri, "/prev_patch", 11) == 0) {
       pm->prev_patch();
       goto DONE_JSON;
     }
-    else if (strncmp(uri, "/next_song", 9) == 0) {
+    else if (strncmp(uri, "/next_song", 10) == 0) {
       pm->next_song();
       goto DONE_JSON;
     }
-    else if (strncmp(uri, "/prev_song", 9) == 0) {
+    else if (strncmp(uri, "/prev_song", 10) == 0) {
       pm->prev_song();
       goto DONE_JSON;
     }
@@ -311,11 +311,18 @@ void Web::return_status() {
   if (song != 0) {
     str += ",\"song\":{\"name\":\"";
     str += song->name;
-    str += "\",\"patches\":[";
+    str += "\",\"patches\":";
+    append_json_list_of_names(str, *reinterpret_cast<vector<Named *> *>(&song->patches));
+    str += "}";
+  }
+
+  Patch *patch = pm->cursor->patch();
+  if (patch != 0) {
+    str += ",\"patch\":{";
     for (vector<Patch *>::iterator i = song->patches.begin(); i != song->patches.end(); ++i) {
       if (i != song->patches.begin())
         str += ',';
-      str += "{\"name\":";
+      str += "\"name\":";
       append_quoted_string(str, (*i)->name);
       str += ",\"connections\":[";
       for (vector<Connection *>::iterator j = (*i)->connections.begin(); j != (*i)->connections.end(); ++j) {
@@ -324,12 +331,9 @@ void Web::return_status() {
         append_connection(str, *j);
       }
       str += "]";
-      str += "}";
     }
-    str += "]";
     str += "}";
   }
-
   str += "}";
 
   const char *c_str = str.c_str();
