@@ -145,7 +145,8 @@ src/seamaster.o: src/seamaster.cpp \
   src/instrument.h src/trigger.h src/message.h src/output.h src/loader.h \
   src/curses/gui.h src/curses/list_window.h src/curses/window.h \
   /usr/include/ncurses.h /usr/include/ncurses_dll.h \
-  /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h
+  /usr/include/unctrl.h /usr/include/curses.h src/curses/geometry.h \
+  src/web.h
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream:
 
@@ -598,3 +599,5 @@ src/curses/window.h:
 /usr/include/curses.h:
 
 src/curses/geometry.h:
+
+src/web.h:

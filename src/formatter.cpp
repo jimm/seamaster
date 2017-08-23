@@ -77,3 +77,34 @@ void format_program(program prog, char *buf) {
     strcat(buf, "    ");
 }
 
+void format_program_no_spaces(program prog, char *buf) {
+  int has_msb = prog.bank_msb != -1;
+  int has_lsb = prog.bank_lsb != -1;
+  int has_bank = has_msb || has_lsb;
+
+  if (has_bank)
+    *buf++ = '[';
+
+  if (has_msb) {
+    sprintf(buf, "%3d", prog.bank_msb);
+    buf += 3;
+  }
+
+  if (has_bank)
+    *buf++ = ',';
+
+  if (has_lsb) {
+    sprintf(buf, "%3d", prog.bank_lsb);
+    buf += 3;
+  }
+
+  if (has_bank)
+    *buf++ = ']';
+
+  if (prog.prog != -1) {
+    sprintf(buf, "%3d", prog.prog);
+    buf += 3;
+  }
+
+  *buf = 0;
+}

@@ -4,10 +4,12 @@
 #include "patchmaster.h"
 #include "loader.h"
 #include "curses/gui.h"
+#include "web.h"
 
 struct opts {
   bool list_devices;
   bool testing;
+  bool web;
 } opts;
 
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
@@ -61,6 +63,13 @@ void run() {
   PatchMaster_instance()->stop();
 }
 
+void run_web() {
+  PatchMaster_instance()->start();
+  Web web(PatchMaster_instance(), 8765);
+  web.run();
+  PatchMaster_instance()->stop();
+}
+
 void usage(const char *prog_name) {
   cerr << "usage: " << basename((char *)prog_name) << " [-l] [-n] [-h] file\n"
        << "\n"
@@ -69,6 +78,9 @@ void usage(const char *prog_name) {
        << "\n"
        << "    -n or --no-midi\n"
        << "        No MIDI (ignores bad/unknown MIDI ports)\n"
+       << "\n"
+       << "    -w or --web\n"
+       << "        Use web interface on port 8080\n"
        << "\n"
        << "    -h or --help\n"
        << "        This help"
@@ -81,18 +93,22 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
   static struct option longopts[] = {
     {"list", no_argument, 0, 'l'},
     {"no-midi", no_argument, 0, 'n'},
+    {"web", no_argument, 0, 'w'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
   };
 
-  opts->list_devices = opts->testing = false;
-  while ((ch = getopt_long(argc, argv, "lnh", longopts, 0)) != -1) {
+  opts->list_devices = opts->testing = opts->web = false;
+  while ((ch = getopt_long(argc, argv, "lnwh", longopts, 0)) != -1) {
     switch (ch) {
     case 'l':
       opts->list_devices = true;
       break;
     case 'n':
       opts->testing = true;
+      break;
+    case 'w':
+      opts->web = true;
       break;
     case 'h': default:
       usage(prog_name);
@@ -121,7 +137,10 @@ int main(int argc, char * const *argv) {
 
   initialize();
   load(argv[0], opts.testing);
-  run();
+  if (opts.web)
+    run_web();
+  else
+    run();
 
   exit(0);
   return 0;
