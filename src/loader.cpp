@@ -615,7 +615,7 @@ bool Loader::is_markup_block_command(const char *line) {
 }
 
 void Loader::determine_markup(const char *path) {
-  char *extension = strrchr(path, '.');
+  const char *extension = strrchr(path, '.');
   if (extension == 0)
     markup = org_mode_markup;
   else if (strncasecmp(extension, ".markdown", 9) == 0 || strncasecmp(extension, ".md", 3) == 0)

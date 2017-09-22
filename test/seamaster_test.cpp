@@ -40,6 +40,10 @@ void run_tests() {
   test_controller();
   test_connection();
   test_input();
+}
+
+void run_tests_and_print_results() {
+  run_tests();
   printf("\n\nTests run: %d, tests passed: %d, tests failed: %d\n",
          results.num_tests, results.num_tests - results.num_errors,
          results.num_errors);
@@ -49,7 +53,7 @@ void run_tests() {
 // ================ main ================
 
 int main(int argc, const char **argv) {
-  run_tests();
+  run_tests_and_print_results();
   exit(results.num_errors == 0 ? 0 : 1);
   return 0;
 }
