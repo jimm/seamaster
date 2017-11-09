@@ -215,11 +215,14 @@ PmMessage Loader::message_from_bytes(const char *str) {
   for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != 0; word = strtok(0, ", ")) {
     if (i < 3) {
       word += strspn(word, whitespace);
-      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0)
+      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
         bytes[i] = (int)strtol(word, 0, 16);
-      else
+        ++i;
+      }
+      else if (isdigit(word[0])) {
         bytes[i] = atoi(word);
-      ++i;
+        ++i;
+      }
     }
   }
 

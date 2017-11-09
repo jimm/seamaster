@@ -29,6 +29,12 @@ ignored. Sorry, no symbolic names yet.
 0x81, 64, 0
 0x82, 42, 127
 
+## Testing Another Literal Syntax
+
+Nothing really different to test here, but Org mode has something to test.
+
+    0xf6
+
 # Triggers
 
 Triggers...

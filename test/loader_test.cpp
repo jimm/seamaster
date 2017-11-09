@@ -26,7 +26,7 @@ void test_load_instruments() {
 
 void test_load_messages() {
   PatchMaster *pm = load_test_file();
-  tassert(pm->messages.size() == 2, 0);
+  tassert(pm->messages.size() == 3, 0);
 
   Message *msg = pm->messages[0];
   tassert(msg->name == "Tune Request", 0);
@@ -37,6 +37,10 @@ void test_load_messages() {
   tassert(msg->messages[0] == Pm_Message(0x80, 64, 0), 0);
   tassert(msg->messages[1] == Pm_Message(0x81, 64, 0), 0);
   tassert(msg->messages[2] == Pm_Message(0x82, 42, 127), 0);
+
+  msg = pm->messages[2];
+  tassert(msg->name == "Testing Another Literal Syntax", 0);
+  tassert(msg->messages[0] == Pm_Message(0xf6, 0, 0), 0);
 
   delete pm;
 }
