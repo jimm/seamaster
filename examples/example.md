@@ -1,6 +1,6 @@
 # Introduction
 
-This is an example [[https://github.com/jimm/seamaster][SeaMaster]] file. It
+This is an example [SeaMaster](https://github.com/jimm/seamaster) file. It
 is a [Markdown](http://daringfireball.net/projects/markdown/syntax) file,
 which is a plain text file format. This file describes your MIDI setup,
 songs, and patches. Only a few top-level sections are read by SeaMaster, any
