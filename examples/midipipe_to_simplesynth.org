@@ -18,9 +18,19 @@ input. This file describes a simple setup that uses these two programs.
 * Songs
 
 ** To Each His Own
+
 *** Vanilla Through
 ****  mp, all, ss, all
 
-** Up One Octave
-*** mp, all, ss, all
-    - xpose 12
+*** Up One Octave
+**** mp, all, ss, all
+     - xpose 12
+
+** Another Song
+
+*** Vanilla Through
+****  mp, all, ss, all
+
+*** Up One Octave
+**** mp, all, ss, all
+     - xpose 12

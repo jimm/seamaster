@@ -34,7 +34,7 @@ void ListWindow::draw() {
   else if (curr_index >= offset + vis_height)
     offset = curr_index - vis_height + 1;
 
-  int row = 0;
+  int row = 1;
   for (vector<Named *>::iterator i = offset; i != list->end() && i < offset + vis_height; ++i, ++row) {
     Named *thing = *i;
     wmove(win, row, 1);
