@@ -112,7 +112,7 @@ void GUI::config_curses() {
   initscr();
   cbreak();                     /* unbuffered input */
   noecho();                     /* do not show typed keys */
-  keypad(stdscr, true);         /* enable arrow keys */
+  keypad(stdscr, true);         /* enable arrow keys and window resize as keys */
   nl();                         /* return key => newline, \n => \r\n */
   curs_set(0);                  /* cursor: 0 = invisible, 1 = normal */
 }

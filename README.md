@@ -14,6 +14,6 @@ SeaMaster is a C version of [PatchMaster](https://patchmaster.org/).
 
 For more information see the [wiki](https://github.com/jimm/seamaster/wiki).
 
-# To Do
+# To Do / Bugs
 
 See the [To Do](https://github.com/jimm/seamaster/wiki/To-Do) list on the Wiki.

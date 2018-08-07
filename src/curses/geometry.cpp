@@ -4,15 +4,15 @@
 
 #define MAX_PROMPT_WINDOW_WIDTH 40
 
-int TOP_HEIGHT() { return (LINES - 1) * 2 / 3; }
-int BOT_HEIGHT() { return (LINES - 1) - TOP_HEIGHT(); }
-int TOP_WIDTH() { return COLS / 3; }
-int SLS_HEIGHT() { return ((LINES - 1) * 2 / 3) / 3; }
-int SL_HEIGHT() { return ((LINES - 1) * 2 / 3) - SLS_HEIGHT(); }
-int P_BOT_HEIGHT() { return 8; }
-int P_TOP_HEIGHT() { return LINES - 9; }
-int P_LEFT_WIDTH() { return COLS / 3; }
-int P_RIGHT_WIDTH() { return COLS - P_LEFT_WIDTH(); }
+inline int TOP_HEIGHT() { return (LINES - 1) * 2 / 3; }
+inline int BOT_HEIGHT() { return (LINES - 1) - TOP_HEIGHT(); }
+inline int TOP_WIDTH() { return COLS / 3; }
+inline int SLS_HEIGHT() { return ((LINES - 1) * 2 / 3) / 3; }
+inline int SL_HEIGHT() { return ((LINES - 1) * 2 / 3) - SLS_HEIGHT(); }
+inline int P_BOT_HEIGHT() { return 8; }
+inline int P_TOP_HEIGHT() { return LINES - 9; }
+inline int P_LEFT_WIDTH() { return COLS / 3; }
+inline int P_RIGHT_WIDTH() { return COLS - P_LEFT_WIDTH(); }
 
 rect geom_song_list_rect() {
   rect r;

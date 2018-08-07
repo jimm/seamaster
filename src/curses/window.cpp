@@ -17,7 +17,7 @@ Window::~Window() {
 
 void Window::move_and_resize(struct rect r) {
   rect = r;
-  wmove(win, r.row, r.col);
+  mvwin(win, r.row, r.col);
   wresize(win, r.height, r.width);
 }
 
