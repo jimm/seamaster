@@ -16,7 +16,7 @@ InfoWindow::~InfoWindow() {
 }
 
 void InfoWindow::set_contents(vector<char *> *text_lines_v) {
-  if (text_lines && !text_lines_v->empty()) {
+  if (text_lines_v && !text_lines_v->empty()) {
     title = "Song Notes";
     text_lines = text_lines_v;
     display_list = text_lines_v;
