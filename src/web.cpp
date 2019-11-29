@@ -259,15 +259,15 @@ void Web::error(const char *msg) {
 /*
  * cerror - returns an error message to the client
  */
-void Web::cerror(const char *cause, const char *errno, 
+void Web::cerror(const char *cause, const char *error_number,
 	    const char *shortmsg, const char *longmsg)
 {
-  fprintf(stream, "HTTP/1.1 %s %s\n", errno, shortmsg);
+  fprintf(stream, "HTTP/1.1 %s %s\n", error_number, shortmsg);
   fprintf(stream, "Content-type: text/html\n");
   fprintf(stream, "\n");
   fprintf(stream, "<html><title>Tiny Error</title>");
   fprintf(stream, "<body bgcolor=""ffffff"">\n");
-  fprintf(stream, "%s: %s\n", errno, shortmsg);
+  fprintf(stream, "%s: %s\n", error_number, shortmsg);
   fprintf(stream, "<p>%s: %s\n", longmsg, cause);
   fprintf(stream, "<hr><em>The Tiny Web server</em>\n");
 }
