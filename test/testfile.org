@@ -65,6 +65,7 @@ after the song heading and before the first patch heading.
      - xpose 12
      - cc 7 map 10, limit 1 120
 **** two, all, two, all
+     - bank 5
      - xpose -12
 
 ** Another Song

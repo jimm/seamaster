@@ -146,13 +146,22 @@ void test_load_connections() {
   delete pm;
 }
 
-void test_load_bank() {
+void test_load_bank_msb_lsb() {
   PatchMaster *pm = load_test_file();
   Song *s = pm->all_songs->songs[0];
   Patch *p = s->patches[0];
   Connection *conn = p->connections.back();
-  tassert(conn->prog.bank_msb = 3, "bad bank msb");
-  tassert(conn->prog.bank_lsb = 2, "bad bank lsb");
+  tassert(conn->prog.bank_msb == 3, "bad bank msb");
+  tassert(conn->prog.bank_lsb == 2, "bad bank lsb");
+}
+
+void test_load_bank_lsb_only() {
+  PatchMaster *pm = load_test_file();
+  Song *s = pm->all_songs->songs[0];
+  Patch *p = s->patches[1];
+  Connection *conn = p->connections.back();
+  tassert(conn->prog.bank_msb == -1, "bad bank msb");
+  tassert(conn->prog.bank_lsb == 5, "bad bank lsb");
 }
 
 void test_load_prog_chg() {
@@ -160,7 +169,7 @@ void test_load_prog_chg() {
   Song *s = pm->all_songs->songs[0];
   Patch *p = s->patches[0];
   Connection *conn = p->connections.back();
-  tassert(conn->prog.prog = 12, "bad program change");
+  tassert(conn->prog.prog == 12, "bad program change");
 }
 
 void test_load_xpose() {
@@ -172,9 +181,9 @@ void test_load_xpose() {
 
   p = s->patches.back();
   conn = p->connections[0];
-  tassert(conn->xpose = 12, "bad xpose");
+  tassert(conn->xpose == 12, "bad xpose");
   conn = p->connections.back();
-  tassert(conn->xpose = -12, "bad xpose");
+  tassert(conn->xpose == -12, "bad xpose");
   delete pm;
 }
 
@@ -277,7 +286,8 @@ void test_load_run_tests(const char *path) {
   test_run(test_load_patches);
   test_run(test_load_start_and_stop_messages);
   test_run(test_load_connections);
-  test_run(test_load_bank);
+  test_run(test_load_bank_msb_lsb);
+  test_run(test_load_bank_lsb_only);
   test_run(test_load_prog_chg);
   test_run(test_load_xpose);
   test_run(test_load_zone);

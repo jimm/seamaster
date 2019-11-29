@@ -419,8 +419,14 @@ void Loader::load_bank(char *line) {
   vector<char *> args;
 
   comma_sep_args(line, true, args);
-  conn->prog.bank_msb = atoi(args[0]);
-  conn->prog.bank_lsb = atoi(args[1]);
+  if (args.size() == 1) {
+    conn->prog.bank_msb = -1;
+    conn->prog.bank_lsb = atoi(args[0]);
+  }
+  else {
+    conn->prog.bank_msb = atoi(args[0]);
+    conn->prog.bank_lsb = atoi(args[1]);
+  }
 }
 
 void Loader::load_xpose(char *line) {

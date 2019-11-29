@@ -9,7 +9,7 @@ SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp)
 OBJS = $(SRC:%.cpp=%.o)
 TEST_SRC = $(wildcard test/*.cpp)
 TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
-TEST_OBJ_FILTERS = src/seamaster.o
+TEST_OBJ_FILTERS = src/$(NAME).o
 
 .PHONY: all
 all: $(NAME)
