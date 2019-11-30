@@ -101,6 +101,7 @@ private:
   char *trim(char *);
 
   PmDeviceID find_device(char *, int);
+  int compare_device_names(char *, char *);
   Instrument *find_by_sym(vector<Instrument *> &, char *);
   Song *find_song(vector<Song *> &, char *);
   Message *find_message(vector<Message *> &, char *);

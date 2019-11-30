@@ -1,5 +1,6 @@
 #include <sstream>
 #include <stdlib.h>
+#include <strings.h>
 #include <errno.h>
 #include <err.h>
 #include "portmidi.h"
@@ -565,12 +566,35 @@ PmDeviceID Loader::find_device(char *name, int device_type) {
   int num_devices = Pm_CountDevices();
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-    if (device_type == INPUT && info->input && strncasecmp(name, info->name, strlen(info->name)) == 0)
+    if (device_type == INPUT && info->input && compare_device_names(name, (char *)info->name) == 0)
       return i;
-    if (device_type == OUTPUT && info->output && strncasecmp(name, info->name, strlen(info->name)) == 0)
+    if (device_type == OUTPUT && info->output && compare_device_names(name, (char *)info->name) == 0)
       return i;
   }
   return pmNoDevice;
+}
+
+/*
+ * Case-insensitive string comparison that also ignores leading and trailing
+ * whitespace. Assumes both names are shorter than BUFSIZ. Returns 0 if the
+ * two strings are equal, given those conditions. Assumes both strings are
+ * non-NULL.
+ */
+int Loader::compare_device_names(char *name1, char *name2) {
+  while (isspace(*name1)) ++name1;
+  while (isspace(*name2)) ++name2;
+  if (*name1 == '\0' || *name2 == '\0')
+    return *name1 - *name2;
+
+  char *end1 = name1 + strlen(name1) - 1;
+  while(end1 > name1 && isspace(*end1)) end1--;
+  char *end2 = name2 + strlen(name2) - 2;
+  while(end2 > name2 && isspace(*end2)) end2--;
+
+  int len1 = (int)(end1 - name1) + 1;
+  int len2 = (int)(end2 - name2) + 1;
+
+  return strncasecmp(name1, name2, min(len1, len2));
 }
 
 Instrument *Loader::find_by_sym(vector<Instrument *> &list, char *name) {
