@@ -9,7 +9,10 @@ Output::Output(const char *sym, const char *name, int port_num)
 {
   if (real_port()) {
     int err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);
-    // TODO check error
+    if (err != 0) {
+      fprintf(stderr, "error opening output stream %s: %d\n", name, err);
+      exit(1);
+    }
   }
 }
 

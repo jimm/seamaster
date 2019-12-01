@@ -8,21 +8,47 @@
 // 10 milliseconds, in nanoseconds
 #define SLEEP_NANOSECS 1e7
 
-void *input_thread(void *);
+vector<Input *> inputs;
+pthread_t portmidi_thread;
+
+
+void *input_thread(void *_) {
+  struct timespec rqtp = {0, SLEEP_NANOSECS};
+  bool processed_something = false;
+
+  while (!inputs.empty()) {
+    for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
+      Input *in = *i;
+      if (Pm_Poll(in->stream) == TRUE) {
+        processed_something = true;
+        PmEvent buf[MIDI_BUFSIZ];
+        int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
+        in->read(buf, n);
+      }
+    }
+    if (!processed_something) {
+      if (nanosleep(&rqtp, 0) == -1)
+        pthread_exit(0);
+    }
+  }
+
+  pthread_exit(0);
+}
+
 
 Input::Input(const char *sym, const char *name, int port_num)
   : Instrument(sym, name, port_num)
 {
-  running = false;
-  portmidi_thread = 0;
-
   for (int i = 0; i < MIDI_CHANNELS; ++i)
     seen_progs[i].bank_msb = seen_progs[i].bank_lsb =
       seen_progs[i].prog = -1;
 
   if (real_port()) {
     int err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
-    // TODO check error
+    if (err != 0) {
+      fprintf(stderr, "error opening input stream %s: %d\n", name, err);
+      exit(1);
+    }
   }
 }
 
@@ -36,23 +62,38 @@ void Input::add_connection(Connection *conn) {
 }
 
 void Input::remove_connection(Connection *conn) {
-  connections.erase(remove(connections.begin(), connections.end(), conn),
-                    connections.end());
+  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i) {
+    if (*i == conn) {
+      connections.erase(i);
+      return;
+    }
+  }
 }
 
 void Input::start() {
   int status;
 
-  running = true;
   if (real_port()) {
-    status = pthread_create(&portmidi_thread, 0, input_thread, this);
-    // TODO check status
+    // Not thread safe, but we don't care because this method is called
+    // synchronously from a single thread.
+    inputs.push_back(this);
+    if (inputs.size() == 1) {
+      status = pthread_create(&portmidi_thread, 0, input_thread, 0);
+      if (status != 0) {
+        fprintf(stderr, "error creathing input stream thread %s: %d\n", name.c_str(), status);
+        exit(1);
+      }
+    }
   }
 }
 
 void Input::stop() {
-  if (running)
-    running = false;
+  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
+    if (*i == this) {
+      inputs.erase(i);
+      return;
+    }
+  }
 }
 
 void Input::read(PmEvent *buf, int len) {
@@ -75,25 +116,6 @@ void Input::read(PmEvent *buf, int len) {
     for (vector<Connection *>::iterator i = conns.begin(); i != conns.end(); ++i)
       (*i)->midi_in(msg);
   }
-}
-
-void *input_thread(void *in_voidptr) {
-  Input *in = (Input *)in_voidptr;
-  struct timespec rqtp = {0, SLEEP_NANOSECS};
-
-  while (in->running) {
-    if (Pm_Poll(in->stream) == TRUE) {
-      PmEvent buf[MIDI_BUFSIZ];
-      int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
-      in->read(buf, n);
-    }
-    else {
-      if (nanosleep(&rqtp, 0) == -1)
-        pthread_exit(0);
-    }
-  }
-
-  pthread_exit(0);
 }
 
 void Input::remember_program_change_messages(PmMessage msg) {

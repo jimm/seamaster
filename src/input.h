@@ -14,7 +14,6 @@ class Input : public Instrument {
 public:
   vector<Connection *> connections;
   vector<Trigger *> triggers;
-  bool running;
 
   Input(const char *sym, const char *name, int port_num);
   ~Input();
@@ -33,7 +32,6 @@ public:
   program last_program_change_seen(int chan) { return seen_progs[chan]; }
 
 private:
-  pthread_t portmidi_thread;
   vector<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
   vector<Connection *> sustain_off_conns[MIDI_CHANNELS];
   program seen_progs[MIDI_CHANNELS];
