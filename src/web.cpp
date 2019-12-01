@@ -359,7 +359,7 @@ void Web::append_connection(string &str, Connection *conn) {
   if (conn->input_chan == -1)
     str += "\"all\"";
   else
-    str += conn->input_chan + 1;
+    str += to_string(conn->input_chan + 1);
 
   str += ", \"output\":";
   append_quoted_string(str, conn->output->name);
@@ -367,7 +367,7 @@ void Web::append_connection(string &str, Connection *conn) {
   if (conn->output_chan == -1)
     str += "\"all\"";
   else
-    str += conn->output_chan + 1;
+    str += to_string(conn->output_chan + 1);
 
   char buf[BUFSIZ];
   str += ", \"pc\":";
