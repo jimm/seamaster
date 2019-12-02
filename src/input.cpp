@@ -14,9 +14,9 @@ pthread_t portmidi_thread;
 
 void *input_thread(void *_) {
   struct timespec rqtp = {0, SLEEP_NANOSECS};
-  bool processed_something = false;
 
-  while (!inputs.empty()) {
+  while (true) {
+    bool processed_something = false;
     for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
       Input *in = *i;
       if (Pm_Poll(in->stream) == TRUE) {
@@ -32,6 +32,7 @@ void *input_thread(void *_) {
     }
   }
 
+  /* NOTREACHED */
   pthread_exit(0);
 }
 
@@ -71,20 +72,20 @@ void Input::remove_connection(Connection *conn) {
 }
 
 void Input::start() {
-  int status;
+  if (!real_port())
+    return;
 
-  if (real_port()) {
-    // Not thread safe, but we don't care because this method is called
-    // synchronously from a single thread.
-    inputs.push_back(this);
-    if (inputs.size() == 1) {
-      status = pthread_create(&portmidi_thread, 0, input_thread, 0);
-      if (status != 0) {
-        fprintf(stderr, "error creathing input stream thread %s: %d\n", name.c_str(), status);
-        exit(1);
-      }
+  // Not thread safe, but we don't care because this method is called
+  // synchronously from a single thread.
+  if (inputs.size() == 0) {
+    int status = pthread_create(&portmidi_thread, 0, input_thread, 0);
+    if (status != 0) {
+      fprintf(stderr, "error creating input stream thread %s: %d\n",
+              name.c_str(), status);
+      exit(1);
     }
   }
+  inputs.push_back(this);
 }
 
 void Input::stop() {

@@ -78,7 +78,7 @@ int Connection::accept_from_input(PmMessage msg) {
 
   if (status >= SYSEX)
     return true;
-  if (input_chan != (Pm_MessageStatus(msg) & 0x0f))
+  if (input_chan != (status & 0x0f))
     return false;
 
   if ((status & 0xf0) == CONTROLLER) {
