@@ -23,7 +23,7 @@ public:
   Trigger(PmMessage message, TriggerAction action, Message *output);
   ~Trigger();
 
-  void signal(PmEvent *buf, int len);
+  void signal(PmMessage msg);
 
 private:
   void perform_action();

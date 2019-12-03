@@ -11,9 +11,8 @@ Trigger::Trigger(PmMessage message, TriggerAction ta, Message *out_msg)
 Trigger::~Trigger() {
 }
 
-void Trigger::signal(PmEvent *buf, int len) {
-  for (int i = 0; i < len; ++i)
-    if (buf[i].message == trigger_message)
+void Trigger::signal(PmMessage msg) {
+  if (msg == trigger_message)
       perform_action();
 }
 

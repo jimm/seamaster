@@ -1,6 +1,9 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include <vector>
+#include <queue>
+#include <mutex>
 #include <pthread.h>
 #include <portmidi.h>
 #include "consts.h"
@@ -14,6 +17,7 @@ class Input : public Instrument {
 public:
   vector<Connection *> connections;
   vector<Trigger *> triggers;
+  bool running;
 
   Input(const char *sym, const char *name, int port_num);
   ~Input();
@@ -27,7 +31,10 @@ public:
   void start();
   void stop();
 
-  void read(PmEvent *buf, int len);
+  void enqueue(PmEvent *, int);
+  void read(PmMessage);
+  PmMessage message_from_read_queue();
+  void stop_read_thread();
 
   program last_program_change_seen(int chan) { return seen_progs[chan]; }
 
@@ -35,6 +42,9 @@ private:
   vector<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
   vector<Connection *> sustain_off_conns[MIDI_CHANNELS];
   program seen_progs[MIDI_CHANNELS];
+  queue<PmMessage> message_queue;
+  mutex message_queue_mutex;
+  pthread_t read_pthread;
 
   void remember_program_change_messages(PmMessage msg);
   vector<Connection *> &connections_for_message(PmMessage msg);

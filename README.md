@@ -17,3 +17,6 @@ For more information see the [wiki](https://github.com/jimm/seamaster/wiki).
 # To Do / Bugs
 
 See the [To Do](https://github.com/jimm/seamaster/wiki/To-Do) list on the Wiki.
+
+Should the rememberance of program changes messages be moved to outputs?
+After all, they will recieve the actual (possibly modified) program changes.
