@@ -66,6 +66,7 @@ void run() {
 void run_web() {
   PatchMaster_instance()->start();
   Web web(PatchMaster_instance(), 8765);
+  printf("http://127.0.0.1:8765/\n");
   web.run();
   PatchMaster_instance()->stop();
 }
