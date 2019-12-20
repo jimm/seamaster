@@ -319,20 +319,17 @@ void Web::return_status() {
   Patch *patch = pm->cursor->patch();
   if (patch != 0) {
     str += ",\"patch\":{";
-    for (vector<Patch *>::iterator i = song->patches.begin(); i != song->patches.end(); ++i) {
-      if (i != song->patches.begin())
+
+    str += "\"name\":";
+    append_quoted_string(str, patch->name);
+
+    str += ",\"connections\":[";
+    for (vector<Connection *>::iterator j = patch->connections.begin(); j != patch->connections.end(); ++j) {
+      if (j != patch->connections.begin())
         str += ',';
-      str += "\"name\":";
-      append_quoted_string(str, (*i)->name);
-      str += ",\"connections\":[";
-      for (vector<Connection *>::iterator j = (*i)->connections.begin(); j != (*i)->connections.end(); ++j) {
-        if (j != (*i)->connections.begin())
-          str += ',';
-        append_connection(str, *j);
-      }
-      str += "]";
+      append_connection(str, *j);
     }
-    str += "}";
+    str += "]}";
   }
   str += "}";
 
