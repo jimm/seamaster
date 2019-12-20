@@ -37,11 +37,17 @@ void list_all_devices() {
 }
 
 void cleanup() {
-  Pm_Terminate();
+  PmError err = Pm_Terminate();
+  if (err != 0)
+    fprintf(stderr, "error terminating PortMidi: %s\n", Pm_GetErrorText(err));
 }
 
 void initialize() {
-  Pm_Initialize();
+  PmError err = Pm_Initialize();
+  if (err != 0) {
+    fprintf(stderr, "error initializing PortMidi: %s\n", Pm_GetErrorText(err));
+    exit(1);
+  }
   atexit(cleanup);
 }
 

@@ -70,9 +70,16 @@ Input::Input(const char *sym, const char *name, int port_num)
       seen_progs[i].prog = -1;
 
   if (real_port()) {
-    int err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
+    PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     if (err != 0) {
-      fprintf(stderr, "error opening input stream %s: %d\n", name, err);
+      fprintf(stderr, "error opening input stream %s: %s\n", name,
+              Pm_GetErrorText(err));
+      exit(1);
+    }
+    err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
+    if (err != 0) {
+      fprintf(stderr, "error setting PortMidi filter for %s: %s\n", name,
+              Pm_GetErrorText(err));
       exit(1);
     }
   }

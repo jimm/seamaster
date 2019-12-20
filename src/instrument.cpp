@@ -10,8 +10,12 @@ Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_
 }
 
 Instrument::~Instrument() {
-  if (real_port())
-    Pm_Close(stream);
+  if (real_port()) {
+    PmError err = Pm_Close(stream);
+    if (err != 0)
+      fprintf(stderr, "error closing instrument %s: %s\n", name.c_str(),
+              Pm_GetErrorText(err));
+  }
 }
 
 bool Instrument::real_port() {
