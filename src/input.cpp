@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "error.h"
 #include "input.h"
 #include "trigger.h"
 #include "consts.h"
@@ -72,14 +73,18 @@ Input::Input(const char *sym, const char *name, int port_num)
   if (real_port()) {
     PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     if (err != 0) {
-      fprintf(stderr, "error opening input stream %s: %s\n", name,
+      char buf[BUFSIZ];
+      sprintf(buf, "error opening input stream %s: %s\n", name,
               Pm_GetErrorText(err));
+      error_message(buf);
       exit(1);
     }
     err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
     if (err != 0) {
-      fprintf(stderr, "error setting PortMidi filter for %s: %s\n", name,
+      char buf[BUFSIZ];
+      sprintf(buf, "error setting PortMidi filter for input %s: %s\n", name,
               Pm_GetErrorText(err));
+      error_message(buf);
       exit(1);
     }
   }
@@ -116,8 +121,10 @@ void Input::start() {
   if (portmidi_pthread == 0) {
     status = pthread_create(&portmidi_pthread, 0, input_thread, 0);
     if (status != 0) {
-      fprintf(stderr, "error creating global input stream thread %s: %d\n",
+      char buf[BUFSIZ];
+      sprintf(buf, "error creating global input stream thread %s: %d\n",
               name.c_str(), status);
+      error_message(buf);
       exit(1);
     }
   }
@@ -126,8 +133,10 @@ void Input::start() {
   running = true;
   status = pthread_create(&read_pthread, 0, read_thread, this);
   if (status != 0) {
-    fprintf(stderr, "error creating input read thread %s: %d\n",
+    char buf[BUFSIZ];
+    sprintf(buf, "error creating input read thread %s: %d\n",
             name.c_str(), status);
+    error_message(buf);
     exit(1);
   }
 }

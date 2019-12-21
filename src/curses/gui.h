@@ -22,7 +22,9 @@ public:
 
   void run();
 
+  void show_message(string);
   void clear_message();
+  void clear_message_after(int);
   int clear_message_seconds() { return clear_msg_secs; }
   int clear_message_id() { return clear_msg_id; }
 
@@ -64,9 +66,9 @@ private:
   void load();
   void load(string path);
   void reload();
-  void show_message(string);
-  void clear_message_after(int);
   int max_name_len(vector<Named *> *);
 };
+
+GUI *gui_instance();
 
 #endif /* GUI_H */

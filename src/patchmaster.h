@@ -11,8 +11,6 @@ using namespace std;
 
 class Cursor;
 
-PatchMaster *PatchMaster_instance();
-
 class PatchMaster {
 public:
   vector<Input *> inputs;
@@ -43,5 +41,7 @@ public:
 
   void panic(bool send_notes_off);
 };
+
+PatchMaster *PatchMaster_instance();
 
 #endif /* PATCHMASTER_H */
