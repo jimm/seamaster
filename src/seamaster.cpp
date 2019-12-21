@@ -1,6 +1,7 @@
 #include <iostream>
 #include <getopt.h>
 #include <libgen.h>
+#include "error.h"
 #include "patchmaster.h"
 #include "loader.h"
 #include "curses/gui.h"

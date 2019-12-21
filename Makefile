@@ -27,6 +27,11 @@ test: $(NAME)_test
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)
 
+tags:	TAGS
+
+TAGS:	$(SRC)
+	etags $(SRC)
+
 .PHONY: clean
 clean:
 	rm -f $(NAME) $(NAME)_test src/*.o src/curses/*.o test/*.o

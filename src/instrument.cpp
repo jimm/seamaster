@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include "error.h"
 #include "instrument.h"
 
 Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_num)
@@ -12,9 +13,12 @@ Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_
 Instrument::~Instrument() {
   if (real_port()) {
     PmError err = Pm_Close(stream);
-    if (err != 0)
-      fprintf(stderr, "error closing instrument %s: %s\n", name.c_str(),
+    if (err != 0) {
+      char buf[BUFSIZ];
+      sprintf(buf, "error closing instrument %s: %s\n", name.c_str(),
               Pm_GetErrorText(err));
+      error_message(buf);
+    }
   }
 }
 

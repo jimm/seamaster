@@ -16,12 +16,22 @@
 #include "program_change_window.h"
 #include "../cursor.h"
 
+
+static GUI *g_instance = 0;
+
+GUI *gui_instance() {
+  return g_instance;
+}
+
 GUI::GUI(PatchMaster *pmaster)
   : pm(pmaster), layout(NORMAL), clear_msg_id(0)
 {
+  g_instance = this;
 }
 
 GUI::~GUI() {
+  if (g_instance == this)
+    g_instance = 0;
 }
 
 void GUI::run() {
