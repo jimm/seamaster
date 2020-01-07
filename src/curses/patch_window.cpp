@@ -6,7 +6,7 @@
 #include "../formatter.h"
 
 PatchWindow::PatchWindow(struct rect r, const char *title_prefix, int imaxlen, int omaxlen)
-  : Window(r, title_prefix), patch(0), max_input_name_len(imaxlen), max_output_name_len(omaxlen)
+  : Window(r, title_prefix), patch(nullptr), max_input_name_len(imaxlen), max_output_name_len(omaxlen)
 {
 }
 
@@ -14,7 +14,7 @@ PatchWindow::~PatchWindow() {
 }
 
 void PatchWindow::set_contents(Patch *p) {
-  title = p == 0 ? 0 : p->name;
+  title = p == nullptr ? nullptr : p->name;
   patch = p;
 }
 
@@ -22,12 +22,13 @@ void PatchWindow::draw() {
   Window::draw();
   wmove(win, 1, 1);
   draw_headers();
-  if (patch == 0)
+  if (patch == nullptr)
     return;
 
-  for (vector<Connection *>::iterator i = patch->connections.begin(); i != patch->connections.end(); ++i) {
-    wmove(win, i - patch->connections.begin() + 2, 1);
-    draw_connection(*i);
+  int row = 2;
+  for (auto& conn : patch->connections) {
+    wmove(win, row++, 1);
+    draw_connection(conn);
   }
 }
 

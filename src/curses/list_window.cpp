@@ -2,7 +2,7 @@
 #include "list_window.h"
 
 ListWindow::ListWindow(struct rect r, const char *title_prefix)
-  : Window(r, title_prefix), list(0), curr_item(0)
+  : Window(r, title_prefix), list(nullptr), curr_item(nullptr)
 {
 }
 
@@ -22,7 +22,7 @@ void ListWindow::set_contents(const char *title_str, vector<Named *> *l,
 
 void ListWindow::draw() {
   Window::draw();
-  if (list == 0 || curr_item == 0)
+  if (list == nullptr || curr_item == nullptr)
     return;
 
   vector<Named *>::iterator curr_index = find(list->begin(), list->end(), curr_item);

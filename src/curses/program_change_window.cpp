@@ -19,9 +19,9 @@ ProgramChangeWindow::~ProgramChangeWindow() {
 
 void ProgramChangeWindow::draw() {
   Window::draw();
-  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i)
-    if (something_to_draw(*i))
-      draw_input(*i);
+  for (auto& input : inputs)
+    if (something_to_draw(input))
+      draw_input(input);
 }
 
 void ProgramChangeWindow::draw_input(Input *in) {

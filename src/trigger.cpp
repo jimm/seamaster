@@ -38,6 +38,6 @@ void Trigger::perform_action() {
 }
 
 void Trigger::send_message(PatchMaster *pm) {
-  for (vector<Output *>::iterator i = pm->outputs.begin(); i != pm->outputs.end(); ++i)
-    output_message->send(**i);
+  for (auto& out : pm->outputs)
+    output_message->send(*out);
 }

@@ -4,17 +4,17 @@
 #include "output.h"
 
 Message::Message(const char *name)
-  : Named(name), events(0), num_events(0)
+  : Named(name), events(nullptr), num_events(0)
 {
 }
 
 Message::~Message() {
-  if (events != 0)
+  if (events != nullptr)
     free(events);
 }
 
 void Message::send(Output &out) {
-  if (events == 0)
+  if (events == nullptr)
     convert_messages();
   out.write(events, num_events);
 }

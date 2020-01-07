@@ -15,9 +15,10 @@ HelpWindow::~HelpWindow() {
 
 void HelpWindow::draw() {
   Window::draw();
-  for (vector<char *>::iterator i = lines->begin(); i != lines->end(); ++i) {
-    wmove(win, i - lines->begin() + 1, 1);
-    waddstr(win, *i);
+  int row = 1;
+  for (auto& line : *lines) {
+    wmove(win, row++, 1);
+    waddstr(win, line);
   }
 }
 

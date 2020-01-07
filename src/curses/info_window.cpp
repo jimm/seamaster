@@ -31,9 +31,10 @@ void InfoWindow::draw() {
   char fitted[BUFSIZ];
 
   Window::draw();
-  for (vector<char *>::iterator i = display_list->begin(); i != display_list->end(); ++i) {
-    wmove(win, i - display_list->begin() + 1, 1);
-    make_fit(*i, 1, fitted);
+  int row = 1;
+  for (auto& line : *display_list) {
+    wmove(win, row++, 1);
+    make_fit(line, 1, fitted);
     waddstr(win, fitted);
   }
 }
@@ -54,7 +55,7 @@ vector<char *> *info_window_text_to_lines(const char *text) {
 }
 
 void info_window_free_lines(vector<char *> *lines) {
-  if (lines == 0)
+  if (lines == nullptr)
     return;
 
   if (!lines->empty())

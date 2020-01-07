@@ -149,7 +149,7 @@ void test_cursor_goto_song() {
 
   c->goto_song("nother");
   Song *s = c->song();
-  tassert(s != 0, 0);
+  tassert(s != nullptr, 0);
   tassert(s->name == "Another Song", 0);
 
   delete pm;
@@ -160,7 +160,7 @@ void test_cursor_goto_song_no_such_song() {
   Cursor *c = pm->cursor;
 
   Song *before = c->song();
-  tassert(before != 0, 0);
+  tassert(before != nullptr, 0);
 
   c->goto_song("nosuch");
   Song *s = c->song();
@@ -175,7 +175,7 @@ void test_cursor_goto_song_list() {
 
   c->goto_song_list("two");
   SongList *sl = c->song_list();
-  tassert(sl != 0, 0);
+  tassert(sl != nullptr, 0);
   tassert(sl->name == "Song List Two", 0);
 
   delete pm;
@@ -186,7 +186,7 @@ void test_cursor_goto_song_list_no_such_song_list() {
   Cursor *c = pm->cursor;
 
   SongList *before = c->song_list();
-  tassert(before != 0, 0);
+  tassert(before != nullptr, 0);
 
   c->goto_song_list("nosuch");
   SongList *sl = c->song_list();

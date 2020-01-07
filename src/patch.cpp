@@ -8,16 +8,16 @@ Patch::Patch(const char *patch_name)
 }
 
 Patch::~Patch() {
-  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
-    delete *i;
+  for (auto& conn : connections)
+    delete conn;
 }
 
 void Patch::start() {
   if (running)
     return;
 
-  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
-    (*i)->start(start_messages);
+  for (auto& conn : connections)
+    conn->start(start_messages);
   running = true;
 }
 
@@ -29,7 +29,7 @@ void Patch::stop() {
   if (!running)
     return;
 
-  for (vector<Connection *>::iterator i = connections.begin(); i != connections.end(); ++i)
-    (*i)->stop(stop_messages);
+  for (auto& conn : connections)
+    conn->stop(stop_messages);
   running = false;
 }

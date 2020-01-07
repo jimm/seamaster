@@ -8,10 +8,10 @@ Song::Song(const char *name)
 }
 
 Song::~Song() {
-  for (vector<Patch *>::iterator i = patches.begin(); i != patches.end(); ++i)
-    delete *i;
-  for (vector<char *>::iterator i = notes.begin(); i != notes.end(); ++i)
-    free(*i);
+  for (auto& patch : patches)
+    delete patch;
+  for (auto& note : notes)
+    free(note);
 }
 
 // Take over ownership of list of malloc'd char*.

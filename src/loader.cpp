@@ -18,7 +18,7 @@ static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
 
 Loader::Loader()
-  : song(0)
+  : song(nullptr)
 {
 }
 
@@ -33,7 +33,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   error_str = "";
 
   fp = fopen(path, "r");
-  if (fp == 0) {
+  if (fp == nullptr) {
     error_str = strerror(errno);
     return 0;
   }
@@ -45,11 +45,11 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   pm->loaded_from_file = path;
   pm->testing = testing;
   clear();
-  while (!has_error() && fgets(line, BUFSIZ, fp) != 0) {
+  while (!has_error() && fgets(line, BUFSIZ, fp) != nullptr) {
     strip_newline(line);
     parse_line(line);
   }
-  if (song != 0)
+  if (song != nullptr)
     ensure_song_has_patch();
 
   fclose(fp);
@@ -69,7 +69,7 @@ string Loader::error() {
 }
 
 void Loader::clear() {
-  if (song != 0)
+  if (song != nullptr)
     ensure_song_has_patch();
 
   section = IGNORE;
@@ -90,7 +90,7 @@ void Loader::parse_line(char *line) {
   int start = 0;
   if (notes_state == OUTSIDE) {
     start = strspn(line, whitespace);
-    if (line[start] == 0 || is_markup_block_command(line))
+    if (line[start] == '\0' || is_markup_block_command(line))
       return;
   }
   else if (is_markup_block_command(line))
@@ -167,7 +167,7 @@ void Loader::parse_message_line(char *line) {
     return;
   }
 
-  if (message == 0)             // introductory text
+  if (message == nullptr)       // introductory text
     return;
 
   message->messages.push_back(message_from_bytes(line));
@@ -180,7 +180,7 @@ void Loader::parse_trigger_line(char *line) {
   vector<char *> cols;
   table_columns(line, cols);
   Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), cols[0]);
-  if (in == 0) {                // might be table header, not an error
+  if (in == nullptr) {          // might be table header, not an error
     return;
   }
 
@@ -198,7 +198,7 @@ void Loader::parse_trigger_line(char *line) {
   else if (strncasecmp(cols[2], "message", 7) == 0) {
     action = MESSAGE;
     output_msg = find_message(pm->messages, cols[3]);
-    if (output_msg == 0) {
+    if (output_msg == nullptr) {
       ostringstream es;
       es << "trigger can not find message named " << cols[3];
       error_str = es.str();
@@ -213,7 +213,7 @@ PmMessage Loader::message_from_bytes(const char *str) {
   int bytes[3] = {0, 0, 0};
   int i = 0;
 
-  for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != 0; word = strtok(0, ", ")) {
+  for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != nullptr; word = strtok(0, ", ")) {
     if (i < 3) {
       word += strspn(word, whitespace);
       if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
@@ -239,7 +239,7 @@ void Loader::parse_song_line(char *line) {
     load_connection(line + 5);
   else if (notes_state != OUTSIDE)
     save_notes_line(line);
-  else if (is_list_item(line) && conn != 0) {
+  else if (is_list_item(line) && conn != nullptr) {
     line += 2;
     char ch = line[0];
     switch (ch) {
@@ -297,7 +297,7 @@ void Loader::load_message(char *line) {
 }
 
 void Loader::load_song(char *line) {
-  if (song != 0)
+  if (song != nullptr)
     ensure_song_has_patch();
 
   Song *s = new Song(line);
@@ -311,7 +311,7 @@ void Loader::load_song(char *line) {
 void Loader::save_notes_line(char *line) {
   if (notes_state == SKIPPING_BLANK_LINES) {
     int start = strspn(line, whitespace);
-    if (line[start] == 0)
+    if (line[start] == '\0')
       return;
   }
 
@@ -337,7 +337,7 @@ void Loader::stop_collecting_notes() {
 
 void Loader::load_patch(char *line) {
   stop_collecting_notes();
-  if (!notes.empty() && song != 0) {
+  if (!notes.empty() && song != nullptr) {
     song->take_notes(notes);
     notes.clear();              // do not dealloc
   }
@@ -352,19 +352,19 @@ void Loader::load_patch(char *line) {
 
 void Loader::load_connection(char *line) {
   stop_collecting_notes();
-  if (!notes.empty() && conn == 0) // first conn, interpret start/stop in notes
+  if (!notes.empty() && conn == nullptr) // first conn, interpret start/stop in notes
     start_and_stop_messages_from_notes();
 
   vector<char *> args;
   comma_sep_args(line, false, args);
   Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), args[0]);
-  if (in == 0) {
+  if (in == nullptr) {
     instrument_not_found("input", args[0]);
     return;
   }
   int in_chan = chan_from_word(args[1]);
   Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs), args[2]);
-  if (out == 0) {
+  if (out == nullptr) {
     instrument_not_found("output", args[2]);
     return;
   }
@@ -376,8 +376,8 @@ void Loader::load_connection(char *line) {
 
 void Loader::start_and_stop_messages_from_notes() {
   StartStopState state = UNSTARTED;
-  for (vector<char *>::iterator i = notes.begin(); i != notes.end(); ++i) {
-    char *str = *i + strspn(*i, whitespace);
+  for (auto& note : notes) {
+    char *str = note + strspn(note, whitespace);
     if (strlen(str) == 0)       
       continue;
 
@@ -470,7 +470,7 @@ void Loader::load_song_list(char *line) {
 
 void Loader::load_song_list_song(char *line) {
   Song *s = find_song(pm->all_songs->songs, line);
-  if (s == 0) {
+  if (s == nullptr) {
     ostringstream es;
     es << "set list " << song_list->name << " can not find song named " << line;
     error_str = es.str();
@@ -481,17 +481,16 @@ void Loader::load_song_list_song(char *line) {
 }
 
 void Loader::ensure_song_has_patch() {
-  if (song == 0 || !song->patches.empty())
+  if (song == nullptr || !song->patches.empty())
     return;
 
   Patch *p = new Patch(default_patch_name);
   song->patches.push_back(p);
 
-  for (vector<Input *>::iterator i = pm->inputs.begin(); i != pm->inputs.end(); ++i) {
-    Input *in = *i;
+  for (auto& in : pm->inputs) {
     Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs),
                                         (char *)in->sym.c_str());
-    if (out != 0) {
+    if (out != nullptr) {
       Connection *conn = new Connection(in, -1, out, -1);
       p->connections.push_back(conn);
     }
@@ -529,7 +528,7 @@ char *Loader::skip_first_word(char *line) {
 void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
-  for (char *word = strtok(args_start, whitespace); word != 0; word = strtok(0, whitespace)) {
+  for (char *word = strtok(args_start, whitespace); word != nullptr; word = strtok(0, whitespace)) {
     word += strspn(word, whitespace);
     v.push_back(word);
   }
@@ -543,7 +542,7 @@ void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) 
 void Loader::comma_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
-  for (char *word = strtok(args_start, ","); word != 0; word = strtok(0, ",")) {
+  for (char *word = strtok(args_start, ","); word != nullptr; word = strtok(0, ",")) {
     word += strspn(word, whitespace);
     v.push_back(word);
   }
@@ -551,7 +550,7 @@ void Loader::comma_sep_args(char *line, bool skip_word, vector<char *> &v) {
 
 void Loader::table_columns(char *line, vector<char *> &v) {
   line += strspn(line, whitespace);
-  for (char *column = strtok(line, "|"); column != 0; column = strtok(0, "|"))
+  for (char *column = strtok(line, "|"); column != nullptr; column = strtok(0, "|"))
     v.push_back(trim(column));
 }
 
@@ -598,23 +597,23 @@ int Loader::compare_device_names(char *name1, char *name2) {
 }
 
 Instrument *Loader::find_by_sym(vector<Instrument *> &list, char *name) {
-  for (vector<Instrument *>::iterator i = list.begin(); i != list.end(); ++i)
-    if (strncasecmp((*i)->sym.c_str(), name, (*i)->sym.length()) == 0)
-      return *i;
+  for (auto& instrument : list)
+    if (strncasecmp(instrument->sym.c_str(), name, instrument->sym.length()) == 0)
+      return instrument;
   return 0;
 }
 
 Song *Loader::find_song(vector<Song *> &list, char *name) {
-  for (vector<Song *>::iterator i = list.begin(); i != list.end(); ++i)
-    if (strncasecmp((*i)->name.c_str(), name, (*i)->name.length()) == 0)
-      return *i;
+  for (auto& song : list)
+    if (strncasecmp(song->name.c_str(), name, song->name.length()) == 0)
+      return song;
   return 0;
 }
 
 Message *Loader::find_message(vector<Message *> &list, char *name) {
-  for (vector<Message *>::iterator i = list.begin(); i != list.end(); ++i)
-    if (strncasecmp((*i)->name.c_str(), name, (*i)->name.length()) == 0)
-      return *i;
+  for (auto& msg : list)
+    if (strncasecmp(msg->name.c_str(), name, msg->name.length()) == 0)
+      return msg;
   return 0;
 }
 
@@ -649,7 +648,7 @@ bool Loader::is_markup_block_command(const char *line) {
 
 void Loader::determine_markup(const char *path) {
   const char *extension = strrchr(path, '.');
-  if (extension == 0)
+  if (extension == nullptr)
     markup = org_mode_markup;
   else if (strncasecmp(extension, ".markdown", 9) == 0 || strncasecmp(extension, ".md", 3) == 0)
     markup = markdown_mode_markup;
@@ -658,7 +657,7 @@ void Loader::determine_markup(const char *path) {
 }
 
 void Loader::clear_notes() {
-  for (vector<char *>::iterator i = notes.begin(); i != notes.end(); ++i)
-    free(*i);
+  for (auto& str : notes)
+    free(str);
   notes.clear();
 }

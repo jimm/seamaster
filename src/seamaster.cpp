@@ -16,7 +16,7 @@ struct opts {
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
   printf("%s:\n", title);
   for (int i = 0; i < num_devices; ++i)
-    if (infos[i] != 0) {
+    if (infos[i] != nullptr) {
       const char *name = infos[i]->name;
       const char *q = (name[0] == ' ' || name[strlen(name)-1] == ' ') ? "\"" : "";
       printf("  %2d: %s%s%s%s\n", i, q, name, q, infos[i]->opened ? " (open)" : "");
@@ -54,7 +54,7 @@ void initialize() {
 
 void load(const char *path, bool testing) {
   Loader loader;
-  if (loader.load(path, testing) == 0) // sets PM instance as a side-effect
+  if (loader.load(path, testing) == nullptr) // sets PM instance as a side-effect
     exit(1);                           // error already printed
   if (loader.has_error()) {
     cerr << "error: " << loader.error() << endl;

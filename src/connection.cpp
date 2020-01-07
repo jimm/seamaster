@@ -17,9 +17,9 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
 Connection::~Connection() {
 }
 
-void Connection::start(vector<PmMessage> &messages) {
-  for (vector<PmMessage>::iterator i = messages.begin(); i != messages.end(); ++i)
-    midi_out(*i);
+void Connection::start(const vector<PmMessage> &messages) {
+  for (auto& msg : messages)
+    midi_out(msg);
   if (prog.bank_msb >= 0)
     midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_MSB, prog.bank_msb));
   if (prog.bank_lsb >= 0)
@@ -31,8 +31,8 @@ void Connection::start(vector<PmMessage> &messages) {
 }
 
 void Connection::stop(vector<PmMessage> &messages) {
-  for (vector<PmMessage>::iterator i = messages.begin(); i != messages.end(); ++i)
-    midi_out(*i);
+  for (auto& msg : messages)
+    midi_out(msg);
   input->remove_connection(this);
 }
 

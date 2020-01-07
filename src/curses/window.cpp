@@ -4,7 +4,7 @@
 
 Window::Window(struct rect r, const char *title_prefix_str)
 {
-  if (title_prefix_str != 0)
+  if (title_prefix_str != nullptr)
     title_prefix = title_prefix_str;
   title = "";
   win = newwin(r.height, r.width, r.row, r.col);

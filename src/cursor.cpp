@@ -32,7 +32,7 @@ void Cursor::init() {
   song_list_index = 0;
 
   SongList *sl = song_list();
-  if (sl != 0 && sl->songs.size() > 0) {
+  if (sl != nullptr && sl->songs.size() > 0) {
     song_index = 0;
     Song *s = song();
     patch_index = (s != 0 && s->patches.size() > 0) ? 0 : UNDEFINED;
@@ -52,14 +52,14 @@ SongList *Cursor::song_list() {
 
 Song *Cursor::song() {
   SongList *sl = song_list();
-  if (sl == 0 || song_index == UNDEFINED)
+  if (sl == nullptr || song_index == UNDEFINED)
     return 0;
   return sl->songs[song_index];
 }
 
 Patch *Cursor::patch() {
   Song *s = song();
-  if (s == 0 || patch_index == UNDEFINED)
+  if (s == nullptr || patch_index == UNDEFINED)
     return 0;
   return s->patches[patch_index];
 }
@@ -85,7 +85,7 @@ void Cursor::prev_song() {
 
 void Cursor::next_patch() {
   Song *s = song();
-  if (s == 0)
+  if (s == nullptr)
     return;
 
   if (patch_index == s->patches.size()-1)
@@ -103,28 +103,28 @@ void Cursor::prev_patch() {
 
 void Cursor::goto_song(string name_regex) {
   SongList *sl = song_list();
-  Song *new_song = 0;
+  Song *new_song = nullptr;
   Named *named;
 
-  if (sl != 0) {
+  if (sl != nullptr) {
     named = find_in_list(reinterpret_cast<vector<Named *> *>(&sl->songs), name_regex);
     new_song = reinterpret_cast<Song *>(named);
   }
-  if (new_song == 0) {
+  if (new_song == nullptr) {
     named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
                          name_regex);
     new_song = reinterpret_cast<Song *>(named);
   }
 
-  if (new_song == 0)
+  if (new_song == nullptr)
     return;
 
-  Patch *new_patch = new_song == 0 ? 0 : new_song->patches[0];
+  Patch *new_patch = new_song == nullptr ? nullptr : new_song->patches[0];
 
-  SongList *new_song_list = 0;
+  SongList *new_song_list = nullptr;
   Song *curr_song = song();
-  if ((new_song != 0 && new_song != curr_song) || (new_song == curr_song && patch() != new_patch)) {
-    if (sl != 0 && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
+  if ((new_song != nullptr && new_song != curr_song) || (new_song == curr_song && patch() != new_patch)) {
+    if (sl != nullptr && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
       new_song_list = sl;
     else
       new_song_list = pm->all_songs;
@@ -137,7 +137,7 @@ void Cursor::goto_song(string name_regex) {
 
 void Cursor::goto_song_list(string name_regex) {
   Named *named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->song_lists), name_regex);
-  if (named == 0)
+  if (named == nullptr)
     return;
 
   SongList *new_song_list = reinterpret_cast<SongList *>(named);
@@ -153,18 +153,18 @@ void Cursor::goto_song_list(string name_regex) {
 void Cursor::attempt_goto(Cursor *c) {
   init();
 
-  if (c->song_list() != 0)
+  if (c->song_list() != nullptr)
     song_list_index =
       find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->song_lists),
                                c->song_list()->name);
 
-  if (c->song() == 0)
+  if (c->song() == nullptr)
     return;
 
   song_index =
     find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
                              c->song()->name);
-  if (c->patch() != 0)
+  if (c->patch() != nullptr)
     patch_index =
       find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&song()->patches),
                                c->patch()->name);
@@ -180,10 +180,9 @@ Named *Cursor::find_in_list(vector<Named *> *list, string regex) {
   if (regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE) != 0)
     return 0;
 
-  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i) {
-    if (regexec(&re, (*i)->name.c_str(), 1, &pm, 0) == 0) {
-      return *i;
-    }
+  for (auto& named : *list) {
+    if (regexec(&re, named->name.c_str(), 1, &pm, 0) == 0)
+      return named;
   }
   return 0;
 }
@@ -191,8 +190,8 @@ Named *Cursor::find_in_list(vector<Named *> *list, string regex) {
 int Cursor::find_nearest_match_index(vector<Named *> *list, string str) {
   string target = downcased_copy(str);
   vector<int> distances;
-  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i)
-    distances.push_back(damerau_levenshtein(target, downcased_copy((*i)->name)));
+  for (auto& named : *list)
+    distances.push_back(damerau_levenshtein(target, downcased_copy(named->name)));
 
   int min_dist = 9999, min_index = -1;
   

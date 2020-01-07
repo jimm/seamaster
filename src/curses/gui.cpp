@@ -244,7 +244,7 @@ void GUI::set_normal_window_data() {
                           reinterpret_cast<vector<Named *> *>(&sl->songs),
                           pm->cursor->song());
 
-  if (s != 0) {
+  if (s != nullptr) {
     song->set_contents(s->name.c_str(),
                        reinterpret_cast<vector<Named *> *>(&s->patches),
                        pm->cursor->patch());
@@ -253,8 +253,8 @@ void GUI::set_normal_window_data() {
   }
   else {
     song->set_contents(0, 0, 0);
-    info->set_contents(0);
-    patch->set_contents(0);
+    info->set_contents(nullptr);
+    patch->set_contents(nullptr);
   }
 }
 
@@ -262,7 +262,7 @@ void GUI::set_play_window_data() {
   Song *s = pm->cursor->song();
   Patch *p = pm->cursor->patch();
 
-  if (s != 0) {
+  if (s != nullptr) {
     play_song->set_contents(s->name.c_str(),
                             reinterpret_cast<vector<Named *> *>(&s->patches),
                             pm->cursor->patch());
@@ -270,9 +270,9 @@ void GUI::set_play_window_data() {
     play_patch->set_contents(p);
   }
   else {
-    play_song->set_contents(0, 0, 0);
-    play_notes->set_contents(0);
-    play_patch->set_contents(0);
+    play_song->set_contents(nullptr, nullptr, nullptr);
+    play_notes->set_contents(nullptr);
+    play_patch->set_contents(nullptr);
   }
 }
 
@@ -379,8 +379,8 @@ void GUI::clear_message_after(int secs) {
 
 int GUI::max_name_len(vector<Named *> *list) {
   int maxlen = 0;
-  for (vector<Named *>::iterator i = list->begin(); i != list->end(); ++i) {
-    int len = (*i)->name.length();
+  for (auto& named : *list) {
+    int len = named->name.length();
     if (len > maxlen)
       maxlen = len;
   }

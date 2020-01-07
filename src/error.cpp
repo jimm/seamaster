@@ -3,7 +3,7 @@
 
 void error_message(const char * const msg) {
   GUI *gui = gui_instance();
-  if (gui != 0) {
+  if (gui != nullptr) {
     gui->show_message(msg);
     gui->clear_message_after(10);
   }

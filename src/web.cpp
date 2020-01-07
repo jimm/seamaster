@@ -80,9 +80,7 @@ int Web::run() {
   serveraddr.sin_family = AF_INET;
   serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
   serveraddr.sin_port = htons((unsigned short)port_num);
-  if (bind(parentfd, (struct sockaddr *) &serveraddr, 
-	   sizeof(serveraddr)) < 0) 
-    error("ERROR on binding");
+  bind(parentfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr));
 
   /* get us ready to accept connection requests */
   if (listen(parentfd, 5) < 0) /* allow 5 requests to queue up */ 
@@ -292,13 +290,13 @@ void Web::return_status() {
 
   str += ",\"triggers\":[";
   int nth = 0;
-  for (vector<Input *>::iterator i = pm->inputs.begin(); i != pm->inputs.end(); ++i) {
-    for (vector<Trigger *>::iterator j = (*i)->triggers.begin(); j != (*i)->triggers.end(); ++j) {
+  for (auto& input : pm->inputs) {
+    for (auto& trigger : input->triggers) {
       // FIXME handle double quotes in names
       if (nth != 0)
         str += ',';
       str += "\":";
-      str += (*i)->sym;
+      str += input->sym;
       str += ' ';
       str += "<trigger>";       // FIXME
       str += '"';
@@ -308,7 +306,7 @@ void Web::return_status() {
   str += "]";
 
   Song *song = pm->cursor->song();
-  if (song != 0) {
+  if (song != nullptr) {
     str += ",\"song\":{\"name\":\"";
     str += song->name;
     str += "\",\"patches\":";
@@ -317,17 +315,17 @@ void Web::return_status() {
   }
 
   Patch *patch = pm->cursor->patch();
-  if (patch != 0) {
+  if (patch != nullptr) {
     str += ",\"patch\":{";
 
     str += "\"name\":";
     append_quoted_string(str, patch->name);
 
     str += ",\"connections\":[";
-    for (vector<Connection *>::iterator j = patch->connections.begin(); j != patch->connections.end(); ++j) {
-      if (j != patch->connections.begin())
+    for (auto& conn : patch->connections) {
+      if (conn != patch->connections.front())
         str += ',';
-      append_connection(str, *j);
+      append_connection(str, conn);
     }
     str += "]}";
   }
@@ -397,20 +395,20 @@ void Web::append_connection(string &str, Connection *conn) {
 
 void Web::append_json_list_of_names(string &str, vector<Named *> &list) {
   str += '[';
-  for (vector<Named *>::iterator i = list.begin(); i != list.end(); ++i) {
-    if (i != list.begin())
+  for (auto& named : list) {
+    if (named != list.front())
       str += ',';
-    append_quoted_string(str, (*i)->name);
+    append_quoted_string(str, named->name);
   }
   str += ']';
 }
 
 void Web::append_quoted_string(string &str, string &quote_me) {
   str += '"';
-  for (string::iterator i = quote_me.begin(); i != quote_me.end(); ++i) {
-    if (*i == '"')
+  for (auto& ch : quote_me) {
+    if (ch == '"')
       str += '\\';
-    str += *i;
+    str += ch;
   }
   str += '"';
 }

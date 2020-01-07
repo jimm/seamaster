@@ -18,7 +18,7 @@ void TriggerWindow::set_contents(const char *title, Trigger *trigger) {
 
 void TriggerWindow::draw() {
   Window::draw();
-  if (trigger == 0)
+  if (trigger == nullptr)
     return;
 
   // TODO

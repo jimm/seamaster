@@ -23,10 +23,7 @@ void *input_thread(void *_) {
 
   while (true) {
     bool processed_something = false;
-    for (vector<Input *>::iterator iter = inputs.begin();
-         iter != inputs.end();
-         ++iter) {
-      Input *in = *iter;
+    for (auto& in : inputs) {
       if (in->running && Pm_Poll(in->stream) == TRUE) {
         PmEvent buf[MIDI_BUFSIZ];
         int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
@@ -91,8 +88,8 @@ Input::Input(const char *sym, const char *name, int port_num)
 }
 
 Input::~Input() {
-  for (vector<Trigger *>::iterator i = triggers.begin(); i != triggers.end(); ++i)
-    delete *i;
+  for (auto& trigger : triggers)
+    delete trigger;
 }
 
 void Input::add_connection(Connection *conn) {
@@ -165,8 +162,8 @@ void Input::enqueue(PmEvent *events, int num) {
 
 void Input::read(PmMessage msg) {
   // triggers
-  for (vector<Trigger *>::iterator i = triggers.begin(); i != triggers.end(); ++i)
-    (*i)->signal(msg);
+  for (auto& trigger : triggers)
+    trigger->signal(msg);
 
   // When testing, remember the messages we've seen. This could be made
   // more efficient by doing a bulk copy before or after this for loop,
@@ -176,9 +173,8 @@ void Input::read(PmMessage msg) {
 
   remember_program_change_messages(msg);
 
-  vector<Connection *> &conns = connections_for_message(msg);
-  for (vector<Connection *>::iterator i = conns.begin(); i != conns.end(); ++i)
-    (*i)->midi_in(msg);
+  for (auto &conn : connections_for_message(msg))
+    conn->midi_in(msg);
 }
 
 // Removes a single PmMessages from our message queue in a thread-safe
