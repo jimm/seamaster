@@ -211,22 +211,22 @@ void test_cursor_attempt_goto() {
 }
 
 void test_cursor() {
-  // test_run(test_cursor_init_empty);
-  // test_run(test_cursor_init);
-  // test_run(test_cursor_next_patch);
-  // test_run(test_cursor_next_patch_at_end_of_song);
-  // test_run(test_cursor_next_patch_at_end_of_song_list);
-  // test_run(test_cursor_prev_patch);
-  // test_run(test_cursor_prev_patch_start_of_song);
-  // test_run(test_cursor_prev_patch_start_of_song_list);
-  // test_run(test_cursor_next_song);
-  // test_run(test_cursor_prev_song);
-  // test_run(test_cursor_song_list);
-  // test_run(test_cursor_song);
-  // test_run(test_cursor_patch);
-  // test_run(test_cursor_goto_song);
-  // test_run(test_cursor_goto_song_no_such_song);
-  // test_run(test_cursor_goto_song_list);
-  // test_run(test_cursor_goto_song_list_no_such_song_list);
+  test_run(test_cursor_init_empty);
+  test_run(test_cursor_init);
+  test_run(test_cursor_next_patch);
+  test_run(test_cursor_next_patch_at_end_of_song);
+  test_run(test_cursor_next_patch_at_end_of_song_list);
+  test_run(test_cursor_prev_patch);
+  test_run(test_cursor_prev_patch_start_of_song);
+  test_run(test_cursor_prev_patch_start_of_song_list);
+  test_run(test_cursor_next_song);
+  test_run(test_cursor_prev_song);
+  test_run(test_cursor_song_list);
+  test_run(test_cursor_song);
+  test_run(test_cursor_patch);
+  test_run(test_cursor_goto_song);
+  test_run(test_cursor_goto_song_no_such_song);
+  test_run(test_cursor_goto_song_list);
+  test_run(test_cursor_goto_song_list_no_such_song_list);
   test_run(test_cursor_attempt_goto);
 }
