@@ -218,16 +218,30 @@ PmMessage Loader::message_from_bytes(const char *str) {
       word += strspn(word, whitespace);
       if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
         bytes[i] = (int)strtol(word, 0, 16);
+        if (!check_byte_value(bytes[i]))
+          return 0;
         ++i;
       }
       else if (isdigit(word[0])) {
         bytes[i] = atoi(word);
+        if (!check_byte_value(bytes[i]))
+          return 0;
         ++i;
       }
     }
   }
 
   return Pm_Message(bytes[0], bytes[1], bytes[2]);
+}
+
+bool Loader::check_byte_value(int val) {
+  if (val >= 0 && val <= 255)
+    return true;
+
+  ostringstream es;
+  es << "byte value " << val << " is out of range";
+  error_str = es.str();
+  return false;
 }
 
 void Loader::parse_song_line(char *line) {
@@ -388,11 +402,9 @@ void Loader::start_and_stop_messages_from_notes() {
     else {
       switch (state) {
       case START_MESSAGES:
-        printf("patch %s, adding to start messages %s\n", patch->name.c_str(), str); // DEBUG
         patch->start_messages.push_back(message_from_bytes(str));
         break;
       case STOP_MESSAGES:
-        printf("patch %s, adding to stop messages %s\n", patch->name.c_str(), str); // DEBUG
         patch->stop_messages.push_back(message_from_bytes(str));
         break;
       case UNSTARTED:
