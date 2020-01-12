@@ -6,6 +6,7 @@
 #include "../src/cursor.h"
 #include "formatter_test.h"
 #include "loader_test.h"
+#include "patchmaster_test.h"
 #include "cursor_test.h"
 #include "controller_test.h"
 #include "connection_test.h"
@@ -51,6 +52,7 @@ void print_results() {
 void run_tests() {
   test_formatter();
   test_load();
+  test_patchmaster();
   test_cursor();
   test_controller();
   test_connection();

@@ -47,20 +47,20 @@ SongList *Cursor::song_list() {
   if (song_list_index != UNDEFINED)
     return pm->song_lists[song_list_index];
   else
-    return 0;
+    return nullptr;
 }
 
 Song *Cursor::song() {
   SongList *sl = song_list();
   if (sl == nullptr || song_index == UNDEFINED)
-    return 0;
+    return nullptr;
   return sl->songs[song_index];
 }
 
 Patch *Cursor::patch() {
   Song *s = song();
   if (s == nullptr || patch_index == UNDEFINED)
-    return 0;
+    return nullptr;
   return s->patches[patch_index];
 }
 
@@ -178,13 +178,13 @@ Named *Cursor::find_in_list(vector<Named *> *list, string regex) {
   regmatch_t pm;
 
   if (regcomp(&re, regex.c_str(), REG_EXTENDED | REG_ICASE) != 0)
-    return 0;
+    return nullptr;
 
   for (auto& named : *list) {
     if (regexec(&re, named->name.c_str(), 1, &pm, 0) == 0)
       return named;
   }
-  return 0;
+  return nullptr;
 }
 
 int Cursor::find_nearest_match_index(vector<Named *> *list, string str) {

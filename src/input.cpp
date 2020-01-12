@@ -35,7 +35,7 @@ void *input_thread(void *_) {
     }
     if (!processed_something) {
       if (nanosleep(&rqtp, 0) == -1)
-        return 0;
+        return nullptr;
     }
   }
 }
@@ -53,10 +53,10 @@ void *read_thread(void *in_voidptr) {
       in->read(msg);
     else {
       if (nanosleep(&rqtp, 0) == -1)
-        return 0;
+        return nullptr;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 

@@ -35,7 +35,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   fp = fopen(path, "r");
   if (fp == nullptr) {
     error_str = strerror(errno);
-    return 0;
+    return nullptr;
   }
 
   determine_markup(path);
@@ -388,9 +388,11 @@ void Loader::start_and_stop_messages_from_notes() {
     else {
       switch (state) {
       case START_MESSAGES:
+        printf("patch %s, adding to start messages %s\n", patch->name.c_str(), str); // DEBUG
         patch->start_messages.push_back(message_from_bytes(str));
         break;
       case STOP_MESSAGES:
+        printf("patch %s, adding to stop messages %s\n", patch->name.c_str(), str); // DEBUG
         patch->stop_messages.push_back(message_from_bytes(str));
         break;
       case UNSTARTED:
@@ -600,21 +602,21 @@ Instrument *Loader::find_by_sym(vector<Instrument *> &list, char *name) {
   for (auto& instrument : list)
     if (strncasecmp(instrument->sym.c_str(), name, instrument->sym.length()) == 0)
       return instrument;
-  return 0;
+  return nullptr;
 }
 
 Song *Loader::find_song(vector<Song *> &list, char *name) {
   for (auto& song : list)
     if (strncasecmp(song->name.c_str(), name, song->name.length()) == 0)
       return song;
-  return 0;
+  return nullptr;
 }
 
 Message *Loader::find_message(vector<Message *> &list, char *name) {
   for (auto& msg : list)
     if (strncasecmp(msg->name.c_str(), name, msg->name.length()) == 0)
       return msg;
-  return 0;
+  return nullptr;
 }
 
 bool Loader::is_header(const char *line, const char *header, int level) {

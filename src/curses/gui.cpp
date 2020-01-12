@@ -366,7 +366,7 @@ void *clear_message_thread(void *gui_vptr) {
   // Only clear the window if the id hasn't changed
   if (gui->clear_message_id() == clear_message_id)
     gui->clear_message();
-  return 0;
+  return nullptr;
 }
 
 void GUI::clear_message_after(int secs) {
