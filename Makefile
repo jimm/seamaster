@@ -30,8 +30,9 @@ test: $(NAME)_test
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)
 
-.phony: install
-install:	all
+install:	$(bindir)/$(NAME)
+
+$(bindir)/$(NAME):	$(NAME)
 	cp ./$(NAME) $(bindir)
 	chmod 755 $(bindir)/$(NAME)
 
