@@ -117,13 +117,15 @@ void test_load_start_and_stop_messages() {
   Song *s = pm->all_songs->songs[1];
   Patch *p = s->patches.back();
 
-  tassert(p->start_messages.size() == 2, 0);
-  tassert(p->start_messages[0] == Pm_Message(0xb0, 7, 127), "badly-read start message 1");
-  tassert(p->start_messages[1] == Pm_Message(0xb1, 7, 127), "badly-read start message 2");
+  tassert(p->start_messages.size() == 3, 0);
+  tassert(p->start_messages[0] == Pm_Message(0xb0, 0x7a, 0x00), "badly-read start message 1");
+  tassert(p->start_messages[1] == Pm_Message(0xb0, 7, 127), "badly-read start message 2");
+  tassert(p->start_messages[2] == Pm_Message(0xb1, 7, 127), "badly-read start message 3");
 
-  tassert(p->stop_messages.size() == 2, 0);
+  tassert(p->stop_messages.size() == 3, 0);
   tassert(p->stop_messages[0] == Pm_Message(0xb2, 7, 127), "badly-read stop message 1");
   tassert(p->stop_messages[1] == Pm_Message(0xb3, 7, 127), "badly-read stop message 2");
+  tassert(p->stop_messages[2] == Pm_Message(0xb0, 0x7a, 127), "badly-read stop message 3");
 }
 
 void test_load_connections() {
