@@ -10,7 +10,7 @@
 #define SLEEP_NANOSECS 10000000L
 
 vector<Input *> inputs;
-pthread_t portmidi_pthread = 0;
+pthread_t portmidi_pthread = nullptr;
 
 
 // For each running input in `inputs`, sees if there is any MIDI data to be
@@ -115,7 +115,7 @@ void Input::start() {
 
   // Not thread safe, but we don't care because this method is called
   // synchronously from a single thread.
-  if (portmidi_pthread == 0) {
+  if (portmidi_pthread == nullptr) {
     status = pthread_create(&portmidi_pthread, 0, input_thread, 0);
     if (status != 0) {
       char buf[BUFSIZ];
