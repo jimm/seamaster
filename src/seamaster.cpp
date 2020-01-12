@@ -7,10 +7,16 @@
 #include "curses/gui.h"
 #include "web.h"
 
+typedef enum interface {
+  INTERFACE_CURSES = 0,
+  INTERFACE_WEB = 1,
+  INTERFACE_CLI = 2
+} interface;
+
 struct opts {
   bool list_devices;
   bool testing;
-  bool web;
+  int interface;
 } opts;
 
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
@@ -62,12 +68,19 @@ void load(const char *path, bool testing) {
   }
 }
 
-void run() {
+void run_curses() {
   PatchMaster_instance()->start();
   GUI gui(PatchMaster_instance());
   gui.run();
   // Don't save PM above and use it here. User might have loaded a new one.
   PatchMaster_instance()->stop();
+}
+
+void run_cli() {
+  PatchMaster *pm = PatchMaster_instance();
+  pm->start();
+  while (pm->running)
+    sleep(1);
 }
 
 void run_web() {
@@ -90,6 +103,9 @@ void usage(const char *prog_name) {
        << "    -w or --web\n"
        << "        Use web interface on port 8080\n"
        << "\n"
+       << "    -c or --cli\n"
+       << "        Use commmand line (no interface)\n"
+       << "\n"
        << "    -h or --help\n"
        << "        This help"
        << endl;
@@ -102,12 +118,14 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
     {"list", no_argument, 0, 'l'},
     {"no-midi", no_argument, 0, 'n'},
     {"web", no_argument, 0, 'w'},
+    {"cli", no_argument, 0, 'c'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
   };
 
-  opts->list_devices = opts->testing = opts->web = false;
-  while ((ch = getopt_long(argc, argv, "lnwh", longopts, 0)) != -1) {
+  opts->list_devices = opts->testing = false;
+  opts->interface = INTERFACE_CURSES;
+  while ((ch = getopt_long(argc, argv, "lnwch", longopts, 0)) != -1) {
     switch (ch) {
     case 'l':
       opts->list_devices = true;
@@ -116,7 +134,10 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
       opts->testing = true;
       break;
     case 'w':
-      opts->web = true;
+      opts->interface = INTERFACE_WEB;
+      break;
+    case 'c':
+      opts->interface = INTERFACE_CLI;
       break;
     case 'h': default:
       usage(prog_name);
@@ -145,10 +166,18 @@ int main(int argc, char * const *argv) {
 
   initialize();
   load(argv[0], opts.testing);
-  if (opts.web)
+  switch (opts.interface) {
+  case INTERFACE_WEB:
     run_web();
-  else
-    run();
+    break;
+  case INTERFACE_CLI:
+    run_cli();
+    break;
+  case INTERFACE_CURSES:
+  default:
+    run_curses();
+    break;
+  }
 
   exit(0);
   return 0;
