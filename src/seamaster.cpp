@@ -93,29 +93,28 @@ void run_web() {
 }
 
 void usage(const char *prog_name) {
-  cerr << "usage: " << basename((char *)prog_name) << " [-l] [-n] [-h] file\n"
-       << "\n"
-       << "    -l or --list-ports\n"
-       << "        List all attached MIDI ports\n"
-       << "\n"
-       << "    -n or --no-midi\n"
-       << "        No MIDI (ignores bad/unknown MIDI ports)\n"
-       << "\n"
-       << "    -w or --web\n"
-       << "        Use web interface on port 8080\n"
-       << "\n"
-       << "    -t or --tty\n"
-       << "        Use terminal (curses) interface (default)\n"
-       << "\n"
-       << "    -v VIEW or --view VIEW\n"
-       << "        Use terminal (curses) view VIEW (normal or play, default normal)\n"
-       << "\n"
-       << "    -c or --cli\n"
-       << "        Use commmand line (no interface)\n"
-       << "\n"
-       << "    -h or --help\n"
-       << "        This help"
-       << endl;
+  const char * const usage_data[] = {
+    "-l or --list-ports",
+    "List all attached MIDI ports",
+    "-n or --no-midi",
+    "No MIDI (ignores bad/unknown MIDI ports)",
+    "-w or --web",
+    "Use web interface on port 8080",
+    "-t or --tty",
+    "Use terminal (curses) interface (default)",
+    "-v VIEW or --view VIEW",
+    "Use terminal (curses) view VIEW (normal or play, default normal)",
+    "-c or --cli",
+    "Use commmand line (no interface)",
+    "-h or --help",
+    "This help",
+  };
+  cerr << "usage: " << basename((char *)prog_name) << " [-l] [-n] [-w] [-t] [-v VIEW] [-c] [-h] file\n";
+  for (int i = 0; i < sizeof(usage_data) / sizeof(char *); ++i) {
+    cerr << endl;
+    cerr << "    " << usage_data[i++] << endl;
+    cerr << "        " << usage_data[i] << endl;
+  }
 }
 
 void parse_command_line(int argc, char * const *argv, struct opts *opts) {
