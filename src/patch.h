@@ -21,6 +21,9 @@ public:
   void start();
   bool is_running();
   void stop();
+
+private:
+  void send_messages_to_outputs(vector<PmMessage> &messages);
 };
 
 #endif /* PATCH_H */

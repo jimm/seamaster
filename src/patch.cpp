@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <set>
 #include "patch.h"
+#include "output.h"
 
 Patch::Patch(const char *patch_name)
   : Named(patch_name)
@@ -16,8 +18,7 @@ void Patch::start() {
   if (running)
     return;
 
-  for (auto& conn : connections)
-    conn->start(start_messages);
+  send_messages_to_outputs(start_messages);
   running = true;
 }
 
@@ -29,7 +30,20 @@ void Patch::stop() {
   if (!running)
     return;
 
-  for (auto& conn : connections)
-    conn->stop(stop_messages);
+  send_messages_to_outputs(stop_messages);
   running = false;
+}
+
+void Patch::send_messages_to_outputs(vector<PmMessage> &messages) {
+  PmEvent event = {0, 0};
+  set<Output *> outputs;
+  for (auto& conn : connections)
+    outputs.insert(conn->output);
+
+  for (auto& out : outputs) {
+    for (auto& msg : messages) {
+      event.message = msg;
+      out->write(&event, 1);
+    }
+  }
 }
