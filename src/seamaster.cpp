@@ -17,6 +17,7 @@ struct opts {
   bool list_devices;
   bool testing;
   int interface;
+  WindowLayout interface_view;  // curses only
 } opts;
 
 void list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
@@ -68,9 +69,9 @@ void load(const char *path, bool testing) {
   }
 }
 
-void run_curses() {
+void run_curses(WindowLayout interface_view) {
   PatchMaster_instance()->start();
-  GUI gui(PatchMaster_instance());
+  GUI gui(PatchMaster_instance(), interface_view);
   gui.run();
   // Don't save PM above and use it here. User might have loaded a new one.
   PatchMaster_instance()->stop();
@@ -103,6 +104,12 @@ void usage(const char *prog_name) {
        << "    -w or --web\n"
        << "        Use web interface on port 8080\n"
        << "\n"
+       << "    -t or --tty\n"
+       << "        Use terminal (curses) interface (default)\n"
+       << "\n"
+       << "    -v VIEW or --view VIEW\n"
+       << "        Use terminal (curses) view VIEW (normal or play, default normal)\n"
+       << "\n"
        << "    -c or --cli\n"
        << "        Use commmand line (no interface)\n"
        << "\n"
@@ -119,13 +126,16 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
     {"no-midi", no_argument, 0, 'n'},
     {"web", no_argument, 0, 'w'},
     {"cli", no_argument, 0, 'c'},
+    {"tty", no_argument, 0, 't'},
+    {"view", required_argument, 0, 'v'},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
   };
 
   opts->list_devices = opts->testing = false;
   opts->interface = INTERFACE_CURSES;
-  while ((ch = getopt_long(argc, argv, "lnwch", longopts, 0)) != -1) {
+  opts->interface_view = CURSES_LAYOUT_NORMAL;
+  while ((ch = getopt_long(argc, argv, "lnwctv:h", longopts, 0)) != -1) {
     switch (ch) {
     case 'l':
       opts->list_devices = true;
@@ -138,6 +148,19 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
       break;
     case 'c':
       opts->interface = INTERFACE_CLI;
+      break;
+    case 't':
+      opts->interface = INTERFACE_CURSES;
+      break;
+    case 'v':
+      switch (optarg[0]) {
+      case 'n':
+        opts->interface_view = CURSES_LAYOUT_NORMAL;
+        break;
+      case 'p':
+        opts->interface_view = CURSES_LAYOUT_PLAY;
+        break;
+      }
       break;
     case 'h': default:
       usage(prog_name);
@@ -175,7 +198,7 @@ int main(int argc, char * const *argv) {
     break;
   case INTERFACE_CURSES:
   default:
-    run_curses();
+    run_curses(opts.interface_view);
     break;
   }
 

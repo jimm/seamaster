@@ -12,12 +12,12 @@ class TriggerWindow;
 class Window;
 
 typedef enum WindowLayout {
-  NORMAL, PLAY
+  CURSES_LAYOUT_NORMAL, CURSES_LAYOUT_PLAY
 } WindowLayout;
 
 class GUI {
 public:
-  GUI(PatchMaster *);
+  GUI(PatchMaster * pm, WindowLayout layout=CURSES_LAYOUT_NORMAL);
   ~GUI();
 
   void run();

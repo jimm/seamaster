@@ -23,8 +23,8 @@ GUI *gui_instance() {
   return g_instance;
 }
 
-GUI::GUI(PatchMaster *pmaster)
-  : pm(pmaster), layout(NORMAL), clear_msg_id(0)
+GUI::GUI(PatchMaster *pmaster, WindowLayout wlayout)
+  : pm(pmaster), layout(wlayout), clear_msg_id(0)
 {
   g_instance = this;
 }
@@ -177,13 +177,13 @@ void GUI::free_windows() {
 }
 
 void GUI::toggle_view() {
-  layout = layout == NORMAL ? PLAY : NORMAL;
+  layout = layout == CURSES_LAYOUT_NORMAL ? CURSES_LAYOUT_PLAY : CURSES_LAYOUT_NORMAL;
 }
 
 void GUI::refresh_all() {
   set_window_data();
   switch (layout) {
-  case NORMAL:
+  case CURSES_LAYOUT_NORMAL:
     song_lists->draw();
     song_list->draw();
     song->draw();
@@ -192,7 +192,7 @@ void GUI::refresh_all() {
     trigger->draw();
     info->draw();
     break;
-  case PLAY:
+  case CURSES_LAYOUT_PLAY:
     play_song->draw();
     play_notes->draw();
     play_patch->draw();
@@ -202,7 +202,7 @@ void GUI::refresh_all() {
   wnoutrefresh(stdscr);
 
   switch (layout) {
-  case NORMAL:
+  case CURSES_LAYOUT_NORMAL:
     wnoutrefresh(song_lists->win);
     wnoutrefresh(song_list->win);
     wnoutrefresh(song->win);
@@ -210,7 +210,7 @@ void GUI::refresh_all() {
     wnoutrefresh(info->win);
     wnoutrefresh(trigger->win);
     break;
-  case PLAY:
+  case CURSES_LAYOUT_PLAY:
     wnoutrefresh(play_song->win);
     wnoutrefresh(play_notes->win);
     wnoutrefresh(play_patch->win);
@@ -222,10 +222,10 @@ void GUI::refresh_all() {
 
 void GUI::set_window_data() {
   switch (layout) {
-  case NORMAL:
+  case CURSES_LAYOUT_NORMAL:
     set_normal_window_data();
     break;
-  case PLAY:
+  case CURSES_LAYOUT_PLAY:
     set_play_window_data();
     break;
   }
