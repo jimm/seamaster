@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <set>
 #include "error.h"
 #include "input.h"
 #include "trigger.h"
@@ -9,7 +10,7 @@
 // 10 milliseconds, in nanoseconds
 #define SLEEP_NANOSECS 10000000L
 
-vector<Input *> inputs;
+set<Input *> inputs;
 pthread_t portmidi_pthread = nullptr;
 
 
@@ -61,7 +62,7 @@ void *read_thread(void *in_voidptr) {
 
 
 Input::Input(const char *sym, const char *name, int port_num)
-  : Instrument(sym, name, port_num), running(false), read_pthread(0)
+  : Instrument(sym, name, port_num), running(false), read_pthread(nullptr)
 {
   for (int i = 0; i < MIDI_CHANNELS; ++i)
     seen_progs[i].bank_msb = seen_progs[i].bank_lsb =
@@ -125,7 +126,7 @@ void Input::start() {
       exit(1);
     }
   }
-  inputs.push_back(this);
+  inputs.insert(this);
 
   running = true;
   status = pthread_create(&read_pthread, 0, read_thread, this);
@@ -144,6 +145,7 @@ void Input::stop() {
   running = false;
   read_pthread = 0;
   for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
+  for (set<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
     if (*i == this) {
       inputs.erase(i);
       return;
