@@ -144,7 +144,6 @@ void Input::start() {
 void Input::stop() {
   running = false;
   read_pthread = 0;
-  for (vector<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
   for (set<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
     if (*i == this) {
       inputs.erase(i);

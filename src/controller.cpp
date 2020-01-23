@@ -24,7 +24,7 @@ PmMessage Controller::process(PmMessage msg, int output_chan) {
   if (output_chan != -1)
     status += output_chan;
   else
-    status += Pm_MessageData1(msg) & 0x0f;
+    status += Pm_MessageStatus(msg) & 0x0f;
 
   if (translated_cc_num != -1)
     data1 = translated_cc_num;
