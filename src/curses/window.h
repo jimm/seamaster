@@ -20,6 +20,7 @@ public:
   void move_and_resize(struct rect);
   void draw();
   int visible_height();
+  int visible_width();
   void make_fit(string &, int);
   void make_fit(const char *, int, char *);
 

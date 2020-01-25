@@ -37,4 +37,7 @@ void Output::write(PmEvent *buf, int len) {
     for (int i = 0; i < len && num_io_messages < MIDI_BUFSIZ-1; ++i)
       io_messages[num_io_messages++] = buf[i].message;
   }
+  if (midi_monitor != nullptr)
+    for (int i = 0; i < len && num_io_messages < MIDI_BUFSIZ-1; ++i)
+      midi_monitor->monitor_output(this, buf[i].message);
 }

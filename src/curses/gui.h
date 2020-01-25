@@ -9,6 +9,7 @@ using namespace std;
 class InfoWindow;
 class PatchWindow;
 class TriggerWindow;
+class MIDIMonitorWindow;
 class Window;
 
 typedef enum WindowLayout {
@@ -33,6 +34,7 @@ private:
 
   WindowLayout layout;
   Window *message;
+  MIDIMonitorWindow *midi_monitor;
 
   // normal screen
   ListWindow *song_lists;
@@ -55,6 +57,7 @@ private:
   void create_windows();
   void resize_windows();
   void toggle_view();
+  void toggle_midi_monitor();
   void free_windows();
   void refresh_all();
   void set_window_data();

@@ -135,3 +135,13 @@ rect geom_play_patch_rect() {
   r.width = COLS;
   return r;
 }
+
+rect geom_midi_monitor_rect() {
+  rect r;
+
+  r.row = 3;
+  r.col = (COLS - 38) / 2;
+  r.height = LINES - 6;
+  r.width = 38;
+  return r;
+}

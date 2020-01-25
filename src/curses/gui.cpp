@@ -14,6 +14,7 @@
 #include "prompt_window.h"
 #include "trigger_window.h"
 #include "program_change_window.h"
+#include "midi_monitor_window.h"
 #include "../cursor.h"
 
 
@@ -24,7 +25,7 @@ GUI *gui_instance() {
 }
 
 GUI::GUI(PatchMaster *pmaster, WindowLayout wlayout)
-  : pm(pmaster), layout(wlayout), clear_msg_id(0)
+  : pm(pmaster), layout(wlayout), midi_monitor(nullptr), clear_msg_id(0)
 {
   g_instance = this;
 }
@@ -101,6 +102,9 @@ void GUI::event_loop() {
     case 'v':
       toggle_view();
       break;
+    case 'm':
+      toggle_midi_monitor();
+      break;
     case 'q':
       done = TRUE;
       break;
@@ -160,6 +164,9 @@ void GUI::resize_windows() {
   play_song->move_and_resize(geom_play_song_rect());
   play_notes->move_and_resize(geom_play_notes_rect());
   play_patch->move_and_resize(geom_patch_rect());
+
+  if (midi_monitor != nullptr)
+    midi_monitor->move_and_resize(geom_midi_monitor_rect());
 }
 
 void GUI::free_windows() {
@@ -174,10 +181,29 @@ void GUI::free_windows() {
   delete play_song;
   delete play_notes;
   delete play_patch;
+
+  if (midi_monitor != nullptr)
+    delete midi_monitor;
 }
 
 void GUI::toggle_view() {
   layout = layout == CURSES_LAYOUT_NORMAL ? CURSES_LAYOUT_PLAY : CURSES_LAYOUT_NORMAL;
+}
+
+void GUI::toggle_midi_monitor() {
+  fprintf(stderr, "toggle_midi_monitor\n"); // DEBUG
+  if (midi_monitor == nullptr) {
+    fprintf(stderr, "  creating\n"); // DEBUG
+    midi_monitor = new MIDIMonitorWindow(geom_midi_monitor_rect(), pm);
+    midi_monitor->draw();
+  }
+  else {
+    fprintf(stderr, "  destroying\n"); // DEBUG
+    delete midi_monitor;
+    midi_monitor = nullptr;
+  }
+  fflush(stderr);               // DEBUG
+  wnoutrefresh(stdscr);         // DEBUG
 }
 
 void GUI::refresh_all() {
@@ -198,6 +224,8 @@ void GUI::refresh_all() {
     play_patch->draw();
     break;
   }
+  if (midi_monitor != nullptr)
+    midi_monitor->draw();
 
   wnoutrefresh(stdscr);
 

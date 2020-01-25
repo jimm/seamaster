@@ -24,17 +24,19 @@ void HelpWindow::draw() {
 
 const char *help_window_read_help() {
   return
-"j, down, space  - next patch\n" \
-"k, up           - prev patch\n" \
-"n, right        - next song\n" \
-"p, left         - prev song\n" \
+"j, down, space  - Next patch\n" \
+"k, up           - Prev patch\n" \
+"n, right        - Next song\n" \
+"p, left         - Prev song\n" \
 "\n" \
-"g    - goto song\n" \
-"t    - goto song list\n" \
+"g    - Goto song\n" \
+"t    - Goto song list\n" \
 "\n" \
-"c    - show program changes\n" \
-"h, ? - help\n" \
-"ESC  - panic\n" \
+"c    - Show program changes\n" \
+"h, ? - Help\n" \
+"ESC  - Panic\n" \
+"\n" \
+"m    - MIDI monitor\n" \
 "\n" \
 "l    - load\n" \
 "r    - reload\n" \

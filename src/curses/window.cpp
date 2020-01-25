@@ -47,6 +47,10 @@ int Window::visible_height() {
   return getmaxy(win) - 2;
 }
 
+int Window::visible_width() {
+  return getmaxx(win) - 2;
+}
+
 /*
  * MODIFIES str by fitting it to the maximum window display width (which is
  * the window width minus two for the borders) minus `reduce_max_len_by`.

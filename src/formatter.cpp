@@ -1,3 +1,4 @@
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -43,6 +44,12 @@ int note_name_to_num(const char *str) {
 
   int octave = (atoi(num_start) + 1) * 12;
   return octave + from_c + accidental;
+}
+
+string byte_to_hex(unsigned char byte) {
+  char buf[3];
+  snprintf(buf, 3, "%02x", byte);
+  return string((const char *)buf);
 }
 
 void format_program(program prog, char *buf) {

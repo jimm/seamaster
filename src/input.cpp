@@ -172,6 +172,9 @@ void Input::read(PmMessage msg) {
   if (!real_port() && num_io_messages < MIDI_BUFSIZ-1)
     io_messages[num_io_messages++] = msg;
 
+  if (midi_monitor != nullptr)
+    midi_monitor->monitor_input(this, msg);
+
   remember_program_change_messages(msg);
 
   for (auto &conn : connections_for_message(msg))
