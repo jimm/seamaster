@@ -3,9 +3,10 @@
 #include "help_window.h"
 #include "info_window.h"
 
-HelpWindow::HelpWindow(struct rect r, const char *title)
-  : Window(r, title)
+HelpWindow::HelpWindow(struct rect r, const char *win_title)
+  : Window(r, nullptr)
 {
+  title = win_title;
   lines = info_window_text_to_lines(help_window_read_help());
 }
 

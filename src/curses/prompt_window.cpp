@@ -5,7 +5,7 @@
 static struct rect empty_rect = {0, 0, 0, 0};
 
 PromptWindow::PromptWindow(const char *title_str)
-  : Window(geom_prompt_rect(), 0)
+  : Window(geom_prompt_rect(), nullptr)
 {
   title = title_str;
 }

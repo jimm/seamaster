@@ -27,7 +27,6 @@ void ListWindow::draw() {
 
   vector<Named *>::iterator curr_index = find(list->begin(), list->end(), curr_item);
   int vis_height = visible_height();
-  char fitted[BUFSIZ];
 
   if (curr_index < offset)
     offset = curr_index;

@@ -3,8 +3,9 @@
 #include "../formatter.h"
 
 MIDIMonitorWindow::MIDIMonitorWindow(struct rect r, PatchMaster *patchmaster)
-  : Window(r, "MIDI Monitor"), pm(patchmaster)
+  : Window(r, nullptr), pm(patchmaster)
 {
+  title = "MIDI Monitor (press 'm' to close)";
   for (auto *input : pm->inputs)
     input->set_monitor(this);
   for (auto *output : pm->outputs)
@@ -46,8 +47,14 @@ void MIDIMonitorWindow::add_message(deque<string> &lines, string sym, PmMessage 
 
 void MIDIMonitorWindow::draw() {
   Window::draw();
+  int col = visible_width() / 2;
+  for (int row = 0; row < visible_height(); ++row) {
+    wmove(win, row, col);
+    waddch(win, ACS_VLINE);
+  }
   draw_lines(input_lines, 1);
   draw_lines(output_lines, visible_width() / 2 + 1);
+  refresh();
 }
 
 void MIDIMonitorWindow::draw_lines(deque<string> &lines, int col) {
@@ -55,8 +62,11 @@ void MIDIMonitorWindow::draw_lines(deque<string> &lines, int col) {
   if (lines.size() > visible_height())
     start_line_num = lines.size() - visible_height() - 1;
   int row = 1;
+  int max_width = visible_width() / 2 - 4;
   for (int i = start_line_num; i < lines.size(); ++i) {
+    string line = lines.at(i);
+    make_fit(line, max_width);
     wmove(win, row++, col);
-    waddstr(win, lines.at(i).c_str());
+    waddstr(win, line.c_str());
   }
 }
