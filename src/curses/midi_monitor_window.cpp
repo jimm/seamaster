@@ -2,13 +2,9 @@
 #include "midi_monitor_window.h"
 #include "../formatter.h"
 
-MIDIMonitorWindow::MIDIMonitorWindow(struct rect r, PatchMaster *pm)
-  : Window(r, "MIDI Monitor")
+MIDIMonitorWindow::MIDIMonitorWindow(struct rect r, PatchMaster *patchmaster)
+  : Window(r, "MIDI Monitor"), pm(patchmaster)
 {
-  fprintf(stderr, "MIDIMonitorWindow constructor\n"); // DEBUG
-  fprintf(stderr, "  rect (%d, %d, %d, %d)\n", r.row, r.col, r.height, r.width); // DEBUG
-  fprintf(stderr, "  pm %p\n", pm);      // DEBUG
-  fflush(stderr);                                    // DEBUG
   for (auto *input : pm->inputs)
     input->set_monitor(this);
   for (auto *output : pm->outputs)
@@ -16,9 +12,6 @@ MIDIMonitorWindow::MIDIMonitorWindow(struct rect r, PatchMaster *pm)
 }
 
 MIDIMonitorWindow::~MIDIMonitorWindow() {
-  fprintf(stderr, "MIDIMonitorWindow destructor\n"); // DEBUG
-  fprintf(stderr, "  pm %p\n", pm);                  // DEBUG
-  fflush(stderr);                                    // DEBUG
   for (auto *input : pm->inputs)
     input->set_monitor(nullptr);
   for (auto *output : pm->outputs)
@@ -28,11 +21,15 @@ MIDIMonitorWindow::~MIDIMonitorWindow() {
 void MIDIMonitorWindow::monitor_input(Input *input, PmMessage msg) {
   add_message(input_lines, input->sym, msg);
   draw();
+  wnoutrefresh(win);
+  doupdate();
 }
 
 void MIDIMonitorWindow::monitor_output(Output *output, PmMessage msg) {
   add_message(output_lines, output->sym, msg);
   draw();
+  wnoutrefresh(win);
+  doupdate();
 }
 
 void MIDIMonitorWindow::add_message(deque<string> &lines, string sym, PmMessage msg) {

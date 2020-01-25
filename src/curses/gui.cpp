@@ -191,19 +191,13 @@ void GUI::toggle_view() {
 }
 
 void GUI::toggle_midi_monitor() {
-  fprintf(stderr, "toggle_midi_monitor\n"); // DEBUG
   if (midi_monitor == nullptr) {
-    fprintf(stderr, "  creating\n"); // DEBUG
     midi_monitor = new MIDIMonitorWindow(geom_midi_monitor_rect(), pm);
-    midi_monitor->draw();
   }
   else {
-    fprintf(stderr, "  destroying\n"); // DEBUG
     delete midi_monitor;
     midi_monitor = nullptr;
   }
-  fflush(stderr);               // DEBUG
-  wnoutrefresh(stdscr);         // DEBUG
 }
 
 void GUI::refresh_all() {
