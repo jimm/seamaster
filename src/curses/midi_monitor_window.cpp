@@ -20,6 +20,7 @@ MIDIMonitorWindow::~MIDIMonitorWindow() {
 }
 
 void MIDIMonitorWindow::monitor_input(Input *input, PmMessage msg) {
+  fprintf(stderr, "monitor_input %s, msg %08x\n", input->sym.c_str(), msg);
   add_message(input_lines, input->sym, msg);
   draw();
   wnoutrefresh(win);
@@ -27,6 +28,7 @@ void MIDIMonitorWindow::monitor_input(Input *input, PmMessage msg) {
 }
 
 void MIDIMonitorWindow::monitor_output(Output *output, PmMessage msg) {
+  fprintf(stderr, "monitor_output %s, msg %08x\n", output->sym.c_str(), msg);
   add_message(output_lines, output->sym, msg);
   draw();
   wnoutrefresh(win);
@@ -47,11 +49,15 @@ void MIDIMonitorWindow::add_message(deque<string> &lines, string sym, PmMessage 
 
 void MIDIMonitorWindow::draw() {
   Window::draw();
+  int row = 1;
   int col = visible_width() / 2;
-  for (int row = 0; row < visible_height(); ++row) {
-    wmove(win, row, col);
+  while (row <= visible_height()) {
+    wmove(win, row++, col);
     waddch(win, ACS_VLINE);
   }
+  wmove(win, row, col);
+  waddch(win, ACS_BTEE);
+
   draw_lines(input_lines, 1);
   draw_lines(output_lines, visible_width() / 2 + 1);
   refresh();

@@ -239,6 +239,9 @@ void GUI::refresh_all() {
     break;
   }
 
+  if (midi_monitor != nullptr)
+    wnoutrefresh(midi_monitor->win);
+
   doupdate();
 }
 
