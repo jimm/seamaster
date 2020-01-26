@@ -35,8 +35,8 @@ public:
   Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
 
-  void start(const vector<PmMessage> &);
-  void stop(vector<PmMessage> &);
+  void start();
+  void stop();
 
   void midi_in(PmMessage msg);
 

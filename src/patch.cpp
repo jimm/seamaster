@@ -4,9 +4,8 @@
 #include "output.h"
 
 Patch::Patch(const char *patch_name)
-  : Named(patch_name)
+  : Named(patch_name), running(false)
 {
-  running = false;
 }
 
 Patch::~Patch() {
@@ -19,6 +18,8 @@ void Patch::start() {
     return;
 
   send_messages_to_outputs(start_messages);
+  for (auto& conn : connections)
+    conn->start();
   running = true;
 }
 
@@ -30,6 +31,8 @@ void Patch::stop() {
   if (!running)
     return;
 
+  for (auto& conn : connections)
+    conn->stop();
   send_messages_to_outputs(stop_messages);
   running = false;
 }

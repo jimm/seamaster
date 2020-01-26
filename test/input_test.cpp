@@ -43,8 +43,7 @@ void test_input_two_connections() {
 
   Output *out2 = new Output("out2", "output2 name", -1);
   Connection *conn2 = new Connection(in, 0, out2, 0);
-  vector<PmMessage> empty;
-  conn2->start(empty);
+  conn2->start();
 
   PmMessage *buf = test_events();
   for (int i = 0; i < 4; ++i)
@@ -72,12 +71,11 @@ void test_input_connection_switch_routes_offs_correctly() {
   Connection *conn2 = new Connection(in, 0, out2, 0);
 
   PmMessage *buf = test_events();
-  vector<PmMessage> empty;
 
   for (int i = 0; i < 2; ++i)
     in->read(buf[i]);           // note on, controller
-  conn->stop(empty);
-  conn2->start(empty);
+  conn->stop();
+  conn2->start();
   for (int i = 2; i < 4; ++i)
     in->read(buf[i]);           // note off, tune request
 
@@ -111,12 +109,11 @@ void test_input_connection_switch_sustains_correctly() {
     Pm_Message(NOTE_OFF, 64, 127),
     Pm_Message(CONTROLLER, CC_SUSTAIN, 0)
   };
-  vector<PmMessage> empty;
 
   for (int i = 0; i < 2; ++i)
     in->read(buf[i]);           // note on, sustain on
-  conn->stop(empty);
-  conn2->start(empty);
+  conn->stop();
+  conn2->start();
   for (int i = 2; i < 4; ++i)
     in->read(buf[i]);           // note off, sustain off
 

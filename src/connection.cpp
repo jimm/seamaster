@@ -17,22 +17,20 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
 Connection::~Connection() {
 }
 
-void Connection::start(const vector<PmMessage> &messages) {
-  for (auto& msg : messages)
-    midi_out(msg);
-  if (prog.bank_msb >= 0)
-    midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_MSB, prog.bank_msb));
-  if (prog.bank_lsb >= 0)
-    midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_LSB, prog.bank_lsb));
-  if (prog.prog >= 0)
-    midi_out(Pm_Message(PROGRAM_CHANGE + output_chan, prog.prog, 0));
+void Connection::start() {
+  if (output_chan != -1) {
+    if (prog.bank_msb >= 0)
+      midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_MSB, prog.bank_msb));
+    if (prog.bank_lsb >= 0)
+      midi_out(Pm_Message(CONTROLLER + output_chan, CC_BANK_SELECT_LSB, prog.bank_lsb));
+    if (prog.prog >= 0)
+      midi_out(Pm_Message(PROGRAM_CHANGE + output_chan, prog.prog, 0));
+  }
 
   input->add_connection(this);
 }
 
-void Connection::stop(vector<PmMessage> &messages) {
-  for (auto& msg : messages)
-    midi_out(msg);
+void Connection::stop() {
   input->remove_connection(this);
 }
 

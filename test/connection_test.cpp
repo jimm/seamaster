@@ -1,53 +1,16 @@
 #include "test_helper.h"
 #include "connection_test.h"
 
-void test_connection_start_msgs() {
-  Connection *conn = create_conn();
-
-  vector<PmMessage> msgs;
-  msgs.push_back(Pm_Message(TUNE_REQUEST, 0, 0));
-  msgs.push_back(Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127));
-
-  conn->start(msgs);
-  tassert(conn->output->num_io_messages == 2, "bad num start messages");
-  tassert(conn->output->io_messages[0] == msgs[0], "bad msg1");
-  tassert(conn->output->io_messages[1] == msgs[1], "bad msg2");
-
-  delete conn;
-}
-
-void test_connection_start_empty_msgs() {
-  Connection *conn = create_conn();
-
+void test_connection_start_sends_pc() {
+  Input *in = new Input("in", "input name", -1);
+  Output *out = new Output("out", "output name", 1);
+  Connection *conn = new Connection(in, 0, out, 0);
   vector<PmMessage> empty;
-  conn->start(empty);
-  tassert(conn->output->num_io_messages == 0, "bad num start messages");
 
-  delete conn;
-}
-
-void test_connection_stop_msgs() {
-  Connection *conn = create_conn();
-
-  vector<PmMessage> msgs;
-  msgs.push_back(Pm_Message(TUNE_REQUEST, 0, 0));
-  msgs.push_back(Pm_Message(CONTROLLER, CC_VOLUME_MSB, 127));
-
-  conn->stop(msgs);
-  tassert(conn->output->num_io_messages == 2, "bad num stop messages");
-  tassert(conn->output->io_messages[0] == msgs[0], "bad msg1");
-  tassert(conn->output->io_messages[1] == msgs[1], "bad msg2");
-
-  delete conn;
-}
-
-void test_connection_stop_empty_msgs() {
-  Connection *conn = create_conn();
-
-  vector<PmMessage> empty;
-  conn->stop(empty);
-  tassert(conn->output->num_io_messages == 0, "bad num stop messages");
-
+  conn->prog.prog = 123;
+  conn->start();
+  tassert(conn->output->num_io_messages == 1, 0);
+  tassert(conn->output->io_messages[0] == Pm_Message(PROGRAM_CHANGE + 1, 123, 0), 0);
   delete conn;
 }
 
@@ -136,10 +99,6 @@ void test_connection_cc_processed() {
 }
 
 void test_connection() {
-  test_run(test_connection_start_msgs);
-  test_run(test_connection_start_empty_msgs);
-  test_run(test_connection_stop_msgs);
-  test_run(test_connection_stop_empty_msgs);
   test_run(test_connection_filter_other_input_chan);
   test_run(test_connection_allow_all_chans);
   test_run(test_connection_allow_all_chans_in_and_out);

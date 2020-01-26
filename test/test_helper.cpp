@@ -21,6 +21,6 @@ Connection *create_conn() {
   Output *out = new Output("out", "output name", -1);
   Connection *conn = new Connection(in, 0, out, 0);
   vector<PmMessage> empty;
-  conn->start(empty);           // add conn to input
+  conn->start();                // add conn to input
   return conn;
 }
