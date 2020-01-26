@@ -64,10 +64,6 @@ void *read_thread(void *in_voidptr) {
 Input::Input(const char *sym, const char *name, int port_num)
   : Instrument(sym, name, port_num), running(false), read_pthread(nullptr)
 {
-  for (int i = 0; i < MIDI_CHANNELS; ++i)
-    seen_progs[i].bank_msb = seen_progs[i].bank_lsb =
-      seen_progs[i].prog = -1;
-
   if (real_port()) {
     PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
     if (err != 0) {
@@ -175,8 +171,6 @@ void Input::read(PmMessage msg) {
   if (midi_monitor != nullptr)
     midi_monitor->monitor_input(this, msg);
 
-  remember_program_change_messages(msg);
-
   for (auto &conn : connections_for_message(msg))
     conn->midi_in(msg);
 }
@@ -192,28 +186,6 @@ PmMessage Input::message_from_read_queue() {
   }
   message_queue_mutex.unlock();
   return msg;
-}
-
-void Input::remember_program_change_messages(PmMessage msg) {
-  unsigned char status = Pm_MessageStatus(msg);
-  unsigned char high_nibble = status & 0xf0;
-  unsigned char chan = status & 0x0f;
-  unsigned char data1 = Pm_MessageData1(msg);
-
-  switch (high_nibble) {
-  case PROGRAM_CHANGE:
-    seen_progs[chan].prog = data1;
-    break;
-  case CONTROLLER:
-    switch (data1) {
-    case CC_BANK_SELECT_MSB:
-      seen_progs[chan].bank_msb = Pm_MessageData2(msg);
-      break;
-    case CC_BANK_SELECT_LSB:
-      seen_progs[chan].bank_lsb = Pm_MessageData2(msg);
-      break;
-    }
-  }
 }
 
 // Return the connections to use for `msg`. Normally it's the same as our

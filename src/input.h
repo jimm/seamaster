@@ -36,17 +36,13 @@ public:
   PmMessage message_from_read_queue();
   void stop_read_thread();
 
-  program last_program_change_seen(int chan) { return seen_progs[chan]; }
-
 private:
   vector<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
   vector<Connection *> sustain_off_conns[MIDI_CHANNELS];
-  program seen_progs[MIDI_CHANNELS];
   queue<PmMessage> message_queue;
   mutex message_queue_mutex;
   pthread_t read_pthread;
 
-  void remember_program_change_messages(PmMessage msg);
   vector<Connection *> &connections_for_message(PmMessage msg);
 };
 

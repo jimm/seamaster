@@ -13,7 +13,6 @@
 #include "patch_window.h"
 #include "prompt_window.h"
 #include "trigger_window.h"
-#include "program_change_window.h"
 #include "midi_monitor_window.h"
 #include "../cursor.h"
 
@@ -80,9 +79,6 @@ void GUI::event_loop() {
       delete pwin;
       if (name_regex.length() > 0)
         pm->goto_song_list(name_regex);
-      break;
-    case 'c':
-      prog_changes_seen();
       break;
     case 'h': case '?':
       help();
@@ -351,15 +347,6 @@ void GUI::reload() {
 void GUI::help() {
   rect r = geom_help_rect();
   HelpWindow hw(r, "Help");
-  hw.draw();
-  wnoutrefresh(hw.win);
-  doupdate();
-  getch();                      /* wait for key and eat it */
-}
-
-void GUI::prog_changes_seen() {
-  rect r = geom_help_rect();
-  ProgramChangeWindow hw(r, "Most Recent Program Changes", pm->inputs);
   hw.draw();
   wnoutrefresh(hw.win);
   doupdate();
