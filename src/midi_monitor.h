@@ -8,8 +8,10 @@ class Output;
 // and output MIDI messages.
 class MIDIMonitor {
 public:
-  void monitor_input(Input *input, PmMessage msg) {}
-  void monitor_output(Output *output, PmMessage msg) {}
+  virtual ~MIDIMonitor() {}
+
+  virtual void monitor_input(Input *input, PmMessage msg) {}
+  virtual void monitor_output(Output *output, PmMessage msg) {}
 };
 
 #endif /* MIDI_MONITOR_H */

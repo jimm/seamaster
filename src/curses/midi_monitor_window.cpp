@@ -66,7 +66,7 @@ void MIDIMonitorWindow::draw() {
 void MIDIMonitorWindow::draw_lines(deque<string> &lines, int col) {
   int start_line_num = 0;
   if (lines.size() > visible_height())
-    start_line_num = lines.size() - visible_height() - 1;
+    start_line_num = lines.size() - visible_height();
   int row = 1;
   int max_width = visible_width() / 2 - 4;
   for (int i = start_line_num; i < lines.size(); ++i) {

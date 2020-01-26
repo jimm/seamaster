@@ -11,7 +11,7 @@
 class MIDIMonitorWindow : public Window, MIDIMonitor {
 public:
   MIDIMonitorWindow(struct rect, PatchMaster *);
-  ~MIDIMonitorWindow();
+  virtual ~MIDIMonitorWindow();
 
   void monitor_input(Input *input, PmMessage msg);
   void monitor_output(Output *output, PmMessage msg);
