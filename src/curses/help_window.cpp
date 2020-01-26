@@ -33,16 +33,15 @@ const char *help_window_read_help() {
 "g    - Goto song\n" \
 "t    - Goto song list\n" \
 "\n" \
-"c    - Show program changes\n" \
 "h, ? - Help\n" \
-"ESC  - Panic\n" \
+"ESC  - Panic (ESC ESC sends note-offs)\n" \
 "\n" \
 "m    - MIDI monitor\n" \
 "\n" \
+"v    - toggle view\n" \
+"\n" \
 "l    - load\n" \
 "r    - reload\n" \
-"\n" \
-"v    - toggle view\n" \
 "\n" \
 "q    - quit";
 }
