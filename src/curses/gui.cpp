@@ -13,7 +13,7 @@
 #include "patch_window.h"
 #include "prompt_window.h"
 #include "trigger_window.h"
-f#include "midi_monitor_window.h"
+#include "midi_monitor_window.h"
 #include "../cursor.h"
 
 
