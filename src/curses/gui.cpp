@@ -17,7 +17,7 @@
 #include "../cursor.h"
 
 
-static GUI *g_instance = 0;
+static GUI *g_instance = nullptr;
 
 GUI *gui_instance() {
   return g_instance;
@@ -31,7 +31,7 @@ GUI::GUI(PatchMaster *pmaster, WindowLayout wlayout)
 
 GUI::~GUI() {
   if (g_instance == this)
-    g_instance = 0;
+    g_instance = nullptr;
 }
 
 void GUI::run() {
@@ -369,7 +369,7 @@ void GUI::clear_message() {
   doupdate();
 }
 
-void *clear_message_thread(void *gui_vptr) {
+void *gui_clear_message_thread(void *gui_vptr) {
   GUI *gui = (GUI *)gui_vptr;
   int clear_message_id = gui->clear_message_id();
 
@@ -386,7 +386,7 @@ void GUI::clear_message_after(int secs) {
   clear_msg_id++;
 
   pthread_t pthread;
-  pthread_create(&pthread, 0, clear_message_thread, this);
+  pthread_create(&pthread, 0, gui_clear_message_thread, this);
 }
 
 int GUI::max_name_len(vector<Named *> *list) {

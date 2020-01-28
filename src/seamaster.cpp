@@ -168,39 +168,39 @@ void parse_command_line(int argc, char * const *argv, struct opts *opts) {
   }
 }
 
-int main(int argc, char * const *argv) {
-  struct opts opts;
-  const char *prog_name = argv[0];
+// int main(int argc, char * const *argv) {
+//   struct opts opts;
+//   const char *prog_name = argv[0];
 
-  parse_command_line(argc, argv, &opts);
-  argc -= optind;
-  argv += optind;
+//   parse_command_line(argc, argv, &opts);
+//   argc -= optind;
+//   argv += optind;
 
-  if (opts.list_devices) {
-    list_all_devices();
-    exit(0);
-  }
+//   if (opts.list_devices) {
+//     list_all_devices();
+//     exit(0);
+//   }
 
-  if (argc == 0) {
-    usage(prog_name);
-    exit(1);
-  }
+//   if (argc == 0) {
+//     usage(prog_name);
+//     exit(1);
+//   }
 
-  initialize();
-  load(argv[0], opts.testing);
-  switch (opts.interface) {
-  case INTERFACE_WEB:
-    run_web();
-    break;
-  case INTERFACE_CLI:
-    run_cli();
-    break;
-  case INTERFACE_CURSES:
-  default:
-    run_curses(opts.interface_view);
-    break;
-  }
+//   initialize();
+//   load(argv[0], opts.testing);
+//   switch (opts.interface) {
+//   case INTERFACE_WEB:
+//     run_web();
+//     break;
+//   case INTERFACE_CLI:
+//     run_cli();
+//     break;
+//   case INTERFACE_CURSES:
+//   default:
+//     run_curses(opts.interface_view);
+//     break;
+//   }
 
-  exit(0);
-  return 0;
-}
+//   exit(0);
+//   return 0;
+// }

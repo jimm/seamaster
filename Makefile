@@ -1,18 +1,20 @@
-NAME = seamaster
+NAME = SeaMaster
 # DEBUG = -DDEBUG -DDEBUG_STDERR
 MACOS_VER = 10.9
-CPPFLAGS += -std=c++11 -mmacosx-version-min=$(MACOS_VER) -MD -MP -g $(DEBUG)
-LIBS = -lc -lc++ -lncurses -lportmidi
+WXFLAGS := $(shell wx-config --cppflags)
+WXLIBS := $(shell wx-config --libs)
+CPPFLAGS += -std=c++11 -mmacosx-version-min=$(MACOS_VER) -MD -MP -g $(DEBUG) $(WXFLAGS)
+LIBS = -lc -lc++ -lncurses -lportmidi $(WXLIBS)
 LDFLAGS += $(LIBS) -macosx_version_min $(MACOS_VER)
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 
-SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp)
+SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp src/wx/*.cpp)
 OBJS = $(SRC:%.cpp=%.o)
 TEST_SRC = $(wildcard test/*.cpp)
 TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
-TEST_OBJ_FILTERS = src/$(NAME).o
+TEST_OBJ_FILTERS = src/seamaster.o src/wx/app.o
 
 .PHONY: all
 all: $(NAME)
@@ -44,8 +46,8 @@ TAGS:	$(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(NAME) $(NAME)_test src/*.o src/curses/*.o test/*.o
+	rm -f $(NAME) $(NAME)_test src/*.o src/curses/*.o src/wx/*.o test/*.o
 
 .PHONY: distclean
 distclean: clean
-	rm -f src/*.d src/curses/*.d test/*.d
+	rm -f src/*.d src/curses/*.d src/wx/*.d test/*.d
