@@ -1,8 +1,10 @@
+#include "portmidi.h"
 #include "app.h"
 #include "frame.h"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
 EVT_MENU(wxID_OPEN,  Frame::OnOpen)
+EVT_MENU(ID_ListDevices, Frame::OnListDevices)
 EVT_MENU(ID_Monitor, Frame::OnMonitor)
 EVT_MENU(wxID_EXIT,  Frame::OnExit)
 EVT_MENU(wxID_ABOUT, Frame::OnAbout)
@@ -25,6 +27,7 @@ App::~App() {
 
 bool App::OnInit()
 {
+  Pm_Initialize();
   pm = PatchMaster_instance();
   frame = new Frame(pm, "SeaMaster");
   frame->Show(true);

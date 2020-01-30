@@ -76,6 +76,8 @@ void Frame::make_menu_bar() {
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuView = new wxMenu;
+  menuView->Append(ID_ListDevices, "&List MIDI Devices\tCtrl-L",
+                   "Displays MIDI devices detected by PortMidi");
   menuView->Append(ID_Monitor, "&MIDI Monitor\tCtrl-M",
                    "Open the MIDI Monitor window");
 
@@ -130,9 +132,14 @@ void Frame::OnOpen(wxCommandEvent& event) {
   load_data_into_windows();     // must come after start
 }
 
+void Frame::OnListDevices(wxCommandEvent& event) {
+  wxMessageBox("List MIDI Devices not yet implemented.", "MIDI Devices",
+               wxOK | wxICON_WARNING);
+}
+
 void Frame::OnMonitor(wxCommandEvent &event) {
   wxMessageBox("MIDI Monitor not yet implemented.", "MIDI Monitor",
-               wxOK | wxICON_INFORMATION);
+               wxOK | wxICON_WARNING);
   // TODO open monitor frame if it's not already open
   // if already exists return
   // MonitorFrame *frame = new MonitorFrame(pm, wxPoint(50, 50), wxSize(450, 340));

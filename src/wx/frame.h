@@ -8,7 +8,8 @@
 #include "../patchmaster.h"
 
 enum {
-  ID_Monitor = 1
+  ID_ListDevices = 1,
+  ID_Monitor
 };
 
 class wxListCtrl;
@@ -30,6 +31,7 @@ private:
   wxTextCtrl *lc_notes;
 
   void OnOpen(wxCommandEvent& event);
+  void OnListDevices(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
