@@ -5,9 +5,9 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
+#include "portmidi.h"
 
 class Frame;
-class PmDeviceInfo;
 
 class App: public wxApp {
 public:
