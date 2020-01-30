@@ -14,7 +14,7 @@ SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp src/wx/*.cpp)
 OBJS = $(SRC:%.cpp=%.o)
 TEST_SRC = $(wildcard test/*.cpp)
 TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
-TEST_OBJ_FILTERS = src/seamaster.o src/wx/app.o
+TEST_OBJ_FILTERS = src/seamaster.o src/wx/app_main.o
 
 .PHONY: all
 all: $(NAME)
