@@ -14,6 +14,8 @@ wxEND_EVENT_TABLE()
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
   { wxCMD_LINE_SWITCH, "l", "list-devices", "Display MIDI Devices" },
+  { wxCMD_LINE_PARAM, nullptr, nullptr, "SeaMaster file", wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
   { wxCMD_LINE_NONE }
 };
 
@@ -40,6 +42,8 @@ bool App::OnInit() {
   prev_cmd = '\0';
   frame = new Frame("SeaMaster");
   frame->Show(true);
+  if (!command_line_path.IsEmpty())
+    frame->load(command_line_path);
   return true;
 }
 
@@ -53,6 +57,8 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
     list_all_devices();
     return false;
   }
+  if (parser.GetParamCount() > 0)
+    command_line_path = parser.GetParam(0);
 
   return true;
 }

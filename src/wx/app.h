@@ -22,6 +22,7 @@ public:
 
 private:
   Frame *frame;
+  wxString command_line_path;
   char prev_cmd;
   int clear_msg_secs;
   int clear_msg_id;

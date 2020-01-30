@@ -143,26 +143,8 @@ void Frame::OnOpen(wxCommandEvent& event) {
   wxFileDialog openFileDialog(this, _("Open SeaMaster file"), "", "",
                               "SeaMaster files (*.org;*.md)|*.org;*.md",
                               wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-  if (openFileDialog.ShowModal() == wxID_CANCEL)
-    return;
-
-  PatchMaster *old_pm = PatchMaster_instance();
-  bool testing = old_pm != nullptr && old_pm->testing;
-  Loader loader;
-  PatchMaster *pm = loader.load(openFileDialog.GetPath(), testing);
-  if (loader.has_error()) {
-    wxLogError("Cannot open file '%s': %s.", openFileDialog.GetPath(),
-               loader.error());
-    return;
-  }
-
-  SetStatusText(wxString::Format("Loaded %s", openFileDialog.GetPath()));
-  if (old_pm != nullptr) {
-    old_pm->stop();
-    delete old_pm;
-  }
-  pm->start();                  // initializes cursor
-  load_data_into_windows();     // must come after start
+  if (openFileDialog.ShowModal() != wxID_CANCEL)
+    load(openFileDialog.GetPath());
 }
 
 void Frame::OnListDevices(wxCommandEvent& event) {
@@ -177,6 +159,25 @@ void Frame::OnMonitor(wxCommandEvent &event) {
   // if already exists return
   // MonitorFrame *frame = new MonitorFrame(PatchMaster_instance(), wxPoint(50, 50), wxSize(450, 340));
   // frame->Show(true);
+}
+
+void Frame::load(wxString path) {
+  PatchMaster *old_pm = PatchMaster_instance();
+  bool testing = old_pm != nullptr && old_pm->testing;
+  Loader loader;
+  PatchMaster *pm = loader.load(path, testing);
+  if (loader.has_error()) {
+    wxLogError("Cannot open file '%s': %s.", path, loader.error());
+    return;
+  }
+
+  SetStatusText(wxString::Format("Loaded %s", path));
+  if (old_pm != nullptr) {
+    old_pm->stop();
+    delete old_pm;
+  }
+  pm->start();                  // initializes cursor
+  load_data_into_windows();     // must come after start
 }
 
 void Frame::load_data_into_windows() {
