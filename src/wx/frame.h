@@ -39,12 +39,12 @@ private:
 
   void make_frame_panels();
   void make_menu_bar();
-  wxWindow * make_song_list_panel();
-  wxWindow * make_song_list_list_panel();
-  wxWindow * make_song_panel();
-  wxWindow * make_trigger_panel();
-  wxWindow * make_notes_panel();
-  wxWindow * make_patch_panel();
+  wxWindow * make_song_list_panel(wxPanel *);
+  wxWindow * make_song_list_list_panel(wxPanel *);
+  wxWindow * make_song_panel(wxPanel *);
+  wxWindow * make_trigger_panel(wxPanel *);
+  wxWindow * make_notes_panel(wxPanel *);
+  wxWindow * make_patch_panel(wxPanel *);
   void load_data_into_windows();
 
   wxDECLARE_EVENT_TABLE();

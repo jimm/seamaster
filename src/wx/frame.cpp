@@ -1,10 +1,14 @@
 #include "wx/listctrl.h"
 #include "wx/textctrl.h"
+#include "wx/gbsizer.h"
 #include "frame.h"
 #include "patch_list.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
+
+#define POS(row, col) wxGBPosition(row, col)
+#define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
 
 Frame::Frame(const wxString& title)
   : wxFrame(NULL, wxID_ANY, title)
@@ -14,59 +18,57 @@ Frame::Frame(const wxString& title)
 }
 
 void Frame::make_frame_panels() {
-  wxSizer * const main_sizer = new wxBoxSizer(wxVERTICAL);
+  wxPanel *p = new wxPanel(this, wxID_ANY);
+  wxGridBagSizer * const main_sizer = new wxGridBagSizer();
 
-  wxSizer * const top_sizer = new wxBoxSizer(wxHORIZONTAL);
-  wxSizer * const top_left_sizer = new wxBoxSizer(wxVERTICAL);
-  top_left_sizer->Add(make_song_list_panel(), wxSizerFlags().Expand().Border());
-  top_left_sizer->Add(make_song_list_list_panel(), wxSizerFlags().Expand().Border());
-  top_sizer->Add(top_left_sizer, wxSizerFlags().Expand().Border());
+  main_sizer->Add(make_song_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
+  main_sizer->Add(make_song_list_list_panel(p), POS(3, 0), SPAN(1, 1), wxEXPAND);
+  main_sizer->Add(make_song_panel(p), POS(0, 1), SPAN(3, 1), wxEXPAND);
+  main_sizer->Add(make_trigger_panel(p), POS(3, 1), SPAN(1, 1), wxEXPAND);
+  main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(4, 1), wxEXPAND);
+  main_sizer->Add(make_patch_panel(p), POS(4, 0), SPAN(1, 3), wxEXPAND);
 
-  wxSizer * const top_middle_sizer = new wxBoxSizer(wxVERTICAL);
-  top_middle_sizer->Add(make_song_panel(), wxSizerFlags().Expand().Border());
-  top_middle_sizer->Add(make_trigger_panel(), wxSizerFlags().Expand().Border());
-  top_sizer->Add(top_middle_sizer, wxSizerFlags().Expand().Border());
+  for (int row = 0; row < 5; ++row)
+    main_sizer->AddGrowableRow(row);
+  for (int col = 0; col < 3; ++col)
+    main_sizer->AddGrowableCol(col);
 
-  top_sizer->Add(make_notes_panel(), wxSizerFlags().Expand().Border(wxALL));
-
-  main_sizer->Add(top_sizer, wxSizerFlags().Expand().Border());
-  main_sizer->Add(make_patch_panel(), wxSizerFlags().Expand().Border());
-
-  SetSizerAndFit(main_sizer);
+  p->SetSizerAndFit(main_sizer);
+  SetClientSize(p->GetSize());
 }
 
-wxWindow * Frame::make_song_list_panel() {
-  lc_song_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
+  lc_song_list = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
   lc_song_list->InsertItem(0, wxString("Song List"));
   return lc_song_list;
 }
 
-wxWindow * Frame::make_song_list_list_panel() {
-  lc_song_lists = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
+  lc_song_lists = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
   lc_song_lists->InsertItem(0, wxString("Song Lists"));
   return lc_song_lists;
 }
 
-wxWindow * Frame::make_song_panel() {
-  lc_song = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+wxWindow * Frame::make_song_panel(wxPanel *parent) {
+  lc_song = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
   lc_song->InsertItem(0, wxString("Song"));
   return lc_song;
 }
 
-wxWindow * Frame::make_trigger_panel() {
-  lc_triggers = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
+  lc_triggers = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
   lc_triggers->InsertItem(0, wxString("Triggers"));
   return lc_triggers;
 }
 
-wxWindow * Frame::make_notes_panel() {
-  lc_notes = new wxTextCtrl(this, wxID_ANY, "", wxDefaultPosition, wxSize(100, 250), wxTE_MULTILINE);
+wxWindow * Frame::make_notes_panel(wxPanel *parent) {
+  lc_notes = new wxTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wxSize(100, 250), wxTE_MULTILINE);
   lc_notes->AppendText("Notes");
   return lc_notes;
 }
 
-wxWindow * Frame::make_patch_panel() {
-  lc_patch = new PatchList(this);
+wxWindow * Frame::make_patch_panel(wxPanel *parent) {
+  lc_patch = new PatchList(parent);
   return lc_patch;
 }
 
