@@ -38,33 +38,63 @@ void Frame::make_frame_panels() {
 }
 
 wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
-  lc_song_list = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
-  lc_song_list->InsertItem(0, wxString("Song List"));
-  return lc_song_list;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_song_list = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Song List"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_song_list, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
-  lc_song_lists = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
-  lc_song_lists->InsertItem(0, wxString("Song Lists"));
-  return lc_song_lists;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_song_lists = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_song_lists, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
-  lc_song = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
-  lc_song->InsertItem(0, wxString("Song"));
-  return lc_song;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_song = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Song"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_song, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
-  lc_triggers = new wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
-  lc_triggers->InsertItem(0, wxString("Triggers"));
-  return lc_triggers;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_triggers = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_notes_panel(wxPanel *parent) {
-  lc_notes = new wxTextCtrl(parent, wxID_ANY, "", wxDefaultPosition, wxSize(100, 250), wxTE_MULTILINE);
-  lc_notes->AppendText("Notes");
-  return lc_notes;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_notes = new wxTextCtrl(p, wxID_ANY, "", wxDefaultPosition, wxSize(100, 250), wxTE_MULTILINE);
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_notes, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_patch_panel(wxPanel *parent) {
