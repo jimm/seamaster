@@ -115,3 +115,36 @@ void format_program_no_spaces(program prog, char *buf) {
 
   *buf = 0;
 }
+
+void format_controllers(Connection *conn, char *buf) {
+  int first = true;
+
+  strcat(buf, " ");
+  buf += 1;
+  for (int i = 0; i < 128; ++i) {
+    Controller cc = conn->cc_maps[i];
+    if (!cc.will_modify())
+      continue;
+
+    if (first) first = false; else { strcat(buf, ", "); buf += 2; }
+    sprintf(buf, "%d", cc.cc_num);
+    buf += strlen(buf);
+
+    if (cc.filtered) {
+      sprintf(buf, "x");
+      buf += 1;
+      continue;
+    }
+
+    if (cc.cc_num != cc.translated_cc_num) {
+      sprintf(buf, "->%d", cc.translated_cc_num);
+      buf += strlen(buf);
+    }
+
+    if (cc.min != 0 || cc.max != 127) {
+      sprintf(buf, " [%d, %d]", cc.min, cc.max);
+      buf += strlen(buf);
+    }
+  }
+  *buf = 0;
+}

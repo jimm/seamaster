@@ -56,7 +56,7 @@ void PatchWindow::draw_connection(Connection *conn) {
   format_zone(conn, buf);
   format_xpose(conn, buf);
   format_prog(conn, buf);
-  format_controllers(conn, buf);
+  format_conn_controllers(conn, buf);
 
   make_fit(buf, 1, fitbuf);
   waddstr(win, fitbuf);
@@ -98,35 +98,6 @@ void PatchWindow::format_prog(Connection *conn, char *buf) {
   strcat(buf, " |");
 }
 
-void PatchWindow::format_controllers(Connection *conn, char *buf) {
-  int first = true;
-
-  buf += strlen(buf);
-  strcat(buf, " ");
-  buf += 1;
-  for (int i = 0; i < 128; ++i) {
-    Controller cc = conn->cc_maps[i];
-    if (!cc.will_modify())
-      continue;
-
-    if (first) first = false; else { strcat(buf, ", "); buf += 2; }
-    sprintf(buf, "%d", cc.cc_num);
-    buf += strlen(buf);
-
-    if (cc.filtered) {
-      sprintf(buf, "x");
-      buf += 1;
-      continue;
-    }
-
-    if (cc.cc_num != cc.translated_cc_num) {
-      sprintf(buf, "->%d", cc.translated_cc_num);
-      buf += strlen(buf);
-    }
-
-    if (cc.min != 0 || cc.max != 127) {
-      sprintf(buf, " [%d, %d]", cc.min, cc.max);
-      buf += strlen(buf);
-    }
-  }
+void PatchWindow::format_conn_controllers(Connection *conn, char *buf) {
+  format_controllers(conn, buf + strlen(buf));
 }

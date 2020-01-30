@@ -24,7 +24,7 @@ private:
   void format_zone(Connection *, char *);
   void format_xpose(Connection *, char *);
   void format_prog(Connection *, char *);
-  void format_controllers(Connection *, char *);
+  void format_conn_controllers(Connection *, char *);
 };
 
 #endif /* PATCH_WINDOW_H */
