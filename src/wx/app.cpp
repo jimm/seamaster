@@ -34,6 +34,21 @@ bool App::OnInit()
   return true;
 }
 
+int App::FilterEvent(wxEvent &event) {
+  if (event.GetEventType() != wxEVT_KEY_DOWN)
+    return -1;
+
+  switch (((wxKeyEvent&)event).GetKeyCode()) {
+  case 27:
+    frame->SetStatusText("PANIC!");
+    return true;
+  default:
+    frame->SetStatusText(wxString::Format("saw key %c", ((wxKeyEvent&)event).GetKeyCode()));
+    return true;
+  }
+  return -1;
+}
+
 void App::show_message(string msg) {
   frame->SetStatusText(msg.c_str());
 }

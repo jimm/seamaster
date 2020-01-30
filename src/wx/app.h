@@ -13,6 +13,7 @@ public:
   ~App();
 
   virtual bool OnInit();
+  virtual int FilterEvent(wxEvent &event);
 
   void show_message(string);
   void clear_message();
