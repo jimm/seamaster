@@ -5,27 +5,29 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
-#include "../patchmaster.h"
+
+class Frame;
 
 class App: public wxApp {
 public:
   App();
   ~App();
 
-  virtual bool OnInit();
-  virtual int FilterEvent(wxEvent &event);
-
-  void show_message(string);
+  void show_message(std::string);
   void clear_message();
   void clear_message_after(int);
   int clear_message_seconds() { return clear_msg_secs; }
   int clear_message_id() { return clear_msg_id; }
 
 private:
-  wxFrame *frame;
-  PatchMaster *pm;
+  Frame *frame;
+  char prev_cmd;
   int clear_msg_secs;
   int clear_msg_id;
+
+  virtual bool OnInit();
+  virtual int OnExit();
+  virtual int FilterEvent(wxEvent &event);
 };
 
 App *app_instance();

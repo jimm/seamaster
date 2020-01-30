@@ -5,24 +5,25 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
-#include "../patchmaster.h"
 
 enum {
   ID_ListDevices = 1,
   ID_Monitor
 };
 
+class PatchMaster;
 class wxListCtrl;
 class wxTextCtrl;
 class PatchList;
 
 class Frame: public wxFrame {
 public:
-  Frame(PatchMaster *pm, const wxString& title);
+  Frame(const wxString& title);
   virtual ~Frame() {}
 
+  void refresh() { load_data_into_windows(); }
+
 private:
-  PatchMaster *pm;
   wxListCtrl *lc_song_lists;
   wxListCtrl *lc_song_list;
   wxListCtrl *lc_song;

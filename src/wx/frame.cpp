@@ -2,11 +2,12 @@
 #include "wx/textctrl.h"
 #include "frame.h"
 #include "patch_list.h"
+#include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
 
-Frame::Frame(PatchMaster *patchmaster, const wxString& title)
-  : pm(patchmaster), wxFrame(NULL, wxID_ANY, title)
+Frame::Frame(const wxString& title)
+  : wxFrame(NULL, wxID_ANY, title)
 {
   make_frame_panels();
   make_menu_bar();
@@ -95,6 +96,8 @@ void Frame::make_menu_bar() {
 }
 
 void Frame::OnExit(wxCommandEvent& event) {
+  if (PatchMaster_instance() != nullptr)
+    PatchMaster_instance()->start();
   Close(true);
   exit(0);
 }
@@ -111,15 +114,13 @@ void Frame::OnOpen(wxCommandEvent& event) {
   if (openFileDialog.ShowModal() == wxID_CANCEL)
     return;
 
-  bool testing = pm != nullptr && pm->testing;
-  PatchMaster *old_pm = pm;
+  PatchMaster *old_pm = PatchMaster_instance();
+  bool testing = old_pm != nullptr && old_pm->testing;
   Loader loader;
-  pm = loader.load(openFileDialog.GetPath(), testing);
-
+  PatchMaster *pm = loader.load(openFileDialog.GetPath(), testing);
   if (loader.has_error()) {
     wxLogError("Cannot open file '%s': %s.", openFileDialog.GetPath(),
                loader.error());
-    pm = old_pm;
     return;
   }
 
@@ -142,38 +143,52 @@ void Frame::OnMonitor(wxCommandEvent &event) {
                wxOK | wxICON_WARNING);
   // TODO open monitor frame if it's not already open
   // if already exists return
-  // MonitorFrame *frame = new MonitorFrame(pm, wxPoint(50, 50), wxSize(450, 340));
+  // MonitorFrame *frame = new MonitorFrame(PatchMaster_instance(), wxPoint(50, 50), wxSize(450, 340));
   // frame->Show(true);
 }
 
 void Frame::load_data_into_windows() {
-  int i;
-
+  PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
+  int i;
 
   SongList *song_list = cursor->song_list();
   lc_song_list->ClearAll();
   if (song_list != nullptr) {
     i = 0;
-    for (auto& song : song_list->songs)
-      lc_song_list->InsertItem(i++, song->name.c_str());
+    for (auto& song : song_list->songs) {
+      lc_song_list->InsertItem(i, song->name.c_str());
+      if (song == cursor->song())
+        lc_song_list->SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+      ++i;
+    }
   }
 
   lc_song_lists->ClearAll();
   i = 0;
-  for (auto* song_list : pm->song_lists)
-    lc_song_lists->InsertItem(i++, song_list->name.c_str());
+  for (auto& song_list : pm->song_lists) {
+    lc_song_lists->InsertItem(i, song_list->name.c_str());
+    if (song_list == cursor->song_list())
+        lc_song_lists->SetItemState(i, wxLIST_STATE_SELECTED,
+                                    wxLIST_STATE_SELECTED);
+    ++i;
+  }
 
   Song *song = cursor->song();
   lc_song->ClearAll();
   lc_notes->Clear();
   if (song != nullptr) {
     i = 0;
-    for (auto* patch : song->patches)
-      lc_song->InsertItem(i++, patch->name.c_str());
+    for (auto& patch : song->patches) {
+      lc_song->InsertItem(i, patch->name.c_str());
+      if (patch == cursor->patch())
+        lc_song->SetItemState(i, wxLIST_STATE_SELECTED,
+                              wxLIST_STATE_SELECTED);
+      ++i;
+    }
 
     i = 0;
-    for (auto* line : song->notes) {
+    for (auto& line : song->notes) {
       lc_notes->AppendText(line);
       lc_notes->AppendText("\n");
     }
@@ -181,8 +196,8 @@ void Frame::load_data_into_windows() {
 
   lc_triggers->ClearAll();
   i = 0;
-  for (auto *input : pm->inputs)
-    for (auto* trigger : input->triggers)
+  for (auto& input : pm->inputs)
+    for (auto& trigger : input->triggers)
       lc_triggers->InsertItem(i++, "TODO --- display trigger");
 
   lc_patch->set_patch(cursor->patch());
