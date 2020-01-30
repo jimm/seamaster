@@ -1,3 +1,4 @@
+#include <wx/cmdline.h>
 #include "portmidi.h"
 #include "app.h"
 #include "frame.h"
@@ -10,6 +11,11 @@ EVT_MENU(ID_Monitor, Frame::OnMonitor)
 EVT_MENU(wxID_EXIT,  Frame::OnExit)
 EVT_MENU(wxID_ABOUT, Frame::OnAbout)
 wxEND_EVENT_TABLE()
+
+static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
+  { wxCMD_LINE_SWITCH, "l", "list-devices", "Display MIDI Devices" },
+  { wxCMD_LINE_NONE }
+};
 
 static App *a_instance = nullptr;
 
@@ -27,10 +33,27 @@ App::~App() {
 }
 
 bool App::OnInit() {
+  if (!wxApp::OnInit())
+    return false;
+
+  init_portmidi();
   prev_cmd = '\0';
-  Pm_Initialize();
   frame = new Frame("SeaMaster");
   frame->Show(true);
+  return true;
+}
+
+void App::OnInitCmdLine(wxCmdLineParser& parser) {
+  parser.SetDesc (g_cmdLineDesc);
+  parser.SetSwitchChars (wxT("-"));
+}
+
+bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
+  if (parser.Found(wxT("l"))) {
+    list_all_devices();
+    return false;
+  }
+
   return true;
 }
 
@@ -118,4 +141,38 @@ void App::clear_message_after(int secs) {
 
   pthread_t pthread;
   pthread_create(&pthread, 0, app_clear_message_thread, this);
+}
+
+void App::init_portmidi() {
+  PmError err = Pm_Initialize();
+  if (err != 0) {
+    fprintf(stderr, "error initializing PortMidi: %s\n", Pm_GetErrorText(err));
+    exit(1);
+  }
+
+}
+
+void App::list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
+  printf("%s:\n", title);
+  for (int i = 0; i < num_devices; ++i)
+    if (infos[i] != nullptr) {
+      const char *name = infos[i]->name;
+      const char *q = (name[0] == ' ' || name[strlen(name)-1] == ' ') ? "\"" : "";
+      printf("  %2d: %s%s%s%s\n", i, q, name, q, infos[i]->opened ? " (open)" : "");
+    }
+}
+
+void App::list_all_devices() {
+  init_portmidi();
+  int num_devices = Pm_CountDevices();
+  const PmDeviceInfo *inputs[num_devices], *outputs[num_devices];
+
+  for (int i = 0; i < num_devices; ++i) {
+    const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
+    inputs[i] = info->input ? info : 0;
+    outputs[i] = info->output ? info : 0;
+  }
+
+  list_devices("Inputs", inputs, num_devices);
+  list_devices("Outputs", outputs, num_devices);
 }
