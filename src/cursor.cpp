@@ -121,13 +121,13 @@ void Cursor::goto_song(string name_regex) {
 
   Patch *new_patch = new_song == nullptr ? nullptr : new_song->patches[0];
 
-  SongList *new_song_list = nullptr;
+  SongList *new_song_list = pm->all_songs;
   Song *curr_song = song();
-  if ((new_song != nullptr && new_song != curr_song) || (new_song == curr_song && patch() != new_patch)) {
-    if (sl != nullptr && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
+  if (((new_song != nullptr && new_song != curr_song) || (new_song == curr_song && patch() != new_patch))
+      && sl != nullptr
+      && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
+  {
       new_song_list = sl;
-    else
-      new_song_list = pm->all_songs;
   }
 
   song_list_index = find(pm->song_lists.begin(), pm->song_lists.end(), new_song_list) - pm->song_lists.begin();

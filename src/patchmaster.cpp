@@ -2,7 +2,7 @@
 #include "patchmaster.h"
 #include "cursor.h"
 
-static PatchMaster *pm_instance;
+static PatchMaster *pm_instance = nullptr;
 
 PatchMaster *PatchMaster_instance() {
   return pm_instance;
