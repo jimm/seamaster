@@ -24,9 +24,9 @@ void PatchList::set_patch(Patch *p) {
   int i = 0;
   for (auto* conn : patch->connections) {
     InsertItem(i, conn->input->name.c_str());
-    SetItem(i, 1, conn->input_chan == -1 ? "all" : wxString::Format("%d", conn->input_chan));
+    SetItem(i, 1, conn->input_chan == -1 ? "all" : wxString::Format("%d", conn->input_chan + 1));
     SetItem(i, 2, conn->output->name.c_str());
-    SetItem(i, 3, conn->output_chan == -1 ? "all" : wxString::Format("%d", conn->output_chan));
+    SetItem(i, 3, conn->output_chan == -1 ? "all" : wxString::Format("%d", conn->output_chan + 1));
     if (conn->zone.low != -1 || conn->zone.high != -1)
       SetItem(i, 4, wxString::Format("%3d - %3d", conn->zone.low, conn->zone.high));
     if (conn->xpose != -1)
