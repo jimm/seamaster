@@ -1,11 +1,16 @@
-NAME = SeaMaster
+NAME = seamaster
 # DEBUG = -DDEBUG -DDEBUG_STDERR
-MACOS_VER = 10.9
-WXFLAGS := $(shell wx-config --cppflags)
+
+WXFLAGS := $(shell wx-config --cxxflags)
 WXLIBS := $(shell wx-config --libs)
-CPPFLAGS += -std=c++11 -mmacosx-version-min=$(MACOS_VER) -MD -MP -g $(DEBUG) $(WXFLAGS)
+
+CPP = $(shell wx-config --cxx)
+CPPFLAGS += -std=c++11 -MD -MP -g $(DEBUG) $(WXFLAGS)
+
+LD = $(shell wx-config --ld)
 LIBS = -lc -lc++ -lncurses -lportmidi $(WXLIBS)
-LDFLAGS += $(LIBS) -macosx_version_min $(MACOS_VER)
+LDFLAGS += $(LIBS) $(WXLIBS)
+
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin

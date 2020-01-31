@@ -1,3 +1,4 @@
+#include "wx/defs.h"
 #include "wx/listctrl.h"
 #include "wx/textctrl.h"
 #include "wx/gbsizer.h"
@@ -15,6 +16,8 @@ Frame::Frame(const wxString& title)
 {
   make_frame_panels();
   make_menu_bar();
+  CreateStatusBar();
+  SetStatusText("No SeaMaster file loaded");
 }
 
 void Frame::make_frame_panels() {
@@ -122,9 +125,9 @@ void Frame::make_menu_bar() {
   menuBar->Append(menuView, "&View");
   menuBar->Append(menuHelp, "&Help");
   SetMenuBar(menuBar);
-
-  CreateStatusBar();
-  SetStatusText("No SeaMaster file loaded");
+#if defined(__WXMAC__)
+  menuBar->OSXGetAppleMenu()->SetTitle("SeaMaster");
+#endif
 }
 
 void Frame::OnExit(wxCommandEvent& event) {
