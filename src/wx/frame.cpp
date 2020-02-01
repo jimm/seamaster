@@ -3,6 +3,9 @@
 #include "wx/textctrl.h"
 #include "wx/gbsizer.h"
 #include "frame.h"
+#include "song_list_box.h"
+#include "song_list_list_box.h"
+#include "song_box.h"
 #include "patch_list.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
@@ -42,10 +45,10 @@ void Frame::make_frame_panels() {
 
 wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_list = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+  lc_song_list = new SongListBox(p, wxSize(100, 150));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Song List"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_song_list, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -54,7 +57,7 @@ wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_lists = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+  lc_song_lists = new SongListListBox(p, wxSize(100, 100));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -66,10 +69,10 @@ wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 150));
+  lc_song = new SongBox(p, wxSize(100, 150));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Song"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_song, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -188,41 +191,14 @@ void Frame::load_data_into_windows() {
   Cursor *cursor = pm->cursor;
   int i;
 
-  SongList *song_list = cursor->song_list();
-  lc_song_list->ClearAll();
-  if (song_list != nullptr) {
-    i = 0;
-    for (auto& song : song_list->songs) {
-      lc_song_list->InsertItem(i, song->name.c_str());
-      if (song == cursor->song())
-        lc_song_list->SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-      ++i;
-    }
-  }
-
-  lc_song_lists->ClearAll();
-  i = 0;
-  for (auto& song_list : pm->song_lists) {
-    lc_song_lists->InsertItem(i, song_list->name.c_str());
-    if (song_list == cursor->song_list())
-        lc_song_lists->SetItemState(i, wxLIST_STATE_SELECTED,
-                                    wxLIST_STATE_SELECTED);
-    ++i;
-  }
+  lc_song_list->update();
+  lc_song_lists->update();
+  lc_song->update();
+  lc_patch->update();
 
   Song *song = cursor->song();
-  lc_song->ClearAll();
   lc_notes->Clear();
   if (song != nullptr) {
-    i = 0;
-    for (auto& patch : song->patches) {
-      lc_song->InsertItem(i, patch->name.c_str());
-      if (patch == cursor->patch())
-        lc_song->SetItemState(i, wxLIST_STATE_SELECTED,
-                              wxLIST_STATE_SELECTED);
-      ++i;
-    }
-
     i = 0;
     for (auto& line : song->notes) {
       lc_notes->AppendText(line);
@@ -236,5 +212,4 @@ void Frame::load_data_into_windows() {
     for (auto& trigger : input->triggers)
       lc_triggers->InsertItem(i++, "TODO --- display trigger");
 
-  lc_patch->set_patch(cursor->patch());
 }

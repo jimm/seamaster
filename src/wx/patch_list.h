@@ -8,7 +8,7 @@ class PatchList : public wxListCtrl {
 public:
   PatchList(wxWindow *parent);
 
-  void set_patch(Patch *);
+  void update();
 
 private:
   Patch *patch;

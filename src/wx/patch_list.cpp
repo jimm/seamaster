@@ -1,6 +1,6 @@
 #include "patch_list.h"
-#include "../input.h"
-#include "../output.h"
+#include "../patchmaster.h"
+#include "../cursor.h"
 #include "../formatter.h"
 
 const char * const COLUMN_HEADERS[] = {
@@ -14,8 +14,15 @@ PatchList::PatchList(wxWindow *parent)
   set_headers();
 }
 
-void PatchList::set_patch(Patch *p) {
-  patch = p;
+void PatchList::update() {
+  PatchMaster *pm = PatchMaster_instance();
+  Cursor *cursor = pm->cursor;
+  Patch *curr_patch = cursor->patch();
+
+  if (patch == curr_patch)
+    return;
+
+  patch = curr_patch;
   ClearAll();
   set_headers();
   if (patch == nullptr)

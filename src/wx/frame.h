@@ -14,6 +14,9 @@ enum {
 class PatchMaster;
 class wxListCtrl;
 class wxTextCtrl;
+class SongListBox;
+class SongListListBox;
+class SongBox;
 class PatchList;
 
 class Frame: public wxFrame {
@@ -25,9 +28,9 @@ public:
   void refresh() { load_data_into_windows(); }
 
 private:
-  wxListCtrl *lc_song_lists;
-  wxListCtrl *lc_song_list;
-  wxListCtrl *lc_song;
+  SongListListBox *lc_song_lists;
+  SongListBox *lc_song_list;
+  SongBox *lc_song;
   PatchList *lc_patch;
   wxListCtrl *lc_triggers;
   wxTextCtrl *lc_notes;
