@@ -39,9 +39,9 @@ public:
   void goto_song(string name_regex);
   void goto_song_list(string name_regex);
 
-  void jump_to_song_list(int i);
-  void jump_to_song(int i);
-  void jump_to_patch(int i);
+  void jump_to_song_list_index(int i);
+  void jump_to_song_index(int i);
+  void jump_to_patch_index(int i);
 
   void panic(bool send_notes_off);
 };

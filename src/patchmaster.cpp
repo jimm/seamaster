@@ -106,7 +106,7 @@ void PatchMaster::goto_song_list(string name_regex) {
     cursor->patch()->start();
 }
 
-void PatchMaster::jump_to_song_list(int i) {
+void PatchMaster::jump_to_song_list_index(int i) {
   if (i == cursor->song_list_index)
     return;
 
@@ -117,7 +117,7 @@ void PatchMaster::jump_to_song_list(int i) {
     cursor->patch()->start();
 }
 
-void PatchMaster::jump_to_song(int i) {
+void PatchMaster::jump_to_song_index(int i) {
   if (i == cursor->song_index)
     return;
 
@@ -128,7 +128,7 @@ void PatchMaster::jump_to_song(int i) {
     cursor->patch()->start();
 }
 
-void PatchMaster::jump_to_patch(int i) {
+void PatchMaster::jump_to_patch_index(int i) {
   if (i == cursor->patch_index)
     return;
 

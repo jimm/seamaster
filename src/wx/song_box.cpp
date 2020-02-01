@@ -37,8 +37,9 @@ void SongBox::update() {
 }
 
 void SongBox::jump() {
-  PatchMaster *pm = PatchMaster_instance();
   int selection = GetSelection();
-  if (selection != wxNOT_FOUND)
-    pm->jump_to_patch(selection);
+  if (selection != wxNOT_FOUND) {
+    PatchMaster *pm = PatchMaster_instance();
+    pm->jump_to_patch_index(selection);
+  }
 }

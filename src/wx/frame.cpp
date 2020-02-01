@@ -1,4 +1,3 @@
-#include <stdio.h>              // DEBUG
 #include "wx/defs.h"
 #include "wx/listctrl.h"
 #include "wx/textctrl.h"
@@ -46,7 +45,7 @@ void Frame::make_frame_panels() {
 
 wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_list = new SongListBox(p, ID_JumpToSongList, wxSize(100, 150));
+  lc_song_list = new SongListBox(p, ID_JumpToSong, wxSize(100, 150));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -58,7 +57,7 @@ wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_lists = new SongListListBox(p, ID_JumpToSong, wxSize(100, 100));
+  lc_song_lists = new SongListListBox(p, ID_JumpToSongList, wxSize(100, 100));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
