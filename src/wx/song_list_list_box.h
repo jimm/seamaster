@@ -8,7 +8,7 @@
 
 class SongListListBox : public wxListBox {
 public:
-  SongListListBox(wxWindow *parent, wxSize size);
+  SongListListBox(wxWindow *parent, wxWindowID id, wxSize size);
 
   void update();
   void jump();

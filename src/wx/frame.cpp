@@ -46,7 +46,7 @@ void Frame::make_frame_panels() {
 
 wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_list = new SongListBox(p, wxSize(100, 150));
+  lc_song_list = new SongListBox(p, ID_JumpToSongList, wxSize(100, 150));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -58,7 +58,7 @@ wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_lists = new SongListListBox(p, wxSize(100, 100));
+  lc_song_lists = new SongListListBox(p, ID_JumpToSong, wxSize(100, 100));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -70,7 +70,7 @@ wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song = new SongBox(p, wxSize(100, 150));
+  lc_song = new SongBox(p, ID_JumpToPatch, wxSize(100, 150));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -142,19 +142,24 @@ void Frame::OnExit(wxCommandEvent& event) {
 }
 
 void Frame::jump_to_song_list(wxCommandEvent& event) {
-  lc_song_lists->jump();
-  load_data_into_windows();
+  if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
+    lc_song_lists->jump();
+    load_data_into_windows();
+  }
 }
 
 void Frame::jump_to_song(wxCommandEvent& event) {
-  lc_song_list->jump();
-  load_data_into_windows();
+  if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
+    lc_song_list->jump();
+    load_data_into_windows();
+  }
 }
 
 void Frame::jump_to_patch(wxCommandEvent& event) {
-  fprintf(stderr, "jump_to_patch\n"); // DEBUG
-  lc_song->jump();
-  load_data_into_windows();
+  if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
+    lc_song->jump();
+    load_data_into_windows();
+  }
 }
 
 void Frame::OnAbout(wxCommandEvent& event) {

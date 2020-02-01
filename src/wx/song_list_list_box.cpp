@@ -2,8 +2,8 @@
 #include "../patchmaster.h"
 #include "../cursor.h"
 
-SongListListBox::SongListListBox(wxWindow *parent, wxSize size)
-  : wxListBox(parent, wxID_ANY, wxDefaultPosition, size),
+SongListListBox::SongListListBox(wxWindow *parent, wxWindowID id, wxSize size)
+  : wxListBox(parent, id, wxDefaultPosition, size),
     initialized(false)
 {
 }
