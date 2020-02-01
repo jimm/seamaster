@@ -94,7 +94,7 @@ song", "prev patch", or "message". "Message" requires a message name.
 Indentation doesn't matter. Again, this text is ignored. Song notes appear
 after the song heading and before the first patch heading.
 
-** To Each His Own
+** My First Song
 
 These are optional song notes.
 They will be displayed on-screen.
@@ -114,6 +114,36 @@ The Org mode block begin/end commands are ignored.
 *** patch K to W
 **** kk, all, ws, all
 **** ws, all, kk, all
+
+** Splits, Transposes, and Mappings
+
+This patch creates a three-part split with some overlap.
+
+The bottom part sends the Wavestation's channel 1 to the Kronos on channel
+1, transposing all notes up two octaves. The key zone goes up to B2, and the
+patch also filters out the sustain pedal.
+
+The middle part goes from C3 - B4 and gets sent to channel 2.
+
+The bottom part starts at C4 and gets sent to channel 3. It overlaps one
+octave of the middle part.
+
+*** WS playing Kronos with everything
+
+**** ws, 1, kk, 1
+     - prog 100
+     - xpose 24
+     - zone 0, b2
+     - cc 64 filter
+
+**** ws, 1, kk, 2
+     - prog 99
+     - zone c3, b4
+
+**** ws, 1, kk, 3
+     - prog 1
+     - zone c4, 127
+     - xpose -12
 
 * Set Lists
 
