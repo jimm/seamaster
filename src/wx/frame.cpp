@@ -1,3 +1,4 @@
+#include <stdio.h>              // DEBUG
 #include "wx/defs.h"
 #include "wx/listctrl.h"
 #include "wx/textctrl.h"
@@ -138,6 +139,22 @@ void Frame::OnExit(wxCommandEvent& event) {
     PatchMaster_instance()->start();
   Close(true);
   exit(0);
+}
+
+void Frame::jump_to_song_list(wxCommandEvent& event) {
+  lc_song_lists->jump();
+  load_data_into_windows();
+}
+
+void Frame::jump_to_song(wxCommandEvent& event) {
+  lc_song_list->jump();
+  load_data_into_windows();
+}
+
+void Frame::jump_to_patch(wxCommandEvent& event) {
+  fprintf(stderr, "jump_to_patch\n"); // DEBUG
+  lc_song->jump();
+  load_data_into_windows();
 }
 
 void Frame::OnAbout(wxCommandEvent& event) {

@@ -8,7 +8,10 @@
 
 enum {
   ID_ListDevices = 1,
-  ID_Monitor
+  ID_Monitor,
+  ID_JumpToSongList,
+  ID_JumpToSong,
+  ID_JumpToPatch,
 };
 
 class PatchMaster;
@@ -40,6 +43,10 @@ private:
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
+
+  void jump_to_song_list(wxCommandEvent& event);
+  void jump_to_song(wxCommandEvent& event);
+  void jump_to_patch(wxCommandEvent& event);
 
   void make_frame_panels();
   void make_menu_bar();

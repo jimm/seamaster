@@ -11,6 +11,7 @@ public:
   SongListListBox(wxWindow *parent, wxSize size);
 
   void update();
+  void jump();
 
 private:
   bool initialized;

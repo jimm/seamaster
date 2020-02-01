@@ -13,6 +13,7 @@ public:
   SongListBox(wxWindow *parent, wxSize size);
 
   void update();
+  void jump();
 
 private:
   SongList *song_list;

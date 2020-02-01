@@ -28,6 +28,10 @@ public:
   void next_patch();
   void prev_patch();
 
+  void jump_to_song_list_index(int i);
+  void jump_to_song_index(int i);
+  void jump_to_patch_index(int i);
+
   void goto_song(string name_regex);
   void goto_song_list(string name_regex);
   void attempt_goto(Cursor *old_cursor);

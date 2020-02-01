@@ -2,14 +2,21 @@
 #include "portmidi.h"
 #include "app.h"
 #include "frame.h"
+#include "song_list_list_box.h"
+#include "song_list_box.h"
+#include "song_box.h"
 #include "../patchmaster.h"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
-EVT_MENU(wxID_OPEN,  Frame::OnOpen)
-EVT_MENU(ID_ListDevices, Frame::OnListDevices)
-EVT_MENU(ID_Monitor, Frame::OnMonitor)
-EVT_MENU(wxID_EXIT,  Frame::OnExit)
-EVT_MENU(wxID_ABOUT, Frame::OnAbout)
+  EVT_MENU(wxID_OPEN,  Frame::OnOpen)
+  EVT_MENU(ID_ListDevices, Frame::OnListDevices)
+  EVT_MENU(ID_Monitor, Frame::OnMonitor)
+  EVT_MENU(wxID_EXIT,  Frame::OnExit)
+  EVT_MENU(wxID_ABOUT, Frame::OnAbout)
+  EVT_LISTBOX(ID_JumpToSongList, Frame::jump_to_song_list)
+  EVT_LISTBOX(ID_JumpToSong, Frame::jump_to_song)
+  EVT_LISTBOX(ID_JumpToPatch, Frame::jump_to_patch)
+  // EVT_SIZE(MyFrame::OnSize)     // TODO
 wxEND_EVENT_TABLE()
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {

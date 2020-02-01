@@ -101,6 +101,20 @@ void Cursor::prev_patch() {
     --patch_index;
 }
 
+void Cursor::jump_to_song_list_index(int i) {
+  song_list_index = i;
+  jump_to_song_index(0);
+}
+
+void Cursor::jump_to_song_index(int i) {
+  song_index = i;
+  jump_to_patch_index(0);
+}
+
+void Cursor::jump_to_patch_index(int i) {
+  patch_index = i;
+}
+
 void Cursor::goto_song(string name_regex) {
   SongList *sl = song_list();
   Song *new_song = nullptr;

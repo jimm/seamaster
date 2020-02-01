@@ -106,6 +106,39 @@ void PatchMaster::goto_song_list(string name_regex) {
     cursor->patch()->start();
 }
 
+void PatchMaster::jump_to_song_list(int i) {
+  if (i == cursor->song_list_index)
+    return;
+
+  if (cursor->patch() != nullptr)
+    cursor->patch()->stop();
+  cursor->jump_to_song_list_index(i);
+  if (cursor->patch() != nullptr)
+    cursor->patch()->start();
+}
+
+void PatchMaster::jump_to_song(int i) {
+  if (i == cursor->song_index)
+    return;
+
+  if (cursor->patch() != nullptr)
+    cursor->patch()->stop();
+  cursor->jump_to_song_index(i);
+  if (cursor->patch() != nullptr)
+    cursor->patch()->start();
+}
+
+void PatchMaster::jump_to_patch(int i) {
+  if (i == cursor->patch_index)
+    return;
+
+  if (cursor->patch() != nullptr)
+    cursor->patch()->stop();
+  cursor->jump_to_patch_index(i);
+  if (cursor->patch() != nullptr)
+    cursor->patch()->start();
+}
+
 // ================ doing things ================
 
 void PatchMaster::panic(bool send_notes_off) {
