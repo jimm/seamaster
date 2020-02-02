@@ -10,10 +10,16 @@
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)
   EVT_MENU(ID_ListDevices, Frame::OnListDevices)
+  EVT_MENU(ID_GoNextSong, Frame::next_song)
+  EVT_MENU(ID_GoPrevSong, Frame::prev_song)
+  EVT_MENU(ID_GoNextPatch, Frame::next_patch)
+  EVT_MENU(ID_GoPrevPatch, Frame::prev_patch)
+  EVT_MENU(ID_FindSetList, Frame::find_set_list)
+  EVT_MENU(ID_FindSong, Frame::find_song)
   EVT_MENU(ID_Monitor, Frame::OnMonitor)
   EVT_MENU(wxID_EXIT,  Frame::OnExit)
   EVT_MENU(wxID_ABOUT, Frame::OnAbout)
-  EVT_LISTBOX(ID_JumpToSongList, Frame::jump_to_song_list)
+  EVT_LISTBOX(ID_JumpToSetList, Frame::jump_to_set_list)
   EVT_LISTBOX(ID_JumpToSong, Frame::jump_to_song)
   EVT_LISTBOX(ID_JumpToPatch, Frame::jump_to_patch)
   // EVT_SIZE(MyFrame::OnSize)     // TODO
@@ -79,39 +85,26 @@ int App::FilterEvent(wxEvent &event) {
   if (event.GetEventType() != wxEVT_KEY_DOWN || PatchMaster_instance() == 0)
     return -1;
 
-  char cmd = ((wxKeyEvent&)event).GetKeyCode();
+  wxKeyEvent &keyEvent = (wxKeyEvent &)event;
+  char cmd = keyEvent.GetKeyCode();
   switch (cmd) {
-  case 'J': case WXK_DOWN: case ' ':
-    PatchMaster_instance()->next_patch();
+  case WXK_LEFT:
+    frame->prev_song();
     break;
-  case 'K': case WXK_UP:
-    PatchMaster_instance()->prev_patch();
+  case WXK_RIGHT:
+    frame->next_song();
     break;
-  case 'N': case WXK_RIGHT:
-    PatchMaster_instance()->next_song();
+  case WXK_UP:
+    frame->prev_patch();
     break;
-  case 'P': case WXK_LEFT:
-    PatchMaster_instance()->prev_song();
+  case WXK_DOWN:
+    frame->next_patch();
     break;
-  case 'G':
-    {
-      wxTextEntryDialog prompt(frame, "Go To Song");
-      if (prompt.ShowModal() == wxID_OK) {
-        wxString str = prompt.GetValue();
-        if (!str.IsEmpty())
-          PatchMaster_instance()->goto_song(str.ToStdString());
-      }
-    }
-    break;
-  case 't':
-    {
-      wxTextEntryDialog prompt(frame, "Go To Song List");
-      if (prompt.ShowModal() == wxID_OK) {
-        wxString str = prompt.GetValue();
-        if (!str.IsEmpty())
-          PatchMaster_instance()->goto_song_list(str.ToStdString());
-      }
-    }
+  case ' ':
+    if (keyEvent.ShiftDown())
+      frame->prev_patch();
+    else
+      frame->next_patch();
     break;
   case '\e':                  /* escape */
     show_message("Sending panic...");

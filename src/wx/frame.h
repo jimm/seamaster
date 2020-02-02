@@ -8,10 +8,16 @@
 
 enum {
   ID_ListDevices = 1,
-  ID_Monitor,
-  ID_JumpToSongList,
+  ID_GoNextSong,
+  ID_GoPrevSong,
+  ID_GoNextPatch,
+  ID_GoPrevPatch,
+  ID_FindSong,
+  ID_FindSetList,
+  ID_JumpToSetList,
   ID_JumpToSong,
   ID_JumpToPatch,
+  ID_Monitor,
 };
 
 class PatchMaster;
@@ -30,6 +36,17 @@ public:
   void load(wxString path);
   void refresh() { load_data_into_windows(); }
 
+  void next_song();
+  void prev_song();
+  void next_patch();
+  void prev_patch();
+  void find_set_list();
+  void find_song();
+
+  void jump_to_set_list();
+  void jump_to_song();
+  void jump_to_patch();
+
 private:
   SongListListBox *lc_song_lists;
   SongListBox *lc_song_list;
@@ -44,7 +61,14 @@ private:
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
 
-  void jump_to_song_list(wxCommandEvent& event);
+  void next_song(wxCommandEvent &_event) { next_song(); }
+  void prev_song(wxCommandEvent &_event) { prev_song(); }
+  void next_patch(wxCommandEvent &_event) { next_patch(); }
+  void prev_patch(wxCommandEvent &_event) { prev_patch(); }
+  void find_set_list(wxCommandEvent &_event) { find_set_list(); }
+  void find_song(wxCommandEvent &_event) { find_song(); }
+
+  void jump_to_set_list(wxCommandEvent& event);
   void jump_to_song(wxCommandEvent& event);
   void jump_to_patch(wxCommandEvent& event);
 

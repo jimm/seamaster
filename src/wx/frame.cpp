@@ -1,7 +1,8 @@
-#include "wx/defs.h"
-#include "wx/listctrl.h"
-#include "wx/textctrl.h"
-#include "wx/gbsizer.h"
+#include <wx/persist/toplevel.h>
+#include <wx/defs.h>
+#include <wx/listctrl.h>
+#include <wx/textctrl.h>
+#include <wx/gbsizer.h>
 #include "frame.h"
 #include "song_list_box.h"
 #include "song_list_list_box.h"
@@ -14,13 +15,23 @@
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
 
+#define FRAME_POS_X 20
+#define FRAME_POS_Y 40
+#define LIST_WIDTH 200
+#define TALL_LIST_HEIGHT 300
+#define SHORT_LIST_HEIGHT 200
+#define NOTES_WIDTH 200
+#define NOTES_HEIGHT 500
+#define FRAME_NAME "seamaster_main_window"
+
 Frame::Frame(const wxString& title)
-  : wxFrame(NULL, wxID_ANY, title)
+  : wxFrame(NULL, wxID_ANY, title, wxPoint(FRAME_POS_X, FRAME_POS_Y))
 {
   make_frame_panels();
   make_menu_bar();
   CreateStatusBar();
   SetStatusText("No SeaMaster file loaded");
+  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
 void Frame::make_frame_panels() {
@@ -45,7 +56,8 @@ void Frame::make_frame_panels() {
 
 wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_list = new SongListBox(p, ID_JumpToSong, wxSize(100, 150));
+  lc_song_list = new SongListBox(p, ID_JumpToSong,
+                                 wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -57,7 +69,8 @@ wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_lists = new SongListListBox(p, ID_JumpToSongList, wxSize(100, 100));
+  lc_song_lists = new SongListListBox(p, ID_JumpToSetList,
+                                      wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -69,7 +82,8 @@ wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song = new SongBox(p, ID_JumpToPatch, wxSize(100, 150));
+  lc_song = new SongBox(p, ID_JumpToPatch,
+                        wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -81,7 +95,8 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_triggers = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+  lc_triggers = new wxListCtrl(p, wxID_ANY, wxDefaultPosition,
+                               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -93,7 +108,8 @@ wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_notes_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_notes = new wxTextCtrl(p, wxID_ANY, "", wxDefaultPosition, wxSize(100, 250), wxTE_MULTILINE);
+  lc_notes = new wxTextCtrl(p, wxID_ANY, "", wxDefaultPosition,
+                            wxSize(NOTES_WIDTH, NOTES_HEIGHT), wxTE_MULTILINE);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -114,6 +130,15 @@ void Frame::make_menu_bar() {
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
+  wxMenu *menuGo = new wxMenu;
+  menuGo->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
+  menuGo->Append(ID_GoPrevSong, "Prev Song\tP", "Move to the previous song");
+  menuGo->Append(ID_GoNextPatch, "Next Patch\tJ", "Move to the next patch");
+  menuGo->Append(ID_GoPrevPatch, "Prev Patch\tK", "Move to the previous patch");
+  menuGo->AppendSeparator();
+  menuGo->Append(ID_FindSong, "Find Song...\tCtrl-F", "Find song by name");
+  menuGo->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");
+
   wxMenu *menuView = new wxMenu;
   menuView->Append(ID_ListDevices, "&List MIDI Devices\tCtrl-L",
                    "Displays MIDI devices detected by PortMidi");
@@ -125,6 +150,7 @@ void Frame::make_menu_bar() {
 
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
+  menuBar->Append(menuGo, "&Go");
   menuBar->Append(menuView, "&View");
   menuBar->Append(menuHelp, "&Help");
   SetMenuBar(menuBar);
@@ -140,7 +166,53 @@ void Frame::OnExit(wxCommandEvent& event) {
   exit(0);
 }
 
-void Frame::jump_to_song_list(wxCommandEvent& event) {
+void Frame::next_song() {
+  PatchMaster *pm = PatchMaster_instance();
+  pm->next_song();
+  load_data_into_windows();
+}
+
+void Frame::prev_song() {
+  PatchMaster *pm = PatchMaster_instance();
+  pm->prev_song();
+  load_data_into_windows();
+}
+
+void Frame::next_patch() {
+  PatchMaster *pm = PatchMaster_instance();
+  pm->next_patch();
+  load_data_into_windows();
+}
+
+void Frame::prev_patch() {
+  PatchMaster *pm = PatchMaster_instance();
+  pm->prev_patch();
+  load_data_into_windows();
+}
+
+void Frame::find_set_list() {
+  wxTextEntryDialog prompt(this, "Find Set List");
+  if (prompt.ShowModal() == wxID_OK) {
+    wxString str = prompt.GetValue();
+    if (!str.IsEmpty()) {
+      PatchMaster_instance()->goto_song_list(str.ToStdString());
+      load_data_into_windows();
+    }
+  }
+}
+
+void Frame::find_song() {
+  wxTextEntryDialog prompt(this, "Find Song");
+  if (prompt.ShowModal() == wxID_OK) {
+    wxString str = prompt.GetValue();
+    if (!str.IsEmpty()) {
+      PatchMaster_instance()->goto_song(str.ToStdString());
+      load_data_into_windows();
+    }
+  }
+}
+
+void Frame::jump_to_set_list(wxCommandEvent& event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_song_lists->jump();
     load_data_into_windows();
