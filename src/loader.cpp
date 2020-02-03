@@ -3,7 +3,7 @@
 #include <strings.h>
 #include <errno.h>
 #include <err.h>
-#include "portmidi.h"
+#include <portmidi.h>
 #include "patchmaster.h"
 #include "cursor.h"
 #include "loader.h"

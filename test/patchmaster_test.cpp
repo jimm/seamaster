@@ -1,23 +1,25 @@
+#include "catch.hpp"
 #include "../src/patchmaster.h"
+
+#define CATCH_CATEGORY "[patchmaster]"
 #include "test_helper.h"
-#include "loader_test.h"
 
 void assert_no_start_sent(PatchMaster *pm) {
   for (auto& out : pm->outputs) {
     for (int i = 0; i < out->num_io_messages; ++i)
       if (out->io_messages[i] == Pm_Message(0xb0, 7, 127))
-        tassert(false, "start message seen, but was not expected");
+        REQUIRE("assert no start sent" == "start was sent");
   }
-  tassert(true, 0);
+  REQUIRE(true);
 }
 
 void assert_no_stop_sent(PatchMaster *pm) {
   for (auto& out : pm->outputs) {
     for (int i = 0; i < out->num_io_messages; ++i)
       if (out->io_messages[i] == Pm_Message(0xb2, 7, 127))
-        tassert(false, "stop message seen, but was not expected");
+        REQUIRE("assert no stop sent" == "stop was sent");
   }
-  tassert(true, 0);
+  REQUIRE(true);
 }
 
 void assert_start_sent(PatchMaster *pm) {
@@ -26,7 +28,7 @@ void assert_start_sent(PatchMaster *pm) {
       if (out->io_messages[i] == Pm_Message(0xb0, 7, 127))
         return;
   }
-  tassert(false, "start message not sent, but was expected");
+  REQUIRE("assert start sent" == "start was not sent");
 }
 
 void assert_stop_sent(PatchMaster *pm) {
@@ -34,10 +36,10 @@ void assert_stop_sent(PatchMaster *pm) {
   for (int i = 0; i < out->num_io_messages; ++i)
     if (out->io_messages[i] == Pm_Message(0xb2, 7, 127))
       return;
-  tassert(false, "stop message not sent, but was expected");
+  REQUIRE("assert stop sent" == "stop message not sent");
 }
 
-void test_patchmaster_next_patch_start_and_stop_messages() {
+TEST_CASE("next patch start and stop messages", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_file();
   pm->start();
 
@@ -56,7 +58,7 @@ void test_patchmaster_next_patch_start_and_stop_messages() {
   pm->stop();
 }
 
-void test_patchmaster_next_song_start_and_stop_messages() {
+TEST_CASE("next song start and stop messages", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_file();
   pm->start();
 
@@ -73,9 +75,4 @@ void test_patchmaster_next_song_start_and_stop_messages() {
   assert_stop_sent(pm);
 
   pm->stop();
-}
-
-void test_patchmaster() {
-  test_patchmaster_next_patch_start_and_stop_messages();
-  test_patchmaster_next_song_start_and_stop_messages();
 }

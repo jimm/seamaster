@@ -1,69 +1,61 @@
+#include "catch.hpp"
 #include "test_helper.h"
-#include "controller_test.h"
 
-void test_cc_will_modify() {
+#define CATCH_CATEGORY "[controller]"
+
+TEST_CASE("will modify", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
 
-  tassert(cc.will_modify() == false, 0);
+  REQUIRE(cc.will_modify() == false);
 
   cc.filtered = true;
-  tassert(cc.will_modify() == true, 0);
+  REQUIRE(cc.will_modify() == true);
   cc.filtered = false;
 
   cc.translated_cc_num = 8;
-  tassert(cc.will_modify() == true, 0);
+  REQUIRE(cc.will_modify() == true);
   cc.translated_cc_num = 7;
 
   cc.min = 1;
-  tassert(cc.will_modify() == true, 0);
+  REQUIRE(cc.will_modify() == true);
   cc.min = 0;
 
   cc.max = 126;
-  tassert(cc.will_modify() == true, 0);
+  REQUIRE(cc.will_modify() == true);
   cc.max = 127;
 }
 
-void test_cc_out_chan() {
+TEST_CASE("out chan", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
-  tassert(cc.process(Pm_Message(CONTROLLER, 7, 127), 3) == Pm_Message(CONTROLLER + 3, 7, 127),
-          "bad channel mapping");
+  REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 3) == Pm_Message(CONTROLLER + 3, 7, 127));
 }
 
-void test_cc_filter() {
+TEST_CASE("filter", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
   cc.filtered = true;
-  tassert(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == -1, "should have filtered");
+  REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == -1);
 }
 
-void test_cc_map() {
+TEST_CASE("map", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
   cc.translated_cc_num = 10;
-  tassert(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == Pm_Message(CONTROLLER, 10, 127),
-          "should have filtered");
+  REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == Pm_Message(CONTROLLER, 10, 127));
 }
 
-void test_cc_limit() {
+TEST_CASE("limit", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
   cc.min = 1;
   cc.max = 120;
 
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 0), 0)) == 1, 0);
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 1), 0)) == 1, 0);
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 64), 0)) == 64, 0);
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 120), 0)) == 120, 0);
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 121), 0)) == 120, 0);
-  tassert(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 127), 0)) == 120, 0);
-}
-
-void test_controller() {
-  test_run(test_cc_will_modify);
-  test_run(test_cc_out_chan);
-  test_run(test_cc_filter);
-  test_run(test_cc_map);
-  test_run(test_cc_limit);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 0), 0)) == 1);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 1), 0)) == 1);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 64), 0)) == 64);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 120), 0)) == 120);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 121), 0)) == 120);
+  REQUIRE(Pm_MessageData2(cc.process(Pm_Message(CONTROLLER, 7, 127), 0)) == 120);
 }

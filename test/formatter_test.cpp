@@ -1,46 +1,41 @@
-#include "test_helper.h"
-#include "../src/formatter.h"
-#include "formatter_test.h"
+#include "catch.hpp"
 
-void test_note_num_to_name() {
+#define CATCH_CATEGORY "[formatter]"
+#include "../src/formatter.h"
+
+TEST_CASE("num to name", CATCH_CATEGORY) {
   char buf[BUFSIZ];
 
   note_num_to_name(0, buf);
-  tassert(strcmp("C-1", buf) == 0, 0);
+  REQUIRE(strcmp("C-1", buf) == 0);
   note_num_to_name(1, buf);
-  tassert(strcmp("C#-1", buf) == 0, 0);
+  REQUIRE(strcmp("C#-1", buf) == 0);
   note_num_to_name(64, buf);
-  tassert(strcmp("E4", buf) == 0, 0);
+  REQUIRE(strcmp("E4", buf) == 0);
   note_num_to_name(52, buf);
-  tassert(strcmp("E3", buf) == 0, 0);
+  REQUIRE(strcmp("E3", buf) == 0);
   note_num_to_name(54, buf);
-  tassert(strcmp("F#3", buf) == 0, 0);
+  REQUIRE(strcmp("F#3", buf) == 0);
   note_num_to_name(51, buf);
-  tassert(strcmp("D#3", buf) == 0, 0);
+  REQUIRE(strcmp("D#3", buf) == 0);
   note_num_to_name(127, buf);
-  tassert(strcmp("G9", buf) == 0, 0);
+  REQUIRE(strcmp("G9", buf) == 0);
 }
 
-void test_note_name_to_num() {
-  tassert(note_name_to_num("c-1") == 0, 0);
-  tassert(note_name_to_num("C#-1") == 1, 0);
-  tassert(note_name_to_num("e4") == 64, 0);
-  tassert(note_name_to_num("e3") == 52, 0);
-  tassert(note_name_to_num("fs3") == 54, 0);
-  tassert(note_name_to_num("f#3") == 54, 0);
-  tassert(note_name_to_num("ef3") == 51, 0);
-  tassert(note_name_to_num("eb3") == 51, 0);
-  tassert(note_name_to_num("g9") == 127, 0);
-  tassert(note_name_to_num("G9") == 127, 0);
+TEST_CASE("name to num", CATCH_CATEGORY) {
+  REQUIRE(note_name_to_num("c-1") == 0);
+  REQUIRE(note_name_to_num("C#-1") == 1);
+  REQUIRE(note_name_to_num("e4") == 64);
+  REQUIRE(note_name_to_num("e3") == 52);
+  REQUIRE(note_name_to_num("fs3") == 54);
+  REQUIRE(note_name_to_num("f#3") == 54);
+  REQUIRE(note_name_to_num("ef3") == 51);
+  REQUIRE(note_name_to_num("eb3") == 51);
+  REQUIRE(note_name_to_num("g9") == 127);
+  REQUIRE(note_name_to_num("G9") == 127);
 }
 
-void test_note_name_to_num_given_num() {
-  tassert(note_name_to_num("0") == 0, 0);
-  tassert(note_name_to_num("42") == 42, 0);
-}
-
-void test_formatter() {
-  test_run(test_note_num_to_name);
-  test_run(test_note_name_to_num);
-  test_run(test_note_name_to_num_given_num);
+TEST_CASE("name to num given num", CATCH_CATEGORY) {
+  REQUIRE(note_name_to_num("0") == 0);
+  REQUIRE(note_name_to_num("42") == 42);
 }

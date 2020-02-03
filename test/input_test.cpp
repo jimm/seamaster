@@ -1,6 +1,7 @@
-#include <stdlib.h>
+#include "catch.hpp"
 #include "test_helper.h"
-#include "input_test.h"
+
+#define CATCH_CATEGORY "[input]"
 
 const char *BAD_INPUT_COUNT = "bad num input messages";
 const char *BAD_OUTPUT_COUNT = "bad num output messages";
@@ -16,7 +17,7 @@ PmMessage *test_events() {
   return buf;
 }
 
-void test_input_through_connection() {
+TEST_CASE("through connection", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   Input *in = conn->input;
   Output *out = conn->output;
@@ -25,18 +26,18 @@ void test_input_through_connection() {
   for (int i = 0; i < 4; ++i)
     in->read(buf[i]);
 
-  tassert(in->num_io_messages == 4, BAD_INPUT_COUNT);
-  tassert(out->num_io_messages == 4, BAD_OUTPUT_COUNT);
+  REQUIRE(in->num_io_messages == 4);
+  REQUIRE(out->num_io_messages == 4);
   for (int i = 0; i < 4; ++i) {
-    tassert(in->io_messages[i] == buf[i], BAD_INPUT);
-    tassert(out->io_messages[i] == buf[i], BAD_OUTPUT);
+    REQUIRE(in->io_messages[i] == buf[i]);
+    REQUIRE(out->io_messages[i] == buf[i]);
   }
 
   free(buf);
   delete conn;
 }
 
-void test_input_two_connections() {
+TEST_CASE("two connections", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   Input *in = conn->input;
   Output *out = conn->output;
@@ -49,20 +50,20 @@ void test_input_two_connections() {
   for (int i = 0; i < 4; ++i)
     in->read(buf[i]);
 
-  tassert(in->num_io_messages == 4, BAD_INPUT_COUNT);
-  tassert(out->num_io_messages == 4, BAD_OUTPUT_COUNT);
-  tassert(out2->num_io_messages == 4, BAD_OUTPUT_COUNT);
+  REQUIRE(in->num_io_messages == 4);
+  REQUIRE(out->num_io_messages == 4);
+  REQUIRE(out2->num_io_messages == 4);
   for (int i = 0; i < 4; ++i) {
-    tassert(in->io_messages[i] == buf[i], BAD_INPUT);
-    tassert(out->io_messages[i] == buf[i], BAD_OUTPUT);
-    tassert(out2->io_messages[i] == buf[i], BAD_OUTPUT);
+    REQUIRE(in->io_messages[i] == buf[i]);
+    REQUIRE(out->io_messages[i] == buf[i]);
+    REQUIRE(out2->io_messages[i] == buf[i]);
   }
 
   free(buf);
   delete conn;
 }
 
-void test_input_connection_switch_routes_offs_correctly() {
+TEST_CASE("connection switch routes offs correctly", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   Input *in = conn->input;
   Output *out = conn->output;
@@ -80,22 +81,22 @@ void test_input_connection_switch_routes_offs_correctly() {
     in->read(buf[i]);           // note off, tune request
 
   // Make sure note off was sent to original output
-  tassert(in->num_io_messages == 4, BAD_INPUT_COUNT);
-  tassert(out->num_io_messages == 3, BAD_OUTPUT_COUNT);
-  tassert(out2->num_io_messages == 1, BAD_OUTPUT_COUNT);
+  REQUIRE(in->num_io_messages == 4);
+  REQUIRE(out->num_io_messages == 3);
+  REQUIRE(out2->num_io_messages == 1);
   for (int i = 0; i < 4; ++i)
-    tassert(in->io_messages[i] == buf[i], BAD_INPUT);
+    REQUIRE(in->io_messages[i] == buf[i]);
 
   for (int i = 0; i < 3; ++i)
-    tassert(out->io_messages[i] == buf[i], BAD_OUTPUT);
+    REQUIRE(out->io_messages[i] == buf[i]);
 
-  tassert(out2->io_messages[0] == buf[3], BAD_OUTPUT);
+  REQUIRE(out2->io_messages[0] == buf[3]);
 
   free(buf);
   delete conn;
 }
 
-void test_input_connection_switch_sustains_correctly() {
+TEST_CASE("connection switch sustains correctly", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   Input *in = conn->input;
   Output *out = conn->output;
@@ -118,21 +119,14 @@ void test_input_connection_switch_sustains_correctly() {
     in->read(buf[i]);           // note off, sustain off
 
   // Make sure note off was sent to original output
-  tassert(in->num_io_messages == 4, BAD_INPUT_COUNT);
-  tassert(out->num_io_messages == 4, BAD_OUTPUT_COUNT);
-  tassert(out2->num_io_messages == 0, BAD_OUTPUT_COUNT);
+  REQUIRE(in->num_io_messages == 4);
+  REQUIRE(out->num_io_messages == 4);
+  REQUIRE(out2->num_io_messages == 0);
   for (int i = 0; i < 4; ++i)
-    tassert(in->io_messages[i] == buf[i], BAD_INPUT);
+    REQUIRE(in->io_messages[i] == buf[i]);
 
   for (int i = 0; i < 4; ++i)
-    tassert(out->io_messages[i] == buf[i], BAD_OUTPUT);
+    REQUIRE(out->io_messages[i] == buf[i]);
 
   delete conn;
-}
-
-void test_input() {
-  test_run(test_input_through_connection);
-  test_run(test_input_two_connections);
-  test_run(test_input_connection_switch_routes_offs_correctly);
-  test_run(test_input_connection_switch_sustains_correctly);
 }

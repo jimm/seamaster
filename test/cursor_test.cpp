@@ -1,12 +1,9 @@
+#include "catch.hpp"
 #include "test_helper.h"
 #include "../src/loader.h"
-#include "cursor_test.h"
 
+#define CATCH_CATEGORY "[cursor]"
 #define TEST_FILE "test/testfile.org"
-
-const char *BAD_SONG_LIST = "bad song list";
-const char *BAD_SONG = "bad song";
-const char *BAD_PATCH = "bad patch";
 
 PatchMaster *cursor_pm() {
   Loader loader;
@@ -16,186 +13,186 @@ PatchMaster *cursor_pm() {
   return pm;
 }
 
-void test_cursor_init_empty() {
+TEST_CASE("init empty", CATCH_CATEGORY) {
   PatchMaster *pm = new PatchMaster();
   Cursor *c = pm->cursor;
   c->init();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == -1, BAD_SONG);
-  tassert(c->patch_index == -1, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == -1);
+  REQUIRE(c->patch_index == -1);
 }
 
-void test_cursor_init() {
+TEST_CASE("init", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_next_patch() {
+TEST_CASE("next patch", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->next_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 1, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 1);
   delete pm;
 }
 
-void test_cursor_next_patch_at_end_of_song() {
+TEST_CASE("next patch at end of song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
   c->next_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 1, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 1);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_next_patch_at_end_of_song_list() {
+TEST_CASE("next patch at end of song list", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 2;
   c->patch_index = 0;
   c->next_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 2, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 2);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_prev_patch() {
+TEST_CASE("prev patch", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
   c->prev_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_prev_patch_start_of_song() {
+TEST_CASE("prev patch start of song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   c->prev_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_prev_patch_start_of_song_list() {
+TEST_CASE("prev patch start of song list", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->prev_patch();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_next_song() {
+TEST_CASE("next song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->next_song();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 1, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 1);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_prev_song() {
+TEST_CASE("prev song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   c->patch_index = 1;
   c->prev_song();
-  tassert(c->song_list_index == 0, BAD_SONG_LIST);
-  tassert(c->song_index == 0, BAD_SONG);
-  tassert(c->patch_index == 0, BAD_PATCH);
+  REQUIRE(c->song_list_index == 0);
+  REQUIRE(c->song_index == 0);
+  REQUIRE(c->patch_index == 0);
   delete pm;
 }
 
-void test_cursor_song_list() {
+TEST_CASE("default song list is all songs", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
-  tassert(c->song_list() == pm->all_songs, BAD_SONG_LIST);
+  REQUIRE(c->song_list() == pm->all_songs);
   delete pm;
 }
 
-void test_cursor_song() {
+TEST_CASE("song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
-  tassert(c->song() == pm->all_songs->songs[0], BAD_SONG);
+  REQUIRE(c->song() == pm->all_songs->songs[0]);
   delete pm;
 }
 
-void test_cursor_patch() {
+TEST_CASE("patch", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   Song *s = c->song();
-  tassert(c->patch() == s->patches[0], BAD_PATCH);
+  REQUIRE(c->patch() == s->patches[0]);
   delete pm;
 }
 
-void test_cursor_goto_song() {
+TEST_CASE("goto song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   c->goto_song("nother");
   Song *s = c->song();
-  tassert(s != nullptr, 0);
-  tassert(s->name == "Another Song", 0);
+  REQUIRE(s != nullptr);
+  REQUIRE(s->name == "Another Song");
 
   delete pm;
 }
 
-void test_cursor_goto_song_no_such_song() {
+TEST_CASE("goto song no such song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   Song *before = c->song();
-  tassert(before != nullptr, 0);
+  REQUIRE(before != nullptr);
 
   c->goto_song("nosuch");
   Song *s = c->song();
-  tassert(s == before, 0);
+  REQUIRE(s == before);
 
   delete pm;
 }
 
-void test_cursor_goto_song_list() {
+TEST_CASE("goto song list", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   c->goto_song_list("two");
   SongList *sl = c->song_list();
-  tassert(sl != nullptr, 0);
-  tassert(sl->name == "Song List Two", 0);
+  REQUIRE(sl != nullptr);
+  REQUIRE(sl->name == "Song List Two");
 
   delete pm;
 }
 
-void test_cursor_goto_song_list_no_such_song_list() {
+TEST_CASE("goto song list no such song list", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   SongList *before = c->song_list();
-  tassert(before != nullptr, 0);
+  REQUIRE(before != nullptr);
 
   c->goto_song_list("nosuch");
   SongList *sl = c->song_list();
-  tassert(sl == before, 0);
+  REQUIRE(sl == before);
 
   delete pm;
 }
 
-void test_cursor_attempt_goto() {
+TEST_CASE("attempt goto", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
@@ -205,28 +202,7 @@ void test_cursor_attempt_goto() {
   target.patch_index = 1;
 
   c->attempt_goto(&target);
-  tassert(c->song_list_index == 1, "attempt_goto: bad song list index");
-  tassert(c->song_index == 1, "attempt_goto: bad song index");
-  tassert(c->patch_index == 1, "attempt_goto: bad patch index");
-}
-
-void test_cursor() {
-  test_run(test_cursor_init_empty);
-  test_run(test_cursor_init);
-  test_run(test_cursor_next_patch);
-  test_run(test_cursor_next_patch_at_end_of_song);
-  test_run(test_cursor_next_patch_at_end_of_song_list);
-  test_run(test_cursor_prev_patch);
-  test_run(test_cursor_prev_patch_start_of_song);
-  test_run(test_cursor_prev_patch_start_of_song_list);
-  test_run(test_cursor_next_song);
-  test_run(test_cursor_prev_song);
-  test_run(test_cursor_song_list);
-  test_run(test_cursor_song);
-  test_run(test_cursor_patch);
-  test_run(test_cursor_goto_song);
-  test_run(test_cursor_goto_song_no_such_song);
-  test_run(test_cursor_goto_song_list);
-  test_run(test_cursor_goto_song_list_no_such_song_list);
-  test_run(test_cursor_attempt_goto);
+  REQUIRE(c->song_list_index == 1);
+  REQUIRE(c->song_index == 1);
+  REQUIRE(c->patch_index == 1);
 }

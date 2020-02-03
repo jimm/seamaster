@@ -1,5 +1,5 @@
 #include <wx/cmdline.h>
-#include "portmidi.h"
+#include <portmidi.h>
 #include "app.h"
 #include "frame.h"
 #include "song_list_list_box.h"

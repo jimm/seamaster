@@ -5,7 +5,7 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
-#include "portmidi.h"
+#include <portmidi.h>
 
 class Frame;
 

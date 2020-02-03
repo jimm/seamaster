@@ -1,7 +1,8 @@
 #ifndef TEST_HELPER_H
 #define TEST_HELPER_H
 
-#include "seamaster_test.h"
+#include <portmidi.h>
+#include "../src/consts.h"
 #include "../src/connection.h"
 #include "../src/patchmaster.h"
 #include "../src/input.h"
