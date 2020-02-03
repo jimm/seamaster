@@ -24,6 +24,18 @@
 #define NOTES_HEIGHT 500
 #define FRAME_NAME "seamaster_main_window"
 
+void *frame_clear_message_thread(void *gui_vptr) {
+  Frame *gui = (Frame *)gui_vptr;
+  int clear_message_id = gui->clear_message_id();
+
+  sleep(gui->clear_message_seconds());
+
+  // Only clear the window if the id hasn't changed
+  if (gui->clear_message_id() == clear_message_id)
+    gui->clear_message();
+  return nullptr;
+}
+
 Frame::Frame(const wxString& title)
   : wxFrame(NULL, wxID_ANY, title, wxPoint(FRAME_POS_X, FRAME_POS_Y))
 {
@@ -145,6 +157,12 @@ void Frame::make_menu_bar() {
   menuView->Append(ID_Monitor, "&MIDI Monitor\tCtrl-M",
                    "Open the MIDI Monitor window");
 
+  wxMenu *menuMIDI = new wxMenu;
+  menuMIDI->Append(ID_RegularPanic, "&Send All Notes Off\t\e",
+                   "Send All Notes Off controller message on all channels");
+  menuMIDI->Append(ID_SuperPanic, "&Send Super-Panic\t.",
+                   "Send Notes Off messages, all notes, all channels");
+
   wxMenu *menuHelp = new wxMenu;
   menuHelp->Append(wxID_ABOUT);
 
@@ -152,6 +170,7 @@ void Frame::make_menu_bar() {
   menuBar->Append(menuFile, "&File");
   menuBar->Append(menuGo, "&Go");
   menuBar->Append(menuView, "&View");
+  menuBar->Append(menuMIDI, "&MIDI");
   menuBar->Append(menuHelp, "&Help");
   SetMenuBar(menuBar);
 #if defined(__WXMAC__)
@@ -159,11 +178,32 @@ void Frame::make_menu_bar() {
 #endif
 }
 
-void Frame::OnExit(wxCommandEvent& event) {
+void Frame::OnExit(wxCommandEvent &_event) {
   if (PatchMaster_instance() != nullptr)
     PatchMaster_instance()->start();
   Close(true);
   exit(0);
+}
+
+void Frame::show_message(string msg) {
+  SetStatusText(msg.c_str());
+}
+
+void Frame::show_message(string msg, int secs) {
+  SetStatusText(msg.c_str());
+  clear_message_after(secs);
+}
+
+void Frame::clear_message() {
+  SetStatusText("");
+}
+
+void Frame::clear_message_after(int secs) {
+  clear_msg_secs = secs;
+  clear_msg_id++;
+
+  pthread_t pthread;
+  pthread_create(&pthread, 0, frame_clear_message_thread, this);
 }
 
 void Frame::next_song() {
@@ -212,33 +252,45 @@ void Frame::find_song() {
   }
 }
 
-void Frame::jump_to_set_list(wxCommandEvent& event) {
+void Frame::jump_to_set_list(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_song_lists->jump();
     load_data_into_windows();
   }
 }
 
-void Frame::jump_to_song(wxCommandEvent& event) {
+void Frame::jump_to_song(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_song_list->jump();
     load_data_into_windows();
   }
 }
 
-void Frame::jump_to_patch(wxCommandEvent& event) {
+void Frame::jump_to_patch(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_song->jump();
     load_data_into_windows();
   }
 }
 
-void Frame::OnAbout(wxCommandEvent& event) {
+void Frame::regular_panic(wxCommandEvent &_event) {
+  show_message("Sending panic...");
+  PatchMaster_instance()->panic(false);
+  show_message("Panic sent", 5);
+}
+
+void Frame::super_panic(wxCommandEvent &_event) {
+  show_message("Sending \"super panic\": all notes off, all channels...");
+  PatchMaster_instance()->panic(true);
+  show_message("Panic sent (all notes off, all channels)", 5);
+}
+
+void Frame::OnAbout(wxCommandEvent &_event) {
   wxMessageBox("This is SeaMaster, the MIDI processing and patching system.",
                 "About SeaMaster", wxOK | wxICON_INFORMATION);
 }
 
-void Frame::OnOpen(wxCommandEvent& event) {
+void Frame::OnOpen(wxCommandEvent &_event) {
   wxFileDialog openFileDialog(this, _("Open SeaMaster file"), "", "",
                               "SeaMaster files (*.org;*.md)|*.org;*.md",
                               wxFD_OPEN|wxFD_FILE_MUST_EXIST);
@@ -246,7 +298,7 @@ void Frame::OnOpen(wxCommandEvent& event) {
     load(openFileDialog.GetPath());
 }
 
-void Frame::OnListDevices(wxCommandEvent& event) {
+void Frame::OnListDevices(wxCommandEvent &_event) {
   wxMessageBox("List MIDI Devices not yet implemented.", "MIDI Devices",
                wxOK | wxICON_WARNING);
 }

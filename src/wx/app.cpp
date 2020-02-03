@@ -17,6 +17,8 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(ID_FindSetList, Frame::find_set_list)
   EVT_MENU(ID_FindSong, Frame::find_song)
   EVT_MENU(ID_Monitor, Frame::OnMonitor)
+  EVT_MENU(ID_RegularPanic, Frame::regular_panic)
+  EVT_MENU(ID_SuperPanic, Frame::super_panic)
   EVT_MENU(wxID_EXIT,  Frame::OnExit)
   EVT_MENU(wxID_ABOUT, Frame::OnAbout)
   EVT_LISTBOX(ID_JumpToSetList, Frame::jump_to_set_list)
@@ -47,12 +49,19 @@ App::~App() {
     a_instance = nullptr;
 }
 
+void App::show_message(string msg) {
+  frame->show_message(msg);
+}
+
+void App::show_message(string msg, int clear_secs) {
+  frame->show_message(msg, clear_secs);
+}
+
 bool App::OnInit() {
   if (!wxApp::OnInit())
     return false;
 
   init_portmidi();
-  prev_cmd = '\0';
   frame = new Frame("SeaMaster");
   frame->Show(true);
   if (!command_line_path.IsEmpty())
@@ -106,47 +115,12 @@ int App::FilterEvent(wxEvent &event) {
     else
       frame->next_patch();
     break;
-  case '\e':                  /* escape */
-    show_message("Sending panic...");
-    PatchMaster_instance()->panic(prev_cmd == '\e');
-    show_message("Panic sent");
-    clear_message_after(5);
-    break;
   default:
     return -1;
   }
 
-  prev_cmd = cmd;
   frame->refresh();
   return true;
-}
-
-void App::show_message(string msg) {
-  frame->SetStatusText(msg.c_str());
-}
-
-void App::clear_message() {
-  frame->SetStatusText("");
-}
-
-void *app_clear_message_thread(void *gui_vptr) {
-  App *gui = (App *)gui_vptr;
-  int clear_message_id = gui->clear_message_id();
-
-  sleep(gui->clear_message_seconds());
-
-  // Only clear the window if the id hasn't changed
-  if (gui->clear_message_id() == clear_message_id)
-    gui->clear_message();
-  return nullptr;
-}
-
-void App::clear_message_after(int secs) {
-  clear_msg_secs = secs;
-  clear_msg_id++;
-
-  pthread_t pthread;
-  pthread_create(&pthread, 0, app_clear_message_thread, this);
 }
 
 void App::init_portmidi() {

@@ -14,18 +14,12 @@ public:
   App();
   ~App();
 
-  void show_message(std::string);
-  void clear_message();
-  void clear_message_after(int);
-  int clear_message_seconds() { return clear_msg_secs; }
-  int clear_message_id() { return clear_msg_id; }
+  void show_message(std::string msg);
+  void show_message(std::string msg, int clear_secs);
 
 private:
   Frame *frame;
   wxString command_line_path;
-  char prev_cmd;
-  int clear_msg_secs;
-  int clear_msg_id;
 
   virtual bool OnInit();
   virtual void OnInitCmdLine(wxCmdLineParser &);

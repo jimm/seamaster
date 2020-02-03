@@ -18,6 +18,8 @@ enum {
   ID_JumpToSong,
   ID_JumpToPatch,
   ID_Monitor,
+  ID_RegularPanic,
+  ID_SuperPanic
 };
 
 class PatchMaster;
@@ -35,6 +37,13 @@ public:
 
   void load(wxString path);
   void refresh() { load_data_into_windows(); }
+
+  void show_message(std::string);
+  void show_message(std::string, int);
+  void clear_message();
+  void clear_message_after(int);
+  int clear_message_seconds() { return clear_msg_secs; }
+  int clear_message_id() { return clear_msg_id; }
 
   void next_song();
   void prev_song();
@@ -54,12 +63,17 @@ private:
   PatchList *lc_patch;
   wxListCtrl *lc_triggers;
   wxTextCtrl *lc_notes;
+  int clear_msg_secs;
+  int clear_msg_id;
 
   void OnOpen(wxCommandEvent& event);
   void OnListDevices(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
+
+  void regular_panic(wxCommandEvent &_event);
+  void super_panic(wxCommandEvent &_event);
 
   void next_song(wxCommandEvent &_event) { next_song(); }
   void prev_song(wxCommandEvent &_event) { prev_song(); }
