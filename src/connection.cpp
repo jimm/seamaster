@@ -34,8 +34,11 @@ void Connection::stop() {
   input->remove_connection(this);
 }
 
+// Takes a MIDI message `msg` from an input, processes it, and sends it to
+// an output (unless it's been filtered out).
 void Connection::midi_in(PmMessage msg) {
-  if (!accept_from_input(msg))
+  // See if the message should even be processed, or if we should stop here.
+  if (!input_channel_ok(msg))
       return;
 
   PmMessage cc_msg;
@@ -69,22 +72,16 @@ void Connection::midi_in(PmMessage msg) {
   }
 }
 
-int Connection::accept_from_input(PmMessage msg) {
+// Returns `true` if any one of the following are true:
+// - we accept any input channel
+// - it's a system message, not a channel message
+// - the input channel matches our selected `input_chan`
+int Connection::input_channel_ok(PmMessage msg) {
   if (input_chan == -1)
     return true;
+
   unsigned char status = Pm_MessageStatus(msg);
-
-  if (status >= SYSEX)
-    return true;
-  if (input_chan != (status & 0x0f))
-    return false;
-
-  if ((status & 0xf0) == CONTROLLER) {
-    unsigned char controller = Pm_MessageData1(msg);
-    if (cc_maps[controller].filtered)
-      return false;
-  }
-  return true;
+  return status >= SYSEX || input_chan == (status & 0x0f);
 }
 
 int Connection::inside_zone(PmMessage msg) {

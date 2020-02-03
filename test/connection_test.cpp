@@ -40,6 +40,27 @@ void test_connection_allow_all_chans_in_and_out() {
   delete conn;
 }
 
+void test_connection_all_chans_filter_controller() {
+  Connection *conn = create_conn();
+  conn->input_chan = -1;
+  conn->output_chan = -1;
+  conn->cc_maps[64].filtered = true;
+  conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
+  tassert(conn->output->num_io_messages == 0, "should not pass through filtered controller");
+  delete conn;
+}
+
+void test_connection_all_chans_process_controller() {
+  Connection *conn = create_conn();
+  conn->input_chan = 3;
+  conn->output_chan = 3;
+  conn->cc_maps[64].max = 126;
+  conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
+  tassert(conn->output->num_io_messages == 1, 0);
+  tassert(conn->output->io_messages[0] == Pm_Message(NOTE_ON + 3, 64, 126), 0); /* out value clamped */
+  delete conn;
+}
+
 void test_connection_xpose() {
   Connection *conn = create_conn();
 
@@ -102,6 +123,7 @@ void test_connection() {
   test_run(test_connection_filter_other_input_chan);
   test_run(test_connection_allow_all_chans);
   test_run(test_connection_allow_all_chans_in_and_out);
+  test_run(test_connection_all_chans_filter_controller);
   test_run(test_connection_xpose);
   test_run(test_connection_zone);
   test_run(test_connection_zone_poly_pressure);

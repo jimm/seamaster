@@ -41,7 +41,7 @@ public:
   void midi_in(PmMessage msg);
 
 private:
-  int accept_from_input(PmMessage msg);
+  int input_channel_ok(PmMessage msg);
   int inside_zone(PmMessage msg);
   void midi_out(PmMessage msg);
 };
