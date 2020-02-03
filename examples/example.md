@@ -53,7 +53,9 @@ is not yet support for symbolic names such as "CONTROLLER" or "TUNE_REQUEST"
 for bytes yet.
 
 Within each message only Markdown block delimiters ("```" and "```" lines)
-are ignored; all other lines are assumed to be MIDI messages.
+are ignored; all other lines are assumed to be MIDI messages. That means all
+of your message comments/notes need to be here, not inside the messages'
+sections.
 
 ## Tune Request
 

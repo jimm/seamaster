@@ -52,7 +52,9 @@ is not yet support for symbolic names such as "CONTROLLER" or "TUNE_REQUEST"
 for bytes yet.
 
 Within each message only Org mode block delimiters ("#+begin_" and "#_end_"
-lines) are ignored; all other lines are assumed to be MIDI messages.
+lines) are ignored; all other lines are assumed to be MIDI messages. That
+means all of your message comments/notes need to be here, not inside the
+messages' sections.
 
 ** Tune Request
 

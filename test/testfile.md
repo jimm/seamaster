@@ -31,8 +31,6 @@ ignored. Sorry, no symbolic names yet.
 
 ## Testing Another Literal Syntax
 
-Nothing really different to test here, but Org mode has something to test.
-
     0xf6
 
 # Triggers
@@ -67,6 +65,7 @@ after the song heading and before the first patch heading.
      - xpose 12
      - cc 7 map 10, limit 1 120
 #### two, all, two, all
+     - bank 5
      - xpose -12
 
 ## Another Song
