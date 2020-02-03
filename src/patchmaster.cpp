@@ -146,6 +146,8 @@ void PatchMaster::panic(bool send_notes_off) {
 
   memset(buf, 0, 128 * sizeof(PmEvent));
   if (send_notes_off) {
+    for (int i = 0; i < 128; ++i)
+      buf[i].timestamp = 0;
     for (int i = 0; i < 16; ++i) {
       for (int j = 0; j < 128; ++j)
         buf[j].message = Pm_Message(NOTE_OFF + i, j, 0);
@@ -154,8 +156,10 @@ void PatchMaster::panic(bool send_notes_off) {
     }
   }
   else {
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 16; ++i) {
       buf[i].message = Pm_Message(CONTROLLER + i, CM_ALL_NOTES_OFF, 0);
+      buf[i].timestamp = 0;
+    }
     for (auto& out : outputs)
       out->write(buf, 16);
   }
