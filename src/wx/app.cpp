@@ -24,7 +24,6 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_LISTBOX(ID_JumpToSetList, Frame::jump_to_set_list)
   EVT_LISTBOX(ID_JumpToSong, Frame::jump_to_song)
   EVT_LISTBOX(ID_JumpToPatch, Frame::jump_to_patch)
-  // EVT_SIZE(MyFrame::OnSize)     // TODO
 wxEND_EVENT_TABLE()
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
