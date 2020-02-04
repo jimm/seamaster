@@ -4,8 +4,8 @@
 #define CATCH_CATEGORY "[connection]"
 
 TEST_CASE("start sends pc", CATCH_CATEGORY) {
-  Input *in = new Input("in", "input name", -1);
-  Output *out = new Output("out", "output name", -1);
+  Input *in = new Input("in", "input name", CONNECTION_ALL_CHANNELS);
+  Output *out = new Output("out", "output name", CONNECTION_ALL_CHANNELS);
   Connection *conn = new Connection(in, 0, out, 1);
   vector<PmMessage> empty;
 
@@ -25,7 +25,7 @@ TEST_CASE("filter other input chan", CATCH_CATEGORY) {
 
 TEST_CASE("allow all chans", CATCH_CATEGORY) {
   Connection *conn = create_conn();
-  conn->input_chan = -1;
+  conn->input_chan = CONNECTION_ALL_CHANNELS;
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 1);
   REQUIRE(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 64, 127)); /* mutated to output chan */
@@ -34,8 +34,8 @@ TEST_CASE("allow all chans", CATCH_CATEGORY) {
 
 TEST_CASE("allow all chans in and out", CATCH_CATEGORY) {
   Connection *conn = create_conn();
-  conn->input_chan = -1;
-  conn->output_chan = -1;
+  conn->input_chan = CONNECTION_ALL_CHANNELS;
+  conn->output_chan = CONNECTION_ALL_CHANNELS;
   conn->midi_in(Pm_Message(NOTE_ON + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 1);
   REQUIRE(conn->output->io_messages[0] == Pm_Message(NOTE_ON + 3, 64, 127)); /* out chan not changed */
@@ -44,8 +44,8 @@ TEST_CASE("allow all chans in and out", CATCH_CATEGORY) {
 
 TEST_CASE("all chans filter controller", CATCH_CATEGORY) {
   Connection *conn = create_conn();
-  conn->input_chan = -1;
-  conn->output_chan = -1;
+  conn->input_chan = CONNECTION_ALL_CHANNELS;
+  conn->output_chan = CONNECTION_ALL_CHANNELS;
   conn->cc_maps[64].filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 0);

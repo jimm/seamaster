@@ -6,7 +6,7 @@
 class Controller {
 public:
   int cc_num;
-  int translated_cc_num;        // -1 means no translation
+  int translated_cc_num;        // CONTROLLER_NO_XLATE means no translation
   int min;
   int max;
   bool filtered;
@@ -18,7 +18,7 @@ public:
   // translating, or clamping.
   bool will_modify();
 
-  // Returns -1 if nothing to send.
+  // Returns CONTROLLER_BLOCK if nothing to send.
   PmMessage process(PmMessage msg, int output_channel);
 
 private:

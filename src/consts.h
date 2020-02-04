@@ -1,7 +1,14 @@
 #ifndef CONSTS_H
 #define CONSTS_H
 
-// MIDI and PatchMaster constants.
+// SeaMaster constants
+
+#define UNDEFINED -1
+#define CONNECTION_ALL_CHANNELS -1
+#define CONTROLLER_BLOCK -1
+#define CONTROLLER_NO_XLATE -1
+
+// MIDI constants
 
 // Number of MIDI channels
 #define MIDI_CHANNELS 16

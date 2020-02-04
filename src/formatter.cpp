@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "consts.h"
 #include "connection.h"
 
 static const char * NOTE_NAMES[] = {
@@ -53,8 +54,8 @@ string byte_to_hex(unsigned char byte) {
 }
 
 void format_program(program prog, char *buf) {
-  int has_msb = prog.bank_msb != -1;
-  int has_lsb = prog.bank_lsb != -1;
+  int has_msb = prog.bank_msb != UNDEFINED;
+  int has_lsb = prog.bank_lsb != UNDEFINED;
   int has_bank = has_msb || has_lsb;
 
   sprintf(buf, " %c", has_bank ? '[' : ' ');
@@ -78,15 +79,15 @@ void format_program(program prog, char *buf) {
   sprintf(buf, "%c ", has_bank ? ']' : ' ');
   buf += 2;
 
-  if (prog.prog != -1)
+  if (prog.prog != UNDEFINED)
     sprintf(buf, " %3d", prog.prog);
   else
     strcat(buf, "    ");
 }
 
 void format_program_no_spaces(program prog, char *buf) {
-  int has_msb = prog.bank_msb != -1;
-  int has_lsb = prog.bank_lsb != -1;
+  int has_msb = prog.bank_msb != UNDEFINED;
+  int has_lsb = prog.bank_lsb != UNDEFINED;
   int has_bank = has_msb || has_lsb;
 
   if (has_bank)
@@ -108,7 +109,7 @@ void format_program_no_spaces(program prog, char *buf) {
   if (has_bank)
     *buf++ = ']';
 
-  if (prog.prog != -1) {
+  if (prog.prog != UNDEFINED) {
     sprintf(buf, "%3d", prog.prog);
     buf += 3;
   }

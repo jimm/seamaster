@@ -435,7 +435,7 @@ void Loader::load_bank(char *line) {
 
   comma_sep_args(line, true, args);
   if (args.size() == 1) {
-    conn->prog.bank_msb = -1;
+    conn->prog.bank_msb = UNDEFINED;
     conn->prog.bank_lsb = atoi(args[0]);
   }
   else {
@@ -505,7 +505,8 @@ void Loader::ensure_song_has_patch() {
     Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs),
                                         (char *)in->sym.c_str());
     if (out != nullptr) {
-      Connection *conn = new Connection(in, -1, out, -1);
+      Connection *conn = new Connection(in, CONNECTION_ALL_CHANNELS,
+                                        out, CONNECTION_ALL_CHANNELS);
       p->connections.push_back(conn);
     }
   }
@@ -569,7 +570,7 @@ void Loader::table_columns(char *line, vector<char *> &v) {
 }
 
 int Loader::chan_from_word(char *word) {
-  return strncasecmp(word, "all", 3) == 0 ? -1 : atoi(word) - 1;
+  return strncasecmp(word, "all", 3) == 0 ? CONNECTION_ALL_CHANNELS : atoi(word) - 1;
 }
 
 PmDeviceID Loader::find_device(char *name, int device_type) {

@@ -3,8 +3,6 @@
 #include <regex.h>
 #include "cursor.h"
 
-#define UNDEFINED -1
-
 /*
  * A Cursor knows the current SongList, Song, and Patch, how to move between
  * songs and patches, and how to find them given name regexes.

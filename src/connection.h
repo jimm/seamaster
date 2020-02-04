@@ -30,7 +30,7 @@ public:
   program prog;
   zone zone;
   int xpose;
-  Controller cc_maps[128]; // -1 == filter out, else dest. controller number
+  Controller cc_maps[128];
 
   Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();

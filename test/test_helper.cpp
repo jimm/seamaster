@@ -17,8 +17,8 @@ PatchMaster *load_test_file(const char *path) {
 }
 
 Connection *create_conn() {
-  Input *in = new Input("in", "input name", -1);
-  Output *out = new Output("out", "output name", -1);
+  Input *in = new Input("in", "input name", CONNECTION_ALL_CHANNELS);
+  Output *out = new Output("out", "output name", CONNECTION_ALL_CHANNELS);
   Connection *conn = new Connection(in, 0, out, 0);
   vector<PmMessage> empty;
   conn->start();                // add conn to input

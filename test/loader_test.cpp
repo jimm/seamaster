@@ -146,9 +146,9 @@ TEST_CASE("connections", CATCH_CATEGORY) {
     REQUIRE(p->connections.size() == 2);
     Connection *conn = p->connections[0];
     REQUIRE(conn->input == pm->inputs[0]);
-    REQUIRE(conn->input_chan == -1);
+    REQUIRE(conn->input_chan == CONNECTION_ALL_CHANNELS);
     REQUIRE(conn->output == pm->outputs[0]);
-    REQUIRE(conn->output_chan == -1);
+    REQUIRE(conn->output_chan == CONNECTION_ALL_CHANNELS);
 
     s = pm->all_songs->songs[1];
     p = s->patches.back();
@@ -242,7 +242,7 @@ TEST_CASE("cc map", CATCH_CATEGORY) {
   Song *s = pm->all_songs->songs[0];
   Patch *p = s->patches[0];
   Connection *conn = p->connections[0];
-  REQUIRE(conn->cc_maps[7].translated_cc_num == -1);
+  REQUIRE(conn->cc_maps[7].translated_cc_num == CONTROLLER_NO_XLATE);
 
   p = s->patches.back();
   conn = p->connections[0];

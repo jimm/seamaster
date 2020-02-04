@@ -208,45 +208,59 @@ void Frame::clear_message_after(int secs) {
 
 void Frame::next_song() {
   PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   pm->next_song();
   load_data_into_windows();
 }
 
 void Frame::prev_song() {
   PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   pm->prev_song();
   load_data_into_windows();
 }
 
 void Frame::next_patch() {
   PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   pm->next_patch();
   load_data_into_windows();
 }
 
 void Frame::prev_patch() {
   PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   pm->prev_patch();
   load_data_into_windows();
 }
 
 void Frame::find_set_list() {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   wxTextEntryDialog prompt(this, "Find Set List");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      PatchMaster_instance()->goto_song_list(str.ToStdString());
+      pm->goto_song_list(str.ToStdString());
       load_data_into_windows();
     }
   }
 }
 
 void Frame::find_song() {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   wxTextEntryDialog prompt(this, "Find Song");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      PatchMaster_instance()->goto_song(str.ToStdString());
+      pm->goto_song(str.ToStdString());
       load_data_into_windows();
     }
   }
@@ -274,14 +288,20 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
 }
 
 void Frame::regular_panic(wxCommandEvent &_event) {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   show_message("Sending panic...");
-  PatchMaster_instance()->panic(false);
+  pm->panic(false);
   show_message("Panic sent", 5);
 }
 
 void Frame::super_panic(wxCommandEvent &_event) {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   show_message("Sending \"super panic\": all notes off, all channels...");
-  PatchMaster_instance()->panic(true);
+  pm->panic(true);
   show_message("Panic sent (all notes off, all channels)", 5);
 }
 
@@ -306,9 +326,12 @@ void Frame::OnListDevices(wxCommandEvent &_event) {
 void Frame::OnMonitor(wxCommandEvent &event) {
   wxMessageBox("MIDI Monitor not yet implemented.", "MIDI Monitor",
                wxOK | wxICON_WARNING);
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   // TODO open monitor frame if it's not already open
   // if already exists return
-  // MonitorFrame *frame = new MonitorFrame(PatchMaster_instance(), wxPoint(50, 50), wxSize(450, 340));
+  // MonitorFrame *frame = new MonitorFrame(pm, wxPoint(50, 50), wxSize(450, 340));
   // frame->Show(true);
 }
 
@@ -333,6 +356,8 @@ void Frame::load(wxString path) {
 
 void Frame::load_data_into_windows() {
   PatchMaster *pm = PatchMaster_instance();
+  if (pm == nullptr)
+    return;
   Cursor *cursor = pm->cursor;
   int i;
 

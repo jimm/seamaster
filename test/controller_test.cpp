@@ -36,7 +36,7 @@ TEST_CASE("filter", CATCH_CATEGORY) {
   Controller cc;
   cc.cc_num = 7;
   cc.filtered = true;
-  REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == -1);
+  REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == CONTROLLER_BLOCK);
 }
 
 TEST_CASE("map", CATCH_CATEGORY) {
