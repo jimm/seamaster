@@ -128,7 +128,6 @@ void App::init_portmidi() {
     fprintf(stderr, "error initializing PortMidi: %s\n", Pm_GetErrorText(err));
     exit(1);
   }
-
 }
 
 void App::list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {
@@ -142,7 +141,6 @@ void App::list_devices(const char *title, const PmDeviceInfo *infos[], int num_d
 }
 
 void App::list_all_devices() {
-  init_portmidi();
   int num_devices = Pm_CountDevices();
   const PmDeviceInfo *inputs[num_devices], *outputs[num_devices];
 
