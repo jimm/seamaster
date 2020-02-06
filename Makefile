@@ -8,14 +8,14 @@ CPP = $(shell wx-config --cxx)
 CPPFLAGS += -std=c++11 -MD -MP -g $(DEBUG) $(WXFLAGS)
 
 LD = $(shell wx-config --ld)
-LIBS = -lc -lc++ -lncurses -lportmidi $(WXLIBS)
+LIBS = -lc -lc++ -lportmidi $(WXLIBS)
 LDFLAGS += $(LIBS) $(WXLIBS)
 
 prefix = /usr/local
 exec_prefix = $(prefix)
 bindir = $(exec_prefix)/bin
 
-SRC = $(wildcard src/*.cpp) $(wildcard src/curses/*.cpp src/wx/*.cpp)
+SRC = $(wildcard src/*.cpp) $(wildcard src/wx/*.cpp)
 OBJS = $(SRC:%.cpp=%.o)
 TEST_SRC = $(wildcard test/*.cpp)
 TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
@@ -49,7 +49,7 @@ TAGS:	$(SRC)
 	etags $(SRC)
 
 clean:
-	rm -f $(NAME) $(NAME)_test src/*.o src/curses/*.o src/wx/*.o test/*.o
+	rm -f $(NAME) $(NAME)_test src/*.o src/wx/*.o test/*.o
 
 distclean: clean
-	rm -f src/*.d src/curses/*.d src/wx/*.d test/*.d
+	rm -f src/*.d src/wx/*.d test/*.d
