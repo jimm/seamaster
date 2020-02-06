@@ -6,6 +6,7 @@
 #include "song_list_box.h"
 #include "song_box.h"
 #include "../patchmaster.h"
+#include "../initializer.h"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)
@@ -28,6 +29,7 @@ wxEND_EVENT_TABLE()
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
   { wxCMD_LINE_SWITCH, "l", "list-devices", "Display MIDI Devices" },
+  { wxCMD_LINE_SWITCH, "i", "initialize", "Output initial SeamMaster file" },
   { wxCMD_LINE_PARAM, nullptr, nullptr, "SeaMaster file", wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL },
   { wxCMD_LINE_NONE }
@@ -63,18 +65,20 @@ bool App::OnInit() {
   init_portmidi();
   frame = new Frame("SeaMaster");
   frame->Show(true);
-  if (!command_line_path.IsEmpty())
+  if (command_line_path.IsEmpty())
+    frame->initialize();
+  else
     frame->load(command_line_path);
   return true;
 }
 
 void App::OnInitCmdLine(wxCmdLineParser& parser) {
-  parser.SetDesc (g_cmdLineDesc);
+  parser.SetDesc(g_cmdLineDesc);
   parser.SetSwitchChars (wxT("-"));
 }
 
 bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
-  if (parser.Found(wxT("l"))) {
+  if (parser.Found("l")) {
     list_all_devices();
     return false;
   }
@@ -85,7 +89,7 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
 }
 
 int App::OnExit() {
-  Pm_Terminate();
+  close_portmidi();
   return wxApp::OnExit();
 }
 
@@ -128,6 +132,10 @@ void App::init_portmidi() {
     fprintf(stderr, "error initializing PortMidi: %s\n", Pm_GetErrorText(err));
     exit(1);
   }
+}
+
+void App::close_portmidi() {
+  Pm_Terminate();
 }
 
 void App::list_devices(const char *title, const PmDeviceInfo *infos[], int num_devices) {

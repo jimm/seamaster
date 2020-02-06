@@ -35,6 +35,7 @@ public:
   Frame(const wxString& title);
   virtual ~Frame() {}
 
+  void initialize();
   void load(wxString path);
   void refresh() { load_data_into_windows(); }
 

@@ -11,6 +11,7 @@
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
+#include "../initializer.h"
 
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
@@ -333,6 +334,11 @@ void Frame::OnMonitor(wxCommandEvent &event) {
   // if already exists return
   // MonitorFrame *frame = new MonitorFrame(pm, wxPoint(50, 50), wxSize(450, 340));
   // frame->Show(true);
+}
+
+void Frame::initialize() {
+  Initializer().initialize();
+  load_data_into_windows();
 }
 
 void Frame::load(wxString path) {
