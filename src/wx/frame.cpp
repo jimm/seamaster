@@ -8,6 +8,7 @@
 #include "song_list_list_box.h"
 #include "song_box.h"
 #include "patch_list.h"
+#include "instrument_dialog.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
@@ -153,6 +154,8 @@ void Frame::make_menu_bar() {
   menuGo->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");
 
   wxMenu *menuView = new wxMenu;
+  menuView->Append(ID_ListInstruments, "&List Instruments\tCtrl-I",
+                   "Displays input and output instruments");
   menuView->Append(ID_ListDevices, "&List MIDI Devices\tCtrl-L",
                    "Displays MIDI devices detected by PortMidi");
   menuView->Append(ID_Monitor, "&MIDI Monitor\tCtrl-M",
@@ -317,6 +320,10 @@ void Frame::OnOpen(wxCommandEvent &_event) {
                               wxFD_OPEN|wxFD_FILE_MUST_EXIST);
   if (openFileDialog.ShowModal() != wxID_CANCEL)
     load(openFileDialog.GetPath());
+}
+
+void Frame::OnListInstruments(wxCommandEvent &_event) {
+  InstrumentDialog(this, PatchMaster_instance()).run();
 }
 
 void Frame::OnListDevices(wxCommandEvent &_event) {

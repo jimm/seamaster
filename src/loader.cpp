@@ -298,10 +298,10 @@ void Loader::load_instrument(vector<char *> &cols, int type) {
 
   switch (type) {
   case INPUT:
-    pm->inputs.push_back(new Input(sym, name, devid));
+    pm->inputs.push_back(new Input(sym, name, cols[1], devid));
     break;
   case OUTPUT:
-    pm->outputs.push_back(new Output(sym, name, devid));
+    pm->outputs.push_back(new Output(sym, name, cols[1], devid));
     break;
   }
 }

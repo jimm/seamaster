@@ -27,12 +27,12 @@ void Initializer::load_instruments(PatchMaster *pm) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
     if (info->input) {
       sprintf(sym, "in%d\n", input_num);
-      pm->inputs.push_back(new Input(sym, info->name, i));
+      pm->inputs.push_back(new Input(sym, info->name, info->name, i));
       ++input_num;
     }
     if (info->output) {
       sprintf(sym, "out%d\n", output_num);
-      pm->outputs.push_back(new Output(sym, info->name, i));
+      pm->outputs.push_back(new Output(sym, info->name, info->name, i));
       ++output_num;
     }
   }

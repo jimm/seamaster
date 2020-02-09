@@ -19,7 +19,7 @@ public:
   vector<Trigger *> triggers;
   bool running;
 
-  Input(const char *sym, const char *name, int port_num);
+  Input(const char *sym, const char *name, const char *port_name, int port_num);
   ~Input();
 
   void add_connection(Connection *);

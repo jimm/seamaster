@@ -4,8 +4,8 @@
 #define CATCH_CATEGORY "[connection]"
 
 TEST_CASE("start sends pc", CATCH_CATEGORY) {
-  Input *in = new Input("in", "input name", CONNECTION_ALL_CHANNELS);
-  Output *out = new Output("out", "output name", CONNECTION_ALL_CHANNELS);
+  Input *in = new Input("in", "input name", "in port name", CONNECTION_ALL_CHANNELS);
+  Output *out = new Output("out", "output name", "out port name", CONNECTION_ALL_CHANNELS);
   Connection *conn = new Connection(in, 0, out, 1);
   vector<PmMessage> empty;
 

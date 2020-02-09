@@ -5,8 +5,8 @@
 #include "output.h"
 #include "trigger.h"
 
-Output::Output(const char *sym, const char *name, int port_num)
-  : Instrument(sym, name, port_num)
+Output::Output(const char *sym, const char *name, const char *port_name, int port_num)
+  : Instrument(sym, name, port_name, port_num)
 {
   if (real_port()) {
     PmError err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);

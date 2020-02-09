@@ -3,8 +3,8 @@
 #include "error.h"
 #include "instrument.h"
 
-Instrument::Instrument(const char *sym_str, const char *name, int portmidi_port_num)
-  : Named(name), sym(sym_str), midi_monitor(nullptr)
+Instrument::Instrument(const char *sym_str, const char *name, const char *pname, int portmidi_port_num)
+  : Named(name), sym(sym_str), port_name(pname), midi_monitor(nullptr)
 {
   port_num = portmidi_port_num;
   num_io_messages = 0;

@@ -10,6 +10,7 @@
 class Instrument : public Named {
 public:
   string sym;
+  string port_name;
   int port_num;
   PortMidiStream *stream;
   MIDIMonitor *midi_monitor;
@@ -17,7 +18,7 @@ public:
   PmMessage io_messages[MIDI_BUFSIZ]; // testing only
   int num_io_messages;                // ditto
 
-  Instrument(const char *sym, const char *name, int port_num);
+  Instrument(const char *sym, const char *name, const char *port_name, int port_num);
   virtual ~Instrument();
 
   bool real_port();

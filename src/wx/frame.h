@@ -7,8 +7,7 @@
 #endif
 
 enum {
-  ID_ListDevices = 1,
-  ID_GoNextSong,
+  ID_GoNextSong = 1,
   ID_GoPrevSong,
   ID_GoNextPatch,
   ID_GoPrevPatch,
@@ -17,6 +16,8 @@ enum {
   ID_JumpToSetList,
   ID_JumpToSong,
   ID_JumpToPatch,
+  ID_ListInstruments,
+  ID_ListDevices,
   ID_Monitor,
   ID_RegularPanic,
   ID_SuperPanic
@@ -68,6 +69,7 @@ private:
   int clear_msg_id;
 
   void OnOpen(wxCommandEvent& event);
+  void OnListInstruments(wxCommandEvent& event);
   void OnListDevices(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
