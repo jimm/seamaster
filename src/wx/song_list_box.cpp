@@ -3,7 +3,7 @@
 #include "../cursor.h"
 
 SongListBox::SongListBox(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size)
+  : wxListBox(parent, id, wxDefaultPosition, size), song_list(nullptr)
 {
 }
 
@@ -18,7 +18,8 @@ void SongListBox::update() {
       wxArrayString names;
       for (auto& song : curr_song_list->songs)
         names.Add(song->name.c_str());
-      InsertItems(names, 0);
+      if (!names.IsEmpty())
+        InsertItems(names, 0);
     }
     song_list = curr_song_list;
   }

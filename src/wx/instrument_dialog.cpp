@@ -45,5 +45,5 @@ void InstrumentDialog::add_instrument(wxListCtrl *list_box, Instrument *inst, in
   list_box->InsertItem(i, inst->sym.c_str());
   list_box->SetItem(i, 1, inst->name.c_str());
   list_box->SetItem(i, 2, inst->port_name.c_str());
-  list_box->SetItem(i, 3, "(TODO)");
+  list_box->SetItem(i, 3, inst->enabled ? "enabled" : "<disabled>");
 }

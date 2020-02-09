@@ -14,6 +14,7 @@ public:
   int port_num;
   PortMidiStream *stream;
   MIDIMonitor *midi_monitor;
+  bool enabled;
 
   PmMessage io_messages[MIDI_BUFSIZ]; // testing only
   int num_io_messages;                // ditto

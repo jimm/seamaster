@@ -4,7 +4,7 @@
 #include "instrument.h"
 
 Instrument::Instrument(const char *sym_str, const char *name, const char *pname, int portmidi_port_num)
-  : Named(name), sym(sym_str), port_name(pname), midi_monitor(nullptr)
+  : Named(name), sym(sym_str), port_name(pname), midi_monitor(nullptr), enabled(false)
 {
   port_num = portmidi_port_num;
   num_io_messages = 0;

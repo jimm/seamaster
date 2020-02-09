@@ -160,8 +160,8 @@ void Cursor::goto_song_list(string name_regex) {
   }
 }
 
-// Attempt to go to the same song list, song, and patch that old_cursor
-// points to. Called when (re)loading a file.
+// Attempt to go to the same song list, song, and patch that the other
+// cursor `c` points to. Called when (re)loading a file.
 void Cursor::attempt_goto(Cursor *c) {
   init();
 
@@ -173,9 +173,16 @@ void Cursor::attempt_goto(Cursor *c) {
   if (c->song() == nullptr)
     return;
 
-  song_index =
-    find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
-                             c->song()->name);
+  if (song_list_index != 0) { // look first in song list (unless it's all_songs)
+    song_index =
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&song_list()->songs),
+                               c->song()->name);
+  }
+  if (song_index == -1)         // not found there, must be in all_songs
+    song_index =
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->all_songs->songs),
+                               c->song()->name);
+
   if (c->patch() != nullptr)
     patch_index =
       find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&song()->patches),

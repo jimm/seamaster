@@ -21,6 +21,8 @@ TEST_SRC = $(wildcard test/*.cpp)
 TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
 TEST_OBJ_FILTERS = src/wx/app_main.o
 
+CATCH_CATEGORY ?= ""
+
 .PHONY: all test tags clean distclean
 
 all: $(NAME)
@@ -32,7 +34,7 @@ $(NAME): $(OBJS)
 -include $(TEST_SRC:%.cpp=%.d)
 
 test: $(NAME)_test
-	./$(NAME)_test
+	./$(NAME)_test --use-colour no $(CATCH_CATEGORY)
 
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)

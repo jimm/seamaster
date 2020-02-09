@@ -64,23 +64,26 @@ void *read_thread(void *in_voidptr) {
 Input::Input(const char *sym, const char *name, const char *port_name, int port_num)
   : Instrument(sym, name, port_name, port_num), running(false), read_pthread(nullptr)
 {
-  if (real_port()) {
-    PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
-    if (err != 0) {
-      char buf[BUFSIZ];
-      sprintf(buf, "error opening input stream %s: %s\n", name,
-              Pm_GetErrorText(err));
-      error_message(buf);
-      exit(1);
-    }
-    err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
-    if (err != 0) {
-      char buf[BUFSIZ];
-      sprintf(buf, "error setting PortMidi filter for input %s: %s\n", name,
-              Pm_GetErrorText(err));
-      error_message(buf);
-      exit(1);
-    }
+  if (!real_port())
+    return;
+
+  PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
+  if (err != 0) {
+    char buf[BUFSIZ];
+    sprintf(buf, "error opening input stream %s: %s\n", name,
+            Pm_GetErrorText(err));
+    error_message(buf);
+    exit(1);
+  }
+  enabled = true;
+
+  err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
+  if (err != 0) {
+    char buf[BUFSIZ];
+    sprintf(buf, "error setting PortMidi filter for input %s: %s\n", name,
+            Pm_GetErrorText(err));
+    error_message(buf);
+    exit(1);
   }
 }
 
@@ -107,7 +110,7 @@ void Input::remove_connection(Connection *conn) {
 void Input::start() {
   int status;
 
-  if (!real_port())
+  if (!enabled || !real_port())
     return;
 
   // Not thread safe, but we don't care because this method is called
@@ -158,6 +161,9 @@ void Input::enqueue(PmEvent *events, int num) {
 }
 
 void Input::read(PmMessage msg) {
+  if (!enabled && real_port())
+    return;
+
   // triggers
   for (auto& trigger : triggers)
     trigger->signal(msg);

@@ -4,6 +4,9 @@
 #include "../src/loader.h"
 
 #define CATCH_CATEGORY "[loader]"
+#define ANOTHER_SONG_INDEX 0
+#define SONG_WITHOUT_PATCH_INDEX 1
+#define TO_EACH_SONG_INDEX 2
 #define ORG_MODE_TEST_FILE "test/testfile.org"
 #define MARKDOWN_TEST_FILE "test/testfile.md"
 #define WITH_ALL_TEST_FILES(var)                                        \
@@ -84,13 +87,13 @@ TEST_CASE("songs", CATCH_CATEGORY) {
   REQUIRE(all.size() == 3);
 
   Song *s = all[0];
-  REQUIRE(s->name == "To Each His Own");
-
-  s = all[1];
   REQUIRE(s->name == "Another Song");
 
-  s = all[2];
+  s = all[1];
   REQUIRE(s->name == "Song Without Explicit Patch");
+
+  s = all[2];
+  REQUIRE(s->name == "To Each His Own");
 
   delete pm;
 }
@@ -98,10 +101,10 @@ TEST_CASE("songs", CATCH_CATEGORY) {
 TEST_CASE("notes", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-  Song *s = pm->all_songs->songs[0];
+  Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   REQUIRE(s->notes.size() == 0);
 
-  s = pm->all_songs->songs[1];
+  s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
   REQUIRE(s->notes.size() == 3);
   REQUIRE(strcmp((const char *)s->notes[0],
                  "the line before begin_example contains only whitespace") == 0);
@@ -113,7 +116,7 @@ TEST_CASE("notes", CATCH_CATEGORY) {
 TEST_CASE("patches", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     REQUIRE(s->patches.size() == 2);
 
     Patch *p = s->patches[0];
@@ -124,7 +127,7 @@ TEST_CASE("patches", CATCH_CATEGORY) {
 TEST_CASE("start and stop messages", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[1];
+    Song *s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
     Patch *p = s->patches.back();
 
     REQUIRE(p->start_messages.size() == 3);
@@ -141,7 +144,7 @@ TEST_CASE("start and stop messages", CATCH_CATEGORY) {
 TEST_CASE("connections", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     REQUIRE(p->connections.size() == 2);
     Connection *conn = p->connections[0];
@@ -150,7 +153,7 @@ TEST_CASE("connections", CATCH_CATEGORY) {
     REQUIRE(conn->output == pm->outputs[0]);
     REQUIRE(conn->output_chan == CONNECTION_ALL_CHANNELS);
 
-    s = pm->all_songs->songs[1];
+    s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
     p = s->patches.back();
     REQUIRE(p->connections.size() == 2);
     conn = p->connections[0];
@@ -162,7 +165,7 @@ TEST_CASE("connections", CATCH_CATEGORY) {
 TEST_CASE("bank msb lsb", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     Connection *conn = p->connections.back();
     REQUIRE(conn->prog.bank_msb == 3);
@@ -172,7 +175,7 @@ TEST_CASE("bank msb lsb", CATCH_CATEGORY) {
 TEST_CASE("bank lsb only", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[1];
     Connection *conn = p->connections.back();
     REQUIRE(conn->prog.bank_msb == -1);
@@ -182,7 +185,7 @@ TEST_CASE("bank lsb only", CATCH_CATEGORY) {
 TEST_CASE("prog chg", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     Connection *conn = p->connections.back();
     REQUIRE(conn->prog.prog == 12);
@@ -191,7 +194,7 @@ TEST_CASE("prog chg", CATCH_CATEGORY) {
 TEST_CASE("xpose", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     Connection *conn = p->connections[0];
     REQUIRE(conn->xpose == 0);
@@ -207,13 +210,13 @@ TEST_CASE("xpose", CATCH_CATEGORY) {
 TEST_CASE("zone", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-    Song *s = pm->all_songs->songs[0];
+    Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     Connection *conn = p->connections[0];
     REQUIRE(conn->zone.low == -1);
     REQUIRE(conn->zone.high == -1);
 
-    s = pm->all_songs->songs[1];
+    s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
     p = s->patches[1];
     conn = p->connections[0];
     REQUIRE(conn->zone.low == 0);
@@ -229,7 +232,7 @@ TEST_CASE("zone", CATCH_CATEGORY) {
 TEST_CASE("cc filter") {
   WITH_ALL_TEST_FILES(pm);
 
-  Song *s = pm->all_songs->songs[0];
+  Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections.back();
   REQUIRE(conn->cc_maps[64].filtered == true);
@@ -239,7 +242,7 @@ TEST_CASE("cc filter") {
 TEST_CASE("cc map", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-  Song *s = pm->all_songs->songs[0];
+  Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections[0];
   REQUIRE(conn->cc_maps[7].translated_cc_num == CONTROLLER_NO_XLATE);
@@ -253,7 +256,7 @@ TEST_CASE("cc map", CATCH_CATEGORY) {
 TEST_CASE("cc limit", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-  Song *s = pm->all_songs->songs[0];
+  Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections[0];
   REQUIRE(conn->cc_maps[7].min == 0);
@@ -276,21 +279,21 @@ TEST_CASE("song list", CATCH_CATEGORY) {
   SongList *sl = pm->song_lists[1];
   REQUIRE(sl->name == "Song List One");
   REQUIRE(sl->songs.size() == 2);
-  REQUIRE(sl->songs[0] == all[0]);
-  REQUIRE(sl->songs.back() == all[1]);
+  REQUIRE(sl->songs[0] == all[TO_EACH_SONG_INDEX]);
+  REQUIRE(sl->songs.back() == all[ANOTHER_SONG_INDEX]);
 
   sl = pm->song_lists[2];
   REQUIRE(sl->name == "Song List Two");
   REQUIRE(sl->songs.size() == 2);
-  REQUIRE(sl->songs[0] == all[1]);
-  REQUIRE(sl->songs.back() == all[0]);
+  REQUIRE(sl->songs[0] == all[ANOTHER_SONG_INDEX]);
+  REQUIRE(sl->songs.back() == all[TO_EACH_SONG_INDEX]);
   delete pm;
 }
 
 TEST_CASE("auto patch", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
-  Song *s = pm->all_songs->songs.back();
+  Song *s = pm->all_songs->songs[SONG_WITHOUT_PATCH_INDEX];
   REQUIRE(s->patches.size() == 1);
   Patch *p = s->patches[0];
   REQUIRE(p->name == "Default Patch");

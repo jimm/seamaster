@@ -17,6 +17,10 @@ static const markup markdown_mode_markup = {'#', "-*+", "```"};
 static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
 
+bool songNameComparator(Song *s1, Song *s2) {
+  return s1->name < s2->name;
+}
+
 Loader::Loader()
   : song(nullptr)
 {
@@ -51,6 +55,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   }
   if (song != nullptr)
     ensure_song_has_patch();
+  sort(pm->all_songs->songs.begin(), pm->all_songs->songs.end(), songNameComparator);
 
   fclose(fp);
 
@@ -286,12 +291,12 @@ void Loader::parse_set_list_line(char *line) {
 void Loader::load_instrument(vector<char *> &cols, int type) {
   PmDeviceID devid = find_device(cols[1], type);
 
-  if (devid == pmNoDevice && !pm->testing) {
-    ostringstream es;
-    es << "MIDI port " << cols[1] << " not found";
-    error_str = es.str();
-    return;
-  }
+  // if (devid == pmNoDevice && !pm->testing) {
+  //   ostringstream es;
+  //   es << "MIDI port " << cols[1] << " not found";
+  //   error_str = es.str();
+  //   return;
+  // }
 
   char *sym = cols[2];
   char *name = cols[3];
