@@ -9,6 +9,7 @@
 #include "song_box.h"
 #include "patch_list.h"
 #include "instrument_dialog.h"
+#include "monitor.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
@@ -24,7 +25,7 @@
 #define SHORT_LIST_HEIGHT 200
 #define NOTES_WIDTH 200
 #define NOTES_HEIGHT 500
-#define FRAME_NAME "seamaster_main_window"
+#define FRAME_NAME "seamaster_main_frame"
 
 void *frame_clear_message_thread(void *gui_vptr) {
   Frame *gui = (Frame *)gui_vptr;
@@ -332,15 +333,10 @@ void Frame::OnListDevices(wxCommandEvent &_event) {
 }
 
 void Frame::OnMonitor(wxCommandEvent &event) {
-  wxMessageBox("MIDI Monitor not yet implemented.", "MIDI Monitor",
-               wxOK | wxICON_WARNING);
   PatchMaster *pm = PatchMaster_instance();
   if (pm == nullptr)
     return;
-  // TODO open monitor frame if it's not already open
-  // if already exists return
-  // MonitorFrame *frame = new MonitorFrame(pm, wxPoint(50, 50), wxSize(450, 340));
-  // frame->Show(true);
+  (new Monitor())->Show(true);
 }
 
 void Frame::initialize() {

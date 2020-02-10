@@ -1,6 +1,8 @@
 #ifndef MIDI_MONITOR_H
 #define MIDI_MONITOR_H
 
+#include <portmidi.h>
+
 class Input;
 class Output;
 

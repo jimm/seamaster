@@ -289,24 +289,17 @@ void Loader::parse_set_list_line(char *line) {
 }
 
 void Loader::load_instrument(vector<char *> &cols, int type) {
-  PmDeviceID devid = find_device(cols[1], type);
-
-  // if (devid == pmNoDevice && !pm->testing) {
-  //   ostringstream es;
-  //   es << "MIDI port " << cols[1] << " not found";
-  //   error_str = es.str();
-  //   return;
-  // }
-
+  char *port_name = cols[1];
   char *sym = cols[2];
   char *name = cols[3];
+  PmDeviceID devid = find_device(port_name, type);
 
   switch (type) {
   case INPUT:
-    pm->inputs.push_back(new Input(sym, name, cols[1], devid));
+    pm->inputs.push_back(new Input(sym, name, port_name, devid));
     break;
   case OUTPUT:
-    pm->outputs.push_back(new Output(sym, name, cols[1], devid));
+    pm->outputs.push_back(new Output(sym, name, port_name, devid));
     break;
   }
 }
