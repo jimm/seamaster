@@ -3,8 +3,13 @@
 #include "../cursor.h"
 #include "../formatter.h"
 
+#define CW 36
+
 const char * const COLUMN_HEADERS[] = {
   "Input", "Chan", "Output", "Chan", "Zone", "Xpose", "Prog", "CC Filt/Map"
+};
+const int COLUMN_WIDTHS[] = {
+  3*CW, 1*CW, 3*CW, 1*CW, 2*CW, 1*CW, 2*CW, 6*CW
 };
 
 PatchList::PatchList(wxWindow *parent)
@@ -50,6 +55,8 @@ void PatchList::update() {
 }
 
 void PatchList::set_headers() {
-  for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i)
+  for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     InsertColumn(i, COLUMN_HEADERS[i]);
+    SetColumnWidth(i, COLUMN_WIDTHS[i]);
+  }
 }
