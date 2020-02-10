@@ -4,14 +4,11 @@
 #include "../patchmaster.h"
 
 #define FRAME_NAME "seamaster_monitor_frame"
+#define MONITOR_LIST_LEN 50
 
 const char * const COLUMN_HEADERS[] = {
   "Inst", "Status", "Data 1", "Data 2"
 };
-
-// TODO max list size of GetCountPerPage(), delete old ones
-// TODO thread for adding items so we don't block caller
-// TODO link input with output?
 
 Monitor::Monitor()
   : wxFrame(NULL, wxID_ANY, "Instruments", wxDefaultPosition, wxSize(480, 500))
@@ -21,7 +18,6 @@ Monitor::Monitor()
 
   sizer->Add(make_input_panel(p), wxEXPAND);
   sizer->Add(make_output_panel(p), wxEXPAND);
-  input_list_len = output_list_len = 0;
 
   for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     input_list->InsertColumn(i, COLUMN_HEADERS[i]);
@@ -48,44 +44,55 @@ Monitor::~Monitor() {
     output->set_monitor(nullptr);
 }
 
-// FIXME don't just append
 void Monitor::monitor_input(Input *input, PmMessage msg) {
-  add_message(input, input_list, input_list_len++, msg);
+  add_message(input, input_list, msg, input_messages);
 }
 
-// FIXME don't just append
 void Monitor::monitor_output(Output *output, PmMessage msg) {
-  add_message(output, output_list, output_list_len++, msg);
+  add_message(output, output_list, msg, output_messages);
 }
 
-void Monitor::add_message(Instrument *inst, wxListCtrl *list, int row, PmMessage msg) {
-  list->InsertItem(row, inst->sym.c_str());
-  list->SetItem(row, 1, wxString::Format("%02x", Pm_MessageStatus(msg)));
-  list->SetItem(row, 2, wxString::Format("%02x", Pm_MessageData1(msg)));
-  list->SetItem(row, 3, wxString::Format("%02x", Pm_MessageData2(msg)));
+void Monitor::add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vector<PmMessage> &message_list) {
+  if (message_list.size() >= MONITOR_LIST_LEN)
+    message_list.erase(message_list.begin());
+  message_list.push_back(msg);
+
+  int row = 0;
+  for (auto& msg : message_list) {
+    list->SetItem(row, 0, inst->sym.c_str());
+    list->SetItem(row, 1, wxString::Format("%02x", Pm_MessageStatus(msg)));
+    list->SetItem(row, 2, wxString::Format("%02x", Pm_MessageData1(msg)));
+    list->SetItem(row, 3, wxString::Format("%02x", Pm_MessageData2(msg)));
+    ++row;
+  }
+  Refresh();
 }
 
 wxWindow *Monitor::make_input_panel(wxPanel *parent) {
-  wxPanel *p = new wxPanel(parent, wxID_ANY);
-  input_list = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400),
-                              wxLC_REPORT);
-
-  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Inputs"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(input_list, wxSizerFlags(1).Expand().Border(wxALL));
-
-  p->SetSizerAndFit(sizer);
-  return p;
+  return make_panel(parent, "Inputs", &input_list);
 }
 
 wxWindow *Monitor::make_output_panel(wxPanel *parent) {
+  return make_panel(parent, "Outputs", &output_list);
+}
+
+wxWindow *Monitor::make_panel(wxPanel *parent, const char * const title, wxListCtrl **list_ptr) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  output_list = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400),
-                               wxLC_REPORT);
+  *list_ptr = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400),
+                              wxLC_REPORT);
+
+  for (int col = 0; col < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++col)
+    (*list_ptr)->InsertColumn(col, COLUMN_HEADERS[col]);
+  for (int row = 0; row < MONITOR_LIST_LEN; ++row) {
+    (*list_ptr)->InsertItem(row, "");
+    (*list_ptr)->SetItem(row, 1, "");
+    (*list_ptr)->SetItem(row, 2, "");
+    (*list_ptr)->SetItem(row, 3, "");
+  }
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Outputs"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(output_list, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(new wxStaticText(p, -1, title), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(*list_ptr, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   return p;
