@@ -44,11 +44,11 @@ Monitor::~Monitor() {
     output->set_monitor(nullptr);
 }
 
-void Monitor::monitor_input(Input *input, PmMessage msg) {
+void Monitor::do_monitor_input(Input *input, PmMessage msg) {
   add_message(input, input_list, msg, input_messages);
 }
 
-void Monitor::monitor_output(Output *output, PmMessage msg) {
+void Monitor::do_monitor_output(Output *output, PmMessage msg) {
   add_message(output, output_list, msg, output_messages);
 }
 
@@ -65,6 +65,8 @@ void Monitor::add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vec
     list->SetItem(row, 3, wxString::Format("%02x", Pm_MessageData2(msg)));
     ++row;
   }
+
+  // FIXME
   Refresh();
 }
 
