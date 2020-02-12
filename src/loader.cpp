@@ -457,19 +457,20 @@ void Loader::load_zone(char *line) {
 void Loader::load_controller(char *line) {
   vector<char *> args;
   whitespace_sep_args(line, true, args);
-  Controller &cc = conn->cc_maps[atoi(args[0])];
+  Controller *cc = new Controller(atoi(args[0]));
+  conn->add_controller(cc);
   whitespace_sep_args(line, true, args);
   for (vector<char *>::iterator i = args.begin(); i != args.end(); ++i) {
     switch ((*i)[0]) {
     case 'f':                   // filter
-      cc.filtered = true;
+      cc->filtered = true;
       break;
     case 'm':                   // map
-      cc.translated_cc_num = atoi(*++i);
+      cc->translated_cc_num = atoi(*++i);
       break;
     case 'l':                   // limit
-      cc.min = atoi(*++i);
-      cc.max = atoi(*++i);
+      cc->min = atoi(*++i);
+      cc->max = atoi(*++i);
       break;
     }
   }

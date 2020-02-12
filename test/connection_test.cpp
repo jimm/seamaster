@@ -46,7 +46,8 @@ TEST_CASE("all chans filter controller", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   conn->input_chan = CONNECTION_ALL_CHANNELS;
   conn->output_chan = CONNECTION_ALL_CHANNELS;
-  conn->cc_maps[64].filtered = true;
+  conn->add_controller(new Controller(64));
+  conn->cc_maps[64]->filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 0);
   delete conn;
@@ -56,7 +57,8 @@ TEST_CASE("all chans process controller", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   conn->input_chan = 3;
   conn->output_chan = 3;
-  conn->cc_maps[64].max = 126;
+  conn->add_controller(new Controller(64));
+  conn->cc_maps[64]->max = 126;
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 1);
   REQUIRE(conn->output->io_messages[0] == Pm_Message(CONTROLLER + 3, 64, 126)); /* out value clamped */
@@ -113,7 +115,8 @@ TEST_CASE("zone poly pressure", CATCH_CATEGORY) {
 
 TEST_CASE("cc processed", CATCH_CATEGORY) {
   Connection *conn = create_conn();
-  conn->cc_maps[7].filtered = true;
+  conn->add_controller(new Controller(7));
+  conn->cc_maps[7]->filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
 
   REQUIRE(conn->output->num_io_messages == 0);

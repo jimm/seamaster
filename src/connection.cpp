@@ -11,10 +11,13 @@ Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   zone.low = zone.high = UNDEFINED;
   xpose = 0;
   for (int i = 0; i < 128; ++i)
-    cc_maps[i].cc_num = i;
+    cc_maps[i] = nullptr;
 }
 
 Connection::~Connection() {
+  for (int i = 0; i < 128; ++i)
+    if (cc_maps[i] != nullptr)
+      delete cc_maps[i];
 }
 
 void Connection::start() {
@@ -46,6 +49,7 @@ void Connection::midi_in(PmMessage msg) {
   int high_nibble = status & 0xf0;
   int data1 = Pm_MessageData1(msg);
   int data2 = Pm_MessageData2(msg);
+  Controller *cc;
 
   switch (high_nibble) {
   case NOTE_ON: case NOTE_OFF: case POLY_PRESSURE:
@@ -57,9 +61,17 @@ void Connection::midi_in(PmMessage msg) {
     midi_out(Pm_Message(status, data1, data2));
     break;
   case CONTROLLER:
-    cc_msg = cc_maps[data1].process(msg, output_chan);
-    if (cc_msg != CONTROLLER_BLOCK)
-      midi_out(cc_msg);
+    cc = cc_maps[data1];
+    if (cc != nullptr) {
+      cc_msg = cc->process(msg, output_chan);
+      if (cc_msg != CONTROLLER_BLOCK)
+        midi_out(cc_msg);
+    }
+    else {
+      if (output_chan != CONNECTION_ALL_CHANNELS)
+        status = high_nibble + output_chan;
+      midi_out(Pm_Message(status, data1, data2));
+    }
     break;
   case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case PITCH_BEND:
     if (output_chan != CONNECTION_ALL_CHANNELS)
@@ -70,6 +82,10 @@ void Connection::midi_in(PmMessage msg) {
     midi_out(msg);
     break;
   }
+}
+
+void Connection::add_controller(Controller *controller) {
+  cc_maps[controller->cc_num] = controller;
 }
 
 // Returns `true` if any one of the following are true:

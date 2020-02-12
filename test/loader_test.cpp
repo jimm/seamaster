@@ -235,7 +235,8 @@ TEST_CASE("cc filter") {
   Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections.back();
-  REQUIRE(conn->cc_maps[64].filtered == true);
+  REQUIRE(conn->cc_maps[64] != nullptr);
+  REQUIRE(conn->cc_maps[64]->filtered == true);
   delete pm;
 }
 
@@ -245,11 +246,12 @@ TEST_CASE("cc map", CATCH_CATEGORY) {
   Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections[0];
-  REQUIRE(conn->cc_maps[7].translated_cc_num == CONTROLLER_NO_XLATE);
+  REQUIRE(conn->cc_maps[7] == nullptr);
 
   p = s->patches.back();
   conn = p->connections[0];
-  REQUIRE(conn->cc_maps[7].translated_cc_num == 10);
+  REQUIRE(conn->cc_maps[7] != nullptr);
+  REQUIRE(conn->cc_maps[7]->translated_cc_num == 10);
   delete pm;
 }
 
@@ -259,13 +261,13 @@ TEST_CASE("cc limit", CATCH_CATEGORY) {
   Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
   Patch *p = s->patches[0];
   Connection *conn = p->connections[0];
-  REQUIRE(conn->cc_maps[7].min == 0);
-  REQUIRE(conn->cc_maps[7].max == 127);
+  REQUIRE(conn->cc_maps[7] == nullptr);
 
   p = s->patches.back();
   conn = p->connections[0];
-  REQUIRE(conn->cc_maps[7].min == 1);
-  REQUIRE(conn->cc_maps[7].max == 120);
+  REQUIRE(conn->cc_maps[7] != nullptr);
+  REQUIRE(conn->cc_maps[7]->min == 1);
+  REQUIRE(conn->cc_maps[7]->max == 120);
   delete pm;
 }
 

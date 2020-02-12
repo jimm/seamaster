@@ -1,8 +1,8 @@
 #include "consts.h"
 #include "controller.h"
 
-Controller::Controller()
-  : cc_num(0),
+Controller::Controller(int num)
+  : cc_num(num),
     translated_cc_num(CONTROLLER_NO_XLATE),
     min(0), max(127),
     filtered(false)

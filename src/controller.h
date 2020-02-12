@@ -11,7 +11,7 @@ public:
   int max;
   bool filtered;
 
-  Controller();
+  Controller(int cc_num);
   ~Controller();
 
   // Returns true if this controller will modify the original by filtering,

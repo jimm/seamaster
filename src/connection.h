@@ -30,7 +30,7 @@ public:
   program prog;
   zone zone;
   int xpose;
-  Controller cc_maps[128];
+  Controller *cc_maps[128];
 
   Connection(Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
@@ -39,6 +39,8 @@ public:
   void stop();
 
   void midi_in(PmMessage msg);
+
+  void add_controller(Controller *controller);
 
 private:
   int input_channel_ok(PmMessage msg);
