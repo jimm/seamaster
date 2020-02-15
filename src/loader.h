@@ -88,6 +88,7 @@ private:
   void load_xpose(char *);
   void load_zone(char *);
   void load_controller(char *);
+  void load_pass_through_sysex(char *);
   void load_song_list(char *);
   void load_song_list_song(char *);
 

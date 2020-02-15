@@ -277,6 +277,9 @@ void Loader::parse_song_line(char *line) {
     case 'c':
       load_controller(line);
       break;
+    case 's':
+      load_pass_through_sysex(line);
+      break;
     }
   }
 }
@@ -476,6 +479,23 @@ void Loader::load_controller(char *line) {
   }
 }
 
+// If line is "sysex" or "sysex {on,yes,true}", set conn->pass_through_sysex
+// to `true`, else set it to `false`.
+void Loader::load_pass_through_sysex(char *line) {
+  vector<char *> args;
+  whitespace_sep_args(line, true, args);
+  if (args.size() == 0) {
+    conn->pass_through_sysex = true;
+    return;
+  }
+
+  char *arg = args.front();
+  conn->pass_through_sysex = (
+    strcmp(arg, "on") == 0
+    || strcmp(arg, "yes") == 0
+    || strcmp(arg, "true") == 0);
+}
+
 void Loader::load_song_list(char *line) {
   song_list = new SongList(line);
   pm->song_lists.push_back(song_list);
@@ -535,9 +555,9 @@ char *Loader::skip_first_word(char *line) {
 }
 
 /*
- * Skips first word on line, splits rest of line on whitespace, and returns
- * the list as a list of strings. The contents should NOT be freed, since
- * they are a destructive mutation of `line`.
+ * Splits line on whitepace, optionally skips the first word, and puts the
+ * remaining words into `v`. The contents should NOT be freed, since they
+ * are a destructive mutation of `line`. MUTATES `line`.
  */
 void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;

@@ -30,6 +30,7 @@ public:
   program prog;
   zone zone;
   int xpose;
+  bool pass_through_sysex;
   Controller *cc_maps[128];
 
   Connection(Input *input, int input_chan, Output *output, int output_chan);

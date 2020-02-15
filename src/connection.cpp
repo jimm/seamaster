@@ -5,7 +5,8 @@
 #include "output.h"
 
 Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
-  : input(in), input_chan(in_chan), output(out), output_chan(out_chan)
+  : input(in), input_chan(in_chan), output(out), output_chan(out_chan),
+    pass_through_sysex(false)
 {
   prog.bank_msb = prog.bank_lsb = prog.prog = UNDEFINED;
   zone.low = zone.high = UNDEFINED;

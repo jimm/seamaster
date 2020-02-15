@@ -240,6 +240,25 @@ TEST_CASE("cc filter") {
   delete pm;
 }
 
+TEST_CASE("pass through sysex") {
+  WITH_ALL_TEST_FILES(pm);
+
+  Song *s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
+  Patch *p = s->patches[0];
+  Connection *conn = p->connections.front();
+  REQUIRE(conn->pass_through_sysex == true);
+
+  conn = p->connections.back();
+  REQUIRE(conn->pass_through_sysex == false);
+
+  p = s->patches[1];
+  conn = p->connections.front();
+  REQUIRE(conn->pass_through_sysex == true);
+
+  conn = p->connections.back();
+  REQUIRE(conn->pass_through_sysex == false);
+}
+
 TEST_CASE("cc map", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
