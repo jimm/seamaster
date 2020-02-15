@@ -57,7 +57,6 @@ void Connection::midi_in(PmMessage msg) {
   if (status == SYSEX)
     processing_sysex = true;
 
-
   // If this is a sysex message, we may or may not filter it out. In any
   // case we pass through any realtime bytes in the sysex message.
   if (processing_sysex) {
@@ -71,7 +70,6 @@ void Connection::midi_in(PmMessage msg) {
       midi_out(msg);
       return;
     }
-
 
     // If any of the bytes are realtime bytes AND if we are filtering out
     // sysex, send them.
