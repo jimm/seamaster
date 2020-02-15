@@ -229,7 +229,7 @@ TEST_CASE("zone", CATCH_CATEGORY) {
     delete pm;
 }
 
-TEST_CASE("cc filter") {
+TEST_CASE("cc filter", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
   Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
@@ -240,7 +240,7 @@ TEST_CASE("cc filter") {
   delete pm;
 }
 
-TEST_CASE("pass through sysex") {
+TEST_CASE("set pass through sysex", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
   Song *s = pm->all_songs->songs[ANOTHER_SONG_INDEX];

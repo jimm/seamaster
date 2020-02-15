@@ -123,3 +123,31 @@ TEST_CASE("cc processed", CATCH_CATEGORY) {
 
   delete conn;
 }
+
+TEST_CASE("filter sysex", CATCH_CATEGORY) {
+  Connection *conn = create_conn();
+  REQUIRE(conn->pass_through_sysex == false); // check default value
+
+  conn->midi_in(Pm_Message(NOTE_ON, 64, 127));
+  conn->midi_in(Pm_Message(SYSEX, 1, 2));
+  conn->midi_in(Pm_Message(3, 1, EOX));
+  conn->midi_in(Pm_Message(NOTE_OFF, 64, 127));
+  REQUIRE(conn->output->num_io_messages == 2);
+  REQUIRE(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 64, 127));
+  REQUIRE(conn->output->io_messages[1] == Pm_Message(NOTE_OFF, 64, 127));
+}
+
+TEST_CASE("pass through sysex", CATCH_CATEGORY) {
+  Connection *conn = create_conn();
+  conn->pass_through_sysex = true;
+
+  conn->midi_in(Pm_Message(NOTE_ON, 64, 127));
+  conn->midi_in(Pm_Message(SYSEX, 1, 2));
+  conn->midi_in(Pm_Message(3, 1, EOX));
+  conn->midi_in(Pm_Message(NOTE_OFF, 64, 127));
+  REQUIRE(conn->output->num_io_messages == 4);
+  REQUIRE(conn->output->io_messages[0] == Pm_Message(NOTE_ON, 64, 127));
+  REQUIRE(conn->output->io_messages[1] == Pm_Message(SYSEX, 1, 2));
+  REQUIRE(conn->output->io_messages[2] == Pm_Message(3, 1, EOX));
+  REQUIRE(conn->output->io_messages[3] == Pm_Message(NOTE_OFF, 64, 127));
+}

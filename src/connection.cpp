@@ -4,9 +4,12 @@
 #include "input.h"
 #include "output.h"
 
+#define is_status(b) (((b) & 0x80) == 0x80)
+#define is_realtime(b) ((b) >= 0xf8)
+
 Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   : input(in), input_chan(in_chan), output(out), output_chan(out_chan),
-    pass_through_sysex(false)
+    pass_through_sysex(false), processing_sysex(false)
 {
   prog.bank_msb = prog.bank_lsb = prog.prog = UNDEFINED;
   zone.low = zone.high = UNDEFINED;
@@ -31,6 +34,7 @@ void Connection::start() {
       midi_out(Pm_Message(PROGRAM_CHANGE + output_chan, prog.prog, 0));
   }
 
+  processing_sysex = false;
   input->add_connection(this);
 }
 
@@ -45,21 +49,54 @@ void Connection::midi_in(PmMessage msg) {
   if (!input_channel_ok(msg))
       return;
 
-  PmMessage cc_msg;
   int status = Pm_MessageStatus(msg);
   int high_nibble = status & 0xf0;
   int data1 = Pm_MessageData1(msg);
   int data2 = Pm_MessageData2(msg);
+
+  if (status == SYSEX)
+    processing_sysex = true;
+
+
+  // If this is a sysex message, we may or may not filter it out. In any
+  // case we pass through any realtime bytes in the sysex message.
+  if (processing_sysex) {
+    unsigned char data3 = (msg >> 24) & 0xff;
+    if (status == EOX || data1 == EOX || data2 == EOX || data3 == EOX ||
+         // non-realtime status byte
+        (is_status(status) && status < 0xf8 && status != SYSEX))
+      processing_sysex = false;
+
+    if (pass_through_sysex) {
+      midi_out(msg);
+      return;
+    }
+
+
+    // If any of the bytes are realtime bytes AND if we are filtering out
+    // sysex, send them.
+    if (is_realtime(status))
+      midi_out(Pm_Message(status, 0, 0));
+    if (is_realtime(data1))
+      midi_out(Pm_Message(data1, 0, 0));
+    if (is_realtime(data2))
+      midi_out(Pm_Message(data2, 0, 0));
+    if (is_realtime(data3))
+      midi_out(Pm_Message(data3, 0, 0));
+    return;
+  }
+
+  PmMessage cc_msg;
   Controller *cc;
 
   switch (high_nibble) {
   case NOTE_ON: case NOTE_OFF: case POLY_PRESSURE:
-    if (!inside_zone(msg))
-      return;
-    if (output_chan != CONNECTION_ALL_CHANNELS)
-      status = high_nibble + output_chan;
-    data1 += xpose;
-    midi_out(Pm_Message(status, data1, data2));
+    if (inside_zone(msg)) {
+      if (output_chan != CONNECTION_ALL_CHANNELS)
+        status = high_nibble + output_chan;
+      data1 += xpose;
+      midi_out(Pm_Message(status, data1, data2));
+    }
     break;
   case CONTROLLER:
     cc = cc_maps[data1];
@@ -94,7 +131,7 @@ void Connection::add_controller(Controller *controller) {
 // - it's a system message, not a channel message
 // - the input channel matches our selected `input_chan`
 int Connection::input_channel_ok(PmMessage msg) {
-  if (input_chan == CONNECTION_ALL_CHANNELS)
+  if (input_chan == CONNECTION_ALL_CHANNELS || processing_sysex)
     return true;
 
   unsigned char status = Pm_MessageStatus(msg);
