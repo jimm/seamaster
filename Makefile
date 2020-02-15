@@ -23,7 +23,7 @@ TEST_OBJ_FILTERS = src/wx/app_main.o
 
 CATCH_CATEGORY ?= ""
 
-.PHONY: all test tags clean distclean
+.PHONY: all test install tags clean distclean
 
 all: $(NAME)
 
