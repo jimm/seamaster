@@ -4,7 +4,7 @@
 #include "cursor.h"
 
 /*
- * A Cursor knows the current SongList, Song, and Patch, how to move between
+ * A Cursor knows the current SetList, Song, and Patch, how to move between
  * songs and patches, and how to find them given name regexes.
  */
 
@@ -18,18 +18,18 @@ Cursor::~Cursor() {
 }
 
 void Cursor::clear() {
-  song_list_index = song_index = patch_index = UNDEFINED;
+  set_list_index = song_index = patch_index = UNDEFINED;
   // Do not erase names saved by mark();
 }
 
 /*
- * Set @song_list to All Songs, @song to first song, and
+ * Set @set_list to All Songs, @song to first song, and
  * @patch to song's first patch. Song and patch may be +nil+.
  */
 void Cursor::init() {
-  song_list_index = 0;
+  set_list_index = 0;
 
-  SongList *sl = song_list();
+  SetList *sl = set_list();
   if (sl != nullptr && sl->songs.size() > 0) {
     song_index = 0;
     Song *s = song();
@@ -41,15 +41,15 @@ void Cursor::init() {
   }
 }
 
-SongList *Cursor::song_list() {
-  if (song_list_index != UNDEFINED)
-    return pm->song_lists[song_list_index];
+SetList *Cursor::set_list() {
+  if (set_list_index != UNDEFINED)
+    return pm->set_lists[set_list_index];
   else
     return nullptr;
 }
 
 Song *Cursor::song() {
-  SongList *sl = song_list();
+  SetList *sl = set_list();
   if (sl == nullptr || song_index == UNDEFINED)
     return nullptr;
   return sl->songs[song_index];
@@ -63,9 +63,9 @@ Patch *Cursor::patch() {
 }
 
 void Cursor::next_song() {
-  if (song_list_index == UNDEFINED)
+  if (set_list_index == UNDEFINED)
     return;
-  SongList *sl = song_list();
+  SetList *sl = set_list();
   if (song_index == sl->songs.size()-1)
     return;
 
@@ -74,7 +74,7 @@ void Cursor::next_song() {
 }
 
 void Cursor::prev_song() {
-  if (song_list_index == UNDEFINED || song_index == 0)
+  if (set_list_index == UNDEFINED || song_index == 0)
     return;
 
   --song_index;
@@ -99,8 +99,8 @@ void Cursor::prev_patch() {
     --patch_index;
 }
 
-void Cursor::jump_to_song_list_index(int i) {
-  song_list_index = i;
+void Cursor::jump_to_set_list_index(int i) {
+  set_list_index = i;
   jump_to_song_index(0);
 }
 
@@ -114,7 +114,7 @@ void Cursor::jump_to_patch_index(int i) {
 }
 
 void Cursor::goto_song(string name_regex) {
-  SongList *sl = song_list();
+  SetList *sl = set_list();
   Song *new_song = nullptr;
   Named *named;
 
@@ -133,49 +133,49 @@ void Cursor::goto_song(string name_regex) {
 
   Patch *new_patch = new_song == nullptr ? nullptr : new_song->patches[0];
 
-  SongList *new_song_list = pm->all_songs;
+  SetList *new_set_list = pm->all_songs;
   Song *curr_song = song();
   if (((new_song != nullptr && new_song != curr_song) || (new_song == curr_song && patch() != new_patch))
       && sl != nullptr
       && find(sl->songs.begin(), sl->songs.end(), new_song) != sl->songs.end())
   {
-      new_song_list = sl;
+      new_set_list = sl;
   }
 
-  song_list_index = find(pm->song_lists.begin(), pm->song_lists.end(), new_song_list) - pm->song_lists.begin();
-  song_index = find(new_song_list->songs.begin(), new_song_list->songs.end(), new_song) - new_song_list->songs.begin();
+  set_list_index = find(pm->set_lists.begin(), pm->set_lists.end(), new_set_list) - pm->set_lists.begin();
+  song_index = find(new_set_list->songs.begin(), new_set_list->songs.end(), new_song) - new_set_list->songs.begin();
   patch_index = find(new_song->patches.begin(), new_song->patches.end(), new_patch) - new_song->patches.begin();
 }
 
-void Cursor::goto_song_list(string name_regex) {
-  Named *named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->song_lists), name_regex);
+void Cursor::goto_set_list(string name_regex) {
+  Named *named = find_in_list(reinterpret_cast<vector<Named *> *>(&pm->set_lists), name_regex);
   if (named == nullptr)
     return;
 
-  SongList *new_song_list = reinterpret_cast<SongList *>(named);
-  if (new_song_list != song_list()) {
-    song_list_index = find(pm->song_lists.begin(), pm->song_lists.end(), new_song_list) - pm->song_lists.begin();
+  SetList *new_set_list = reinterpret_cast<SetList *>(named);
+  if (new_set_list != set_list()) {
+    set_list_index = find(pm->set_lists.begin(), pm->set_lists.end(), new_set_list) - pm->set_lists.begin();
     song_index = 0;
     patch_index = 0;
   }
 }
 
-// Attempt to go to the same song list, song, and patch that the other
+// Attempt to go to the same set list, song, and patch that the other
 // cursor `c` points to. Called when (re)loading a file.
 void Cursor::attempt_goto(Cursor *c) {
   init();
 
-  if (c->song_list() != nullptr)
-    song_list_index =
-      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->song_lists),
-                               c->song_list()->name);
+  if (c->set_list() != nullptr)
+    set_list_index =
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&pm->set_lists),
+                               c->set_list()->name);
 
   if (c->song() == nullptr)
     return;
 
-  if (song_list_index != 0) { // look first in song list (unless it's all_songs)
+  if (set_list_index != 0) { // look first in set list (unless it's all_songs)
     song_index =
-      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&song_list()->songs),
+      find_nearest_match_index(reinterpret_cast<vector<Named *> *>(&set_list()->songs),
                                c->song()->name);
   }
   if (song_index == -1)         // not found there, must be in all_songs

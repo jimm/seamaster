@@ -13,8 +13,8 @@ PatchMaster *PatchMaster_instance() {
 PatchMaster::PatchMaster() {
   running = false;
   testing = false;
-  all_songs = new SongList((char *)"All Songs"); /* TODO sorted song list */
-  song_lists.push_back(all_songs);
+  all_songs = new SetList((char *)"All Songs"); /* TODO sorted set list */
+  set_lists.push_back(all_songs);
   cursor = new Cursor(this);
   pm_instance = this;
 }
@@ -29,8 +29,8 @@ PatchMaster::~PatchMaster() {
     delete out;
   for (auto& song : all_songs->songs)
     delete song;
-  for (auto& song_list : song_lists)
-    delete song_list;
+  for (auto& set_list : set_lists)
+    delete set_list;
   for (auto& msg : messages)
     delete msg;
 }
@@ -98,21 +98,21 @@ void PatchMaster::goto_song(string name_regex) {
     cursor->patch()->start();
 }
 
-void PatchMaster::goto_song_list(string name_regex) {
+void PatchMaster::goto_set_list(string name_regex) {
   if (cursor->patch() != nullptr)
     cursor->patch()->stop();
-  cursor->goto_song_list(name_regex);
+  cursor->goto_set_list(name_regex);
   if (cursor->patch() != nullptr)
     cursor->patch()->start();
 }
 
-void PatchMaster::jump_to_song_list_index(int i) {
-  if (i == cursor->song_list_index)
+void PatchMaster::jump_to_set_list_index(int i) {
+  if (i == cursor->set_list_index)
     return;
 
   if (cursor->patch() != nullptr)
     cursor->patch()->stop();
-  cursor->jump_to_song_list_index(i);
+  cursor->jump_to_set_list_index(i);
   if (cursor->patch() != nullptr)
     cursor->patch()->start();
 }

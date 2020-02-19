@@ -79,7 +79,7 @@ void Loader::clear() {
 
   section = IGNORE;
   notes_state = OUTSIDE;
-  song_list = 0;
+  set_list = 0;
   song = 0;
   patch = 0;
   conn = 0;
@@ -286,9 +286,9 @@ void Loader::parse_song_line(char *line) {
 
 void Loader::parse_set_list_line(char *line) {
   if (is_header_level(line, 2))
-    load_song_list(line + 3);
+    load_set_list(line + 3);
   else if (is_list_item(line))
-    load_song_list_song(line + 2);
+    load_set_list_song(line + 2);
 }
 
 void Loader::load_instrument(vector<char *> &cols, int type) {
@@ -496,21 +496,21 @@ void Loader::load_pass_through_sysex(char *line) {
     || strcmp(arg, "true") == 0);
 }
 
-void Loader::load_song_list(char *line) {
-  song_list = new SongList(line);
-  pm->song_lists.push_back(song_list);
+void Loader::load_set_list(char *line) {
+  set_list = new SetList(line);
+  pm->set_lists.push_back(set_list);
 }
 
-void Loader::load_song_list_song(char *line) {
+void Loader::load_set_list_song(char *line) {
   Song *s = find_song(pm->all_songs->songs, line);
   if (s == nullptr) {
     ostringstream es;
-    es << "set list " << song_list->name << " can not find song named " << line;
+    es << "set list " << set_list->name << " can not find song named " << line;
     error_str = es.str();
     return;
   }
 
-  song_list->songs.push_back(find_song(pm->all_songs->songs, line));
+  set_list->songs.push_back(find_song(pm->all_songs->songs, line));
 }
 
 void Loader::ensure_song_has_patch() {

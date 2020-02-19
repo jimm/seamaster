@@ -2,8 +2,8 @@
 #include <portmidi.h>
 #include "app.h"
 #include "frame.h"
-#include "song_list_list_box.h"
-#include "song_list_box.h"
+#include "set_list_list_box.h"
+#include "set_list_box.h"
 #include "song_box.h"
 #include "../patchmaster.h"
 #include "../initializer.h"

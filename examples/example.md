@@ -152,7 +152,7 @@ octave of the middle part.
 
 List items can start with "-", "*", or "#".
 
-## Tonight's Song List
+## Tonight's Set List
 
 * To Each His Own
 * Kronos -> Wavestation

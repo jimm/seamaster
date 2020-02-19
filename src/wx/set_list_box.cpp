@@ -1,34 +1,34 @@
-#include "song_list_box.h"
+#include "set_list_box.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 
-SongListBox::SongListBox(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size), song_list(nullptr)
+SetListBox::SetListBox(wxWindow *parent, wxWindowID id, wxSize size)
+  : wxListBox(parent, id, wxDefaultPosition, size), set_list(nullptr)
 {
 }
 
-void SongListBox::update() {
+void SetListBox::update() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
-  SongList *curr_song_list = cursor->song_list();
+  SetList *curr_set_list = cursor->set_list();
 
-  if (curr_song_list != song_list) {
+  if (curr_set_list != set_list) {
     Clear();
-    if (curr_song_list != nullptr) {
+    if (curr_set_list != nullptr) {
       wxArrayString names;
-      for (auto& song : curr_song_list->songs)
+      for (auto& song : curr_set_list->songs)
         names.Add(song->name.c_str());
       if (!names.IsEmpty())
         InsertItems(names, 0);
     }
-    song_list = curr_song_list;
+    set_list = curr_set_list;
   }
 
-  if (song_list == nullptr)
+  if (set_list == nullptr)
     return;
 
   int i = 0;
-  for (auto& song : song_list->songs) {
+  for (auto& song : set_list->songs) {
     if (song == cursor->song()) {
       SetSelection(i);
       return;
@@ -37,7 +37,7 @@ void SongListBox::update() {
   }
 }
 
-void SongListBox::jump() {
+void SetListBox::jump() {
   int selection = GetSelection();
   if (selection != wxNOT_FOUND) {
     PatchMaster *pm = PatchMaster_instance();

@@ -2,14 +2,14 @@
 #define CURSOR_H
 
 #include "patchmaster.h"
-#include "song_list.h"
+#include "set_list.h"
 #include "song.h"
 #include "patch.h"
 
 class Cursor {
 public:
   PatchMaster *pm;
-  int song_list_index;
+  int set_list_index;
   int song_index;
   int patch_index;
 
@@ -19,7 +19,7 @@ public:
   void clear();
   void init();
 
-  SongList *song_list();
+  SetList *set_list();
   Song *song();
   Patch *patch();
 
@@ -28,12 +28,12 @@ public:
   void next_patch();
   void prev_patch();
 
-  void jump_to_song_list_index(int i);
+  void jump_to_set_list_index(int i);
   void jump_to_song_index(int i);
   void jump_to_patch_index(int i);
 
   void goto_song(string name_regex);
-  void goto_song_list(string name_regex);
+  void goto_set_list(string name_regex);
   void attempt_goto(Cursor *old_cursor);
 
 private:

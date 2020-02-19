@@ -130,12 +130,12 @@ Two other bullet list characters are accepted: "\*" and "+". Org mode
 requires that lists using "\*" are indented, else they will be seen as
 top-level headlines.
 
-** Song List One
+** Set List One
 
   * To Each His Own
   * Another Song
 
-** Song List Two
+** Set List Two
 
 + Another Song
 + To Each His Own

@@ -128,12 +128,12 @@ should be ignored. Let's see:
 
 Two other bullet list characters are accepted: "*" and "+".
 
-## Song List One
+## Set List One
 
 * To Each His Own
 * Another Song
 
-## Song List Two
+## Set List Two
 
 + Another Song
 + To Each His Own

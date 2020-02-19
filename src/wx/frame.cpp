@@ -4,8 +4,8 @@
 #include <wx/textctrl.h>
 #include <wx/gbsizer.h>
 #include "frame.h"
-#include "song_list_box.h"
-#include "song_list_list_box.h"
+#include "set_list_box.h"
+#include "set_list_list_box.h"
 #include "song_box.h"
 #include "patch_list.h"
 #include "instrument_dialog.h"
@@ -53,8 +53,8 @@ void Frame::make_frame_panels() {
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxGridBagSizer * const main_sizer = new wxGridBagSizer();
 
-  main_sizer->Add(make_song_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_song_list_list_panel(p), POS(3, 0), SPAN(1, 1), wxEXPAND);
+  main_sizer->Add(make_set_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
+  main_sizer->Add(make_set_list_list_panel(p), POS(3, 0), SPAN(1, 1), wxEXPAND);
   main_sizer->Add(make_song_panel(p), POS(0, 1), SPAN(3, 1), wxEXPAND);
   main_sizer->Add(make_trigger_panel(p), POS(3, 1), SPAN(1, 1), wxEXPAND);
   main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(4, 1), wxEXPAND);
@@ -69,27 +69,27 @@ void Frame::make_frame_panels() {
   SetClientSize(p->GetSize());
 }
 
-wxWindow * Frame::make_song_list_panel(wxPanel *parent) {
+wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_list = new SongListBox(p, ID_JumpToSong,
+  lc_set_list = new SetListBox(p, ID_JumpToSong,
                                  wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_song_list, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_set_list, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   return p;
 }
 
-wxWindow * Frame::make_song_list_list_panel(wxPanel *parent) {
+wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song_lists = new SongListListBox(p, ID_JumpToSetList,
+  lc_set_lists = new SetListListBox(p, ID_JumpToSetList,
                                       wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Song Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_song_lists, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(new wxStaticText(p, -1, "Set Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_set_lists, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -251,7 +251,7 @@ void Frame::find_set_list() {
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      pm->goto_song_list(str.ToStdString());
+      pm->goto_set_list(str.ToStdString());
       load_data_into_windows();
     }
   }
@@ -273,14 +273,14 @@ void Frame::find_song() {
 
 void Frame::jump_to_set_list(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
-    lc_song_lists->jump();
+    lc_set_lists->jump();
     load_data_into_windows();
   }
 }
 
 void Frame::jump_to_song(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
-    lc_song_list->jump();
+    lc_set_list->jump();
     load_data_into_windows();
   }
 }
@@ -370,8 +370,8 @@ void Frame::load_data_into_windows() {
   Cursor *cursor = pm->cursor;
   int i;
 
-  lc_song_list->update();
-  lc_song_lists->update();
+  lc_set_list->update();
+  lc_set_lists->update();
   lc_song->update();
   lc_patch->update();
 

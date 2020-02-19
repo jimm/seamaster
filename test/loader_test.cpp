@@ -290,21 +290,21 @@ TEST_CASE("cc limit", CATCH_CATEGORY) {
   delete pm;
 }
 
-TEST_CASE("song list", CATCH_CATEGORY) {
+TEST_CASE("set list", CATCH_CATEGORY) {
   WITH_ALL_TEST_FILES(pm);
 
   vector<Song *> &all = pm->all_songs->songs;
 
-  REQUIRE(pm->song_lists.size() == 3);
+  REQUIRE(pm->set_lists.size() == 3);
 
-  SongList *sl = pm->song_lists[1];
-  REQUIRE(sl->name == "Song List One");
+  SetList *sl = pm->set_lists[1];
+  REQUIRE(sl->name == "Set List One");
   REQUIRE(sl->songs.size() == 2);
   REQUIRE(sl->songs[0] == all[TO_EACH_SONG_INDEX]);
   REQUIRE(sl->songs.back() == all[ANOTHER_SONG_INDEX]);
 
-  sl = pm->song_lists[2];
-  REQUIRE(sl->name == "Song List Two");
+  sl = pm->set_lists[2];
+  REQUIRE(sl->name == "Set List Two");
   REQUIRE(sl->songs.size() == 2);
   REQUIRE(sl->songs[0] == all[ANOTHER_SONG_INDEX]);
   REQUIRE(sl->songs.back() == all[TO_EACH_SONG_INDEX]);

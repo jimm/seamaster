@@ -57,7 +57,7 @@ private:
   Patch *patch;
   Connection *conn;
   Message *message;
-  SongList *song_list;
+  SetList *set_list;
   string error_str;
   markup markup;
   vector<char *> notes;
@@ -89,8 +89,8 @@ private:
   void load_zone(char *);
   void load_controller(char *);
   void load_pass_through_sysex(char *);
-  void load_song_list(char *);
-  void load_song_list_song(char *);
+  void load_set_list(char *);
+  void load_set_list_song(char *);
 
   void ensure_song_has_patch();
 

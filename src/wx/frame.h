@@ -26,8 +26,8 @@ enum {
 class PatchMaster;
 class wxListCtrl;
 class wxTextCtrl;
-class SongListBox;
-class SongListListBox;
+class SetListBox;
+class SetListListBox;
 class SongBox;
 class PatchList;
 
@@ -59,8 +59,8 @@ public:
   void jump_to_patch();
 
 private:
-  SongListListBox *lc_song_lists;
-  SongListBox *lc_song_list;
+  SetListListBox *lc_set_lists;
+  SetListBox *lc_set_list;
   SongBox *lc_song;
   PatchList *lc_patch;
   wxListCtrl *lc_triggers;
@@ -91,8 +91,8 @@ private:
 
   void make_frame_panels();
   void make_menu_bar();
-  wxWindow * make_song_list_panel(wxPanel *);
-  wxWindow * make_song_list_list_panel(wxPanel *);
+  wxWindow * make_set_list_panel(wxPanel *);
+  wxWindow * make_set_list_list_panel(wxPanel *);
   wxWindow * make_song_panel(wxPanel *);
   wxWindow * make_trigger_panel(wxPanel *);
   wxWindow * make_notes_panel(wxPanel *);

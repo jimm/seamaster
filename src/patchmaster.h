@@ -2,7 +2,7 @@
 #define PATCHMASTER_H
 
 #include <vector>
-#include "song_list.h"
+#include "set_list.h"
 #include "input.h"
 #include "output.h"
 #include "message.h"
@@ -15,8 +15,8 @@ class PatchMaster {
 public:
   vector<Input *> inputs;
   vector<Output *> outputs;
-  SongList *all_songs;
-  vector<SongList *> song_lists;
+  SetList *all_songs;
+  vector<SetList *> set_lists;
   Cursor *cursor;
   bool running;
   bool testing;
@@ -37,9 +37,9 @@ public:
   void prev_song();
 
   void goto_song(string name_regex);
-  void goto_song_list(string name_regex);
+  void goto_set_list(string name_regex);
 
-  void jump_to_song_list_index(int i);
+  void jump_to_set_list_index(int i);
   void jump_to_song_index(int i);
   void jump_to_patch_index(int i);
 

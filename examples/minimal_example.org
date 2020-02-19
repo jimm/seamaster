@@ -56,7 +56,7 @@ The begin/end example Org mode commands are ignored.
 
 * Set Lists
 
-** Tonight's Song List
+** Tonight's Set List
 
 - To Each His Own
 - Kronos -> WaveStation
