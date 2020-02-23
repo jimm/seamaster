@@ -90,6 +90,8 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
 }
 
 int App::OnExit() {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm) pm->stop();
   close_portmidi();
   return wxApp::OnExit();
 }
