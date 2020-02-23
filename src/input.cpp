@@ -9,7 +9,9 @@
 
 // 10 milliseconds, in nanoseconds
 #define SLEEP_NANOSECS 10000000L
+#define INPUT_THREAD_IS_RUNNING (portmidi_pthread != nullptr)
 
+mutex inputs_mutex;
 set<Input *> inputs;
 pthread_t portmidi_pthread = nullptr;
 
@@ -21,12 +23,16 @@ pthread_t portmidi_pthread = nullptr;
 // When no data is available for any input, sleeps for `SLEEP_NANOSECS`.
 void *input_thread(void *_) {
   struct timespec rqtp = {0, SLEEP_NANOSECS};
+  PmEvent buf[MIDI_BUFSIZ];
 
-  while (true) {
+  while (INPUT_THREAD_IS_RUNNING) {
     bool processed_something = false;
+    inputs_mutex.lock();
     for (auto& in : inputs) {
+      if (!INPUT_THREAD_IS_RUNNING) // one more chance to stop
+        inputs_mutex.unlock();
+        return nullptr;
       if (in->running && Pm_Poll(in->stream) == TRUE) {
-        PmEvent buf[MIDI_BUFSIZ];
         int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
         if (n > 0) {
           processed_something = true;
@@ -34,11 +40,13 @@ void *input_thread(void *_) {
         }
       }
     }
-    if (!processed_something) {
+    inputs_mutex.unlock();
+    if (!processed_something && INPUT_THREAD_IS_RUNNING) {
       if (nanosleep(&rqtp, 0) == -1)
         return nullptr;
     }
   }
+  return nullptr;
 }
 
 // While the Input pointed to by `in_voidptr` is running, take PmMessages
@@ -125,6 +133,9 @@ void Input::start() {
       exit(1);
     }
   }
+  // Don't have to worry about locking the inputs vector since this is only
+  // called once in a single thread and the input thread defined above
+  // hasn't started yet.
   inputs.insert(this);
 
   running = true;
@@ -143,12 +154,19 @@ void Input::start() {
 void Input::stop() {
   running = false;
   read_pthread = 0;
+  inputs_mutex.lock();
   for (set<Input *>::iterator i = inputs.begin(); i != inputs.end(); ++i) {
     if (*i == this) {
       inputs.erase(i);
-      return;
+      break;
     }
   }
+  if (inputs.empty()) {
+    // Not really threadsafe, but we don't care because this method is
+    // called synchronously from a single thread.
+    portmidi_pthread = nullptr;
+  }
+  inputs_mutex.unlock();
 }
 
 // Adds all the PmMessages in `events` to our message queue in a thread-safe
