@@ -130,7 +130,7 @@ The middle part goes from C3 - B4 and gets sent to channel 2.
 The bottom part starts at C4 and gets sent to channel 3. It overlaps one
 octave of the middle part.
 
-*** WAVESTATION playing Kronos with everything
+*** Wavestation playing Kronos with everything
 
 **** Wavestation, 1, Kronos, 1
      - prog 100
