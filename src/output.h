@@ -7,7 +7,7 @@
 
 class Output : public Instrument {
 public:
-  Output(const char *sym, const char *name, const char *port_name, int port_num);
+  Output(const char *name, const char *port_name, int port_num);
   ~Output();
 
   void write(PmEvent *buf, int len);

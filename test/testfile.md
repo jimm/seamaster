@@ -3,13 +3,13 @@
 Short names for inputs and outputs don't have to be same or different. This
 text is ignored.
 
-| I/O | port            | short | name          |
-| --- | --------------- | ----- | --------------|
-| in  | input port one  | one   | first input   |
-| in  | input port two  | two   | second input  |
-|:---:| --------------- | ----- | --------------|
-| out | output port one | one   | first output  |
-| out | output port two | two   | second output |
+| I/O | port            | name |
+| --- | --------------- | -----|
+| in  | input port one  | inst1  |
+| in  | input port two  | inst2  |
+|:---:| --------------- | -----|
+| out | output port one | inst1 |
+| out | output port two | inst2 |
 
 # Messages
 
@@ -39,11 +39,11 @@ Triggers...
 
   | input | bytes         | action     | message      |
   |-------+---------------+------------+--------------|
-  | one   | 0xb0, 50, 127 | next song  |              |
-  | one   | 0xb0, 51, 127 | prev song  |              |
-  | one   | 0xb0, 52, 127 | next patch |              |
-  | one   | 0xb0, 53, 127 | prev patch |              |
-  | one   | 0xb0, 54, 127 | message    | Tune Request |
+  | inst1   | 0xb0, 50, 127 | next song  |              |
+  | inst1   | 0xb0, 51, 127 | prev song  |              |
+  | inst1   | 0xb0, 52, 127 | next patch |              |
+  | inst1   | 0xb0, 53, 127 | prev patch |              |
+  | inst1   | 0xb0, 54, 127 | message    | Tune Request |
 
 # Songs
 
@@ -53,18 +53,18 @@ after the song heading and before the first patch heading.
 ## To Each His Own
 
 ### Vanilla Through, Filter Two's Sustain
-#### one, all, one, all
-#### two, all, two, all
+#### inst1, all, inst1, all
+#### inst2, all, inst2, all
 
      - bank 3, 2
      - pc 12
      - cc 64 filter
 
-### One Up One Octave and CC Vol -> Pan, Two Down One Octave
-#### one, all, one, all
+### Inst1 Up One Octave and CC Vol -> Pan, Inst2 Down One Octave
+#### inst1, all, inst1, all
      - xpose 12
      - cc 7 map 10, limit 1 120
-#### two, all, two, all
+#### inst2, all, inst2, all
      - bank 5
      - xpose -12
 
@@ -76,16 +76,16 @@ this song has note text
 that spans multiple lines
 ```
 
-### Two Inputs Merging
-#### one, 3, two, 4
+### Inst2 Inputs Merging
+#### inst1, 3, inst2, 4
      - xpose 12
-     - zone 0, 63
+     - zinst1 0, 63
      - sysex true
-#### two, 1, two, 5
-     - zone e4, G9
+#### inst2, 1, inst2, 5
+     - zinst1 e4, G9
      - xpose -12
 
-### Split Into Two Outputs
+### Split Into Inst2 Outputs
 
 start
 
@@ -99,12 +99,12 @@ stop
 0xb3, 7, 127
 0xb0 0x7a 0x7f
 
-#### one, 3, one, 4
+#### inst1, 3, inst1, 4
      - xpose 12
-     - zone 0, 63
+     - zinst1 0, 63
      - sysex
-#### one, 1, two, 5
-     - zone e4, g9
+#### inst1, 1, inst2, 5
+     - zinst1 e4, g9
      - xpose -12
 
 ## Song Without Explicit Patch

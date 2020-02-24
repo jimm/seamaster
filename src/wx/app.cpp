@@ -6,7 +6,6 @@
 #include "set_list_box.h"
 #include "song_box.h"
 #include "../patchmaster.h"
-#include "../initializer.h"
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)

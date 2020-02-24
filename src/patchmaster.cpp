@@ -54,6 +54,94 @@ void PatchMaster::stop() {
   running = false;
 }
 
+// ================ initialization ================
+
+void PatchMaster::initialize() {
+  load_instruments();
+  create_songs();
+}
+
+void PatchMaster::load_instruments() {
+  int num_devices = Pm_CountDevices();
+
+  for (int i = 0; i < num_devices; ++i) {
+    const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
+    if (info->input)
+      inputs.push_back(new Input(info->name, info->name, i));
+    if (info->output)
+      outputs.push_back(new Output(info->name, info->name, i));
+  }
+}
+
+void PatchMaster::create_songs() {
+  char name[32];
+
+  for (auto& input : inputs) {
+    // this input to each individual output
+    int output_num = 1;
+    for (auto& output : outputs) {
+      sprintf(name, "%s -> %s", input->name.c_str(), output->name.c_str());
+      Song *song = new Song(name);
+      all_songs->songs.push_back(song);
+
+      Patch *patch = new Patch(name);
+      song->patches.push_back(patch);
+
+      Connection *conn = new Connection(input, CONNECTION_ALL_CHANNELS,
+                                        output, CONNECTION_ALL_CHANNELS);
+      patch->connections.push_back(conn);
+
+      ++output_num;
+    }
+
+    if (outputs.size() > 1) {
+      // one more song: this input to all outputs at once
+      sprintf(name, "%s -> all outputs", input->name.c_str());
+      Song *song = new Song(name);
+      all_songs->songs.push_back(song);
+      Patch *patch = new Patch(name);
+      song->patches.push_back(patch);
+      for (auto& output : outputs) {
+        Connection *conn = new Connection(input, CONNECTION_ALL_CHANNELS,
+                                          output, CONNECTION_ALL_CHANNELS);
+        patch->connections.push_back(conn);
+      }
+    }
+  }
+}
+
+// ================ editing ================
+
+void PatchMaster::create_message() {
+}
+
+void PatchMaster::delete_message() {
+}
+
+void PatchMaster::create_trigger() {
+}
+
+void PatchMaster::delete_trigger() {
+}
+
+void PatchMaster::create_song() {
+}
+
+void PatchMaster::delete_song() {
+}
+
+void PatchMaster::create_patch() {
+}
+
+void PatchMaster::delete_patch() {
+}
+
+void PatchMaster::create_connection() {
+}
+
+void PatchMaster::delete_connection() {
+}
+
 // ================ movement ================
 
 void PatchMaster::next_patch() {
@@ -163,4 +251,14 @@ void PatchMaster::panic(bool send_notes_off) {
     for (auto& out : outputs)
       out->write(buf, 16);
   }
+}
+
+// ================ helpers ================
+
+bool songNameComparator(Song *s1, Song *s2) {
+  return s1->name < s2->name;
+}
+
+void PatchMaster::sort_all_songs() {
+  sort(all_songs->songs.begin(), all_songs->songs.end(), songNameComparator);
 }

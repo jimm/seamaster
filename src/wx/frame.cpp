@@ -13,7 +13,6 @@
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
-#include "../initializer.h"
 
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
@@ -340,7 +339,9 @@ void Frame::OnMonitor(wxCommandEvent &event) {
 }
 
 void Frame::initialize() {
-  Initializer().initialize();
+  PatchMaster *pm = new PatchMaster();
+  pm->initialize();
+  pm->start();
   load_data_into_windows();
 }
 

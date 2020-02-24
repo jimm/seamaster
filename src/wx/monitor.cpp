@@ -59,7 +59,7 @@ void Monitor::add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vec
 
   int row = 0;
   for (auto& msg : message_list) {
-    list->SetItem(row, 0, inst->sym.c_str());
+    list->SetItem(row, 0, inst->name.c_str());
     list->SetItem(row, 1, wxString::Format("%02x", Pm_MessageStatus(msg)));
     list->SetItem(row, 2, wxString::Format("%02x", Pm_MessageData1(msg)));
     list->SetItem(row, 3, wxString::Format("%02x", Pm_MessageData2(msg)));

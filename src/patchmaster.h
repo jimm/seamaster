@@ -28,14 +28,33 @@ public:
 
   int load(const char *);
 
+  // ================ running ================
   void start();
   void stop();
 
+  // ================ initialization ================
+  void initialize();
+
+  // ================ editing ================
+
+  void create_message();
+  void delete_message();
+  void create_trigger();
+  void delete_trigger();
+  void create_song();
+  void delete_song();
+  void create_patch();
+  void delete_patch();
+  void create_connection();
+  void delete_connection();
+
+  // ================ movement ================
   void next_patch();
   void prev_patch();
   void next_song();
   void prev_song();
 
+  // ================ going places ================
   void goto_song(string name_regex);
   void goto_set_list(string name_regex);
 
@@ -43,7 +62,16 @@ public:
   void jump_to_song_index(int i);
   void jump_to_patch_index(int i);
 
+  // ================ doing things ================
   void panic(bool send_notes_off);
+
+  // ================ helpers ================
+  void sort_all_songs();
+
+private:
+  // ================ initialization ================
+  void load_instruments();
+  void create_songs();
 };
 
 PatchMaster *PatchMaster_instance();

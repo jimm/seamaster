@@ -3,7 +3,7 @@
 #include "../patchmaster.h"
 
 const char * const COLUMN_HEADERS[] = {
-  "Symbol", "Name", "MIDI Port", "Status"
+  "Name", "MIDI Port", "Status"
 };
 
 InstrumentDialog::InstrumentDialog(wxWindow *parent, PatchMaster *patchmaster)
@@ -42,8 +42,7 @@ void InstrumentDialog::run() {
 }
 
 void InstrumentDialog::add_instrument(wxListCtrl *list_box, Instrument *inst, int i) {
-  list_box->InsertItem(i, inst->sym.c_str());
-  list_box->SetItem(i, 1, inst->name.c_str());
-  list_box->SetItem(i, 2, inst->port_name.c_str());
-  list_box->SetItem(i, 3, inst->enabled ? "enabled" : "<disabled>");
+  list_box->InsertItem(i, inst->name.c_str());
+  list_box->SetItem(i, 1, inst->port_name.c_str());
+  list_box->SetItem(i, 2, inst->enabled ? "enabled" : "<disabled>");
 }

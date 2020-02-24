@@ -104,7 +104,7 @@ private:
 
   PmDeviceID find_device(char *, int);
   int compare_device_names(char *, char *);
-  Instrument *find_by_sym(vector<Instrument *> &, char *);
+  Instrument *find_by_name(vector<Instrument *> &, char *);
   Song *find_song(vector<Song *> &, char *);
   Message *find_message(vector<Message *> &, char *);
   bool is_header(const char *, const char *, int);

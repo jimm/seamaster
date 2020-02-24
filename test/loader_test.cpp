@@ -25,12 +25,10 @@ TEST_CASE("instruments", CATCH_CATEGORY) {
   REQUIRE(pm->outputs.size() == 2);
 
   Input *in = pm->inputs[0];
-  REQUIRE(in->sym == "one");
-  REQUIRE(in->name == "first input");
+  REQUIRE(in->name == "inst1");
 
   Output *out = pm->outputs[1];
-  REQUIRE(out->sym == "two");
-  REQUIRE(out->name == "second output");
+  REQUIRE(out->name == "inst2");
 
   delete pm;
 }
@@ -319,6 +317,6 @@ TEST_CASE("auto patch", CATCH_CATEGORY) {
   Patch *p = s->patches[0];
   REQUIRE(p->name == "Default Patch");
   REQUIRE(p->connections.size() == 2);
-  REQUIRE(p->connections[0]->input->sym == "one");
-  REQUIRE(p->connections[1]->input->sym == "two");
+  REQUIRE(p->connections[0]->input->name == "inst1");
+  REQUIRE(p->connections[1]->input->name == "inst2");
 }

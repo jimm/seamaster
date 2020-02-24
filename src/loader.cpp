@@ -17,10 +17,6 @@ static const markup markdown_mode_markup = {'#', "-*+", "```"};
 static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
 
-bool songNameComparator(Song *s1, Song *s2) {
-  return s1->name < s2->name;
-}
-
 Loader::Loader()
   : song(nullptr)
 {
@@ -55,7 +51,7 @@ PatchMaster *Loader::load(const char *path, bool testing) {
   }
   if (song != nullptr)
     ensure_song_has_patch();
-  sort(pm->all_songs->songs.begin(), pm->all_songs->songs.end(), songNameComparator);
+  pm->sort_all_songs();
 
   fclose(fp);
 
@@ -184,7 +180,7 @@ void Loader::parse_trigger_line(char *line) {
 
   vector<char *> cols;
   table_columns(line, cols);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), cols[0]);
+  Input *in = (Input *)find_by_name(reinterpret_cast<vector<Instrument *> &>(pm->inputs), cols[0]);
   if (in == nullptr) {          // might be table header, not an error
     return;
   }
@@ -293,16 +289,15 @@ void Loader::parse_set_list_line(char *line) {
 
 void Loader::load_instrument(vector<char *> &cols, int type) {
   char *port_name = cols[1];
-  char *sym = cols[2];
-  char *name = cols[3];
+  char *name = cols[2];
   PmDeviceID devid = find_device(port_name, type);
 
   switch (type) {
   case INPUT:
-    pm->inputs.push_back(new Input(sym, name, port_name, devid));
+    pm->inputs.push_back(new Input(name, port_name, devid));
     break;
   case OUTPUT:
-    pm->outputs.push_back(new Output(sym, name, port_name, devid));
+    pm->outputs.push_back(new Output(name, port_name, devid));
     break;
   }
 }
@@ -372,13 +367,13 @@ void Loader::load_connection(char *line) {
 
   vector<char *> args;
   comma_sep_args(line, false, args);
-  Input *in = (Input *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->inputs), args[0]);
+  Input *in = (Input *)find_by_name(reinterpret_cast<vector<Instrument *> &>(pm->inputs), args[0]);
   if (in == nullptr) {
     instrument_not_found("input", args[0]);
     return;
   }
   int in_chan = chan_from_word(args[1]);
-  Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs), args[2]);
+  Output *out = (Output *)find_by_name(reinterpret_cast<vector<Instrument *> &>(pm->outputs), args[2]);
   if (out == nullptr) {
     instrument_not_found("output", args[2]);
     return;
@@ -417,11 +412,11 @@ void Loader::start_and_stop_messages_from_notes() {
   clear_notes();
 }
 
-void Loader::instrument_not_found(const char *type_name, const char *sym) {
+void Loader::instrument_not_found(const char *type_name, const char *name) {
     ostringstream es;
     es << "song " << song->name
        << ", patch " << patch->name
-       << ": " << type_name << ' ' << sym
+       << ": " << type_name << ' ' << name
        << " not found";
     error_str = es.str();
 }
@@ -520,9 +515,10 @@ void Loader::ensure_song_has_patch() {
   Patch *p = new Patch(default_patch_name);
   song->patches.push_back(p);
 
+  // Connect input to output with the same name, if any
   for (auto& in : pm->inputs) {
-    Output *out = (Output *)find_by_sym(reinterpret_cast<vector<Instrument *> &>(pm->outputs),
-                                        (char *)in->sym.c_str());
+    Output *out = (Output *)find_by_name(reinterpret_cast<vector<Instrument *> &>(pm->outputs),
+                                        (char *)in->name.c_str());
     if (out != nullptr) {
       Connection *conn = new Connection(in, CONNECTION_ALL_CHANNELS,
                                         out, CONNECTION_ALL_CHANNELS);
@@ -630,9 +626,9 @@ int Loader::compare_device_names(char *name1, char *name2) {
   return strncasecmp(name1, name2, min(len1, len2));
 }
 
-Instrument *Loader::find_by_sym(vector<Instrument *> &list, char *name) {
+Instrument *Loader::find_by_name(vector<Instrument *> &list, char *name) {
   for (auto& instrument : list)
-    if (strncasecmp(instrument->sym.c_str(), name, instrument->sym.length()) == 0)
+    if (strncasecmp(instrument->name.c_str(), name, instrument->name.length()) == 0)
       return instrument;
   return nullptr;
 }
