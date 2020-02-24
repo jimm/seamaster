@@ -2,6 +2,10 @@
 #include "patchmaster.h"
 #include "cursor.h"
 
+#define PATCH_STOP  {if (cursor->patch() != nullptr) cursor->patch()->stop();}
+#define PATCH_START {if (cursor->patch() != nullptr) cursor->patch()->start();}
+
+
 static PatchMaster *pm_instance = nullptr;
 
 PatchMaster *PatchMaster_instance() {
@@ -41,14 +45,12 @@ void PatchMaster::start() {
   for (auto& in : inputs)
     in->start();
   cursor->init();
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
   running = true;
 }
 
 void PatchMaster::stop() {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   for (auto& in : inputs)
     in->stop();
   running = false;
@@ -145,86 +147,68 @@ void PatchMaster::delete_connection() {
 // ================ movement ================
 
 void PatchMaster::next_patch() {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->next_patch();
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::prev_patch() {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->prev_patch();
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::next_song() {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->next_song();
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::prev_song() {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->prev_song();
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 // ================ going places ================
 
 void PatchMaster::goto_song(string name_regex) {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->goto_song(name_regex);
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::goto_set_list(string name_regex) {
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->goto_set_list(name_regex);
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::jump_to_set_list_index(int i) {
   if (i == cursor->set_list_index)
     return;
 
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->jump_to_set_list_index(i);
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::jump_to_song_index(int i) {
   if (i == cursor->song_index)
     return;
 
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->jump_to_song_index(i);
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 void PatchMaster::jump_to_patch_index(int i) {
   if (i == cursor->patch_index)
     return;
 
-  if (cursor->patch() != nullptr)
-    cursor->patch()->stop();
+  PATCH_STOP;
   cursor->jump_to_patch_index(i);
-  if (cursor->patch() != nullptr)
-    cursor->patch()->start();
+  PATCH_START;
 }
 
 // ================ doing things ================
