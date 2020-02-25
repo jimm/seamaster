@@ -29,9 +29,10 @@ void *input_thread(void *_) {
     bool processed_something = false;
     inputs_mutex.lock();
     for (auto& in : inputs) {
-      if (!INPUT_THREAD_IS_RUNNING) // one more chance to stop
+      if (!INPUT_THREAD_IS_RUNNING) { // one more chance to stop
         inputs_mutex.unlock();
         return nullptr;
+      }
       if (in->running && Pm_Poll(in->stream) == TRUE) {
         int n = Pm_Read(in->stream, buf, MIDI_BUFSIZ);
         if (n > 0) {
