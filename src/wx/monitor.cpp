@@ -11,7 +11,7 @@ const char * const COLUMN_HEADERS[] = {
 };
 
 Monitor::Monitor()
-  : wxFrame(NULL, wxID_ANY, "Instruments", wxDefaultPosition, wxSize(480, 500))
+  : wxFrame(NULL, wxID_ANY, "MIDI Monitor", wxDefaultPosition, wxSize(480, 500))
 {     
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -26,7 +26,7 @@ Monitor::Monitor()
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
-    Show(true);
+  Show(true);
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 
   PatchMaster *pm = PatchMaster_instance();
