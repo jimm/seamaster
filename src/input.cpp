@@ -11,9 +11,9 @@
 #define SLEEP_NANOSECS 10000000L
 #define INPUT_THREAD_IS_RUNNING (portmidi_pthread != nullptr)
 
-mutex inputs_mutex;
-set<Input *> inputs;
-pthread_t portmidi_pthread = nullptr;
+static mutex inputs_mutex;
+static set<Input *> inputs;
+static pthread_t portmidi_pthread = nullptr;
 
 
 // For each running input in `inputs`, sees if there is any MIDI data to be
