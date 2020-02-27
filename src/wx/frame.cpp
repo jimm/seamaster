@@ -8,6 +8,7 @@
 #include "set_list_list_box.h"
 #include "song_box.h"
 #include "patch_list.h"
+#include "trigger_list.h"
 #include "instrument_dialog.h"
 #include "monitor.h"
 #include "../patchmaster.h"
@@ -23,7 +24,6 @@
 #define TALL_LIST_HEIGHT 300
 #define SHORT_LIST_HEIGHT 200
 #define NOTES_WIDTH 200
-#define NOTES_HEIGHT 500
 #define FRAME_NAME "seamaster_main_frame"
 
 void *frame_clear_message_thread(void *gui_vptr) {
@@ -108,22 +108,14 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
 }
 
 wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
-  wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_triggers = new wxListCtrl(p, wxID_ANY, wxDefaultPosition,
-                               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
-
-  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border(wxALL));
-
-  p->SetSizerAndFit(sizer);
-  return p;
+  lc_triggers = new TriggerList(parent);
+  return lc_triggers;
 }
 
 wxWindow * Frame::make_notes_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_notes = new wxTextCtrl(p, wxID_ANY, "", wxDefaultPosition,
-                            wxSize(NOTES_WIDTH, NOTES_HEIGHT), wxTE_MULTILINE);
+                            wxSize(NOTES_WIDTH, TALL_LIST_HEIGHT), wxTE_MULTILINE);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -375,6 +367,7 @@ void Frame::load_data_into_windows() {
   lc_set_lists->update();
   lc_song->update();
   lc_patch->update();
+  lc_triggers->update();
 
   Song *song = cursor->song();
   lc_notes->Clear();
@@ -385,11 +378,4 @@ void Frame::load_data_into_windows() {
       lc_notes->AppendText("\n");
     }
   }
-
-  lc_triggers->ClearAll();
-  i = 0;
-  for (auto& input : pm->inputs)
-    for (auto& trigger : input->triggers)
-      lc_triggers->InsertItem(i++, "TODO --- display trigger");
-
 }

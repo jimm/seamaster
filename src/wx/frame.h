@@ -30,6 +30,7 @@ class SetListBox;
 class SetListListBox;
 class SongBox;
 class PatchList;
+class TriggerList;
 
 class Frame: public wxFrame {
 public:
@@ -63,7 +64,7 @@ private:
   SetListBox *lc_set_list;
   SongBox *lc_song;
   PatchList *lc_patch;
-  wxListCtrl *lc_triggers;
+  TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
   int clear_msg_secs;
   int clear_msg_id;
