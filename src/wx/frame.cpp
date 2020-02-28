@@ -53,11 +53,13 @@ void Frame::make_frame_panels() {
   wxGridBagSizer * const main_sizer = new wxGridBagSizer();
 
   main_sizer->Add(make_set_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_set_list_list_panel(p), POS(3, 0), SPAN(1, 1), wxEXPAND);
   main_sizer->Add(make_song_panel(p), POS(0, 1), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_trigger_panel(p), POS(3, 1), SPAN(1, 2), wxEXPAND);
   main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_patch_panel(p), POS(4, 0), SPAN(1, 3), wxEXPAND);
+
+  main_sizer->Add(make_patch_panel(p), POS(3, 0), SPAN(1, 3), wxEXPAND);
+
+  main_sizer->Add(make_set_list_list_panel(p), POS(4, 0), SPAN(1, 1), wxEXPAND);
+  main_sizer->Add(make_trigger_panel(p), POS(4, 1), SPAN(1, 2), wxEXPAND);
 
   for (int row = 0; row < 5; ++row)
     main_sizer->AddGrowableRow(row);
