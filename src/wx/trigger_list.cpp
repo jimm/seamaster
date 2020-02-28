@@ -7,15 +7,15 @@
 #define SHORT_LIST_HEIGHT 200
 
 const char * const COLUMN_HEADERS[] = {
-  "Input", "Trigger", "Action", "Message"
+  "Input", "Trigger", "Action / Message"
 };
 const int COLUMN_WIDTHS[] = {
-  3*CW, 3*CW, 4*CW, 6*CW
+  3*CW, 3*CW, 8*CW
 };
 
 TriggerList::TriggerList(wxWindow *parent)
-  : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT),
-               wxLC_REPORT)
+  : wxListCtrl(parent, wxID_ANY, wxDefaultPosition,
+               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT), wxLC_REPORT)
 {
   set_headers();
 }
@@ -31,22 +31,25 @@ void TriggerList::update() {
     for (auto * trigger : input->triggers) {
       InsertItem(row, input->name.c_str());
       SetItem(row, 1, message_to_wxstring(trigger->trigger_message));
+      wxString str;
       switch (trigger->action) {
       case NEXT_SONG:
-        SetItem(row, 2, "next song");
+        str = "next song";
         break;
       case PREV_SONG:
-        SetItem(row, 2, "prev song");
+        str = "prev song";
         break;
       case NEXT_PATCH:
-        SetItem(row, 2, "next patch");
+        str = "next patch";
         break;
       case PREV_PATCH:
-        SetItem(row, 2, "prev patch");
+        str = "prev patch";
         break;
       case MESSAGE:
-        SetItem(row, 3, messages_to_wxstring(trigger->output_message->messages));
+        str = messages_to_wxstring(trigger->output_message->messages);
+        break;
       }
+      SetItem(row, 2, str);
       ++row;
     }
   }
