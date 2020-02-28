@@ -55,8 +55,8 @@ void Frame::make_frame_panels() {
   main_sizer->Add(make_set_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
   main_sizer->Add(make_set_list_list_panel(p), POS(3, 0), SPAN(1, 1), wxEXPAND);
   main_sizer->Add(make_song_panel(p), POS(0, 1), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_trigger_panel(p), POS(3, 1), SPAN(1, 1), wxEXPAND);
-  main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(4, 1), wxEXPAND);
+  main_sizer->Add(make_trigger_panel(p), POS(3, 1), SPAN(1, 2), wxEXPAND);
+  main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(3, 1), wxEXPAND);
   main_sizer->Add(make_patch_panel(p), POS(4, 0), SPAN(1, 3), wxEXPAND);
 
   for (int row = 0; row < 5; ++row)
@@ -108,8 +108,15 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
 }
 
 wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
-  lc_triggers = new TriggerList(parent);
-  return lc_triggers;
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_triggers = new TriggerList(p);
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 wxWindow * Frame::make_notes_panel(wxPanel *parent) {
