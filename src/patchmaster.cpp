@@ -17,7 +17,7 @@ PatchMaster *PatchMaster_instance() {
 PatchMaster::PatchMaster() {
   running = false;
   testing = false;
-  all_songs = new SetList((char *)"All Songs"); /* TODO sorted set list */
+  all_songs = new SetList((char *)"All Songs");
   set_lists.push_back(all_songs);
   cursor = new Cursor(this);
   pm_instance = this;

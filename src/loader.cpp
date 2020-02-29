@@ -186,7 +186,7 @@ void Loader::parse_trigger_line(char *line) {
   }
 
   PmMessage trigger_msg = message_from_bytes(cols[1]);
-  Message *output_msg = 0;
+  Message *output_msg = nullptr;
   TriggerAction action;
   if (strncasecmp(cols[2], "next song", 9) == 0)
     action = NEXT_SONG;
