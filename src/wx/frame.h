@@ -16,8 +16,19 @@ enum {
   ID_JumpToSetList,
   ID_JumpToSong,
   ID_JumpToPatch,
+  ID_CreateMessage,
+  ID_CreateTrigger,
+  ID_CreateSong,
+  ID_CreatePatch,
+  ID_CreateConnection,
+  ID_CreateSetList,
+  ID_DestroyMessage,
+  ID_DestroyTrigger,
+  ID_DestroySong,
+  ID_DestroyPatch,
+  ID_DestroyConnection,
+  ID_DestroySetList,
   ID_ListInstruments,
-  ID_ListDevices,
   ID_Monitor,
   ID_RegularPanic,
   ID_SuperPanic
@@ -71,7 +82,6 @@ private:
 
   void OnOpen(wxCommandEvent& event);
   void OnListInstruments(wxCommandEvent& event);
-  void OnListDevices(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
@@ -89,6 +99,19 @@ private:
   void jump_to_set_list(wxCommandEvent& event);
   void jump_to_song(wxCommandEvent& event);
   void jump_to_patch(wxCommandEvent& event);
+
+  void create_message(wxCommandEvent& event);
+  void create_trigger(wxCommandEvent& event);
+  void create_song(wxCommandEvent& event);
+  void create_patch(wxCommandEvent& event);
+  void create_connection(wxCommandEvent& event);
+  void create_set_list(wxCommandEvent& event);
+  void destroy_message(wxCommandEvent& event);
+  void destroy_trigger(wxCommandEvent& event);
+  void destroy_song(wxCommandEvent& event);
+  void destroy_patch(wxCommandEvent& event);
+  void destroy_connection(wxCommandEvent& event);
+  void destroy_set_list(wxCommandEvent& event);
 
   void make_frame_panels();
   void make_menu_bar();

@@ -12,7 +12,7 @@ void SongBox::update() {
   Cursor *cursor = pm->cursor;
   Song *curr_song = cursor->song();
 
-  if (curr_song != song) {
+  // if (curr_song != song) {
     Clear();
     if (curr_song != nullptr) {
       wxArrayString names;
@@ -21,7 +21,7 @@ void SongBox::update() {
       InsertItems(names, 0);
     }
     song = curr_song;
-  }
+  // }
 
   if (song == nullptr)
     return;

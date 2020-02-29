@@ -24,8 +24,8 @@ void PatchList::update() {
   Cursor *cursor = pm->cursor;
   Patch *curr_patch = cursor->patch();
 
-  if (patch == curr_patch)
-    return;
+  // if (patch == curr_patch)
+  //   return;
 
   patch = curr_patch;
   ClearAll();

@@ -12,7 +12,7 @@ void SetListBox::update() {
   Cursor *cursor = pm->cursor;
   SetList *curr_set_list = cursor->set_list();
 
-  if (curr_set_list != set_list) {
+  // if (curr_set_list != set_list) {
     Clear();
     if (curr_set_list != nullptr) {
       wxArrayString names;
@@ -22,7 +22,7 @@ void SetListBox::update() {
         InsertItems(names, 0);
     }
     set_list = curr_set_list;
-  }
+  // }
 
   if (set_list == nullptr)
     return;

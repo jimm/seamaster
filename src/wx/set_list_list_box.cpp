@@ -11,13 +11,14 @@ void SetListListBox::update() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
 
-  if (!initialized) {
+  // if (!initialized) {
+    Clear();
     wxArrayString names;
     for (auto& set_list : pm->set_lists)
       names.Add(set_list->name.c_str());
     InsertItems(names, 0);
-    initialized = true;
-  }
+    // initialized = true;
+  // }
 
   int i = 0;
   for (auto& set_list : pm->set_lists) {

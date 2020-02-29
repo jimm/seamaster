@@ -14,6 +14,7 @@
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
+#include "../editor.h"
 
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
@@ -145,6 +146,21 @@ void Frame::make_menu_bar() {
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
+  wxMenu *menuEdit = new wxMenu;
+  menuEdit->Append(ID_CreateMessage, "Create Message\tCtrl-Shift-M", "Create a new message");
+  menuEdit->Append(ID_CreateTrigger, "Create Trigger\tCtrl-Shift-T", "Create a new trigger");
+  menuEdit->Append(ID_CreateSong, "Create Song\tCtrl-Shift-S", "Create a new song");
+  menuEdit->Append(ID_CreatePatch, "Create Patch\tCtrl-Shift-P", "Create a new patch");
+  menuEdit->Append(ID_CreateConnection, "Create Connection\tCtrl-Shift-C", "Create a new connection");
+  menuEdit->Append(ID_CreateSetList, "Create Set List\tCtrl-Shift-L", "Create a new set list");
+  menuEdit->AppendSeparator();
+  menuEdit->Append(ID_DestroyMessage, "Destroy Message\tCtrl-Alt-M", "Destroy the current message");
+  menuEdit->Append(ID_DestroyTrigger, "Destroy Trigger\tCtrl-Alt-T", "Destroy the current trigger");
+  menuEdit->Append(ID_DestroySong, "Destroy Song\tCtrl-Alt-S", "Destroy the current song");
+  menuEdit->Append(ID_DestroyPatch, "Destroy Patch\tCtrl-Alt-P", "Destroy the current patch");
+  menuEdit->Append(ID_DestroyConnection, "Destroy Connection\tCtrl-Alt-C", "Destroy the current connection");
+  menuEdit->Append(ID_DestroySetList, "Destroy Set List\tCtrl-Alt-L", "Destroy the current set list");
+
   wxMenu *menuGo = new wxMenu;
   menuGo->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
   menuGo->Append(ID_GoPrevSong, "Prev Song\tP", "Move to the previous song");
@@ -154,13 +170,11 @@ void Frame::make_menu_bar() {
   menuGo->Append(ID_FindSong, "Find Song...\tCtrl-F", "Find song by name");
   menuGo->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");
 
-  wxMenu *menuView = new wxMenu;
-  menuView->Append(ID_ListInstruments, "&List Instruments\tCtrl-I",
-                   "Displays input and output instruments");
-  menuView->Append(ID_ListDevices, "&List MIDI Devices\tCtrl-L",
-                   "Displays MIDI devices detected by PortMidi");
-  menuView->Append(ID_Monitor, "&MIDI Monitor\tCtrl-M",
-                   "Open the MIDI Monitor window");
+  wxMenu *menuWindows = new wxMenu;
+  menuWindows->Append(ID_ListInstruments, "&Instruments\tCtrl-I",
+                      "Displays input and output instruments");
+  menuWindows->Append(ID_Monitor, "MIDI &Monitor\tCtrl-M",
+                      "Open the MIDI Monitor window");
 
   wxMenu *menuMIDI = new wxMenu;
   menuMIDI->Append(ID_RegularPanic, "&Send All Notes Off\t\e",
@@ -173,9 +187,10 @@ void Frame::make_menu_bar() {
 
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
+  menuBar->Append(menuEdit, "&Edit");
   menuBar->Append(menuGo, "&Go");
-  menuBar->Append(menuView, "&View");
   menuBar->Append(menuMIDI, "&MIDI");
+  menuBar->Append(menuWindows, "&Windows");
   menuBar->Append(menuHelp, "&Help");
   SetMenuBar(menuBar);
 #if defined(__WXMAC__)
@@ -292,6 +307,93 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
   }
 }
 
+void Frame::create_message(wxCommandEvent& event) {
+  Editor e;
+  e.create_message();
+  load_data_into_windows();
+}
+
+void Frame::create_trigger(wxCommandEvent& event) {
+  Editor e;
+  PatchMaster *pm = PatchMaster_instance();
+  e.create_trigger(pm->inputs.front());
+  load_data_into_windows();
+}
+
+void Frame::create_song(wxCommandEvent& event) {
+  Editor e;
+  e.create_song();
+  load_data_into_windows();
+}
+
+void Frame::create_patch(wxCommandEvent& event) {
+  Editor e;
+  e.create_patch();
+  load_data_into_windows();
+}
+
+void Frame::create_connection(wxCommandEvent& event) {
+  Editor e;
+  PatchMaster *pm = PatchMaster_instance();
+  // TODO
+  e.create_connection(pm->inputs.front(), pm->outputs.front());
+  load_data_into_windows();
+}
+
+void Frame::create_set_list(wxCommandEvent& event) {
+  Editor e;
+  e.create_set_list();
+  load_data_into_windows();
+}
+
+void Frame::destroy_message(wxCommandEvent& event) {
+  Editor e;
+  // TODO which one?
+  // e.destroy_message();
+  load_data_into_windows();
+}
+
+void Frame::destroy_trigger(wxCommandEvent& event) {
+  Editor e;
+  // TODO which one?
+  // e.destroy_trigger();
+  load_data_into_windows();
+}
+
+void Frame::destroy_song(wxCommandEvent& event) {
+  Editor e;
+  PatchMaster *pm = PatchMaster_instance();
+  Song *song = pm->cursor->song();
+  if (song != nullptr)
+    e.destroy_song(song);
+  load_data_into_windows();
+}
+
+void Frame::destroy_patch(wxCommandEvent& event) {
+  Editor e;
+  PatchMaster *pm = PatchMaster_instance();
+  Patch *patch = pm->cursor->patch();
+  if (patch != nullptr)
+    e.destroy_patch(pm->cursor->song(), patch);
+  load_data_into_windows();
+}
+
+void Frame::destroy_connection(wxCommandEvent& event) {
+  Editor e;
+  // TODO which one?
+  // e.destroy_connection();
+  load_data_into_windows();
+}
+
+void Frame::destroy_set_list(wxCommandEvent& event) {
+  Editor e;
+  PatchMaster *pm = PatchMaster_instance();
+  SetList *set_list = pm->cursor->set_list();
+  if (set_list != pm->all_songs)
+    e.destroy_set_list(set_list);
+  load_data_into_windows();
+}
+
 void Frame::regular_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
   if (pm == nullptr)
@@ -311,7 +413,7 @@ void Frame::super_panic(wxCommandEvent &_event) {
 }
 
 void Frame::OnAbout(wxCommandEvent &_event) {
-  wxMessageBox("This is SeaMaster, the MIDI processing and patching system.",
+  wxMessageBox("SeaMaster, the MIDI processing and patching system.\nJim Menard, jim@jimmenard.com\nhttps://github.com/jimm/seamaster/wiki",
                 "About SeaMaster", wxOK | wxICON_INFORMATION);
 }
 
@@ -325,11 +427,6 @@ void Frame::OnOpen(wxCommandEvent &_event) {
 
 void Frame::OnListInstruments(wxCommandEvent &_event) {
   InstrumentDialog(this, PatchMaster_instance()).run();
-}
-
-void Frame::OnListDevices(wxCommandEvent &_event) {
-  wxMessageBox("List MIDI Devices not yet implemented.", "MIDI Devices",
-               wxOK | wxICON_WARNING);
 }
 
 void Frame::OnMonitor(wxCommandEvent &event) {
