@@ -20,21 +20,40 @@ void Editor::create_trigger(Input *input) {
 }
 
 void Editor::create_song() {
-  Song *s = new Song("Unnamed Song");
+  create_song(pm->cursor->set_list(), -1);
+}
+
+void Editor::create_song(SetList *set_list, int position) {
+  Song *song = new Song("Unnamed Song");
   // TODO consolidate with Loader::ensure_song_has_patch
-  Patch *p = new Patch("Unnamed Patch");
-  s->patches.push_back(p);
-  pm->all_songs->songs.push_back(s);
+  create_patch(song);
+  if (position < 0)
+    pm->all_songs->songs.push_back(song);
+  else {
+    vector<Song *> slist = pm->all_songs->songs;
+    int i = 0;
+    for (ITER(Song) iter = slist.begin(); iter != slist.end(); ++iter) {
+      if (i == position) {
+        slist.insert(iter, song);
+        break;
+      }
+      ++i;
+    }
+  }
   pm->sort_all_songs();
 
-  if (pm->cursor->set_list() != pm->all_songs) {
+  if (set_list != pm->all_songs) {
     // TODO insert song into current set list after current song
   }
 }
 
 void Editor::create_patch() {
+  create_patch(pm->cursor->song());
+}
+
+void Editor::create_patch(Song *song) {
   Patch *p = new Patch("Unnamed Patch");
-  pm->cursor->song()->patches.push_back(p);
+  song->patches.push_back(p);
 }
 
 void Editor::create_connection(Input *input, Output *output)
@@ -48,85 +67,85 @@ void Editor::create_set_list() {
   pm->set_lists.push_back(new SetList("Unnamed Set List"));
 }
 
-void Editor::destroy_message(Message *m) {
+void Editor::destroy_message(Message *message) {
   for (ITER(Message) i = pm->messages.begin(); i != pm->messages.end(); ++i) {
-    if (*i == m) {
+    if (*i == message) {
       pm->messages.erase(i);
-      delete m;
+      delete message;
       return;
     }
   }
 }
 
-void Editor::destroy_trigger(Trigger *t) {
+void Editor::destroy_trigger(Trigger *trigger) {
   for (auto &input : pm->inputs) {
     for (ITER(Trigger) i = input->triggers.begin(); i != input->triggers.end(); ++i)
     {
-      if (*i == t) {
+      if (*i == trigger) {
         input->triggers.erase(i);
-        delete t;
+        delete trigger;
         return;
       }
     }
   }
 }
 
-void Editor::destroy_song(Song *s) {
-  if (s == pm->cursor->song())
+void Editor::destroy_song(Song *song) {
+  if (song == pm->cursor->song())
     pm->next_song();
 
   // remove song from all set lists first
-  for (auto &sl : pm->set_lists)
-    remove_song_from_set_list(s, sl);
+  for (auto &set_list : pm->set_lists)
+    remove_song_from_set_list(song, set_list);
   for (ITER(Song) i = pm->all_songs->songs.begin(); i != pm->all_songs->songs.end(); ++i)
   {
-    if (*i == s) {
+    if (*i == song) {
       pm->all_songs->songs.erase(i);
-      delete s;
+      delete song;
       return;
     }
   }
 }
 
-void Editor::destroy_patch(Song *s, Patch *p) {
-  if (p == pm->cursor->patch())
+void Editor::destroy_patch(Song *song, Patch *patch) {
+  if (patch == pm->cursor->patch())
     pm->next_patch();
 
-  for (ITER(Patch) i = s->patches.begin(); i != s->patches.end(); ++i) {
-    if (*i == p) {
-      s->patches.erase(i);
-      delete p;
+  for (ITER(Patch) i = song->patches.begin(); i != song->patches.end(); ++i) {
+    if (*i == patch) {
+      song->patches.erase(i);
+      delete patch;
       return;
     }
   }
 }
 
-void Editor::destroy_connection(Patch *p, Connection *c) {
-  if (p == pm->cursor->patch())
-    p->stop();
+void Editor::destroy_connection(Patch *patch, Connection *connection) {
+  if (patch == pm->cursor->patch())
+    patch->stop();
 
-  for (ITER(Connection) i = p->connections.begin(); i != p->connections.end(); ++i) {
-    if (*i == c) {
-      p->connections.erase(i);
-      delete c;
-      if (p == pm->cursor->patch())
-        p->start();
+  for (ITER(Connection) i = patch->connections.begin(); i != patch->connections.end(); ++i) {
+    if (*i == connection) {
+      patch->connections.erase(i);
+      delete connection;
+      if (patch == pm->cursor->patch())
+        patch->start();
       return;
     }
   }
-  // shouldn't get here, assuming c is in p
-  if (p == pm->cursor->patch())
-    p->start();
+  // shouldn't get here, assuming connection is in patch
+  if (patch == pm->cursor->patch())
+    patch->start();
 }
 
-void Editor::destroy_set_list(SetList *sl) {
-  if (sl == pm->cursor->set_list())
+void Editor::destroy_set_list(SetList *set_list) {
+  if (set_list == pm->cursor->set_list())
     pm->cursor->goto_set_list("All Songs");
 
   for (ITER(SetList) i = pm->set_lists.begin(); i != pm->set_lists.end(); ++i) {
-    if (*i == sl) {
+    if (*i == set_list) {
       pm->set_lists.erase(i);
-      delete sl;
+      delete set_list;
       return;
     }
   }
@@ -134,11 +153,13 @@ void Editor::destroy_set_list(SetList *sl) {
 
 void Editor::remove_song_from_set_list(Song *song, SetList *set_list) {
   for (ITER(SetList) i = pm->set_lists.begin(); i != pm->set_lists.end(); ++i) {
-    SetList *sl = *i;
-    if (sl == set_list) {
-      for (ITER(Song) j = sl->songs.begin(); j != sl->songs.end(); ++j) {
-        if (*j == song)
-          sl->songs.erase(j);
+    SetList *slist = *i;
+    if (set_list == slist) {
+      for (ITER(Song) j = slist->songs.begin(); j != slist->songs.end(); ++j) {
+        if (*j == song) {
+          slist->songs.erase(j);
+          break;
+        }
       }
     }
   }
