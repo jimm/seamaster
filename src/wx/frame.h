@@ -4,6 +4,7 @@
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
+ #include <wx/listctrl.h>
 #endif
 
 enum {
@@ -13,9 +14,10 @@ enum {
   ID_GoPrevPatch,
   ID_FindSong,
   ID_FindSetList,
-  ID_JumpToSetList,
-  ID_JumpToSong,
-  ID_JumpToPatch,
+  ID_SetListList,
+  ID_SetListSongs,
+  ID_SongPatches,
+  ID_PatchConnections,
   ID_CreateMessage,
   ID_CreateTrigger,
   ID_CreateSong,
@@ -31,7 +33,9 @@ enum {
   ID_ListInstruments,
   ID_Monitor,
   ID_RegularPanic,
-  ID_SuperPanic
+  ID_SuperPanic,
+  ID_MessageList,
+  ID_TriggerList
 };
 
 class PatchMaster;
@@ -40,7 +44,7 @@ class wxTextCtrl;
 class SetListBox;
 class SetListListBox;
 class SongBox;
-class PatchList;
+class PatchConnections;
 class TriggerList;
 
 class Frame: public wxFrame {
@@ -74,7 +78,7 @@ private:
   SetListListBox *lc_set_lists;
   SetListBox *lc_set_list;
   SongBox *lc_song;
-  PatchList *lc_patch;
+  PatchConnections *lc_patch;
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
   int clear_msg_secs;
@@ -106,6 +110,14 @@ private:
   void create_patch(wxCommandEvent& event);
   void create_connection(wxCommandEvent& event);
   void create_set_list(wxCommandEvent& event);
+
+  void edit_message(wxListEvent& event);
+  void edit_trigger(wxListEvent& event);
+  void edit_set_list(wxCommandEvent& event);
+  void edit_song(wxCommandEvent& event);
+  void edit_patch(wxCommandEvent& event);
+  void edit_connection(wxListEvent& event);
+
   void destroy_message(wxCommandEvent& event);
   void destroy_trigger(wxCommandEvent& event);
   void destroy_song(wxCommandEvent& event);

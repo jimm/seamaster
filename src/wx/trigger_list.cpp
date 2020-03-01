@@ -13,8 +13,8 @@ const int COLUMN_WIDTHS[] = {
   3*CW, 3*CW, 8*CW
 };
 
-TriggerList::TriggerList(wxWindow *parent)
-  : wxListCtrl(parent, wxID_ANY, wxDefaultPosition,
+TriggerList::TriggerList(wxWindow *parent, wxWindowID id)
+  : wxListCtrl(parent, id, wxDefaultPosition,
                wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT), wxLC_REPORT)
 {
   set_headers();

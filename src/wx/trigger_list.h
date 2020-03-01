@@ -7,7 +7,7 @@
 
 class TriggerList : public wxListCtrl {
 public:
-  TriggerList(wxWindow *parent);
+  TriggerList(wxWindow *parent, wxWindowID id);
 
   void update();
 

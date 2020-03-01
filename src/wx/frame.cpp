@@ -7,7 +7,7 @@
 #include "set_list_box.h"
 #include "set_list_list_box.h"
 #include "song_box.h"
-#include "patch_list.h"
+#include "patch_connections.h"
 #include "trigger_list.h"
 #include "instrument_dialog.h"
 #include "monitor.h"
@@ -73,8 +73,8 @@ void Frame::make_frame_panels() {
 
 wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_set_list = new SetListBox(p, ID_JumpToSong,
-                                 wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
+  lc_set_list = new SetListBox(p, ID_SetListSongs,
+                               wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -86,7 +86,7 @@ wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_set_lists = new SetListListBox(p, ID_JumpToSetList,
+  lc_set_lists = new SetListListBox(p, ID_SetListList,
                                       wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -99,7 +99,7 @@ wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song = new SongBox(p, ID_JumpToPatch,
+  lc_song = new SongBox(p, ID_SongPatches,
                         wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -112,7 +112,7 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_triggers = new TriggerList(p);
+  lc_triggers = new TriggerList(p, ID_TriggerList);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
@@ -136,7 +136,7 @@ wxWindow * Frame::make_notes_panel(wxPanel *parent) {
 }
 
 wxWindow * Frame::make_patch_panel(wxPanel *parent) {
-  lc_patch = new PatchList(parent);
+  lc_patch = new PatchConnections(parent, ID_PatchConnections);
   return lc_patch;
 }
 
@@ -205,6 +205,8 @@ void Frame::OnExit(wxCommandEvent &_event) {
   exit(0);
 }
 
+// ================ messaging ================
+
 void Frame::show_message(string msg) {
   SetStatusText(msg.c_str());
 }
@@ -225,6 +227,8 @@ void Frame::clear_message_after(int secs) {
   pthread_t pthread;
   pthread_create(&pthread, 0, frame_clear_message_thread, this);
 }
+
+// ================ movement ================
 
 void Frame::next_song() {
   PatchMaster *pm = PatchMaster_instance();
@@ -307,6 +311,8 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
   }
 }
 
+// ================ create, edit, destroy ================
+
 void Frame::create_message(wxCommandEvent& event) {
   Editor e;
   e.create_message();
@@ -353,6 +359,30 @@ void Frame::destroy_message(wxCommandEvent& event) {
   load_data_into_windows();
 }
 
+void Frame::edit_message(wxListEvent& event) {
+  fprintf(stderr, "TODO edit_message\n"); // DEBUG
+}
+
+void Frame::edit_trigger(wxListEvent& event) {
+  fprintf(stderr, "TODO edit_trigger\n"); // DEBUG
+}
+
+void Frame::edit_set_list(wxCommandEvent& event) {
+  fprintf(stderr, "TODO edit_set_list\n"); // DEBUG
+}
+
+void Frame::edit_song(wxCommandEvent& event) {
+  fprintf(stderr, "TODO edit_song\n"); // DEBUG
+}
+
+void Frame::edit_patch(wxCommandEvent& event) {
+  fprintf(stderr, "TODO edit_patch\n"); // DEBUG
+}
+
+void Frame::edit_connection(wxListEvent& event) {
+  fprintf(stderr, "TODO edit_connection\n"); // DEBUG
+}
+
 void Frame::destroy_trigger(wxCommandEvent& event) {
   Editor e;
   // TODO which one?
@@ -394,6 +424,8 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
   load_data_into_windows();
 }
 
+// ================ MIDI panic ================
+
 void Frame::regular_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
   if (pm == nullptr)
@@ -412,6 +444,8 @@ void Frame::super_panic(wxCommandEvent &_event) {
   show_message("Panic sent (all notes off, all channels)", 5);
 }
 
+// ================ standard menu items ================
+
 void Frame::OnAbout(wxCommandEvent &_event) {
   wxMessageBox("SeaMaster, the MIDI processing and patching system.\nJim Menard, jim@jimmenard.com\nhttps://github.com/jimm/seamaster/wiki",
                 "About SeaMaster", wxOK | wxICON_INFORMATION);
@@ -425,6 +459,8 @@ void Frame::OnOpen(wxCommandEvent &_event) {
     load(openFileDialog.GetPath());
 }
 
+// ================ windows ================
+
 void Frame::OnListInstruments(wxCommandEvent &_event) {
   InstrumentDialog(this, PatchMaster_instance()).run();
 }
@@ -435,6 +471,8 @@ void Frame::OnMonitor(wxCommandEvent &event) {
     return;
   (new Monitor())->Show(true);
 }
+
+// ================ helpers ================
 
 void Frame::initialize() {
   PatchMaster *pm = new PatchMaster();

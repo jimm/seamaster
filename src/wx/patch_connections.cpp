@@ -1,4 +1,4 @@
-#include "patch_list.h"
+#include "patch_connections.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../formatter.h"
@@ -12,14 +12,14 @@ const int COLUMN_WIDTHS[] = {
   3*CW, 1*CW, 3*CW, 1*CW, 2*CW, 1*CW, 2*CW, int(1.5*CW), 6*CW
 };
 
-PatchList::PatchList(wxWindow *parent)
-  : wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT),
+PatchConnections::PatchConnections(wxWindow *parent, wxWindowID id)
+  : wxListCtrl(parent, id, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT),
     patch(nullptr)
 {
   set_headers();
 }
 
-void PatchList::update() {
+void PatchConnections::update() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
   Patch *curr_patch = cursor->patch();
@@ -56,7 +56,7 @@ void PatchList::update() {
   }
 }
 
-void PatchList::set_headers() {
+void PatchConnections::set_headers() {
   for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     InsertColumn(i, COLUMN_HEADERS[i]);
     SetColumnWidth(i, COLUMN_WIDTHS[i]);
