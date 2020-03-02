@@ -14,8 +14,8 @@ public:
   App();
   ~App();
 
-  void show_message(std::string msg);
-  void show_message(std::string msg, int clear_secs);
+  void show_user_message(std::string msg);
+  void show_user_message(std::string msg, int clear_secs);
 
 private:
   Frame *frame;

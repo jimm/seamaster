@@ -70,12 +70,12 @@ App::~App() {
     a_instance = nullptr;
 }
 
-void App::show_message(string msg) {
-  frame->show_message(msg);
+void App::show_user_message(string msg) {
+  frame->show_user_message(msg);
 }
 
-void App::show_message(string msg, int clear_secs) {
-  frame->show_message(msg, clear_secs);
+void App::show_user_message(string msg, int clear_secs) {
+  frame->show_user_message(msg, clear_secs);
 }
 
 bool App::OnInit() {

@@ -29,15 +29,15 @@
 #define NOTES_WIDTH 200
 #define FRAME_NAME "seamaster_main_frame"
 
-void *frame_clear_message_thread(void *gui_vptr) {
+void *frame_clear_user_message_thread(void *gui_vptr) {
   Frame *gui = (Frame *)gui_vptr;
-  int clear_message_id = gui->clear_message_id();
+  int clear_user_message_id = gui->clear_user_message_id();
 
-  sleep(gui->clear_message_seconds());
+  sleep(gui->clear_user_message_seconds());
 
   // Only clear the window if the id hasn't changed
-  if (gui->clear_message_id() == clear_message_id)
-    gui->clear_message();
+  if (gui->clear_user_message_id() == clear_user_message_id)
+    gui->clear_user_message();
   return nullptr;
 }
 
@@ -47,7 +47,7 @@ Frame::Frame(const wxString& title)
   make_frame_panels();
   make_menu_bar();
   CreateStatusBar();
-  show_message("No SeaMaster file loaded", 15);
+  show_user_message("No SeaMaster file loaded", 15);
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
@@ -223,25 +223,25 @@ void Frame::OnExit(wxCommandEvent &_event) {
 
 // ================ messaging ================
 
-void Frame::show_message(string msg) {
+void Frame::show_user_message(string msg) {
   SetStatusText(msg.c_str());
 }
 
-void Frame::show_message(string msg, int secs) {
+void Frame::show_user_message(string msg, int secs) {
   SetStatusText(msg.c_str());
-  clear_message_after(secs);
+  clear_user_message_after(secs);
 }
 
-void Frame::clear_message() {
+void Frame::clear_user_message() {
   SetStatusText("");
 }
 
-void Frame::clear_message_after(int secs) {
+void Frame::clear_user_message_after(int secs) {
   clear_msg_secs = secs;
   clear_msg_id++;
 
   pthread_t pthread;
-  pthread_create(&pthread, 0, frame_clear_message_thread, this);
+  pthread_create(&pthread, 0, frame_clear_user_message_thread, this);
 }
 
 // ================ movement ================
@@ -473,16 +473,16 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
 
 void Frame::regular_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
-  show_message("Sending panic...");
+  show_user_message("Sending panic...");
   pm->panic(false);
-  show_message("Panic sent", 5);
+  show_user_message("Panic sent", 5);
 }
 
 void Frame::super_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
-  show_message("Sending \"super panic\": all notes off, all channels...");
+  show_user_message("Sending \"super panic\": all notes off, all channels...");
   pm->panic(true);
-  show_message("Panic sent (all notes off, all channels)", 5);
+  show_user_message("Panic sent (all notes off, all channels)", 5);
 }
 
 // ================ standard menu items ================
@@ -529,7 +529,7 @@ void Frame::load(wxString path) {
     return;
   }
 
-  show_message(string(wxString::Format("Loaded %s", path).c_str()), 15);
+  show_user_message(string(wxString::Format("Loaded %s", path).c_str()), 15);
   if (old_pm != nullptr) {
     old_pm->stop();
     delete old_pm;

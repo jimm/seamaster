@@ -57,12 +57,12 @@ public:
   void load(wxString path);
   void refresh() { load_data_into_windows(); }
 
-  void show_message(std::string);
-  void show_message(std::string, int);
-  void clear_message();
-  void clear_message_after(int);
-  int clear_message_seconds() { return clear_msg_secs; }
-  int clear_message_id() { return clear_msg_id; }
+  void show_user_message(std::string);
+  void show_user_message(std::string, int);
+  void clear_user_message();
+  void clear_user_message_after(int);
+  int clear_user_message_seconds() { return clear_msg_secs; }
+  int clear_user_message_id() { return clear_msg_id; }
 
   void next_song();
   void prev_song();
