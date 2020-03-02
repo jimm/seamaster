@@ -45,6 +45,7 @@ class SetListBox;
 class SetListListBox;
 class SongBox;
 class PatchConnections;
+class MessageList;
 class TriggerList;
 
 class Frame: public wxFrame {
@@ -79,6 +80,7 @@ private:
   SetListBox *lc_set_list;
   SongBox *lc_song;
   PatchConnections *lc_patch;
+  MessageList *lc_messages;
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
   int clear_msg_secs;
@@ -130,6 +132,7 @@ private:
   wxWindow * make_set_list_panel(wxPanel *);
   wxWindow * make_set_list_list_panel(wxPanel *);
   wxWindow * make_song_panel(wxPanel *);
+  wxWindow * make_message_panel(wxPanel *);
   wxWindow * make_trigger_panel(wxPanel *);
   wxWindow * make_notes_panel(wxPanel *);
   wxWindow * make_patch_panel(wxPanel *);

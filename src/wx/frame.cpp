@@ -8,6 +8,7 @@
 #include "set_list_list_box.h"
 #include "song_box.h"
 #include "patch_connections.h"
+#include "message_list.h"
 #include "trigger_list.h"
 #include "instrument_dialog.h"
 #include "monitor.h"
@@ -61,7 +62,8 @@ void Frame::make_frame_panels() {
   main_sizer->Add(make_patch_panel(p), POS(3, 0), SPAN(1, 3), wxEXPAND);
 
   main_sizer->Add(make_set_list_list_panel(p), POS(4, 0), SPAN(1, 1), wxEXPAND);
-  main_sizer->Add(make_trigger_panel(p), POS(4, 1), SPAN(1, 2), wxEXPAND);
+  main_sizer->Add(make_message_panel(p), POS(4, 1), SPAN(1, 1), wxEXPAND);
+  main_sizer->Add(make_trigger_panel(p), POS(4, 2), SPAN(1, 1), wxEXPAND);
 
   for (int row = 0; row < 5; ++row)
     main_sizer->AddGrowableRow(row);
@@ -106,6 +108,19 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_song, wxSizerFlags(1).Expand().Border(wxALL));
+
+  p->SetSizerAndFit(sizer);
+  return p;
+}
+
+wxWindow * Frame::make_message_panel(wxPanel *parent) {
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  lc_messages = new MessageList(p, ID_MessageList,
+                                wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  sizer->Add(new wxStaticText(p, -1, "Messages"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(lc_messages, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -522,6 +537,7 @@ void Frame::load_data_into_windows() {
   lc_set_lists->update();
   lc_song->update();
   lc_patch->update();
+  lc_messages->update();
   lc_triggers->update();
 
   Song *song = cursor->song();
