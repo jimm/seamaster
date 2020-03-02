@@ -24,9 +24,6 @@ void PatchConnections::update() {
   Cursor *cursor = pm->cursor;
   Patch *curr_patch = cursor->patch();
 
-  // if (patch == curr_patch)
-  //   return;
-
   patch = curr_patch;
   ClearAll();
   set_headers();

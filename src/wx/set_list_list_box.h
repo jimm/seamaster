@@ -12,9 +12,6 @@ public:
 
   void update();
   void jump();
-
-private:
-  bool initialized;
 };
 
 #endif /* SET_LIST_LIST_BOX_H */

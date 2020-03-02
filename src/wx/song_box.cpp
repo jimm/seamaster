@@ -12,16 +12,14 @@ void SongBox::update() {
   Cursor *cursor = pm->cursor;
   Song *curr_song = cursor->song();
 
-  // if (curr_song != song) {
-    Clear();
-    if (curr_song != nullptr) {
-      wxArrayString names;
-      for (auto& patch : curr_song->patches)
-        names.Add(patch->name.c_str());
-      InsertItems(names, 0);
-    }
-    song = curr_song;
-  // }
+  Clear();
+  if (curr_song != nullptr) {
+    wxArrayString names;
+    for (auto& patch : curr_song->patches)
+      names.Add(patch->name.c_str());
+    InsertItems(names, 0);
+  }
+  song = curr_song;
 
   if (song == nullptr)
     return;

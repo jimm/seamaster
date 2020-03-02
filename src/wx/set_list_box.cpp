@@ -12,17 +12,15 @@ void SetListBox::update() {
   Cursor *cursor = pm->cursor;
   SetList *curr_set_list = cursor->set_list();
 
-  // if (curr_set_list != set_list) {
-    Clear();
-    if (curr_set_list != nullptr) {
-      wxArrayString names;
-      for (auto& song : curr_set_list->songs)
-        names.Add(song->name.c_str());
-      if (!names.IsEmpty())
-        InsertItems(names, 0);
-    }
-    set_list = curr_set_list;
-  // }
+  Clear();
+  if (curr_set_list != nullptr) {
+    wxArrayString names;
+    for (auto& song : curr_set_list->songs)
+      names.Add(song->name.c_str());
+    if (!names.IsEmpty())
+      InsertItems(names, 0);
+  }
+  set_list = curr_set_list;
 
   if (set_list == nullptr)
     return;
