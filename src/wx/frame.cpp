@@ -11,6 +11,7 @@
 #include "trigger_list.h"
 #include "instrument_dialog.h"
 #include "monitor.h"
+#include "set_list_editor.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../loader.h"
@@ -45,7 +46,7 @@ Frame::Frame(const wxString& title)
   make_frame_panels();
   make_menu_bar();
   CreateStatusBar();
-  SetStatusText("No SeaMaster file loaded");
+  show_message("No SeaMaster file loaded", 15);
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
@@ -344,7 +345,7 @@ void Frame::destroy_message(wxCommandEvent& event) {
   Editor e;
   // TODO which one?
   // e.destroy_message();
-  load_data_into_windows();
+  // load_data_into_windows();
 }
 
 void Frame::edit_message(wxListEvent& event) {
@@ -356,15 +357,46 @@ void Frame::edit_trigger(wxListEvent& event) {
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
-  fprintf(stderr, "TODO edit_set_list\n"); // DEBUG
+  PatchMaster *pm = PatchMaster_instance();
+  SetList *set_list = pm->cursor->set_list();
+  if (set_list == nullptr)
+    return;
+  if (set_list == pm->all_songs) {
+    wxMessageBox("Can't edit the master list of all songs",
+                "Set List Editor", wxOK | wxICON_INFORMATION);
+    return;
+  }
+  new SetListEditor(this, set_list);
 }
 
 void Frame::edit_song(wxCommandEvent& event) {
-  fprintf(stderr, "TODO edit_song\n"); // DEBUG
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm->cursor->song() == nullptr)
+    return;
+
+  wxTextEntryDialog prompt(this, "Song Name");
+  if (prompt.ShowModal() == wxID_OK) {
+    wxString str = prompt.GetValue();
+    if (!str.IsEmpty()) {
+      pm->cursor->song()->name = str.ToStdString();
+      load_data_into_windows();
+    }
+  }
 }
 
 void Frame::edit_patch(wxCommandEvent& event) {
-  fprintf(stderr, "TODO edit_patch\n"); // DEBUG
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm->cursor->patch() == nullptr)
+    return;
+
+  wxTextEntryDialog prompt(this, "Patch Name");
+  if (prompt.ShowModal() == wxID_OK) {
+    wxString str = prompt.GetValue();
+    if (!str.IsEmpty()) {
+      pm->cursor->patch()->name = str.ToStdString();
+      load_data_into_windows();
+    }
+  }
 }
 
 void Frame::edit_connection(wxListEvent& event) {
