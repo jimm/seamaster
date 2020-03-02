@@ -163,19 +163,19 @@ void Frame::make_menu_bar() {
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuEdit = new wxMenu;
-  menuEdit->Append(ID_CreateMessage, "Create Message\tCtrl-Shift-M", "Create a new message");
-  menuEdit->Append(ID_CreateTrigger, "Create Trigger\tCtrl-Shift-T", "Create a new trigger");
-  menuEdit->Append(ID_CreateSong, "Create Song\tCtrl-Shift-S", "Create a new song");
-  menuEdit->Append(ID_CreatePatch, "Create Patch\tCtrl-Shift-P", "Create a new patch");
-  menuEdit->Append(ID_CreateConnection, "Create Connection\tCtrl-Shift-C", "Create a new connection");
-  menuEdit->Append(ID_CreateSetList, "Create Set List\tCtrl-Shift-L", "Create a new set list");
+  menuEdit->Append(ID_CreateMessage, "New Message\tCtrl-Shift-M", "Create a new message");
+  menuEdit->Append(ID_CreateTrigger, "New Trigger\tCtrl-Shift-T", "Create a new trigger");
+  menuEdit->Append(ID_CreateSong, "New Song\tCtrl-Shift-S", "Create a new song");
+  menuEdit->Append(ID_CreatePatch, "New Patch\tCtrl-Shift-P", "Create a new patch");
+  menuEdit->Append(ID_CreateConnection, "New Connection\tCtrl-Shift-C", "Create a new connection");
+  menuEdit->Append(ID_CreateSetList, "New Set List\tCtrl-Shift-L", "Create a new set list");
   menuEdit->AppendSeparator();
-  menuEdit->Append(ID_DestroyMessage, "Destroy Message\tCtrl-Alt-M", "Destroy the current message");
-  menuEdit->Append(ID_DestroyTrigger, "Destroy Trigger\tCtrl-Alt-T", "Destroy the current trigger");
-  menuEdit->Append(ID_DestroySong, "Destroy Song\tCtrl-Alt-S", "Destroy the current song");
-  menuEdit->Append(ID_DestroyPatch, "Destroy Patch\tCtrl-Alt-P", "Destroy the current patch");
-  menuEdit->Append(ID_DestroyConnection, "Destroy Connection\tCtrl-Alt-C", "Destroy the current connection");
-  menuEdit->Append(ID_DestroySetList, "Destroy Set List\tCtrl-Alt-L", "Destroy the current set list");
+  menuEdit->Append(ID_DestroyMessage, "Delete Message\tCtrl-Alt-M", "Delete the current message");
+  menuEdit->Append(ID_DestroyTrigger, "Delete Trigger\tCtrl-Alt-T", "Delete the current trigger");
+  menuEdit->Append(ID_DestroySong, "Delete Song\tCtrl-Alt-S", "Delete the current song");
+  menuEdit->Append(ID_DestroyPatch, "Delete Patch\tCtrl-Alt-P", "Delete the current patch");
+  menuEdit->Append(ID_DestroyConnection, "Delete Connection\tCtrl-Alt-C", "Delete the current connection");
+  menuEdit->Append(ID_DestroySetList, "Delete Set List\tCtrl-Alt-L", "Delete the current set list");
 
   wxMenu *menuGo = new wxMenu;
   menuGo->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
