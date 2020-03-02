@@ -50,7 +50,7 @@ SetList *Cursor::set_list() {
 
 Song *Cursor::song() {
   SetList *sl = set_list();
-  if (sl == nullptr || song_index == UNDEFINED)
+  if (sl == nullptr || song_index == UNDEFINED || sl->songs.size() == 0)
     return nullptr;
   return sl->songs[song_index];
 }

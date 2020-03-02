@@ -33,9 +33,17 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(ID_SuperPanic, Frame::super_panic)
   EVT_MENU(wxID_EXIT,  Frame::OnExit)
   EVT_MENU(wxID_ABOUT, Frame::OnAbout)
-  EVT_LISTBOX(ID_JumpToSetList, Frame::jump_to_set_list)
-  EVT_LISTBOX(ID_JumpToSong, Frame::jump_to_song)
-  EVT_LISTBOX(ID_JumpToPatch, Frame::jump_to_patch)
+
+  EVT_LISTBOX(ID_SetListList, Frame::jump_to_set_list)
+  EVT_LISTBOX_DCLICK(ID_SetListList, Frame::edit_set_list)
+  EVT_LISTBOX(ID_SetListSongs, Frame::jump_to_song)
+  EVT_LISTBOX_DCLICK(ID_SetListSongs, Frame::edit_song)
+  EVT_LISTBOX(ID_SongPatches, Frame::jump_to_patch)
+  EVT_LISTBOX_DCLICK(ID_SongPatches, Frame::edit_patch)
+
+  EVT_LIST_ITEM_ACTIVATED(ID_MessageList, Frame::edit_message)
+  EVT_LIST_ITEM_ACTIVATED(ID_TriggerList, Frame::edit_trigger)
+  EVT_LIST_ITEM_ACTIVATED(ID_PatchConnections, Frame::edit_connection)
 wxEND_EVENT_TABLE()
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
