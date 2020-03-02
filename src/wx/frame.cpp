@@ -450,8 +450,7 @@ void Frame::OnListInstruments(wxCommandEvent &_event) {
 }
 
 void Frame::OnMonitor(wxCommandEvent &event) {
-  PatchMaster *pm = PatchMaster_instance();
-  (new Monitor())->Show(true);
+  new Monitor();
 }
 
 // ================ helpers ================
@@ -473,7 +472,7 @@ void Frame::load(wxString path) {
     return;
   }
 
-  SetStatusText(wxString::Format("Loaded %s", path));
+  show_message(string(wxString::Format("Loaded %s", path).c_str()), 15);
   if (old_pm != nullptr) {
     old_pm->stop();
     delete old_pm;

@@ -17,7 +17,6 @@ class Monitor : public wxFrame, public MIDIMonitor {
 public:
   Monitor();
   virtual ~Monitor();
-  void run();
 
   virtual void monitor_input(Input *input, PmMessage msg);
   virtual void monitor_output(Output *output, PmMessage msg);
