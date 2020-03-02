@@ -228,40 +228,30 @@ void Frame::clear_message_after(int secs) {
 
 void Frame::next_song() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   pm->next_song();
   load_data_into_windows();
 }
 
 void Frame::prev_song() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   pm->prev_song();
   load_data_into_windows();
 }
 
 void Frame::next_patch() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   pm->next_patch();
   load_data_into_windows();
 }
 
 void Frame::prev_patch() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   pm->prev_patch();
   load_data_into_windows();
 }
 
 void Frame::find_set_list() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   wxTextEntryDialog prompt(this, "Find Set List");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
@@ -274,8 +264,6 @@ void Frame::find_set_list() {
 
 void Frame::find_song() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   wxTextEntryDialog prompt(this, "Find Song");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
@@ -396,8 +384,6 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
 
 void Frame::regular_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   show_message("Sending panic...");
   pm->panic(false);
   show_message("Panic sent", 5);
@@ -405,8 +391,6 @@ void Frame::regular_panic(wxCommandEvent &_event) {
 
 void Frame::super_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   show_message("Sending \"super panic\": all notes off, all channels...");
   pm->panic(true);
   show_message("Panic sent (all notes off, all channels)", 5);
@@ -431,8 +415,6 @@ void Frame::OnListInstruments(wxCommandEvent &_event) {
 
 void Frame::OnMonitor(wxCommandEvent &event) {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   (new Monitor())->Show(true);
 }
 
@@ -464,8 +446,6 @@ void Frame::load(wxString path) {
 
 void Frame::load_data_into_windows() {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm == nullptr)
-    return;
   Cursor *cursor = pm->cursor;
   int i;
 
