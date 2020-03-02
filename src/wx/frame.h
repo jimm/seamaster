@@ -113,7 +113,9 @@ private:
   void create_connection(wxCommandEvent& event);
   void create_set_list(wxCommandEvent& event);
 
-  void edit_message(wxListEvent& event);
+  void send_message(wxCommandEvent& event);
+
+  void edit_message(wxCommandEvent& event);
   void edit_trigger(wxListEvent& event);
   void edit_set_list(wxCommandEvent& event);
   void edit_song(wxCommandEvent& event);

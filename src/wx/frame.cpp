@@ -315,6 +315,16 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
   }
 }
 
+// ================ messages ================
+
+void Frame::send_message(wxCommandEvent& event) {
+  PatchMaster *pm = PatchMaster_instance();
+  int message_num = event.GetSelection();
+  Message *message = pm->messages[message_num];
+  for (auto& output : pm->outputs)
+    message->send(*output);
+}
+
 // ================ create, edit, destroy ================
 
 void Frame::create_message(wxCommandEvent& event) {
@@ -363,7 +373,7 @@ void Frame::destroy_message(wxCommandEvent& event) {
   // load_data_into_windows();
 }
 
-void Frame::edit_message(wxListEvent& event) {
+void Frame::edit_message(wxCommandEvent& event) {
   fprintf(stderr, "TODO edit_message\n"); // DEBUG
 }
 
