@@ -10,20 +10,24 @@ Editor::Editor(PatchMaster *pmaster)
 {
 }
 
-void Editor::create_message() {
-  pm->messages.push_back(new Message("Unnamed Message"));
+Message *Editor::create_message() {
+  Message *message = new Message("Unnamed Message");
+  pm->messages.push_back(message);
+  return message;
 }
 
-void Editor::create_trigger(Input *input) {
-  input->triggers.push_back(new Trigger(Pm_Message(CONTROLLER, 50, 127),
-                                        NEXT_PATCH, nullptr));
+Trigger *Editor::create_trigger(Input *input) {
+  Trigger *trigger = new Trigger(Pm_Message(CONTROLLER, 50, 127),
+                                 NEXT_PATCH, nullptr);
+  input->triggers.push_back(trigger);
+  return trigger;
 }
 
-void Editor::create_song() {
-  create_song(pm->cursor->set_list(), -1);
+Song *Editor::create_song() {
+  return create_song(pm->cursor->set_list(), -1);
 }
 
-void Editor::create_song(SetList *set_list, int position) {
+Song *Editor::create_song(SetList *set_list, int position) {
   Song *song = new Song("Unnamed Song");
   // TODO consolidate with Loader::ensure_song_has_patch
   create_patch(song);
@@ -45,26 +49,32 @@ void Editor::create_song(SetList *set_list, int position) {
   if (set_list != pm->all_songs) {
     // TODO insert song into current set list after current song
   }
+
+  return song;
 }
 
-void Editor::create_patch() {
-  create_patch(pm->cursor->song());
+Patch *Editor::create_patch() {
+  return create_patch(pm->cursor->song());
 }
 
-void Editor::create_patch(Song *song) {
+Patch *Editor::create_patch(Song *song) {
   Patch *p = new Patch("Unnamed Patch");
   song->patches.push_back(p);
+  return p;
 }
 
-void Editor::create_connection(Input *input, Output *output)
+Connection *Editor::create_connection(Input *input, Output *output)
 {
   Connection *conn = new Connection(input, CONNECTION_ALL_CHANNELS,
                                     output, CONNECTION_ALL_CHANNELS);
   pm->cursor->patch()->connections.push_back(conn);
+  return conn;
 }
 
-void Editor::create_set_list() {
-  pm->set_lists.push_back(new SetList("Unnamed Set List"));
+SetList *Editor::create_set_list() {
+  SetList *set_list = new SetList("Unnamed Set List");
+  pm->set_lists.push_back(set_list);
+  return set_list;
 }
 
 void Editor::destroy_message(Message *message) {

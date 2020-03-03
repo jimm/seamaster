@@ -6,6 +6,7 @@
  #include <wx/wx.h>
  #include <wx/listctrl.h>
 #endif
+#include "../patchmaster.h"
 
 enum {
   ID_GoNextSong = 1,
@@ -38,7 +39,6 @@ enum {
   ID_TriggerList
 };
 
-class PatchMaster;
 class wxListCtrl;
 class wxTextCtrl;
 class SetListBox;
@@ -78,8 +78,8 @@ public:
 private:
   SetListListBox *lc_set_lists;
   SetListBox *lc_set_list;
-  SongBox *lc_song;
-  PatchConnections *lc_patch;
+  SongBox *lc_song_patches;
+  PatchConnections *lc_patch_conns;
   MessageList *lc_messages;
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
@@ -116,11 +116,17 @@ private:
   void send_message(wxCommandEvent& event);
 
   void edit_message(wxCommandEvent& event);
+  void edit_message(Message *);
   void edit_trigger(wxListEvent& event);
+  void edit_trigger(Trigger *);
   void edit_set_list(wxCommandEvent& event);
+  void edit_set_list(SetList *set_list);
   void edit_song(wxCommandEvent& event);
+  void edit_song(Song *);
   void edit_patch(wxCommandEvent& event);
+  void edit_patch(Patch *);
   void edit_connection(wxListEvent& event);
+  void edit_connection(Connection *);
 
   void destroy_message(wxCommandEvent& event);
   void destroy_trigger(wxCommandEvent& event);

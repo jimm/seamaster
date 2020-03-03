@@ -15,7 +15,8 @@ const int COLUMN_WIDTHS[] = {
 
 TriggerList::TriggerList(wxWindow *parent, wxWindowID id)
   : wxListCtrl(parent, id, wxDefaultPosition,
-               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT), wxLC_REPORT)
+               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT),
+               wxLC_REPORT | wxLC_SINGLE_SEL)
 {
   set_headers();
 }

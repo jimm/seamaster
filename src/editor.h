@@ -7,14 +7,14 @@ class Editor {
 public:
   Editor(PatchMaster *pm = nullptr); // defaults to PatchMaster_instance()
 
-  void create_message();
-  void create_trigger(Input *input);
-  void create_song();
-  void create_song(SetList *set_list, int positino);
-  void create_patch();
-  void create_patch(Song *song);
-  void create_connection(Input *input, Output *output);
-  void create_set_list();
+  Message *create_message();
+  Trigger *create_trigger(Input *input);
+  Song *create_song();
+  Song *create_song(SetList *set_list, int positino);
+  Patch *create_patch();
+  Patch *create_patch(Song *song);
+  Connection *create_connection(Input *input, Output *output);
+  SetList * create_set_list();
 
   void destroy_message(Message *message);
   void destroy_trigger(Trigger *trigger);

@@ -2,7 +2,8 @@
 #include "../patchmaster.h"
 
 MessageList::MessageList(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size), message(nullptr)
+  : wxListBox(parent, id, wxDefaultPosition, size, 0, nullptr, wxLB_SINGLE),
+    message(nullptr)
 {
 }
 

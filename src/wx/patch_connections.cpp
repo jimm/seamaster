@@ -13,7 +13,8 @@ const int COLUMN_WIDTHS[] = {
 };
 
 PatchConnections::PatchConnections(wxWindow *parent, wxWindowID id)
-  : wxListCtrl(parent, id, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT),
+  : wxListCtrl(parent, id, wxDefaultPosition, wxSize(600, 150),
+               wxLC_REPORT | wxLC_SINGLE_SEL),
     patch(nullptr)
 {
   set_headers();

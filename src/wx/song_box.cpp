@@ -3,7 +3,8 @@
 #include "../cursor.h"
 
 SongBox::SongBox(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size), song(nullptr)
+  : wxListBox(parent, id, wxDefaultPosition, size, 0, nullptr, wxLB_SINGLE),
+    song(nullptr)
 {
 }
 

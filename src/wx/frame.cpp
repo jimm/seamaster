@@ -102,12 +102,12 @@ wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_song_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_song = new SongBox(p, ID_SongPatches,
-                        wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
+  lc_song_patches = new SongBox(p, ID_SongPatches,
+                                wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_song, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_song_patches, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -152,8 +152,8 @@ wxWindow * Frame::make_notes_panel(wxPanel *parent) {
 }
 
 wxWindow * Frame::make_patch_panel(wxPanel *parent) {
-  lc_patch = new PatchConnections(parent, ID_PatchConnections);
-  return lc_patch;
+  lc_patch_conns = new PatchConnections(parent, ID_PatchConnections);
+  return lc_patch_conns;
 }
 
 void Frame::make_menu_bar() {
@@ -310,7 +310,7 @@ void Frame::jump_to_song(wxCommandEvent &event) {
 
 void Frame::jump_to_patch(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
-    lc_song->jump();
+    lc_song_patches->jump();
     load_data_into_windows();
   }
 }
@@ -319,7 +319,7 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
 
 void Frame::send_message(wxCommandEvent& event) {
   PatchMaster *pm = PatchMaster_instance();
-  int message_num = event.GetSelection();
+  int message_num = lc_messages->GetSelection();
   Message *message = pm->messages[message_num];
   for (auto& output : pm->outputs)
     message->send(*output);
@@ -329,63 +329,79 @@ void Frame::send_message(wxCommandEvent& event) {
 
 void Frame::create_message(wxCommandEvent& event) {
   Editor e;
-  e.create_message();
+  Message *message = e.create_message();
   load_data_into_windows();
+  edit_message(message);
 }
 
 void Frame::create_trigger(wxCommandEvent& event) {
   Editor e;
   PatchMaster *pm = PatchMaster_instance();
-  e.create_trigger(pm->inputs.front());
+  Trigger *trigger = e.create_trigger(pm->inputs.front());
   load_data_into_windows();
+  edit_trigger(trigger);
 }
 
 void Frame::create_song(wxCommandEvent& event) {
   Editor e;
-  e.create_song();
+  Song *song = e.create_song();
   load_data_into_windows();
+  edit_song(song);
 }
 
 void Frame::create_patch(wxCommandEvent& event) {
   Editor e;
-  e.create_patch();
+  Patch *patch = e.create_patch();
   load_data_into_windows();
+  edit_patch(patch);
 }
 
 void Frame::create_connection(wxCommandEvent& event) {
   Editor e;
   PatchMaster *pm = PatchMaster_instance();
-  // TODO
-  e.create_connection(pm->inputs.front(), pm->outputs.front());
+  if (pm->inputs.empty() || pm->outputs.empty()) {
+    wxMessageBox("There must be at least one input and one\noutput to create a connection",
+                "New Connection", wxOK | wxICON_INFORMATION);
+    return;
+  }
+  Connection *conn = e.create_connection(pm->inputs.front(), pm->outputs.front());
   load_data_into_windows();
+  edit_connection(conn);
 }
 
 void Frame::create_set_list(wxCommandEvent& event) {
   Editor e;
-  e.create_set_list();
+  SetList *set_list = e.create_set_list();
   load_data_into_windows();
-}
-
-void Frame::destroy_message(wxCommandEvent& event) {
-  Editor e;
-  // TODO which one?
-  // e.destroy_message();
-  // load_data_into_windows();
+  edit_set_list(set_list);
 }
 
 void Frame::edit_message(wxCommandEvent& event) {
-  fprintf(stderr, "TODO edit_message\n"); // DEBUG
+  fprintf(stderr, "TODO edit_message (command)\n"); // DEBUG
+}
+
+void Frame::edit_message(Message *message) {
+  fprintf(stderr, "TODO edit_message (message)\n"); // DEBUG
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
-  fprintf(stderr, "TODO edit_trigger\n"); // DEBUG
+  fprintf(stderr, "TODO edit_trigger (list event)\n"); // DEBUG
+}
+
+void Frame::edit_trigger(Trigger *trigger) {
+  fprintf(stderr, "TODO edit_trigger (trigger)\n"); // DEBUG
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
   PatchMaster *pm = PatchMaster_instance();
-  SetList *set_list = pm->cursor->set_list();
+  edit_set_list(pm->cursor->set_list());
+}
+
+void Frame::edit_set_list(SetList *set_list) {
   if (set_list == nullptr)
     return;
+
+  PatchMaster *pm = PatchMaster_instance();
   if (set_list == pm->all_songs) {
     wxMessageBox("Can't edit the master list of all songs",
                 "Set List Editor", wxOK | wxICON_INFORMATION);
@@ -396,14 +412,18 @@ void Frame::edit_set_list(wxCommandEvent& event) {
 
 void Frame::edit_song(wxCommandEvent& event) {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm->cursor->song() == nullptr)
+  edit_song(pm->cursor->song());
+}
+
+void Frame::edit_song(Song *song) {
+  if (song == nullptr)
     return;
 
   wxTextEntryDialog prompt(this, "Song Name");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      pm->cursor->song()->name = str.ToStdString();
+      song->name = str.ToStdString();
       load_data_into_windows();
     }
   }
@@ -411,28 +431,64 @@ void Frame::edit_song(wxCommandEvent& event) {
 
 void Frame::edit_patch(wxCommandEvent& event) {
   PatchMaster *pm = PatchMaster_instance();
-  if (pm->cursor->patch() == nullptr)
+  edit_patch(pm->cursor->patch());
+}
+
+void Frame::edit_patch(Patch *patch) {
+  if (patch == nullptr)
     return;
 
   wxTextEntryDialog prompt(this, "Patch Name");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      pm->cursor->patch()->name = str.ToStdString();
+      patch->name = str.ToStdString();
       load_data_into_windows();
     }
   }
 }
 
 void Frame::edit_connection(wxListEvent& event) {
-  fprintf(stderr, "TODO edit_connection\n"); // DEBUG
+  fprintf(stderr, "TODO edit_connection (list event)\n"); // DEBUG
+}
+
+void Frame::edit_connection(Connection *conn) {
+  fprintf(stderr, "TODO edit_connection (connection)\n"); // DEBUG
+}
+
+void Frame::destroy_message(wxCommandEvent& event) {
+  PatchMaster *pm = PatchMaster_instance();
+  if (pm->messages.empty())
+    return;
+
+  Editor e;
+  int message_num = lc_messages->GetSelection();
+  Message *message = pm->messages[message_num];
+  e.destroy_message(message);
+  load_data_into_windows();
 }
 
 void Frame::destroy_trigger(wxCommandEvent& event) {
-  Editor e;
-  // TODO which one?
-  // e.destroy_trigger();
-  load_data_into_windows();
+  long item_index = wxNOT_FOUND;
+  while ((item_index = lc_triggers->GetNextItem(item_index,
+          wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) == wxNOT_FOUND)
+    ;
+  if (item_index == wxNOT_FOUND)
+    return;
+
+  int trigger_num = item_index;
+  int row = 0;
+  for (auto* input : PatchMaster_instance()->inputs) {
+    for (auto * trigger : input->triggers) {
+      if (row == trigger_num) {
+        Editor e;
+        e.destroy_trigger(trigger);
+        load_data_into_windows();
+        return;
+      }
+      ++row;
+    }
+  }
 }
 
 void Frame::destroy_song(wxCommandEvent& event) {
@@ -445,18 +501,36 @@ void Frame::destroy_song(wxCommandEvent& event) {
 }
 
 void Frame::destroy_patch(wxCommandEvent& event) {
-  Editor e;
   PatchMaster *pm = PatchMaster_instance();
   Patch *patch = pm->cursor->patch();
-  if (patch != nullptr)
-    e.destroy_patch(pm->cursor->song(), patch);
+  if (patch == nullptr)
+    return;
+
+  Editor e;
+  e.destroy_patch(pm->cursor->song(), patch);
   load_data_into_windows();
 }
 
 void Frame::destroy_connection(wxCommandEvent& event) {
+  PatchMaster *pm = PatchMaster_instance();
+  Patch *patch = pm->cursor->patch();
+  if (patch == nullptr)
+    return;
+
+  long item_index = wxNOT_FOUND;
+  while ((item_index = lc_patch_conns->GetNextItem(item_index,
+          wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) == wxNOT_FOUND)
+    ;
+  if (item_index == wxNOT_FOUND)
+    return;
+
+  int connection_num = item_index;
+  Connection *conn = patch->connections[connection_num];
+  if (conn == nullptr)
+    return;
+
   Editor e;
-  // TODO which one?
-  // e.destroy_connection();
+  e.destroy_connection(patch, conn);
   load_data_into_windows();
 }
 
@@ -545,8 +619,8 @@ void Frame::load_data_into_windows() {
 
   lc_set_list->update();
   lc_set_lists->update();
-  lc_song->update();
-  lc_patch->update();
+  lc_song_patches->update();
+  lc_patch_conns->update();
   lc_messages->update();
   lc_triggers->update();
 

@@ -48,7 +48,8 @@ wxWindow *SetListEditor::make_panel(wxPanel *parent, const char * const title,
                                     SetList *slist, wxListBox **list_ptr)
 {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  *list_ptr = new wxListBox(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400));
+  *list_ptr = new wxListBox(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400),
+                            0, nullptr, wxLB_SINGLE);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, -1, title), wxSizerFlags().Align(wxALIGN_LEFT));

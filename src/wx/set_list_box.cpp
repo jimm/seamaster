@@ -3,7 +3,8 @@
 #include "../cursor.h"
 
 SetListBox::SetListBox(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size), set_list(nullptr)
+  : wxListBox(parent, id, wxDefaultPosition, size, 0, nullptr, wxLB_SINGLE),
+    set_list(nullptr)
 {
 }
 
