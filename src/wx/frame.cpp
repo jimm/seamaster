@@ -29,6 +29,50 @@
 #define NOTES_WIDTH 200
 #define FRAME_NAME "seamaster_main_frame"
 
+wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
+
+wxBEGIN_EVENT_TABLE(Frame, wxFrame)
+  EVT_MENU(wxID_OPEN,  Frame::OnOpen)
+  EVT_MENU(ID_GoNextSong, Frame::next_song)
+  EVT_MENU(ID_GoPrevSong, Frame::prev_song)
+  EVT_MENU(ID_GoNextPatch, Frame::next_patch)
+  EVT_MENU(ID_GoPrevPatch, Frame::prev_patch)
+  EVT_MENU(ID_FindSetList, Frame::find_set_list)
+  EVT_MENU(ID_FindSong, Frame::find_song)
+  EVT_MENU(ID_CreateMessage, Frame::create_message)
+  EVT_MENU(ID_CreateTrigger, Frame::create_trigger)
+  EVT_MENU(ID_CreateSong, Frame::create_song)
+  EVT_MENU(ID_CreatePatch, Frame::create_patch)
+  EVT_MENU(ID_CreateConnection, Frame::create_connection)
+  EVT_MENU(ID_CreateSetList, Frame::create_set_list)
+  EVT_MENU(ID_DestroyMessage, Frame::destroy_message)
+  EVT_MENU(ID_DestroyTrigger, Frame::destroy_trigger)
+  EVT_MENU(ID_DestroySong, Frame::destroy_song)
+  EVT_MENU(ID_DestroyPatch, Frame::destroy_patch)
+  EVT_MENU(ID_DestroyConnection, Frame::destroy_connection)
+  EVT_MENU(ID_DestroySetList, Frame::destroy_set_list)
+  EVT_MENU(ID_ListInstruments, Frame::OnListInstruments)
+  EVT_MENU(ID_Monitor, Frame::OnMonitor)
+  EVT_MENU(ID_RegularPanic, Frame::regular_panic)
+  EVT_MENU(ID_SuperPanic, Frame::super_panic)
+  EVT_MENU(wxID_EXIT,  Frame::OnExit)
+  EVT_MENU(wxID_ABOUT, Frame::OnAbout)
+
+  EVT_LISTBOX(ID_SetListList, Frame::jump_to_set_list)
+  EVT_LISTBOX_DCLICK(ID_SetListList, Frame::edit_set_list)
+  EVT_LISTBOX(ID_SetListSongs, Frame::jump_to_song)
+  EVT_LISTBOX_DCLICK(ID_SetListSongs, Frame::edit_song)
+  EVT_LISTBOX(ID_SongPatches, Frame::jump_to_patch)
+  EVT_LISTBOX_DCLICK(ID_SongPatches, Frame::edit_patch)
+  EVT_LISTBOX(ID_MessageList, Frame::send_message)
+  EVT_LISTBOX_DCLICK(ID_MessageList, Frame::edit_message)
+
+  EVT_LIST_ITEM_ACTIVATED(ID_TriggerList, Frame::edit_trigger)
+  EVT_LIST_ITEM_ACTIVATED(ID_PatchConnections, Frame::edit_connection)
+
+  EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::refresh)
+wxEND_EVENT_TABLE()
+
 void *frame_clear_user_message_thread(void *gui_vptr) {
   Frame *gui = (Frame *)gui_vptr;
   int clear_user_message_id = gui->clear_user_message_id();
@@ -407,7 +451,7 @@ void Frame::edit_set_list(SetList *set_list) {
                 "Set List Editor", wxOK | wxICON_INFORMATION);
     return;
   }
-  new SetListEditor(this, set_list);
+  set_list_editor = new SetListEditor(this, set_list);
 }
 
 void Frame::edit_song(wxCommandEvent& event) {

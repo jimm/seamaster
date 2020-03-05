@@ -6,6 +6,7 @@
  #include <wx/wx.h>
  #include <wx/listctrl.h>
 #endif
+#include "events.h"
 #include "../patchmaster.h"
 
 enum {
@@ -47,6 +48,7 @@ class SongBox;
 class PatchConnections;
 class MessageList;
 class TriggerList;
+class SetListEditor;
 
 class Frame: public wxFrame {
 public:
@@ -83,6 +85,7 @@ private:
   MessageList *lc_messages;
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
+  SetListEditor *set_list_editor;
   int clear_msg_secs;
   int clear_msg_id;
 
@@ -121,6 +124,7 @@ private:
   void edit_trigger(Trigger *);
   void edit_set_list(wxCommandEvent& event);
   void edit_set_list(SetList *set_list);
+  void set_list_editor_done(wxCommandEvent& event);
   void edit_song(wxCommandEvent& event);
   void edit_song(Song *);
   void edit_patch(wxCommandEvent& event);
@@ -144,6 +148,8 @@ private:
   wxWindow * make_trigger_panel(wxPanel *);
   wxWindow * make_notes_panel(wxPanel *);
   wxWindow * make_patch_panel(wxPanel *);
+
+  void refresh(wxCommandEvent& event) { load_data_into_windows(); }
   void load_data_into_windows();
 
   wxDECLARE_EVENT_TABLE();
