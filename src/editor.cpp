@@ -63,11 +63,14 @@ Patch *Editor::create_patch(Song *song) {
   return p;
 }
 
-Connection *Editor::create_connection(Input *input, Output *output)
+Connection *Editor::create_connection(Patch *patch, Input *input, Output *output)
 {
+  if (patch == nullptr)
+    return nullptr;
+
   Connection *conn = new Connection(input, CONNECTION_ALL_CHANNELS,
                                     output, CONNECTION_ALL_CHANNELS);
-  pm->cursor->patch()->connections.push_back(conn);
+  patch->connections.push_back(conn);
   return conn;
 }
 

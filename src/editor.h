@@ -13,7 +13,7 @@ public:
   Song *create_song(SetList *set_list, int positino);
   Patch *create_patch();
   Patch *create_patch(Song *song);
-  Connection *create_connection(Input *input, Output *output);
+  Connection *create_connection(Patch *patch, Input *input, Output *output);
   SetList * create_set_list();
 
   void destroy_message(Message *message);

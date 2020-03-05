@@ -133,7 +133,7 @@ private:
   void edit_patch(wxCommandEvent& event);
   void edit_patch(Patch *);
   void edit_connection(wxListEvent& event);
-  void edit_connection(Connection *);
+  void edit_connection(Patch *patch, Connection *);
 
   void destroy_message(wxCommandEvent& event);
   void destroy_trigger(wxCommandEvent& event);
@@ -154,6 +154,7 @@ private:
 
   long selected_trigger_index();
   long selected_connection_index();
+  Trigger *trigger_from_index(long index);
 
   void update_lists();
   void update_song_notes();

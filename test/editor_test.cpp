@@ -53,10 +53,10 @@ TEST_CASE("create connection", CATCH_CATEGORY) {
   pm->cursor->init();
   Editor e(pm);
 
-  Patch *p = pm->cursor->patch();
-  int num_conns = p->connections.size();
-  e.create_connection(pm->inputs.front(), pm->outputs.front());
-  REQUIRE(p->connections.size() == num_conns + 1);
+  Patch *patch = pm->cursor->patch();
+  int num_conns = patch->connections.size();
+  e.create_connection(patch, pm->inputs.front(), pm->outputs.front());
+  REQUIRE(patch->connections.size() == num_conns + 1);
 }
 
 TEST_CASE("create set list", CATCH_CATEGORY) {

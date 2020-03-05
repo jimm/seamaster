@@ -408,9 +408,16 @@ void Frame::create_connection(wxCommandEvent& event) {
                 "New Connection", wxOK | wxICON_INFORMATION);
     return;
   }
-  Connection *conn = e.create_connection(pm->inputs.front(), pm->outputs.front());
+  Patch *patch = pm->cursor->patch();
+  if (patch == nullptr) {
+    wxMessageBox("Please select a patch", "New Connection",
+                 wxOK | wxICON_INFORMATION);
+    return;
+  }
+
+  Connection *conn = e.create_connection(patch, pm->inputs.front(), pm->outputs.front());
   update();
-  edit_connection(conn);
+  edit_connection(patch, conn);
 }
 
 void Frame::create_set_list(wxCommandEvent& event) {
@@ -421,19 +428,27 @@ void Frame::create_set_list(wxCommandEvent& event) {
 }
 
 void Frame::edit_message(wxCommandEvent& event) {
-  fprintf(stderr, "TODO edit_message (command)\n"); // DEBUG
+  int message_num = lc_messages->GetSelection();
+  if (message_num != wxNOT_FOUND)
+    edit_message(PatchMaster_instance()->messages[message_num]);
 }
 
 void Frame::edit_message(Message *message) {
   fprintf(stderr, "TODO edit_message (message)\n"); // DEBUG
+  update();
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
-  fprintf(stderr, "TODO edit_trigger (list event)\n"); // DEBUG
+  long trigger_num = selected_trigger_index();
+  if (trigger_num == wxNOT_FOUND)
+    return;
+
+  edit_trigger(trigger_from_index(trigger_num));
 }
 
 void Frame::edit_trigger(Trigger *trigger) {
   fprintf(stderr, "TODO edit_trigger (trigger)\n"); // DEBUG
+  update();
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
@@ -493,11 +508,22 @@ void Frame::edit_patch(Patch *patch) {
 }
 
 void Frame::edit_connection(wxListEvent& event) {
-  fprintf(stderr, "TODO edit_connection (list event)\n"); // DEBUG
+  PatchMaster *pm = PatchMaster_instance();
+  Patch *patch = pm->cursor->patch();
+  if (patch == nullptr)
+    return;
+
+  int connection_num = selected_connection_index();
+  Connection *conn = patch->connections[connection_num];
+  if (conn == nullptr)
+    return;
+
+  edit_connection(patch, conn);
 }
 
-void Frame::edit_connection(Connection *conn) {
+void Frame::edit_connection(Patch *patch, Connection *conn) {
   fprintf(stderr, "TODO edit_connection (connection)\n"); // DEBUG
+  update();
 }
 
 void Frame::destroy_message(wxCommandEvent& event) {
@@ -519,18 +545,8 @@ void Frame::destroy_trigger(wxCommandEvent& event) {
   if (trigger_num == wxNOT_FOUND)
     return;
 
-  int row = 0;
-  for (auto* input : PatchMaster_instance()->inputs) {
-    for (auto * trigger : input->triggers) {
-      if (row == trigger_num) {
-        Editor e;
-        e.destroy_trigger(trigger);
-        update();
-        return;
-      }
-      ++row;
-    }
-  }
+  Editor e;
+  e.destroy_trigger(trigger_from_index(trigger_num));
 }
 
 void Frame::destroy_song(wxCommandEvent& event) {
@@ -655,6 +671,18 @@ long Frame::selected_trigger_index() {
 long Frame::selected_connection_index() {
   return lc_patch_conns->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
                                      wxLIST_STATE_SELECTED);
+}
+
+Trigger *Frame::trigger_from_index(long index) {
+  int row = 0;
+  for (auto* input : PatchMaster_instance()->inputs) {
+    for (auto * trigger : input->triggers) {
+      if (row == index)
+        return trigger;
+      ++row;
+    }
+  }
+  return nullptr;
 }
 
 void Frame::update() {
