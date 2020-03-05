@@ -13,8 +13,7 @@ enum {
   ID_SLE_SetList,
   ID_SLE_DoneButton,
   ID_SLE_AddButton,
-  ID_SLE_RemoveButton,
-  ID_SLE_Done
+  ID_SLE_RemoveButton
 };
 
 class PatchMaster;
