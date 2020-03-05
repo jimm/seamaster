@@ -103,11 +103,7 @@ TEST_CASE("notes", CATCH_CATEGORY) {
   REQUIRE(s->notes.size() == 0);
 
   s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
-  REQUIRE(s->notes.size() == 3);
-  REQUIRE(strcmp((const char *)s->notes[0],
-                 "the line before begin_example contains only whitespace") == 0);
-  REQUIRE(strcmp((const char *)s->notes[1], "this song has note text") == 0);
-  REQUIRE(strcmp((const char *)s->notes[2], "that spans multiple lines") == 0);
+  REQUIRE(s->notes == "the line before begin_example contains only whitespace\nthis song has note text\nthat spans multiple lines");
   delete pm;
 }
 

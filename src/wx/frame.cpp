@@ -73,6 +73,8 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_LIST_ITEM_ACTIVATED(ID_TriggerList, Frame::edit_trigger)
   EVT_LIST_ITEM_ACTIVATED(ID_PatchConnections, Frame::edit_connection)
 
+  EVT_TEXT(ID_SongNotes, Frame::set_song_notes)
+
   EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::update)
 wxEND_EVENT_TABLE()
 
@@ -89,7 +91,8 @@ void *frame_clear_user_message_thread(void *gui_vptr) {
 }
 
 Frame::Frame(const wxString& title)
-  : wxFrame(NULL, wxID_ANY, title, wxPoint(FRAME_POS_X, FRAME_POS_Y))
+  : wxFrame(NULL, wxID_ANY, title, wxPoint(FRAME_POS_X, FRAME_POS_Y)),
+    updating_notes(false)
 {
   make_frame_panels();
   make_menu_bar();
@@ -187,7 +190,7 @@ wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
 
 wxWindow * Frame::make_notes_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
-  lc_notes = new wxTextCtrl(p, wxID_ANY, "", wxDefaultPosition,
+  lc_notes = new wxTextCtrl(p, ID_SongNotes, "", wxDefaultPosition,
                             wxSize(NOTES_WIDTH, TALL_LIST_HEIGHT), wxTE_MULTILINE);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
@@ -529,6 +532,14 @@ void Frame::edit_connection(Patch *patch, Connection *conn) {
   update();
 }
 
+void Frame::set_song_notes(wxCommandEvent& event) {
+  if (updating_notes)
+    return;
+  Song *song = PatchMaster_instance()->cursor->song();
+  if (song != nullptr)
+    song->notes = lc_notes->GetValue();
+}
+
 void Frame::destroy_message(wxCommandEvent& event) {
   PatchMaster *pm = PatchMaster_instance();
   if (pm->messages.empty())
@@ -708,14 +719,10 @@ void Frame::update_song_notes() {
   Cursor *cursor = pm->cursor;
 
   Song *song = cursor->song();
+  updating_notes = true;
   lc_notes->Clear();
-  if (song != nullptr) {
-    int i = 0;
-    for (auto& line : song->notes) {
-      lc_notes->AppendText(line);
-      lc_notes->AppendText("\n");
-    }
-  }
+  lc_notes->AppendText(song->notes);
+  updating_notes = false;
 }
 
 void Frame::update_menu_items() {

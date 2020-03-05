@@ -37,7 +37,8 @@ enum {
   ID_RegularPanic,
   ID_SuperPanic,
   ID_MessageList,
-  ID_TriggerList
+  ID_TriggerList,
+  ID_SongNotes
 };
 
 class wxListCtrl;
@@ -88,6 +89,7 @@ private:
   MessageList *lc_messages;
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
+  bool updating_notes;
   SetListEditor *set_list_editor;
   int clear_msg_secs;
   int clear_msg_id;
@@ -134,6 +136,8 @@ private:
   void edit_patch(Patch *);
   void edit_connection(wxListEvent& event);
   void edit_connection(Patch *patch, Connection *);
+
+  void set_song_notes(wxCommandEvent& event);
 
   void destroy_message(wxCommandEvent& event);
   void destroy_trigger(wxCommandEvent& event);

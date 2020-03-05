@@ -1,6 +1,7 @@
 #include <sstream>
+#include <iostream>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 #include <errno.h>
 #include <err.h>
 #include <portmidi.h>
@@ -16,6 +17,31 @@ static const markup markdown_mode_markup = {'#', "-*+", "```"};
 
 static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
+
+// ================
+
+// https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// trim from start (in place)
+static inline void str_ltrim(std::string &s) {
+  s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+      return !std::isspace(ch);
+  }));
+}
+
+// trim from end (in place)
+static inline void str_rtrim(std::string &s) {
+  s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
+      return !std::isspace(ch);
+  }).base(), s.end());
+}
+
+// trim from both ends (in place)
+static inline void str_trim(std::string &s) {
+  str_ltrim(s);
+  str_rtrim(s);
+}
+
+// ================
 
 Loader::Loader()
   : song(nullptr)
@@ -326,9 +352,9 @@ void Loader::save_notes_line(char *line) {
   }
 
   notes_state = COLLECTING;
-  char *str = (char *)malloc(strlen(line) + 1);
-  strncpy(str, line, strlen(line)+1);
-  notes.push_back(str);
+  if (!notes.empty())
+    notes += "\n";
+  notes += line;
 }
 
 void Loader::start_collecting_notes() {
@@ -337,19 +363,15 @@ void Loader::start_collecting_notes() {
 }
 
 void Loader::stop_collecting_notes() {
-  // remove trailing blank lines
-  while (!notes.empty() && strlen(notes.back()) == 0) {
-    free(notes.back());
-    notes.erase(notes.end() - 1);
-  }
+  str_rtrim(notes);             // remove trailing blanks
   notes_state = OUTSIDE;
 }
 
 void Loader::load_patch(char *line) {
   stop_collecting_notes();
   if (!notes.empty() && song != nullptr) {
-    song->take_notes(notes);
-    notes.clear();              // do not dealloc
+    song->notes = notes;
+    notes.clear();
   }
 
   Patch *p = new Patch(line);
@@ -386,22 +408,27 @@ void Loader::load_connection(char *line) {
 
 void Loader::start_and_stop_messages_from_notes() {
   StartStopState state = UNSTARTED;
-  for (auto& note : notes) {
-    char *str = note + strspn(note, whitespace);
-    if (strlen(str) == 0)       
-      continue;
+  istringstream iss(notes);
+  string line;
+  char buf[BUFSIZ];
 
-    if (strncasecmp(str, "start", 5) == 0)
+  while (getline(iss, line)) {
+    str_trim(line);
+    if (line.empty())
+      continue;
+    if (line == "start")
       state = START_MESSAGES;
-    else if (strncasecmp(str, "stop", 4) == 0)
+    else if (line == "stop")
       state = STOP_MESSAGES;
     else {
       switch (state) {
       case START_MESSAGES:
-        patch->start_messages.push_back(message_from_bytes(str));
+        strcpy(buf, line.c_str());
+        patch->start_messages.push_back(message_from_bytes(buf));
         break;
       case STOP_MESSAGES:
-        patch->stop_messages.push_back(message_from_bytes(str));
+        strcpy(buf, line.c_str());
+        patch->stop_messages.push_back(message_from_bytes(buf));
         break;
       case UNSTARTED:
         break;
@@ -687,7 +714,5 @@ void Loader::determine_markup(const char *path) {
 }
 
 void Loader::clear_notes() {
-  for (auto& str : notes)
-    free(str);
   notes.clear();
 }

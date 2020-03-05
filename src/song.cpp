@@ -10,11 +10,4 @@ Song::Song(const char *name)
 Song::~Song() {
   for (auto& patch : patches)
     delete patch;
-  for (auto& note : notes)
-    free(note);
-}
-
-// Take over ownership of list of malloc'd char*.
-void Song::take_notes(vector<char *> &strs) {
-  notes = strs;
 }

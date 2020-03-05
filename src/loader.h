@@ -60,7 +60,7 @@ private:
   SetList *set_list;
   string error_str;
   markup markup;
-  vector<char *> notes;
+  string notes;
 
   void clear();
   void enter_section(Section);

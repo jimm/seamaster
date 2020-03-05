@@ -9,12 +9,10 @@ using namespace std;
 class Song : public Named {
 public:
   vector<Patch *> patches;
-  vector<char *> notes;
+  string notes;
 
   Song(const char *name);
   ~Song();
-
-  void take_notes(vector<char *> &);
 };
 
 #endif /* SONG_H */
