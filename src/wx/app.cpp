@@ -104,7 +104,7 @@ int App::FilterEvent(wxEvent &event) {
     return -1;
   }
 
-  frame->refresh();
+  frame->update();
   return true;
 }
 

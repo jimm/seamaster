@@ -93,10 +93,31 @@ void Cursor::next_patch() {
 }
 
 void Cursor::prev_patch() {
+  if (song() == nullptr)
+    return;
+
   if (patch_index == 0)
     prev_song();
   else
     --patch_index;
+}
+
+bool Cursor::has_next_song() {
+  return set_list_index != UNDEFINED && song_index != set_list()->songs.size() - 1;
+}
+
+bool Cursor::has_prev_song() {
+  return set_list_index != UNDEFINED && song_index != 0;
+}
+
+bool Cursor::has_next_patch() {
+  Song *s = song();
+  return s != nullptr && (patch_index != s->patches.size() - 1 || has_next_song());
+}
+
+bool Cursor::has_prev_patch() {
+  Song *s = song();
+  return s != nullptr && (patch_index > 0 || has_prev_song());
 }
 
 void Cursor::jump_to_set_list_index(int i) {

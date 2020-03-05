@@ -13,6 +13,8 @@ PatchMaster *cursor_pm() {
   return pm;
 }
 
+// ================ initialization
+
 TEST_CASE("init empty", CATCH_CATEGORY) {
   PatchMaster *pm = new PatchMaster();
   Cursor *c = pm->cursor;
@@ -30,6 +32,8 @@ TEST_CASE("init", CATCH_CATEGORY) {
   REQUIRE(c->patch_index == 0);
   delete pm;
 }
+
+// ================ movement
 
 TEST_CASE("next patch", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
@@ -119,6 +123,63 @@ TEST_CASE("prev song", CATCH_CATEGORY) {
   delete pm;
 }
 
+// ================ has_{next,prev}_{song,patch} predicates
+
+TEST_CASE("has next song true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  REQUIRE(c->has_next_song());
+}
+
+TEST_CASE("has next song false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = c->set_list()->songs.size() - 1;
+  REQUIRE(!c->has_next_song());
+}
+
+TEST_CASE("has prev song true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = 1;
+  REQUIRE(c->has_prev_song());
+}
+
+TEST_CASE("has prev song false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  REQUIRE(!c->has_prev_song());
+}
+
+TEST_CASE("has next patch true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  REQUIRE(c->has_next_patch());
+}
+
+TEST_CASE("has next patch false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = c->set_list()->songs.size() - 1;
+  c->patch_index = c->song()->patches.size() - 1;
+  REQUIRE(!c->has_next_patch());
+}
+
+TEST_CASE("has prev patch true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->patch_index = 1;
+  REQUIRE(c->has_prev_patch()); // DEBUGb
+}
+
+TEST_CASE("has prev patch false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  REQUIRE(!c->has_prev_patch());
+}
+
+// ================ defaults
+
 TEST_CASE("default set list is all songs", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
@@ -140,6 +201,8 @@ TEST_CASE("patch", CATCH_CATEGORY) {
   REQUIRE(c->patch() == s->patches[0]);
   delete pm;
 }
+
+// ================ goto
 
 TEST_CASE("goto song", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();

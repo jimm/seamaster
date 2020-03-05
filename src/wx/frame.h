@@ -57,7 +57,9 @@ public:
 
   void initialize();
   void load(wxString path);
-  void refresh() { load_data_into_windows(); }
+
+  void update(wxCommandEvent& event) { update(); }
+  void update();
 
   void show_user_message(std::string);
   void show_user_message(std::string, int);
@@ -78,6 +80,7 @@ public:
   void jump_to_patch();
 
 private:
+  wxMenuBar *menu_bar;
   SetListListBox *lc_set_lists;
   SetListBox *lc_set_list;
   SongBox *lc_song_patches;
@@ -149,8 +152,12 @@ private:
   wxWindow * make_notes_panel(wxPanel *);
   wxWindow * make_patch_panel(wxPanel *);
 
-  void refresh(wxCommandEvent& event) { load_data_into_windows(); }
-  void load_data_into_windows();
+  long selected_trigger_index();
+  long selected_connection_index();
+
+  void update_lists();
+  void update_song_notes();
+  void update_menu_items();
 
   wxDECLARE_EVENT_TABLE();
 };

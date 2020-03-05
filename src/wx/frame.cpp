@@ -70,7 +70,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_LIST_ITEM_ACTIVATED(ID_TriggerList, Frame::edit_trigger)
   EVT_LIST_ITEM_ACTIVATED(ID_PatchConnections, Frame::edit_connection)
 
-  EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::refresh)
+  EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::update)
 wxEND_EVENT_TABLE()
 
 void *frame_clear_user_message_thread(void *gui_vptr) {
@@ -201,60 +201,60 @@ wxWindow * Frame::make_patch_panel(wxPanel *parent) {
 }
 
 void Frame::make_menu_bar() {
-  wxMenu *menuFile = new wxMenu;
-  menuFile->Append(wxID_OPEN);
-  menuFile->AppendSeparator();
-  menuFile->Append(wxID_EXIT);
+  wxMenu *menu_file = new wxMenu;
+  menu_file->Append(wxID_OPEN);
+  menu_file->AppendSeparator();
+  menu_file->Append(wxID_EXIT);
 
-  wxMenu *menuEdit = new wxMenu;
-  menuEdit->Append(ID_CreateMessage, "New Message\tCtrl-Shift-M", "Create a new message");
-  menuEdit->Append(ID_CreateTrigger, "New Trigger\tCtrl-Shift-T", "Create a new trigger");
-  menuEdit->Append(ID_CreateSong, "New Song\tCtrl-Shift-S", "Create a new song");
-  menuEdit->Append(ID_CreatePatch, "New Patch\tCtrl-Shift-P", "Create a new patch");
-  menuEdit->Append(ID_CreateConnection, "New Connection\tCtrl-Shift-C", "Create a new connection");
-  menuEdit->Append(ID_CreateSetList, "New Set List\tCtrl-Shift-L", "Create a new set list");
-  menuEdit->AppendSeparator();
-  menuEdit->Append(ID_DestroyMessage, "Delete Message\tCtrl-Alt-M", "Delete the current message");
-  menuEdit->Append(ID_DestroyTrigger, "Delete Trigger\tCtrl-Alt-T", "Delete the current trigger");
-  menuEdit->Append(ID_DestroySong, "Delete Song\tCtrl-Alt-S", "Delete the current song");
-  menuEdit->Append(ID_DestroyPatch, "Delete Patch\tCtrl-Alt-P", "Delete the current patch");
-  menuEdit->Append(ID_DestroyConnection, "Delete Connection\tCtrl-Alt-C", "Delete the current connection");
-  menuEdit->Append(ID_DestroySetList, "Delete Set List\tCtrl-Alt-L", "Delete the current set list");
+  wxMenu *menu_edit = new wxMenu;
+  menu_edit->Append(ID_CreateMessage, "New Message\tCtrl-Shift-M", "Create a new message");
+  menu_edit->Append(ID_CreateTrigger, "New Trigger\tCtrl-Shift-T", "Create a new trigger");
+  menu_edit->Append(ID_CreateSong, "New Song\tCtrl-Shift-S", "Create a new song");
+  menu_edit->Append(ID_CreatePatch, "New Patch\tCtrl-Shift-P", "Create a new patch");
+  menu_edit->Append(ID_CreateConnection, "New Connection\tCtrl-Shift-C", "Create a new connection");
+  menu_edit->Append(ID_CreateSetList, "New Set List\tCtrl-Shift-L", "Create a new set list");
+  menu_edit->AppendSeparator();
+  menu_edit->Append(ID_DestroyMessage, "Delete Message\tCtrl-Alt-M", "Delete the current message");
+  menu_edit->Append(ID_DestroyTrigger, "Delete Trigger\tCtrl-Alt-T", "Delete the current trigger");
+  menu_edit->Append(ID_DestroySong, "Delete Song\tCtrl-Alt-S", "Delete the current song");
+  menu_edit->Append(ID_DestroyPatch, "Delete Patch\tCtrl-Alt-P", "Delete the current patch");
+  menu_edit->Append(ID_DestroyConnection, "Delete Connection\tCtrl-Alt-C", "Delete the current connection");
+  menu_edit->Append(ID_DestroySetList, "Delete Set List\tCtrl-Alt-L", "Delete the current set list");
 
-  wxMenu *menuGo = new wxMenu;
-  menuGo->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
-  menuGo->Append(ID_GoPrevSong, "Prev Song\tP", "Move to the previous song");
-  menuGo->Append(ID_GoNextPatch, "Next Patch\tJ", "Move to the next patch");
-  menuGo->Append(ID_GoPrevPatch, "Prev Patch\tK", "Move to the previous patch");
-  menuGo->AppendSeparator();
-  menuGo->Append(ID_FindSong, "Find Song...\tCtrl-F", "Find song by name");
-  menuGo->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");
+  wxMenu *menu_go = new wxMenu;
+  menu_go->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
+  menu_go->Append(ID_GoPrevSong, "Prev Song\tP", "Move to the previous song");
+  menu_go->Append(ID_GoNextPatch, "Next Patch\tJ", "Move to the next patch");
+  menu_go->Append(ID_GoPrevPatch, "Prev Patch\tK", "Move to the previous patch");
+  menu_go->AppendSeparator();
+  menu_go->Append(ID_FindSong, "Find Song...\tCtrl-F", "Find song by name");
+  menu_go->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");
 
-  wxMenu *menuWindows = new wxMenu;
-  menuWindows->Append(ID_ListInstruments, "&Instruments\tCtrl-I",
+  wxMenu *menu_windows = new wxMenu;
+  menu_windows->Append(ID_ListInstruments, "&Instruments\tCtrl-I",
                       "Displays input and output instruments");
-  menuWindows->Append(ID_Monitor, "MIDI &Monitor\tCtrl-M",
+  menu_windows->Append(ID_Monitor, "MIDI &Monitor\tCtrl-M",
                       "Open the MIDI Monitor window");
 
-  wxMenu *menuMIDI = new wxMenu;
-  menuMIDI->Append(ID_RegularPanic, "&Send All Notes Off\t\e",
+  wxMenu *menu_midi = new wxMenu;
+  menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\t\e",
                    "Send All Notes Off controller message on all channels");
-  menuMIDI->Append(ID_SuperPanic, "&Send Super-Panic\t.",
+  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\t.",
                    "Send Notes Off messages, all notes, all channels");
 
-  wxMenu *menuHelp = new wxMenu;
-  menuHelp->Append(wxID_ABOUT);
+  wxMenu *menu_help = new wxMenu;
+  menu_help->Append(wxID_ABOUT);
 
-  wxMenuBar *menuBar = new wxMenuBar;
-  menuBar->Append(menuFile, "&File");
-  menuBar->Append(menuEdit, "&Edit");
-  menuBar->Append(menuGo, "&Go");
-  menuBar->Append(menuMIDI, "&MIDI");
-  menuBar->Append(menuWindows, "&Windows");
-  menuBar->Append(menuHelp, "&Help");
-  SetMenuBar(menuBar);
+  menu_bar = new wxMenuBar;
+  menu_bar->Append(menu_file, "&File");
+  menu_bar->Append(menu_edit, "&Edit");
+  menu_bar->Append(menu_go, "&Go");
+  menu_bar->Append(menu_midi, "&MIDI");
+  menu_bar->Append(menu_windows, "&Windows");
+  menu_bar->Append(menu_help, "&Help");
+  SetMenuBar(menu_bar);
 #if defined(__WXMAC__)
-  menuBar->OSXGetAppleMenu()->SetTitle("SeaMaster");
+  menu_bar->OSXGetAppleMenu()->SetTitle("SeaMaster");
 #endif
 }
 
@@ -293,25 +293,25 @@ void Frame::clear_user_message_after(int secs) {
 void Frame::next_song() {
   PatchMaster *pm = PatchMaster_instance();
   pm->next_song();
-  load_data_into_windows();
+  update();
 }
 
 void Frame::prev_song() {
   PatchMaster *pm = PatchMaster_instance();
   pm->prev_song();
-  load_data_into_windows();
+  update();
 }
 
 void Frame::next_patch() {
   PatchMaster *pm = PatchMaster_instance();
   pm->next_patch();
-  load_data_into_windows();
+  update();
 }
 
 void Frame::prev_patch() {
   PatchMaster *pm = PatchMaster_instance();
   pm->prev_patch();
-  load_data_into_windows();
+  update();
 }
 
 void Frame::find_set_list() {
@@ -321,7 +321,7 @@ void Frame::find_set_list() {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
       pm->goto_set_list(str.ToStdString());
-      load_data_into_windows();
+      update();
     }
   }
 }
@@ -333,7 +333,7 @@ void Frame::find_song() {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
       pm->goto_song(str.ToStdString());
-      load_data_into_windows();
+      update();
     }
   }
 }
@@ -341,21 +341,21 @@ void Frame::find_song() {
 void Frame::jump_to_set_list(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_set_lists->jump();
-    load_data_into_windows();
+    update();
   }
 }
 
 void Frame::jump_to_song(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_set_list->jump();
-    load_data_into_windows();
+    update();
   }
 }
 
 void Frame::jump_to_patch(wxCommandEvent &event) {
   if (event.GetEventType() == wxEVT_LISTBOX && event.IsSelection()) {
     lc_song_patches->jump();
-    load_data_into_windows();
+    update();
   }
 }
 
@@ -374,7 +374,7 @@ void Frame::send_message(wxCommandEvent& event) {
 void Frame::create_message(wxCommandEvent& event) {
   Editor e;
   Message *message = e.create_message();
-  load_data_into_windows();
+  update();
   edit_message(message);
 }
 
@@ -382,21 +382,21 @@ void Frame::create_trigger(wxCommandEvent& event) {
   Editor e;
   PatchMaster *pm = PatchMaster_instance();
   Trigger *trigger = e.create_trigger(pm->inputs.front());
-  load_data_into_windows();
+  update();
   edit_trigger(trigger);
 }
 
 void Frame::create_song(wxCommandEvent& event) {
   Editor e;
   Song *song = e.create_song();
-  load_data_into_windows();
+  update();
   edit_song(song);
 }
 
 void Frame::create_patch(wxCommandEvent& event) {
   Editor e;
   Patch *patch = e.create_patch();
-  load_data_into_windows();
+  update();
   edit_patch(patch);
 }
 
@@ -409,14 +409,14 @@ void Frame::create_connection(wxCommandEvent& event) {
     return;
   }
   Connection *conn = e.create_connection(pm->inputs.front(), pm->outputs.front());
-  load_data_into_windows();
+  update();
   edit_connection(conn);
 }
 
 void Frame::create_set_list(wxCommandEvent& event) {
   Editor e;
   SetList *set_list = e.create_set_list();
-  load_data_into_windows();
+  update();
   edit_set_list(set_list);
 }
 
@@ -468,7 +468,7 @@ void Frame::edit_song(Song *song) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
       song->name = str.ToStdString();
-      load_data_into_windows();
+      update();
     }
   }
 }
@@ -487,7 +487,7 @@ void Frame::edit_patch(Patch *patch) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
       patch->name = str.ToStdString();
-      load_data_into_windows();
+      update();
     }
   }
 }
@@ -507,27 +507,25 @@ void Frame::destroy_message(wxCommandEvent& event) {
 
   Editor e;
   int message_num = lc_messages->GetSelection();
+  if (message_num == wxNOT_FOUND)
+    return;
   Message *message = pm->messages[message_num];
   e.destroy_message(message);
-  load_data_into_windows();
+  update();
 }
 
 void Frame::destroy_trigger(wxCommandEvent& event) {
-  long item_index = wxNOT_FOUND;
-  while ((item_index = lc_triggers->GetNextItem(item_index,
-          wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) == wxNOT_FOUND)
-    ;
-  if (item_index == wxNOT_FOUND)
+  long trigger_num = selected_trigger_index();
+  if (trigger_num == wxNOT_FOUND)
     return;
 
-  int trigger_num = item_index;
   int row = 0;
   for (auto* input : PatchMaster_instance()->inputs) {
     for (auto * trigger : input->triggers) {
       if (row == trigger_num) {
         Editor e;
         e.destroy_trigger(trigger);
-        load_data_into_windows();
+        update();
         return;
       }
       ++row;
@@ -541,7 +539,7 @@ void Frame::destroy_song(wxCommandEvent& event) {
   Song *song = pm->cursor->song();
   if (song != nullptr)
     e.destroy_song(song);
-  load_data_into_windows();
+  update();
 }
 
 void Frame::destroy_patch(wxCommandEvent& event) {
@@ -552,7 +550,7 @@ void Frame::destroy_patch(wxCommandEvent& event) {
 
   Editor e;
   e.destroy_patch(pm->cursor->song(), patch);
-  load_data_into_windows();
+  update();
 }
 
 void Frame::destroy_connection(wxCommandEvent& event) {
@@ -561,21 +559,14 @@ void Frame::destroy_connection(wxCommandEvent& event) {
   if (patch == nullptr)
     return;
 
-  long item_index = wxNOT_FOUND;
-  while ((item_index = lc_patch_conns->GetNextItem(item_index,
-          wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) == wxNOT_FOUND)
-    ;
-  if (item_index == wxNOT_FOUND)
-    return;
-
-  int connection_num = item_index;
+  int connection_num = selected_connection_index();
   Connection *conn = patch->connections[connection_num];
   if (conn == nullptr)
     return;
 
   Editor e;
   e.destroy_connection(patch, conn);
-  load_data_into_windows();
+  update();
 }
 
 void Frame::destroy_set_list(wxCommandEvent& event) {
@@ -584,7 +575,7 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
   SetList *set_list = pm->cursor->set_list();
   if (set_list != pm->all_songs)
     e.destroy_set_list(set_list);
-  load_data_into_windows();
+  update();
 }
 
 // ================ MIDI panic ================
@@ -634,7 +625,7 @@ void Frame::initialize() {
   PatchMaster *pm = new PatchMaster();
   pm->initialize();
   pm->start();
-  load_data_into_windows();
+  update();
 }
 
 void Frame::load(wxString path) {
@@ -653,28 +644,76 @@ void Frame::load(wxString path) {
     delete old_pm;
   }
   pm->start();                  // initializes cursor
-  load_data_into_windows();     // must come after start
+  update();                     // must come after start
 }
 
-void Frame::load_data_into_windows() {
-  PatchMaster *pm = PatchMaster_instance();
-  Cursor *cursor = pm->cursor;
-  int i;
+long Frame::selected_trigger_index() {
+  return lc_triggers->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
+                                  wxLIST_STATE_SELECTED);
+}
 
+long Frame::selected_connection_index() {
+  return lc_patch_conns->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
+}
+
+void Frame::update() {
+  update_lists();
+  update_song_notes();
+  update_menu_items();
+}
+
+void Frame::update_lists() {
   lc_set_list->update();
   lc_set_lists->update();
   lc_song_patches->update();
   lc_patch_conns->update();
   lc_messages->update();
   lc_triggers->update();
+}
+
+void Frame::update_song_notes() {
+  PatchMaster *pm = PatchMaster_instance();
+  Cursor *cursor = pm->cursor;
 
   Song *song = cursor->song();
   lc_notes->Clear();
   if (song != nullptr) {
-    i = 0;
+    int i = 0;
     for (auto& line : song->notes) {
       lc_notes->AppendText(line);
       lc_notes->AppendText("\n");
     }
   }
+}
+
+void Frame::update_menu_items() {
+  PatchMaster *pm = PatchMaster_instance();
+  Cursor *cursor = pm->cursor;
+
+  // edit menu
+  menu_bar->FindItem(ID_DestroyMessage, nullptr)
+    ->Enable(!pm->messages.empty() && lc_messages->GetSelection() != wxNOT_FOUND);
+
+  menu_bar->FindItem(ID_DestroyTrigger, nullptr)
+    ->Enable(selected_trigger_index() != wxNOT_FOUND);
+
+  menu_bar->FindItem(ID_DestroySong, nullptr)
+    ->Enable(pm->cursor->song() != nullptr);
+
+  menu_bar->FindItem(ID_DestroyPatch, nullptr)
+    ->Enable(pm->cursor->patch() != nullptr);
+
+  menu_bar->FindItem(ID_DestroyConnection, nullptr)
+    ->Enable(pm->cursor->patch() != nullptr && selected_connection_index() != wxNOT_FOUND);
+
+  SetList *set_list = pm->cursor->set_list();
+  menu_bar->FindItem(ID_DestroySetList, nullptr)
+    ->Enable(set_list != nullptr && set_list != pm->all_songs);
+
+  // go menu
+  menu_bar->FindItem(ID_GoNextSong, nullptr)->Enable(cursor->has_next_song());
+  menu_bar->FindItem(ID_GoPrevSong, nullptr)->Enable(cursor->has_prev_song());
+  menu_bar->FindItem(ID_GoNextPatch, nullptr)->Enable(cursor->has_next_patch());
+  menu_bar->FindItem(ID_GoPrevPatch, nullptr)->Enable(cursor->has_prev_patch());
 }
