@@ -39,3 +39,12 @@ TEST_CASE("name to num given num", CATCH_CATEGORY) {
   REQUIRE(note_name_to_num("0") == 0);
   REQUIRE(note_name_to_num("42") == 42);
 }
+
+TEST_CASE("message from bytes", CATCH_CATEGORY) {
+  char buf[BUFSIZ];
+
+  strcpy(buf, "0 0 0");
+  REQUIRE(message_from_bytes(buf) == Pm_Message(0, 0, 0));
+  strcpy(buf, "0x81, 64, 0x7f");
+  REQUIRE(message_from_bytes(buf) == Pm_Message(0x81, 64, 0x7f));
+}

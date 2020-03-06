@@ -1,6 +1,7 @@
 #ifndef FORMATTER_H
 #define FORMATTER_H
 
+#include <portmidi.h>
 #include "connection.h"
 
 void note_num_to_name(int num, char *buf);
@@ -9,5 +10,6 @@ void format_program(program prog, char *buf);
 void format_program_no_spaces(program prog, char *buf);
 void format_controllers(Connection *conn, char *buf);
 string byte_to_hex(unsigned char byte);
+PmMessage message_from_bytes(const char *str);
 
 #endif /* FORMATTER_H */

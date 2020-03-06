@@ -1,7 +1,9 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
+#include "formatter.h"
 #include "consts.h"
 #include "connection.h"
 
@@ -45,12 +47,6 @@ int note_name_to_num(const char *str) {
 
   int octave = (atoi(num_start) + 1) * 12;
   return octave + from_c + accidental;
-}
-
-string byte_to_hex(unsigned char byte) {
-  char buf[3];
-  snprintf(buf, 3, "%02x", byte);
-  return string((const char *)buf);
 }
 
 void format_program(program prog, char *buf) {
@@ -148,4 +144,46 @@ void format_controllers(Connection *conn, char *buf) {
     }
   }
   *buf = 0;
+}
+
+string byte_to_hex(unsigned char byte) {
+  char buf[3];
+  snprintf(buf, 3, "%02x", byte);
+  return string((const char *)buf);
+}
+
+bool check_byte_value(int val) {
+  if (val >= 0 && val <= 255)
+    return true;
+
+  fprintf(stderr, "byte value %d is out of range\n", val);
+  return false;
+}
+
+PmMessage message_from_bytes(const char *str) {
+  int bytes[3] = {0, 0, 0};
+  int i = 0;
+
+  for (char *word = strtok((char *)str + strspn(str, " \t"), ", ");
+       word != nullptr;
+       word = strtok(nullptr, ", "))
+  {
+    if (i < 3) {
+      word += strspn(word, " \t");
+      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
+        bytes[i] = (int)strtol(word, 0, 16);
+        if (!check_byte_value(bytes[i]))
+          return 0;
+        ++i;
+      }
+      else if (isdigit(word[0])) {
+        bytes[i] = atoi(word);
+        if (!check_byte_value(bytes[i]))
+          return 0;
+        ++i;
+      }
+    }
+  }
+
+  return Pm_Message(bytes[0], bytes[1], bytes[2]);
 }

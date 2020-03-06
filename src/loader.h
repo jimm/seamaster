@@ -74,8 +74,6 @@ private:
   void load_instrument(vector<char *> &, int);
   void instrument_not_found(const char *, const char *);
   void load_message(char *);
-  PmMessage message_from_bytes(const char *);
-  bool check_byte_value(int);
   void load_song(char *);
   void save_notes_line(char *);
   void start_collecting_notes();

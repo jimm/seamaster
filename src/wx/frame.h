@@ -90,7 +90,6 @@ private:
   TriggerList *lc_triggers;
   wxTextCtrl *lc_notes;
   bool updating_notes;
-  SetListEditor *set_list_editor;
   int clear_msg_secs;
   int clear_msg_id;
 

@@ -440,8 +440,9 @@ void Frame::edit_message(wxCommandEvent& event) {
 }
 
 void Frame::edit_message(Message *message) {
-  fprintf(stderr, "TODO edit_message (message)\n"); // DEBUG
-  update();
+  if (message == nullptr)
+    return;
+  new MessageEditor(this, message);
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
@@ -472,7 +473,7 @@ void Frame::edit_set_list(SetList *set_list) {
                 "Set List Editor", wxOK | wxICON_INFORMATION);
     return;
   }
-  set_list_editor = new SetListEditor(this, set_list);
+  new SetListEditor(this, set_list);
 }
 
 void Frame::edit_song(wxCommandEvent& event) {

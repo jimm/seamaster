@@ -9,6 +9,7 @@
 
 enum {
   ID_ME_Name = 2000,
+  ID_ME_MessageText,
   ID_ME_DoneButton
 };
 
@@ -24,10 +25,12 @@ private:
   PatchMaster *pm;
   Message *message;
   wxTextCtrl *name_text;
+  wxTextCtrl *message_text;
 
   wxWindow *make_name_panel(wxPanel *parent);
 
   void set_name(wxCommandEvent& event);
+  wxString messages_to_text();
 
   void done(wxCommandEvent& event);
 

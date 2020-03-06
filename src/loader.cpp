@@ -236,41 +236,6 @@ void Loader::parse_trigger_line(char *line) {
   in->triggers.push_back(new Trigger(trigger_msg, action, output_msg));
 }
 
-PmMessage Loader::message_from_bytes(const char *str) {
-  int bytes[3] = {0, 0, 0};
-  int i = 0;
-
-  for (char *word = strtok((char *)str + strspn(str, whitespace), ", "); word != nullptr; word = strtok(0, ", ")) {
-    if (i < 3) {
-      word += strspn(word, whitespace);
-      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
-        bytes[i] = (int)strtol(word, 0, 16);
-        if (!check_byte_value(bytes[i]))
-          return 0;
-        ++i;
-      }
-      else if (isdigit(word[0])) {
-        bytes[i] = atoi(word);
-        if (!check_byte_value(bytes[i]))
-          return 0;
-        ++i;
-      }
-    }
-  }
-
-  return Pm_Message(bytes[0], bytes[1], bytes[2]);
-}
-
-bool Loader::check_byte_value(int val) {
-  if (val >= 0 && val <= 255)
-    return true;
-
-  ostringstream es;
-  es << "byte value " << val << " is out of range";
-  error_str = es.str();
-  return false;
-}
-
 void Loader::parse_song_line(char *line) {
   if (is_header_level(line, 2))
     load_song(line + 3);
@@ -585,7 +550,10 @@ char *Loader::skip_first_word(char *line) {
 void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
-  for (char *word = strtok(args_start, whitespace); word != nullptr; word = strtok(0, whitespace)) {
+  for (char *word = strtok(args_start, whitespace);
+       word != nullptr;
+       word = strtok(nullptr, whitespace))
+  {
     word += strspn(word, whitespace);
     v.push_back(word);
   }
@@ -599,7 +567,10 @@ void Loader::whitespace_sep_args(char *line, bool skip_word, vector<char *> &v) 
 void Loader::comma_sep_args(char *line, bool skip_word, vector<char *> &v) {
   char *args_start = skip_word ? skip_first_word(line) : line;
 
-  for (char *word = strtok(args_start, ","); word != nullptr; word = strtok(0, ",")) {
+  for (char *word = strtok(args_start, ",");
+       word != nullptr;
+       word = strtok(nullptr, ","))
+  {
     word += strspn(word, whitespace);
     v.push_back(word);
   }
@@ -607,7 +578,9 @@ void Loader::comma_sep_args(char *line, bool skip_word, vector<char *> &v) {
 
 void Loader::table_columns(char *line, vector<char *> &v) {
   line += strspn(line, whitespace);
-  for (char *column = strtok(line, "|"); column != nullptr; column = strtok(0, "|"))
+  for (char *column = strtok(line, "|");
+       column != nullptr;
+       column = strtok(nullptr, "|"))
     v.push_back(trim(column));
 }
 
