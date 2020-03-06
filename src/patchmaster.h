@@ -35,19 +35,6 @@ public:
   // ================ initialization ================
   void initialize();
 
-  // ================ editing ================
-
-  void create_message();
-  void delete_message();
-  void create_trigger();
-  void delete_trigger();
-  void create_song();
-  void delete_song();
-  void create_patch();
-  void delete_patch();
-  void create_connection();
-  void delete_connection();
-
   // ================ movement ================
   void next_patch();
   void prev_patch();

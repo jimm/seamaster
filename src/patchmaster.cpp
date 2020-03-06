@@ -112,38 +112,6 @@ void PatchMaster::create_songs() {
   }
 }
 
-// ================ editing ================
-
-void PatchMaster::create_message() {
-}
-
-void PatchMaster::delete_message() {
-}
-
-void PatchMaster::create_trigger() {
-}
-
-void PatchMaster::delete_trigger() {
-}
-
-void PatchMaster::create_song() {
-}
-
-void PatchMaster::delete_song() {
-}
-
-void PatchMaster::create_patch() {
-}
-
-void PatchMaster::delete_patch() {
-}
-
-void PatchMaster::create_connection() {
-}
-
-void PatchMaster::delete_connection() {
-}
-
 // ================ movement ================
 
 void PatchMaster::next_patch() {
