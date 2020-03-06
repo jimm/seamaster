@@ -8,7 +8,10 @@
 #include "events.h"
 
 enum {
-  ID_TE_DoneButton = 3000
+  ID_TE_InputDropdown = 3000,
+  ID_TE_MessageText,
+  ID_TE_ActionDropdown,
+  ID_TE_DoneButton
 };
 
 class PatchMaster;
@@ -24,7 +27,8 @@ private:
   Trigger *trigger;
   wxTextCtrl *name_text;
 
-  wxWindow *make_name_panel(wxPanel *parent);
+  wxWindow *make_input_dropdown(wxPanel *parent);
+  wxWindow *make_action_dropdown(wxPanel *parent);
 
   void done(wxCommandEvent& event);
 

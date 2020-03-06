@@ -14,7 +14,6 @@ public:
 private:
   void set_headers();
   wxString message_to_wxstring(PmMessage msg);
-  wxString messages_to_wxstring(vector<PmMessage> msg);
 };
 
 #endif /* TRIGGER_LIST_H */

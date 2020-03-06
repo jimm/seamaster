@@ -440,9 +440,8 @@ void Frame::edit_message(wxCommandEvent& event) {
 }
 
 void Frame::edit_message(Message *message) {
-  if (message == nullptr)
-    return;
-  new MessageEditor(this, message);
+  if (message != nullptr)
+    new MessageEditor(this, message);
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
@@ -454,8 +453,8 @@ void Frame::edit_trigger(wxListEvent& event) {
 }
 
 void Frame::edit_trigger(Trigger *trigger) {
-  fprintf(stderr, "TODO edit_trigger (trigger)\n"); // DEBUG
-  update();
+  if (trigger != nullptr)
+    new TriggerEditor(this, trigger);
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {

@@ -47,7 +47,7 @@ void TriggerList::update() {
         str = "prev patch";
         break;
       case MESSAGE:
-        str = messages_to_wxstring(trigger->output_message->messages);
+        str = trigger->output_message->name;
         break;
       }
       SetItem(row, 2, str);
@@ -68,14 +68,5 @@ wxString TriggerList::message_to_wxstring(PmMessage msg) {
                                   Pm_MessageStatus(msg),
                                   Pm_MessageData1(msg),
                                   Pm_MessageData2(msg));
-  return str;
-}
-
-wxString TriggerList::messages_to_wxstring(vector<PmMessage> messages) {
-  if (messages.empty())
-    return "";
-  wxString str = message_to_wxstring(messages.at(0));
-  if (messages.size() > 1)
-    str += ", ...";
   return str;
 }
