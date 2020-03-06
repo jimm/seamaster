@@ -228,10 +228,10 @@ void Frame::make_menu_bar() {
   menu_edit->Append(ID_DestroySetList, "Delete Set List\tCtrl-Alt-L", "Delete the current set list");
 
   wxMenu *menu_go = new wxMenu;
-  menu_go->Append(ID_GoNextSong, "Next Song\tN", "Move to the next song");
-  menu_go->Append(ID_GoPrevSong, "Prev Song\tP", "Move to the previous song");
-  menu_go->Append(ID_GoNextPatch, "Next Patch\tJ", "Move to the next patch");
-  menu_go->Append(ID_GoPrevPatch, "Prev Patch\tK", "Move to the previous patch");
+  menu_go->Append(ID_GoNextSong, "Next Song\tCtrl-Right", "Move to the next song");
+  menu_go->Append(ID_GoPrevSong, "Prev Song\tCtrl-Left", "Move to the previous song");
+  menu_go->Append(ID_GoNextPatch, "Next Patch\tCtrl-Down", "Move to the next patch");
+  menu_go->Append(ID_GoPrevPatch, "Prev Patch\tCtrl-Up", "Move to the previous patch");
   menu_go->AppendSeparator();
   menu_go->Append(ID_FindSong, "Find Song...\tCtrl-F", "Find song by name");
   menu_go->Append(ID_FindSetList, "Find Set List...\tCtrl-T", "Find set list by name");

@@ -75,39 +75,6 @@ int App::OnExit() {
   return wxApp::OnExit();
 }
 
-int App::FilterEvent(wxEvent &event) {
-  if (event.GetEventType() != wxEVT_KEY_DOWN || PatchMaster_instance() == 0)
-    return -1;
-
-  wxKeyEvent &keyEvent = (wxKeyEvent &)event;
-  char cmd = keyEvent.GetKeyCode();
-  switch (cmd) {
-  case WXK_LEFT:
-    frame->prev_song();
-    break;
-  case WXK_RIGHT:
-    frame->next_song();
-    break;
-  case WXK_UP:
-    frame->prev_patch();
-    break;
-  case WXK_DOWN:
-    frame->next_patch();
-    break;
-  case ' ':
-    if (keyEvent.ShiftDown())
-      frame->prev_patch();
-    else
-      frame->next_patch();
-    break;
-  default:
-    return -1;
-  }
-
-  frame->update();
-  return true;
-}
-
 void App::init_portmidi() {
   PmError err = Pm_Initialize();
   if (err != 0) {
