@@ -24,30 +24,23 @@ Trigger *Editor::create_trigger(Input *input) {
 }
 
 Song *Editor::create_song() {
-  return create_song(pm->cursor->set_list(), -1);
-}
-
-Song *Editor::create_song(SetList *set_list, int position) {
   Song *song = new Song("Unnamed Song");
   // TODO consolidate with Loader::ensure_song_has_patch
   create_patch(song);
-  if (position < 0)
-    pm->all_songs->songs.push_back(song);
-  else {
-    vector<Song *> slist = pm->all_songs->songs;
-    int i = 0;
-    for (ITER(Song) iter = slist.begin(); iter != slist.end(); ++iter) {
-      if (i == position) {
-        slist.insert(iter, song);
-        break;
-      }
-      ++i;
-    }
-  }
+  pm->all_songs->songs.push_back(song);
   pm->sort_all_songs();
 
-  if (set_list != pm->all_songs) {
-    // TODO insert song into current set list after current song
+  SetList *curr_set_list = pm->cursor->set_list();
+  if (curr_set_list == pm->all_songs)
+    return song;
+
+  vector<Song *> slist = curr_set_list->songs;
+  Song *curr_song = pm->cursor->song();
+  for (ITER(Song) iter = slist.begin(); iter != slist.end(); ++iter) {
+    if (*iter == curr_song) {
+      slist.insert(++iter, song);
+      break;
+    }
   }
 
   return song;

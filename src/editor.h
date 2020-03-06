@@ -10,7 +10,6 @@ public:
   Message *create_message();
   Trigger *create_trigger(Input *input);
   Song *create_song();
-  Song *create_song(SetList *set_list, int positino);
   Patch *create_patch();
   Patch *create_patch(Song *song);
   Connection *create_connection(Patch *patch, Input *input, Output *output);
