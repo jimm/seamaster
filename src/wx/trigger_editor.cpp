@@ -85,6 +85,8 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
 }
 
 void TriggerEditor::done(wxCommandEvent& event) {
+  // TODO copy data to trigger
+
   wxCommandEvent e(Frame_Refresh, GetId());
   wxPostEvent(GetParent(), e);
   Close();

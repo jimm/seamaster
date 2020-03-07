@@ -25,7 +25,6 @@ public:
 private:
   PatchMaster *pm;
   Trigger *trigger;
-  wxTextCtrl *name_text;
 
   wxWindow *make_input_dropdown(wxPanel *parent);
   wxWindow *make_action_dropdown(wxPanel *parent);
