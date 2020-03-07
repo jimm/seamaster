@@ -9,11 +9,11 @@
 
 Connection::Connection(Input *in, int in_chan, Output *out, int out_chan)
   : input(in), input_chan(in_chan), output(out), output_chan(out_chan),
-    pass_through_sysex(false), processing_sysex(false)
+    xpose(0), pass_through_sysex(false), processing_sysex(false)
 {
   prog.bank_msb = prog.bank_lsb = prog.prog = UNDEFINED;
-  zone.low = zone.high = UNDEFINED;
-  xpose = 0;
+  zone.low = 0;
+  zone.high = 127;
   for (int i = 0; i < 128; ++i)
     cc_maps[i] = nullptr;
 }
@@ -138,11 +138,7 @@ int Connection::input_channel_ok(PmMessage msg) {
 
 int Connection::inside_zone(PmMessage msg) {
   int note = Pm_MessageData1(msg);
-  if (note < zone.low)
-    return false;
-  if (zone.high != UNDEFINED && note > zone.high)
-    return false;
-  return true;
+  return note >= zone.low && note <= zone.high;
 }
 
 void Connection::midi_out(PmMessage message) {

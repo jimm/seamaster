@@ -207,8 +207,8 @@ TEST_CASE("zone", CATCH_CATEGORY) {
     Song *s = pm->all_songs->songs[TO_EACH_SONG_INDEX];
     Patch *p = s->patches[0];
     Connection *conn = p->connections[0];
-    REQUIRE(conn->zone.low == -1);
-    REQUIRE(conn->zone.high == -1);
+    REQUIRE(conn->zone.low == 0);
+    REQUIRE(conn->zone.high == 127);
 
     s = pm->all_songs->songs[ANOTHER_SONG_INDEX];
     p = s->patches[1];
