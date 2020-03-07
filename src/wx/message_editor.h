@@ -29,7 +29,6 @@ private:
 
   wxWindow *make_name_panel(wxPanel *parent);
 
-  void set_name(wxCommandEvent& event);
   wxString messages_to_text();
 
   void done(wxCommandEvent& event);

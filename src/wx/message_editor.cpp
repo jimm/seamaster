@@ -9,7 +9,6 @@
 #define FRAME_NAME "seamaster_main_frame"
 
 wxBEGIN_EVENT_TABLE(MessageEditor, wxDialog)
-  EVT_TEXT(ID_ME_Name, MessageEditor::set_name)
   EVT_BUTTON(ID_ME_DoneButton, MessageEditor::done)
 wxEND_EVENT_TABLE()
 
@@ -41,15 +40,11 @@ wxWindow *MessageEditor::make_name_panel(wxPanel *parent) {
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
   sizer->Add(new wxStaticText(p, wxID_ANY, "Name"));
-  name_text = new wxTextCtrl(p, ID_ME_Name);
+  name_text = new wxTextCtrl(p, ID_ME_Name, message->name);
   sizer->Add(name_text);
 
   p->SetSizerAndFit(sizer);
   return p;
-}
-
-void MessageEditor::set_name(wxCommandEvent& event) {
-  message->name = name_text->GetLineText(0);
 }
 
 wxString MessageEditor::messages_to_text() {
@@ -86,7 +81,8 @@ wxString MessageEditor::messages_to_text() {
 }
 
 void MessageEditor::done(wxCommandEvent& event) {
-  // extract messages from text edit widget
+  // extract data from text edit widget
+  message->name = name_text->GetLineText(0);
   wxString text = message_text->GetValue();
   char text_buf[BUFSIZ];
   vector<char *>line_ptrs;
