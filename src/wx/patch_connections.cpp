@@ -33,16 +33,22 @@ void PatchConnections::update() {
 
   int i = 0;
   for (auto* conn : patch->connections) {
+    char buf[BUFSIZ];
+
     InsertItem(i, conn->input->name.c_str());
     SetItem(i, 1, conn->input_chan == -1 ? "all" : wxString::Format("%d", conn->input_chan + 1));
     SetItem(i, 2, conn->output->name.c_str());
     SetItem(i, 3, conn->output_chan == -1 ? "all" : wxString::Format("%d", conn->output_chan + 1));
+
+    char buf2[8];
+    note_num_to_name(conn->zone.low, buf);
+    note_num_to_name(conn->zone.high, buf2);
     if (conn->zone.low != -1 || conn->zone.high != -1)
-      SetItem(i, 4, wxString::Format("%3d - %3d", conn->zone.low, conn->zone.high));
+      SetItem(i, 4, wxString::Format("%s - %s", buf, buf2));
+
     if (conn->xpose != -1)
       SetItem(i, 5, wxString::Format("%c%2d", conn->xpose < 0 ? '-' : ' ', abs(conn->xpose)));
 
-    char buf[BUFSIZ];
     format_program(conn->prog, buf);
     SetItem(i, 6, buf);
 

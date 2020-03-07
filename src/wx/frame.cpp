@@ -423,7 +423,7 @@ void Frame::create_connection(wxCommandEvent& event) {
 
   Connection *conn = e.create_connection(patch, pm->inputs.front(), pm->outputs.front());
   update();
-  edit_connection(patch, conn);
+  edit_connection(conn);
 }
 
 void Frame::create_set_list(wxCommandEvent& event) {
@@ -524,12 +524,12 @@ void Frame::edit_connection(wxListEvent& event) {
   if (conn == nullptr)
     return;
 
-  edit_connection(patch, conn);
+  edit_connection(conn);
 }
 
-void Frame::edit_connection(Patch *patch, Connection *conn) {
-  fprintf(stderr, "TODO edit_connection (connection)\n"); // DEBUG
-  update();
+void Frame::edit_connection(Connection *conn) {
+  if (conn != nullptr)
+    new ConnectionEditor(this, conn);
 }
 
 void Frame::set_song_notes(wxCommandEvent& event) {

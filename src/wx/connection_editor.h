@@ -7,6 +7,8 @@
 #endif
 #include "events.h"
 
+using namespace std;
+
 enum {
   ID_CE_InputDropdown = 4000,
   ID_CE_InputChannel,
@@ -23,6 +25,7 @@ enum {
 };
 
 class PatchMaster;
+class Instrument;
 class Connection;
 class wxListCtrl;
 
@@ -43,6 +46,11 @@ private:
   wxWindow *make_zone_panel(wxPanel *parent);
   wxWindow *make_xpose_panel(wxPanel *parent);
   wxWindow *make_sysex_panel(wxPanel *parent);
+
+  wxWindow *make_instrument_panel(
+    wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+    vector<Instrument *> &instruments, Instrument *curr_instrument,
+    int curr_chan);
 
   void done(wxCommandEvent& event);
 

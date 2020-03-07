@@ -136,7 +136,7 @@ private:
   void edit_patch(wxCommandEvent& event);
   void edit_patch(Patch *);
   void edit_connection(wxListEvent& event);
-  void edit_connection(Patch *patch, Connection *);
+  void edit_connection(Connection *);
 
   void set_song_notes(wxCommandEvent& event);
 
