@@ -24,6 +24,7 @@ private:
   virtual bool OnInit();
   virtual void OnInitCmdLine(wxCmdLineParser &);
   virtual bool OnCmdLineParsed(wxCmdLineParser &);
+  virtual int FilterEvent(wxEvent &event);
   virtual int OnExit();
 
   void init_portmidi();

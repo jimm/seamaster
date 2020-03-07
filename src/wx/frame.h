@@ -59,6 +59,8 @@ public:
   void initialize();
   void load(wxString path);
 
+  int handle_global_key_event(wxKeyEvent &event);
+
   void update(wxCommandEvent& event) { update(); }
   void update();
 

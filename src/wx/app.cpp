@@ -45,6 +45,7 @@ bool App::OnInit() {
   init_portmidi();
   frame = new Frame("SeaMaster");
   frame->Show(true);
+  SetTopWindow(frame);
   if (command_line_path.IsEmpty())
     frame->initialize();
   else
@@ -66,6 +67,13 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
     command_line_path = parser.GetParam(0);
 
   return true;
+}
+
+int App::FilterEvent(wxEvent &event) {
+  if (event.GetEventType() != wxEVT_KEY_DOWN || PatchMaster_instance() == 0)
+    return -1;
+
+  return frame->handle_global_key_event((wxKeyEvent &)event);
 }
 
 int App::OnExit() {

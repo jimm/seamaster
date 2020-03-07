@@ -243,9 +243,9 @@ void Frame::make_menu_bar() {
                       "Open the MIDI Monitor window");
 
   wxMenu *menu_midi = new wxMenu;
-  menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\t\e",
+  menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\tCtrl-A",
                    "Send All Notes Off controller message on all channels");
-  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\t.",
+  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\t\e",
                    "Send Notes Off messages, all notes, all channels");
 
   wxMenu *menu_help = new wxMenu;
@@ -606,6 +606,39 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
   if (set_list != pm->all_songs)
     e.destroy_set_list(set_list);
   update();
+}
+
+// ================ keypress handling ================
+
+int Frame::handle_global_key_event(wxKeyEvent &event) {
+  if (FindFocus() == lc_notes)
+    return -1;
+
+  switch (event.GetKeyCode()) {
+  case WXK_LEFT: case 'K':
+    prev_song();
+    break;
+  case WXK_RIGHT: case 'J':
+    next_song();
+    break;
+  case WXK_UP: case 'P':
+    prev_patch();
+    break;
+  case WXK_DOWN: case 'N':
+    next_patch();
+    break;
+  case ' ':
+    if (event.ShiftDown())
+      prev_patch();
+    else
+      next_patch();
+    break;
+  default:
+    return -1;
+  }
+
+  update();
+  return true;
 }
 
 // ================ MIDI panic ================
