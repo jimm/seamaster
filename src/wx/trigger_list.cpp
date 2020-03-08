@@ -31,8 +31,14 @@ void TriggerList::update() {
   for (auto* input : pm->inputs) {
     for (auto * trigger : input->triggers) {
       InsertItem(row, input->name.c_str());
-      SetItem(row, 1, message_to_wxstring(trigger->trigger_message));
-      wxString str;
+
+      wxString str = wxString::Format(
+        "%02x %02x %02x",
+        Pm_MessageStatus(trigger->trigger_message),
+        Pm_MessageData1(trigger->trigger_message),
+        Pm_MessageData2(trigger->trigger_message));
+      SetItem(row, 1, str);
+
       switch (trigger->action) {
       case NEXT_SONG:
         str = "next song";
@@ -61,12 +67,4 @@ void TriggerList::set_headers() {
     InsertColumn(i, COLUMN_HEADERS[i]);
     SetColumnWidth(i, COLUMN_WIDTHS[i]);
   }
-}
-
-wxString TriggerList::message_to_wxstring(PmMessage msg) {
-  wxString str = wxString::Format("%02x %02x %02x",
-                                  Pm_MessageStatus(msg),
-                                  Pm_MessageData1(msg),
-                                  Pm_MessageData2(msg));
-  return str;
 }

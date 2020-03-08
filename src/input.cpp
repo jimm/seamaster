@@ -114,6 +114,20 @@ void Input::remove_connection(Connection *conn) {
   }
 }
 
+void Input::add_trigger(Trigger *trigger) {
+  triggers.push_back(trigger);
+}
+
+void Input::remove_trigger(Trigger *trigger) {
+  for (vector<Trigger *>::iterator iter = triggers.begin();
+       iter != triggers.end();
+       ++iter)
+    if (trigger == *iter) {
+      triggers.erase(iter);
+      break;
+    }
+}
+
 // Lazily starts the `input_thread` if needed. Sets `running` to `true` and
 // starts a `read_thread` for this Input.
 void Input::start() {

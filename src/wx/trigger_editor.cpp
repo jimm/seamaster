@@ -3,6 +3,7 @@
 #include "../patchmaster.h"
 #include "../input.h"
 #include "../trigger.h"
+#include "../formatter.h"
 
 #define FRAME_NAME "seamaster_main_frame"
 
@@ -21,7 +22,13 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   sizer->Add(make_input_dropdown(p));
 
   sizer->Add(new wxStaticText(p, wxID_ANY, "Message"));
-  sizer->Add(new wxTextCtrl(p, ID_TE_MessageText));
+  wxString message_str = wxString::Format(
+    "%02x %02x %02x",
+    Pm_MessageStatus(trigger->trigger_message),
+    Pm_MessageData1(trigger->trigger_message),
+    Pm_MessageData2(trigger->trigger_message));
+  tc_trigger_message = new wxTextCtrl(p, ID_TE_MessageText, message_str);
+  sizer->Add(tc_trigger_message);
 
   sizer->Add(new wxStaticText(p, wxID_ANY, "Action"));
   sizer->Add(make_action_dropdown(p));
@@ -38,16 +45,16 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
 
 wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   wxArrayString choices;
-  Input *curr_input = nullptr;
+  orig_input = nullptr;
   for (auto &input : pm->inputs) {
     choices.Add(input->name);
     if (count(input->triggers.begin(), input->triggers.end(), trigger) > 0)
-      curr_input = input;
+      orig_input = input;
   }
 
-  return new wxComboBox(parent, ID_TE_InputDropdown, curr_input->name,
-                        wxDefaultPosition, wxDefaultSize, choices,
-                        wxCB_READONLY);
+  return lc_input = new wxComboBox(
+    parent, ID_TE_InputDropdown, orig_input->name, wxDefaultPosition,
+    wxDefaultSize, choices, wxCB_READONLY);
 }
 
 wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
@@ -79,13 +86,39 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
     break;
   }
 
-  return new wxComboBox(parent, ID_TE_ActionDropdown, initial_value,
-                        wxDefaultPosition, wxDefaultSize, choices,
-                        wxCB_READONLY);
+  return lc_action =  new wxComboBox(
+    parent, ID_TE_ActionDropdown, initial_value, wxDefaultPosition,
+    wxDefaultSize, choices, wxCB_READONLY);
 }
 
 void TriggerEditor::done(wxCommandEvent& event) {
-  // TODO copy data to trigger
+  Input *new_input = pm->inputs[lc_input->GetCurrentSelection()];
+  if (new_input != orig_input) {
+    orig_input->remove_trigger(trigger);
+    new_input->add_trigger(trigger);
+  }
+
+  trigger->trigger_message =
+    message_from_bytes(tc_trigger_message->GetValue().c_str());
+
+  wxString val = lc_action->GetValue();
+  if (val == "Next Song")
+    trigger->action = NEXT_SONG;
+  else if (val == "Prev Song")
+    trigger->action = PREV_SONG;
+  else if (val == "Next Patch")
+    trigger->action = NEXT_PATCH;
+  else if (val == "Prev Patch")
+    trigger->action = PREV_PATCH;
+  else {
+    trigger->action = MESSAGE;
+    for (auto &msg : pm->messages) {
+      if (msg->name == val) {
+        trigger->output_message = msg;
+        break;
+      }
+    }
+  }
 
   wxCommandEvent e(Frame_Refresh, GetId());
   wxPostEvent(GetParent(), e);
