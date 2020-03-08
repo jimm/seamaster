@@ -42,8 +42,8 @@ TEST_CASE("two connections", CATCH_CATEGORY) {
   Input *in = conn->input;
   Output *out = conn->output;
 
-  Output *out2 = new Output("out2", "out2 port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn2 = new Connection(in, 0, out2, 0);
+  Output *out2 = new Output(-1, "out2", "out2 port name", CONNECTION_ALL_CHANNELS);
+  Connection *conn2 = new Connection(-1, in, 0, out2, 0);
   conn2->start();
 
   PmMessage *buf = test_events();
@@ -68,8 +68,8 @@ TEST_CASE("connection switch routes offs correctly", CATCH_CATEGORY) {
   Input *in = conn->input;
   Output *out = conn->output;
 
-  Output *out2 = new Output("out2", "out2 port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn2 = new Connection(in, 0, out2, 0);
+  Output *out2 = new Output(-1, "out2", "out2 port name", CONNECTION_ALL_CHANNELS);
+  Connection *conn2 = new Connection(-1, in, 0, out2, 0);
 
   PmMessage *buf = test_events();
 
@@ -101,8 +101,8 @@ TEST_CASE("connection switch sustains correctly", CATCH_CATEGORY) {
   Input *in = conn->input;
   Output *out = conn->output;
 
-  Output *out2 = new Output("out2", "out2 port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn2 = new Connection(in, 0, out2, 0);
+  Output *out2 = new Output(-1, "out2", "out2 port name", CONNECTION_ALL_CHANNELS);
+  Connection *conn2 = new Connection(-1, in, 0, out2, 0);
 
   PmMessage buf[4] = {
     Pm_Message(NOTE_ON, 64, 127),

@@ -6,7 +6,7 @@
 #define TEST_FILE "test/testfile.org"
 
 TEST_CASE("create message", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -15,7 +15,7 @@ TEST_CASE("create message", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create trigger", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
   Input *input = pm->inputs.front();
@@ -26,7 +26,7 @@ TEST_CASE("create trigger", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -38,7 +38,7 @@ TEST_CASE("create song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create patch", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -49,7 +49,7 @@ TEST_CASE("create patch", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create connection", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -60,7 +60,7 @@ TEST_CASE("create connection", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create set list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -69,7 +69,7 @@ TEST_CASE("create set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy message", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -79,7 +79,7 @@ TEST_CASE("destroy message", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy trigger", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
   Input *input = pm->inputs.front();
@@ -91,7 +91,7 @@ TEST_CASE("destroy trigger", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -103,7 +103,7 @@ TEST_CASE("destroy song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create and destroy song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -112,21 +112,21 @@ TEST_CASE("create and destroy song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy patch", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
 }
 
 TEST_CASE("destroy connection", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
 }
 
 TEST_CASE("destroy set list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 

@@ -3,8 +3,9 @@
 #include "patch.h"
 #include "output.h"
 
-Patch::Patch(const char *patch_name)
-  : Named(patch_name), running(false)
+Patch::Patch(int id, const char *patch_name)
+  : DBObj(id), Named(patch_name), running(false),
+    start_message(0), stop_message(0)
 {
 }
 
@@ -17,7 +18,7 @@ void Patch::start() {
   if (running)
     return;
 
-  send_messages_to_outputs(start_messages);
+  send_message_to_outputs(start_message);
   for (auto& conn : connections)
     conn->start();
   running = true;
@@ -33,18 +34,21 @@ void Patch::stop() {
 
   for (auto& conn : connections)
     conn->stop();
-  send_messages_to_outputs(stop_messages);
+  send_message_to_outputs(stop_message);
   running = false;
 }
 
-void Patch::send_messages_to_outputs(vector<PmMessage> &messages) {
+void Patch::send_message_to_outputs(Message *message) {
+  if (message == nullptr)
+    return;
+
   PmEvent event = {0, 0};
   set<Output *> outputs;
   for (auto& conn : connections)
     outputs.insert(conn->output);
 
   for (auto& out : outputs) {
-    for (auto& msg : messages) {
+    for (auto& msg : message->messages) {
       event.message = msg;
       out->write(&event, 1);
     }

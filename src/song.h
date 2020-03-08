@@ -2,16 +2,17 @@
 #define SONG_H
 
 #include <vector>
+#include "db_obj.h"
 #include "patch.h"
 
 using namespace std;
 
-class Song : public Named {
+class Song : public DBObj, public Named {
 public:
   vector<Patch *> patches;
   string notes;
 
-  Song(const char *name);
+  Song(int id, const char *name);
   ~Song();
 };
 

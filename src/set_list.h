@@ -2,15 +2,16 @@
 #define SET_LIST_H
 
 #include <vector>
+#include "db_obj.h"
 #include "song.h"
 
 using namespace std;
 
-class SetList : public Named {
+class SetList : public DBObj, public Named {
 public:
   vector<Song *> songs;
 
-  SetList(const char *name);
+  SetList(int id, const char *name);
   ~SetList();
 };
 

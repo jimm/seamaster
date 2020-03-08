@@ -2,8 +2,8 @@
 #include <string.h>
 #include "set_list.h"
 
-SetList::SetList(const char *name)
-  : Named(name)
+SetList::SetList(int id, const char *name)
+  : DBObj(id), Named(name)
 {
 }
 

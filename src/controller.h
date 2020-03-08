@@ -2,8 +2,9 @@
 #define CONTROLLER_H
 
 #include <portmidi.h>
+#include "db_obj.h"
 
-class Controller {
+class Controller : public DBObj {
 public:
   int cc_num;
   int translated_cc_num;        // CONTROLLER_NO_XLATE means no translation
@@ -11,7 +12,7 @@ public:
   int max;
   bool filtered;
 
-  Controller(int cc_num);
+  Controller(int id, int cc_num);
   ~Controller();
 
   // Returns true if this controller will modify the original by filtering,

@@ -2,6 +2,7 @@
 #define TRIGGER_H
 
 #include <portmidi.h>
+#include "db_obj.h"
 #include "message.h"
 
 class PatchMaster;
@@ -14,13 +15,13 @@ typedef enum TriggerAction {
   MESSAGE
 } TriggerAction;
 
-class Trigger {
+class Trigger : public DBObj {
 public:
   PmMessage trigger_message;
   TriggerAction action;
   Message *output_message;
 
-  Trigger(PmMessage message, TriggerAction action, Message *output);
+  Trigger(int id, PmMessage message, TriggerAction action, Message *output);
   ~Trigger();
 
   void signal(PmMessage msg);

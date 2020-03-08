@@ -2,8 +2,13 @@
 #include "instrument_dialog.h"
 #include "../patchmaster.h"
 
+#define CW 48
+
 const char * const COLUMN_HEADERS[] = {
   "Name", "MIDI Port", "Status"
+};
+const int COLUMN_WIDTHS[] = {
+  3*CW, 3*CW, 2*CW
 };
 
 InstrumentDialog::InstrumentDialog(wxWindow *parent, PatchMaster *patchmaster)
@@ -14,7 +19,9 @@ InstrumentDialog::InstrumentDialog(wxWindow *parent, PatchMaster *patchmaster)
 
   for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     inputs->InsertColumn(i, COLUMN_HEADERS[i]);
+    inputs->SetColumnWidth(i, COLUMN_WIDTHS[i]);
     outputs->InsertColumn(i, COLUMN_HEADERS[i]);
+    outputs->SetColumnWidth(i, COLUMN_WIDTHS[i]);
   }
 
   int i = 0;

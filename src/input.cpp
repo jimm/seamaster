@@ -70,8 +70,8 @@ void *read_thread(void *in_voidptr) {
 }
 
 
-Input::Input(const char *name, const char *port_name, int port_num)
-  : Instrument(name, port_name, port_num), running(false), read_pthread(nullptr)
+Input::Input(int id, const char *name, const char *port_name, int port_num)
+  : Instrument(id, name, port_name, port_num), running(false), read_pthread(nullptr)
 {
   if (!real_port())
     return;

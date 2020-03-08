@@ -9,8 +9,11 @@
 #include "../src/output.h"
 #include "../src/cursor.h"
 
-PatchMaster *load_test_file();
-PatchMaster *load_test_file(const char *path);
+#define SCHEMA_PATH "db/schema.sql"
+#define TEST_DATA_PATH "test/testdata.sql"
+#define TEST_DB_PATH "/tmp/seamaster_test.db"
+
+PatchMaster *load_test_data();
 Connection *create_conn();
 
 #endif /* TEST_HELPER_H */

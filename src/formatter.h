@@ -10,6 +10,7 @@ void format_program(program prog, char *buf);
 void format_program_no_spaces(program prog, char *buf);
 void format_controllers(Connection *conn, char *buf);
 string byte_to_hex(unsigned char byte);
+unsigned char hex_to_byte(const char *hex);
 int int_from_chars(const char *str);
 unsigned char byte_from_chars(const char * const str); // 0 if illegal value
 PmMessage message_from_bytes(const char *str);

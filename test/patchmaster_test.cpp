@@ -45,14 +45,14 @@ void clear_out_io_messages(PatchMaster *pm) {
 }
 
 TEST_CASE("send start and stop messages", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_file();
+  PatchMaster *pm = load_test_data();
   pm->start();                  // Another Song
   assert_no_stop_sent(pm);
   assert_no_start_sent(pm);
 
   clear_out_io_messages(pm);
   pm->next_patch();             // second patch in song: has start and stop
-  REQUIRE(pm->cursor->patch()->start_messages.size() > 0);
+  REQUIRE(pm->cursor->patch()->start_message->messages.size() > 0);
   assert_no_stop_sent(pm);
   assert_start_sent(pm);
 

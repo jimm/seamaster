@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <portmidi.h>
+#include "db_obj.h"
 #include "controller.h"
 
 using namespace std;
@@ -21,7 +22,7 @@ typedef struct zone {
   int high;
 } zone;
 
-class Connection {
+class Connection : public DBObj {
 public:
   Input *input;
   Output *output;
@@ -34,7 +35,7 @@ public:
   bool processing_sysex;
   Controller *cc_maps[128];
 
-  Connection(Input *input, int input_chan, Output *output, int output_chan);
+  Connection(int id, Input *input, int input_chan, Output *output, int output_chan);
   ~Connection();
 
   void start();

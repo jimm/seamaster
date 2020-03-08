@@ -2,8 +2,8 @@
 #include <string.h>
 #include "song.h"
 
-Song::Song(const char *name)
-  : Named(name)
+Song::Song(int id, const char *name)
+  : DBObj(id), Named(name)
 {
 }
 

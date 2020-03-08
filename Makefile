@@ -8,7 +8,7 @@ CPP = $(shell wx-config --cxx)
 CPPFLAGS += -std=c++11 -MD -MP -g $(DEBUG) $(WXFLAGS)
 
 LD = $(shell wx-config --ld)
-LIBS = -lc -lc++ -lportmidi $(WXLIBS)
+LIBS = -lc -lc++ -lsqlite3 -lportmidi $(WXLIBS)
 LDFLAGS += $(LIBS) $(WXLIBS)
 
 prefix = /usr/local
@@ -22,6 +22,8 @@ TEST_OBJS = $(TEST_SRC:%.cpp=%.o)
 TEST_OBJ_FILTERS = src/wx/app_main.o
 
 CATCH_CATEGORY ?= ""
+
+CONFIG_DIR = $(or ${XDG_CONFIG_DIR},${XDG_CONFIG_DIR},$(HOME)/.config)/$(NAME)
 
 .PHONY: all test install tags clean distclean
 
@@ -39,11 +41,15 @@ test: $(NAME)_test
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)
 
-install:	$(bindir)/$(NAME)
+install:	$(bindir)/$(NAME) $(CONFIG_DIR)/schema.sql
 
 $(bindir)/$(NAME):	$(NAME)
 	cp ./$(NAME) $(bindir)
 	chmod 755 $(bindir)/$(NAME)
+
+$(CONFIG_DIR)/schema.sql:
+	mkdir -p $(CONFIG_DIR)
+	cp db/schema.sql $(CONFIG_DIR)
 
 tags:	TAGS
 

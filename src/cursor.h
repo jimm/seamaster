@@ -39,13 +39,6 @@ public:
 
   void goto_song(string name_regex);
   void goto_set_list(string name_regex);
-  void attempt_goto(Cursor *old_cursor);
-
-private:
-  Named *find_in_list(vector<Named *> *, string regex);
-  int find_nearest_match_index(vector<Named *> *, string str);
-  unsigned int damerau_levenshtein(const std::string& s1, const std::string& s2);
-  string downcased_copy(string str);
 };
 
 #endif /* CURSOR_H */

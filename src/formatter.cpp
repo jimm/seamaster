@@ -146,6 +146,31 @@ void format_controllers(Connection *conn, char *buf) {
   *buf = 0;
 }
 
+unsigned char hex_digit_from_char(char ch) {
+  switch (ch) {
+  case '0': case '1': case '2': case '3': case '4':
+  case '5': case '6': case '7': case '8': case '9':
+    return ch - '0';
+  case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
+    return ch - 'a' + 10;
+  case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
+    return ch - 'A' + 10;
+  default:
+    return 0;
+  }
+}
+
+// Translates first two chars to a hex bytes. Zero, one, or two chars used.
+unsigned char hex_to_byte(const char *hex) {
+  unsigned char val = 0;
+  
+  for (int i = 0; i < 2 && isxdigit(*hex); ++i, ++hex) {
+    val <<= 4;
+    val += hex_digit_from_char(*hex);
+  }
+  return val;
+}
+
 string byte_to_hex(unsigned char byte) {
   char buf[3];
   snprintf(buf, 3, "%02x", byte);

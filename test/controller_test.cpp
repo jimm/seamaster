@@ -4,7 +4,7 @@
 #define CATCH_CATEGORY "[controller]"
 
 TEST_CASE("will modify", CATCH_CATEGORY) {
-  Controller cc(7);
+  Controller cc(-1, 7);
 
   REQUIRE(cc.will_modify() == false);
 
@@ -26,24 +26,24 @@ TEST_CASE("will modify", CATCH_CATEGORY) {
 }
 
 TEST_CASE("out chan", CATCH_CATEGORY) {
-  Controller cc(7);
+  Controller cc(-1, 7);
   REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 3) == Pm_Message(CONTROLLER + 3, 7, 127));
 }
 
 TEST_CASE("filter", CATCH_CATEGORY) {
-  Controller cc(7);
+  Controller cc(-1, 7);
   cc.filtered = true;
   REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == CONTROLLER_BLOCK);
 }
 
 TEST_CASE("map", CATCH_CATEGORY) {
-  Controller cc(7);
+  Controller cc(-1, 7);
   cc.translated_cc_num = 10;
   REQUIRE(cc.process(Pm_Message(CONTROLLER, 7, 127), 0) == Pm_Message(CONTROLLER, 10, 127));
 }
 
 TEST_CASE("limit", CATCH_CATEGORY) {
-  Controller cc(7);
+  Controller cc(-1, 7);
   cc.min = 1;
   cc.max = 120;
 

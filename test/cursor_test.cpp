@@ -1,13 +1,12 @@
 #include "catch.hpp"
 #include "test_helper.h"
-#include "../src/loader.h"
+#include "../src/storage.h"
 
 #define CATCH_CATEGORY "[cursor]"
 #define TEST_FILE "test/testfile.org"
 
 PatchMaster *cursor_pm() {
-  Loader loader;
-  PatchMaster *pm = loader.load(TEST_FILE, true);
+  PatchMaster *pm = load_test_data();
   pm->testing = true;
   pm->cursor->init();
   return pm;
@@ -169,7 +168,7 @@ TEST_CASE("has prev patch true", CATCH_CATEGORY) {
   PatchMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
-  REQUIRE(c->has_prev_patch()); // DEBUGb
+  REQUIRE(c->has_prev_patch());
 }
 
 TEST_CASE("has prev patch false", CATCH_CATEGORY) {
@@ -254,19 +253,4 @@ TEST_CASE("goto set list no such set list", CATCH_CATEGORY) {
   REQUIRE(sl == before);
 
   delete pm;
-}
-
-TEST_CASE("attempt goto", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
-  Cursor *c = pm->cursor;
-
-  Cursor target(pm);
-  target.set_list_index = 1;
-  target.song_index = 1;
-  target.patch_index = 1;
-
-  c->attempt_goto(&target);
-  REQUIRE(c->set_list_index == 1);
-  REQUIRE(c->song_index == 1);
-  REQUIRE(c->patch_index == 1);
 }

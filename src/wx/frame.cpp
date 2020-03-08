@@ -18,7 +18,7 @@
 #include "set_list_editor.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
-#include "../loader.h"
+#include "../storage.h"
 #include "../editor.h"
 
 #define POS(row, col) wxGBPosition(row, col)
@@ -694,10 +694,10 @@ void Frame::initialize() {
 void Frame::load(wxString path) {
   PatchMaster *old_pm = PatchMaster_instance();
   bool testing = old_pm != nullptr && old_pm->testing;
-  Loader loader;
-  PatchMaster *pm = loader.load(path, testing);
-  if (loader.has_error()) {
-    wxLogError("Cannot open file '%s': %s.", path, loader.error());
+  Storage storage(path);
+  PatchMaster *pm = storage.load(testing);
+  if (storage.has_error()) {
+    wxLogError("Cannot open file '%s': %s.", path, storage.error());
     return;
   }
 
