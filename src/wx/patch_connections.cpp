@@ -9,7 +9,7 @@ const char * const COLUMN_HEADERS[] = {
   "Input", "Chan", "Output", "Chan", "Zone", "Xpose", "Prog", "Sysex", "CC Filt/Map"
 };
 const int COLUMN_WIDTHS[] = {
-  3*CW, 1*CW, 3*CW, 1*CW, 2*CW, 1*CW, 2*CW, int(1.5*CW), 6*CW
+  3*CW, 1*CW, 3*CW, 1*CW, 2*CW, 1*CW, 3*CW, int(1.5*CW), 6*CW
 };
 
 PatchConnections::PatchConnections(wxWindow *parent, wxWindowID id)

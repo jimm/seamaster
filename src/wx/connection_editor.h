@@ -36,12 +36,23 @@ public:
 private:
   PatchMaster *pm;
   Connection *connection;
+  wxComboBox *lc_input;
+  wxComboBox *lc_input_chan;
+  wxComboBox *lc_output;
+  wxComboBox *lc_output_chan;
+  wxTextCtrl *tc_bank_msb;
+  wxTextCtrl *tc_bank_lsb;
+  wxTextCtrl *tc_prog;
+  wxTextCtrl *tc_zone_low;
+  wxTextCtrl *tc_zone_high;
+  wxTextCtrl *tc_xpose;
+  wxCheckBox *cb_sysex;
 
   wxWindow *make_input_panel(wxPanel *parent);
   wxWindow *make_output_panel(wxPanel *parent);
-  wxWindow *make_channel_dropdown(wxPanel *parent, wxWindowID id,
-                                  int curr_val,
-                                  const char * const first_choice);
+  wxComboBox *make_channel_dropdown(
+    wxPanel *parent, wxWindowID id, int curr_val,
+    const char * const first_choice);
   wxWindow *make_program_panel(wxPanel *parent);
   wxWindow *make_zone_panel(wxPanel *parent);
   wxWindow *make_xpose_panel(wxPanel *parent);
@@ -49,8 +60,14 @@ private:
 
   wxWindow *make_instrument_panel(
     wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+    wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
     vector<Instrument *> &instruments, Instrument *curr_instrument,
     int curr_chan);
+
+  Instrument *input_from_instrument_list(
+    wxComboBox *list, vector<Instrument *> &instruments);
+  int channel_from_channel_list(wxComboBox *list);
+  int int_or_undefined_from_field(wxTextCtrl *field);
 
   void done(wxCommandEvent& event);
 

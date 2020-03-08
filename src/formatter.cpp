@@ -160,6 +160,23 @@ bool check_byte_value(int val) {
   return false;
 }
 
+// Handles "0x" prefix and negative numbers.
+int int_from_chars(const char *str) {
+  str += strspn(str, " \t");
+  if (strlen(str) > 2 && strncasecmp(str, "0x", 2) == 0)
+    return (int)strtol(str, 0, 16);
+
+  if (str[0] == '-' || isdigit(str[0]))
+    return atoi(str);
+
+  return 0;
+}
+
+unsigned char byte_from_chars(const char * const str) {
+  int val = int_from_chars(str);
+  return check_byte_value(val) ? val : 0;
+}
+
 PmMessage message_from_bytes(const char *str) {
   int bytes[3] = {0, 0, 0};
   int i = 0;
@@ -169,19 +186,10 @@ PmMessage message_from_bytes(const char *str) {
        word = strtok(nullptr, ", "))
   {
     if (i < 3) {
-      word += strspn(word, " \t");
-      if (strlen(word) > 2 && strncasecmp(word, "0x", 2) == 0) {
-        bytes[i] = (int)strtol(word, 0, 16);
-        if (!check_byte_value(bytes[i]))
-          return 0;
-        ++i;
-      }
-      else if (isdigit(word[0])) {
-        bytes[i] = atoi(word);
-        if (!check_byte_value(bytes[i]))
-          return 0;
-        ++i;
-      }
+      int val = int_from_chars(word);
+      if (!check_byte_value(val))
+        return 0;
+      bytes[i++] = byte_from_chars(word);
     }
   }
 

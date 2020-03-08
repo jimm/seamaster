@@ -37,6 +37,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
 wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_InputDropdown, ID_CE_InputChannel,
+    &lc_input, &lc_input_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->inputs),
     connection->input, connection->input_chan);
 }
@@ -44,12 +45,14 @@ wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
 wxWindow *ConnectionEditor::make_output_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_OutputDropdown, ID_CE_OutputChannel,
+    &lc_output, &lc_output_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->outputs),
     connection->output, connection->output_chan);
 }
 
 wxWindow *ConnectionEditor::make_instrument_panel(
   wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+  wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
   vector<Instrument *> &instruments, Instrument *curr_instrument,
   int curr_chan)
 {
@@ -65,13 +68,12 @@ wxWindow *ConnectionEditor::make_instrument_panel(
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-  field_sizer->Add(new wxComboBox(
-                     p, inst_id, curr_output,
-                     wxDefaultPosition, wxDefaultSize, choices,
-                     wxCB_READONLY));
-  field_sizer->Add(make_channel_dropdown(
-                     p, chan_id, connection->output_chan,
-                     "All Channels"));
+  *instrument_combo_ptr = new wxComboBox(
+    p, inst_id, curr_output, wxDefaultPosition, wxDefaultSize, choices,
+    wxCB_READONLY);
+  field_sizer->Add(*instrument_combo_ptr);
+  *chan_combo_ptr = make_channel_dropdown(p, chan_id, curr_chan, "All Channels");
+  field_sizer->Add(*chan_combo_ptr);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Output"));
   outer_sizer->Add(field_sizer);
@@ -80,18 +82,18 @@ wxWindow *ConnectionEditor::make_instrument_panel(
   return p;
 }
 
-wxWindow *ConnectionEditor::make_channel_dropdown(
+wxComboBox *ConnectionEditor::make_channel_dropdown(
   wxPanel *parent, wxWindowID id, int curr_val, const char * const first_choice)
 {
   wxArrayString choices;
-  wxString currChoice = curr_val == CONNECTION_ALL_CHANNELS
-    ? wxString(first_choice)
-    : wxString::Format("%d", curr_val + 1);
-
   choices.Add(first_choice);
   for (int i = 1; i <= 16; ++i)
     choices.Add(wxString::Format("%d", i));
-  return new wxComboBox(parent, id, currChoice,
+  wxString curr_choice = curr_val == CONNECTION_ALL_CHANNELS
+    ? wxString(first_choice)
+    : wxString::Format("%d", curr_val + 1);
+
+  return new wxComboBox(parent, id, curr_choice,
                         wxDefaultPosition, wxDefaultSize, choices,
                         wxCB_READONLY);
 }
@@ -104,17 +106,20 @@ wxWindow *ConnectionEditor::make_program_panel(wxPanel *parent) {
   wxString val = connection->prog.bank_msb >= 0
     ? wxString::Format("%d", connection->prog.bank_msb) : "";
   field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank MSB"));
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_BankMSB, val));
+  tc_bank_msb = new wxTextCtrl(p, ID_CE_BankMSB, val);
+  field_sizer->Add(tc_bank_msb);
 
   val = connection->prog.bank_lsb >= 0
     ? wxString::Format("%d", connection->prog.bank_lsb) : "";
   field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank LSB"));
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_BankLSB, val));
+  tc_bank_lsb = new wxTextCtrl(p, ID_CE_BankLSB, val);
+  field_sizer->Add(tc_bank_lsb);
 
   val = connection->prog.prog >= 0
     ? wxString::Format("%d", connection->prog.prog) : "";
   field_sizer->Add(new wxStaticText(p, wxID_ANY, "PChg"));
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_Program, val));
+  tc_prog = new wxTextCtrl(p, ID_CE_Program, val);
+  field_sizer->Add(tc_prog);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Program Change"));
   outer_sizer->Add(field_sizer);
@@ -132,12 +137,14 @@ wxWindow *ConnectionEditor::make_zone_panel(wxPanel *parent) {
   note_num_to_name(connection->zone.low, buf);
   wxString val(buf);
   field_sizer->Add(new wxStaticText(p, wxID_ANY, "Low"));
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_ZoneLow, val));
+  tc_zone_low = new wxTextCtrl(p, ID_CE_ZoneLow, val);
+  field_sizer->Add(tc_zone_low);
 
   note_num_to_name(connection->zone.high, buf);
   val = buf;
   field_sizer->Add(new wxStaticText(p, wxID_ANY, "High"));
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_ZoneHigh, val));
+  tc_zone_high = new wxTextCtrl(p, ID_CE_ZoneHigh, val);
+  field_sizer->Add(tc_zone_high);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Zone"));
   outer_sizer->Add(field_sizer);
@@ -152,7 +159,8 @@ wxWindow *ConnectionEditor::make_xpose_panel(wxPanel *parent) {
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
 
   wxString val = wxString::Format("%d", connection->xpose);
-  field_sizer->Add(new wxTextCtrl(p, ID_CE_Transpose, val));
+  tc_xpose = new wxTextCtrl(p, ID_CE_Transpose, val);
+  field_sizer->Add(tc_xpose);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Transpose"));
   outer_sizer->Add(field_sizer);
@@ -166,7 +174,9 @@ wxWindow *ConnectionEditor::make_sysex_panel(wxPanel *parent) {
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
 
-  field_sizer->Add(new wxCheckBox(p, ID_CE_PassThroughSysex, "Pass Through Sysex Messages"));
+  cb_sysex = new wxCheckBox(
+    p, ID_CE_PassThroughSysex, "Pass Through Sysex Messages");
+  field_sizer->Add(cb_sysex);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Sysex"));
   outer_sizer->Add(field_sizer);
@@ -175,8 +185,40 @@ wxWindow *ConnectionEditor::make_sysex_panel(wxPanel *parent) {
   return p;
 }
 
+Instrument *ConnectionEditor::input_from_instrument_list(
+  wxComboBox *list, vector<Instrument *>& instruments)
+{
+  return instruments[list->GetCurrentSelection()];
+}
+
+int ConnectionEditor::channel_from_channel_list(wxComboBox *list) {
+  int n = list->GetCurrentSelection();
+  return n == 0 ? CONNECTION_ALL_CHANNELS : (n - 1);
+}
+
+int ConnectionEditor::int_or_undefined_from_field(wxTextCtrl *field) {
+  wxString val = field->GetValue();
+  if (val.empty())
+    return UNDEFINED;
+  return int_from_chars((const char *)val);
+}
+
 void ConnectionEditor::done(wxCommandEvent& event) {
-  // TODO copy data to connection
+  connection->input = pm->inputs[lc_input->GetCurrentSelection()];
+  int n = lc_input->GetCurrentSelection();
+  connection->input_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
+
+  connection->output = pm->outputs[lc_output->GetCurrentSelection()];
+  n = lc_output->GetCurrentSelection();
+  connection->output_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
+
+  connection->prog.bank_msb = int_or_undefined_from_field(tc_bank_msb);
+  connection->prog.bank_lsb = int_or_undefined_from_field(tc_bank_lsb);
+  connection->prog.prog = int_or_undefined_from_field(tc_prog);
+  connection->zone.low = note_name_to_num(tc_zone_low->GetValue());
+  connection->zone.high = note_name_to_num(tc_zone_high->GetValue());
+  connection->xpose = int_from_chars(tc_xpose->GetValue());
+  connection->pass_through_sysex = cb_sysex->IsChecked();
 
   wxCommandEvent e(Frame_Refresh, GetId());
   wxPostEvent(GetParent(), e);
