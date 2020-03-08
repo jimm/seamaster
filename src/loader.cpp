@@ -12,8 +12,8 @@
 
 using namespace std;
 
-static const markup org_mode_markup = {'*', "-*+", "#+"};
-static const markup markdown_mode_markup = {'#', "-*+", "```"};
+static const markup org_mode_markup = {'*', "-*+", "#+", ":"};
+static const markup markdown_mode_markup = {'#', "-*+", "```", ">"};
 
 static const char * const default_patch_name = "Default Patch";
 static const char * const whitespace = " \t";
@@ -153,6 +153,8 @@ void Loader::parse_line(char *line) {
 
   // Now we can strip leading whitespace.
   line += start;
+  if (is_markup_block_line(line))
+    line += strlen(markup.block_line_prefix);
 
   switch (section) {
   case INSTRUMENTS:
@@ -674,6 +676,10 @@ bool Loader::is_table_row(const char *line) {
 
 bool Loader::is_markup_block_command(const char *line) {
   return strncasecmp(line, markup.block_marker_prefix, strlen(markup.block_marker_prefix)) == 0;
+}
+
+bool Loader::is_markup_block_line(const char *line) {
+  return strncasecmp(line, markup.block_line_prefix, strlen(markup.block_line_prefix)) == 0;
 }
 
 void Loader::determine_markup(const char *path) {

@@ -37,6 +37,7 @@ typedef struct markup {
   char header_char;
   const char *list_chars;
   const char *block_marker_prefix;
+  const char *block_line_prefix;
 } markup;
 
 class Loader {
@@ -110,6 +111,7 @@ private:
   bool is_list_item(const char *);
   bool is_table_row(const char *);
   bool is_markup_block_command(const char *);
+  bool is_markup_block_line(const char *);
   void determine_markup(const char *);
   void clear_notes();
 };
