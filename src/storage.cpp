@@ -60,11 +60,11 @@ PatchMaster *Storage::load(bool testing) {
   return pm;
 }
 
-void Storage::save(PatchMaster *patchmaster) {
+void Storage::save(PatchMaster *patchmaster, bool testing) {
   if (db == nullptr)
     return;
 
-  initialize();
+  initialize(testing);
   if (has_error())
     return;
 
@@ -84,7 +84,12 @@ string Storage::error() {
   return error_str;
 }
 
-void Storage::initialize() {
+void Storage::initialize(bool testing) {
+  if (testing) {
+    initialize_with_schema_file("db/schema.sql");
+    return;
+  }
+
   char *xdg_config_home = getenv("XDG_CONFIG_HOME");
   string config_path;
   if (xdg_config_home == nullptr) {
@@ -98,7 +103,6 @@ void Storage::initialize() {
   initialize_with_schema_file(config_path);
 }
 
-// This is public only because testing requires we override the path.
 void Storage::initialize_with_schema_file(string config_path) {
   // read schema file and execute
   char *error_buf;
@@ -117,6 +121,7 @@ void Storage::initialize_with_schema_file(string config_path) {
 // ================================================================
 
 void Storage::load_instruments() {
+  fprintf(stderr, "load_instruments\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
     "select id, type, name, port_name from instruments order by name, port_name";
@@ -137,6 +142,7 @@ void Storage::load_instruments() {
 }
 
 void Storage::load_messages() {
+  fprintf(stderr, "load_messages\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, bytes from messages order by id";
 
@@ -159,6 +165,7 @@ void Storage::load_messages() {
 }
 
 void Storage::load_triggers() {
+  fprintf(stderr, "load_triggers\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id, input_id, trigger_message_bytes, action, message_id"
@@ -198,6 +205,7 @@ void Storage::load_triggers() {
 }
 
 void Storage::load_songs() {
+  fprintf(stderr, "load_songs\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, notes from songs order by name";
 
@@ -216,6 +224,7 @@ void Storage::load_songs() {
 }
 
 void Storage::load_patches(Song *s) {
+  fprintf(stderr, "load_patches\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, start_message_id, stop_message_id from patches where song_id = ? order by position";
 
@@ -266,12 +275,14 @@ void Storage::load_patches(Song *s) {
 }
 
 void Storage::create_default_patches() {
+  fprintf(stderr, "create_default_patches\n"); // DEBUG
   for (auto& song : pm->all_songs->songs)
     if (song->patches.empty())
       create_default_patch(song);
 }
 
 void Storage::create_default_patch(Song *s) {
+  fprintf(stderr, "create_default_patch\n"); // DEBUG
   Patch *p = new Patch(++max_patch_id, "Default Patch");
   s->patches.push_back(p);
   for (auto& input : pm->inputs) {
@@ -287,6 +298,7 @@ void Storage::create_default_patch(Song *s) {
 }
 
 void Storage::load_connections(Patch *p) {
+  fprintf(stderr, "load_connections\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id,"
@@ -334,6 +346,7 @@ void Storage::load_connections(Patch *p) {
 }
 
 void Storage::load_controller_mappings(Connection *conn) {
+  fprintf(stderr, "load_controller_mappings\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id, cc_num, translated_cc_num, min, max, filtered"
@@ -361,6 +374,7 @@ void Storage::load_controller_mappings(Connection *conn) {
 }
 
 void Storage::load_set_lists() {
+  fprintf(stderr, "load_set_lists\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name from set_lists order by name";
 
@@ -376,6 +390,7 @@ void Storage::load_set_lists() {
 }
 
 void Storage::load_set_list_songs(SetList *slist) {
+  fprintf(stderr, "load_set_list_songs\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select song_id from set_lists_songs where set_list_id = ? order by position";
 
@@ -588,7 +603,11 @@ void Storage::save_set_lists() {
     "insert into set_lists (id, name) values (?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
-  for (auto &set_list : pm->set_lists) {
+  for (vector<SetList *>::iterator iter = ++(pm->set_lists.begin());
+       iter != pm->set_lists.end();
+       ++iter)
+  {
+    SetList *set_list = *iter;
     sqlite3_bind_int(stmt, 1, set_list->id());
     sqlite3_bind_text(stmt, 2, set_list->name.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);

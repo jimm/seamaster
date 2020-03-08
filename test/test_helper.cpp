@@ -39,7 +39,7 @@ void _initialize_and_load_database(sqlite3 *db) {
   int status;
 
   // read schema file and execute
-  std::ifstream schema_t(SCHEMA_PATH);
+  std::ifstream schema_t(LOCAL_SCHEMA_PATH);
   std::string schema_sql((std::istreambuf_iterator<char>(schema_t)),
                          std::istreambuf_iterator<char>());
   status = sqlite3_exec(db, schema_sql.c_str(), nullptr, nullptr, &error_buf);

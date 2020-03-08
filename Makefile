@@ -47,7 +47,7 @@ $(bindir)/$(NAME):	$(NAME)
 	cp ./$(NAME) $(bindir)
 	chmod 755 $(bindir)/$(NAME)
 
-$(CONFIG_DIR)/schema.sql:
+$(CONFIG_DIR)/schema.sql: db/schema.sql
 	mkdir -p $(CONFIG_DIR)
 	cp db/schema.sql $(CONFIG_DIR)
 

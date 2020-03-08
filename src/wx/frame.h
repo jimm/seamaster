@@ -58,6 +58,7 @@ public:
 
   void initialize();
   void load(wxString path);
+  void save();
 
   int handle_global_key_event(wxKeyEvent &event);
 
@@ -83,6 +84,7 @@ public:
   void jump_to_patch();
 
 private:
+  wxString file_path;
   wxMenuBar *menu_bar;
   SetListListBox *lc_set_lists;
   SetListBox *lc_set_list;
@@ -96,6 +98,8 @@ private:
   int clear_msg_id;
 
   void OnOpen(wxCommandEvent& event);
+  void OnSave(wxCommandEvent& event);
+  void OnSaveAs(wxCommandEvent& event);
   void OnListInstruments(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);

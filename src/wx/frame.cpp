@@ -1,5 +1,6 @@
 #include <wx/persist/toplevel.h>
 #include <wx/defs.h>
+#include <wx/filename.h>
 #include <wx/listctrl.h>
 #include <wx/textctrl.h>
 #include <wx/gbsizer.h>
@@ -36,6 +37,8 @@ wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)
+  EVT_MENU(wxID_SAVE,  Frame::OnSave)
+  EVT_MENU(wxID_SAVEAS,  Frame::OnSaveAs)
   EVT_MENU(ID_GoNextSong, Frame::next_song)
   EVT_MENU(ID_GoPrevSong, Frame::prev_song)
   EVT_MENU(ID_GoNextPatch, Frame::next_patch)
@@ -209,6 +212,8 @@ wxWindow * Frame::make_patch_panel(wxPanel *parent) {
 void Frame::make_menu_bar() {
   wxMenu *menu_file = new wxMenu;
   menu_file->Append(wxID_OPEN);
+  menu_file->Append(wxID_SAVE);
+  menu_file->Append(wxID_SAVEAS);
   menu_file->AppendSeparator();
   menu_file->Append(wxID_EXIT);
 
@@ -665,11 +670,36 @@ void Frame::OnAbout(wxCommandEvent &_event) {
 }
 
 void Frame::OnOpen(wxCommandEvent &_event) {
-  wxFileDialog openFileDialog(this, _("Open SeaMaster file"), "", "",
-                              "SeaMaster files (*.org;*.md)|*.org;*.md",
+  wxFileName fname(file_path);
+
+  wxFileDialog openFileDialog(this, "Open SeaMaster file",
+                              fname.GetPath(), fname.GetFullName(),
+                              "SeaMaster files (*.sm)|*.sm",
                               wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-  if (openFileDialog.ShowModal() != wxID_CANCEL)
-    load(openFileDialog.GetPath());
+  if (openFileDialog.ShowModal() != wxID_CANCEL) {
+    file_path = openFileDialog.GetPath();
+    load(file_path);
+  }
+  update_menu_items();
+}
+
+void Frame::OnSave(wxCommandEvent &_event) {
+  save();
+  update_menu_items();
+}
+
+void Frame::OnSaveAs(wxCommandEvent &_event) {
+  wxFileName fname(file_path);
+
+  wxFileDialog file_dialog(this, "Save SeaMaster file",
+                           fname.GetPath(), fname.GetFullName(),
+                           "SeaMaster files (*.sm)|*.sm",
+                           wxFD_SAVE);
+  if (file_dialog.ShowModal() != wxID_CANCEL) {
+    file_path = file_dialog.GetPath();
+    save();
+    update_menu_items();
+  }
 }
 
 // ================ windows ================
@@ -708,6 +738,14 @@ void Frame::load(wxString path) {
   }
   pm->start();                  // initializes cursor
   update();                     // must come after start
+}
+
+void Frame::save() {
+  if (file_path.empty())
+    return;
+
+  Storage storage(file_path);
+  storage.save(PatchMaster_instance());
 }
 
 long Frame::selected_trigger_index() {
@@ -761,6 +799,10 @@ void Frame::update_song_notes() {
 void Frame::update_menu_items() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
+
+  // file menu
+  menu_bar->FindItem(wxID_SAVE, nullptr)
+    ->Enable(!file_path.empty());
 
   // edit menu
   menu_bar->FindItem(ID_DestroyMessage, nullptr)
