@@ -64,11 +64,13 @@ void PatchMaster::initialize() {
 }
 
 void PatchMaster::load_instruments() {
+  if (testing)
+    return;
+
   int num_devices = Pm_CountDevices();
 
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
-    fprintf(stderr, "info id %d name '%s', opened = %d\n", i, info->name, info->opened); // DEBUG
     if (info->input)
       inputs.push_back(new Input(-1, info->name, info->name, i));
     if (info->output)

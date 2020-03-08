@@ -121,7 +121,6 @@ void Storage::initialize_with_schema_file(string config_path) {
 // ================================================================
 
 void Storage::load_instruments() {
-  fprintf(stderr, "load_instruments\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
     "select id, type, name, port_name from instruments order by name, port_name";
@@ -142,7 +141,6 @@ void Storage::load_instruments() {
 }
 
 void Storage::load_messages() {
-  fprintf(stderr, "load_messages\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, bytes from messages order by id";
 
@@ -165,7 +163,6 @@ void Storage::load_messages() {
 }
 
 void Storage::load_triggers() {
-  fprintf(stderr, "load_triggers\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id, input_id, trigger_message_bytes, action, message_id"
@@ -205,7 +202,6 @@ void Storage::load_triggers() {
 }
 
 void Storage::load_songs() {
-  fprintf(stderr, "load_songs\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, notes from songs order by name";
 
@@ -224,7 +220,6 @@ void Storage::load_songs() {
 }
 
 void Storage::load_patches(Song *s) {
-  fprintf(stderr, "load_patches\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name, start_message_id, stop_message_id from patches where song_id = ? order by position";
 
@@ -275,14 +270,12 @@ void Storage::load_patches(Song *s) {
 }
 
 void Storage::create_default_patches() {
-  fprintf(stderr, "create_default_patches\n"); // DEBUG
   for (auto& song : pm->all_songs->songs)
     if (song->patches.empty())
       create_default_patch(song);
 }
 
 void Storage::create_default_patch(Song *s) {
-  fprintf(stderr, "create_default_patch\n"); // DEBUG
   Patch *p = new Patch(++max_patch_id, "Default Patch");
   s->patches.push_back(p);
   for (auto& input : pm->inputs) {
@@ -298,7 +291,6 @@ void Storage::create_default_patch(Song *s) {
 }
 
 void Storage::load_connections(Patch *p) {
-  fprintf(stderr, "load_connections\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id,"
@@ -346,7 +338,6 @@ void Storage::load_connections(Patch *p) {
 }
 
 void Storage::load_controller_mappings(Connection *conn) {
-  fprintf(stderr, "load_controller_mappings\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql =
 "select id, cc_num, translated_cc_num, min, max, filtered"
@@ -374,7 +365,6 @@ void Storage::load_controller_mappings(Connection *conn) {
 }
 
 void Storage::load_set_lists() {
-  fprintf(stderr, "load_set_lists\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select id, name from set_lists order by name";
 
@@ -390,7 +380,6 @@ void Storage::load_set_lists() {
 }
 
 void Storage::load_set_list_songs(SetList *slist) {
-  fprintf(stderr, "load_set_list_songs\n"); // DEBUG
   sqlite3_stmt *stmt;
   const char * const sql = "select song_id from set_lists_songs where set_list_id = ? order by position";
 

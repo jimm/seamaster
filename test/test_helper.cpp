@@ -5,24 +5,44 @@
 #include "test_helper.h"
 #include "../src/storage.h"
 
-void _initialize_and_load_database(sqlite3 *);
+void _initialize_database() {
+  if (access(TEST_DB_PATH, F_OK) != -1)
+    remove(TEST_DB_PATH);
+
+  Storage storage(TEST_DB_PATH);
+  storage.initialize(true);
+}
+
+void _initialize_and_load_database() {
+  _initialize_database();
+
+  sqlite3 *db;
+  int status = sqlite3_open(TEST_DB_PATH, &db);
+  if (status != 0) {
+    fprintf(stderr,  "error opening database file %s", TEST_DB_PATH);
+    exit(1);
+  }
+
+  // read data file and execute
+  char *error_buf;
+  std::ifstream data_t(TEST_DATA_PATH);
+  std::string data_sql((std::istreambuf_iterator<char>(data_t)),
+                       std::istreambuf_iterator<char>());
+  status = sqlite3_exec(db, data_sql.c_str(), nullptr, nullptr, &error_buf);
+  if (status != 0) {
+    fprintf(stderr, "%s\n", error_buf);
+    exit(1);
+  }
+
+  sqlite3_close(db);
+}
 
 PatchMaster *load_test_data() {
   PatchMaster *old_pm = PatchMaster_instance();
   if (old_pm)
     delete old_pm;
 
-  if (access(TEST_DB_PATH, F_OK) != -1)
-    remove(TEST_DB_PATH);
-
-  sqlite3 *db;
-  int status = sqlite3_open(TEST_DB_PATH, &db);
-  if (status != 0) {
-    fprintf(stderr, "%s\n", sqlite3_errmsg(db));
-    exit(1);
-  }
-  _initialize_and_load_database(db);
-  sqlite3_close(db);
+  _initialize_and_load_database();
 
   Storage storage(TEST_DB_PATH);
   PatchMaster *pm = storage.load(true);
@@ -32,31 +52,6 @@ PatchMaster *load_test_data() {
   }
   pm->testing = true;
   return pm;
-}
-
-void _initialize_and_load_database(sqlite3 *db) {
-  char *error_buf;
-  int status;
-
-  // read schema file and execute
-  std::ifstream schema_t(LOCAL_SCHEMA_PATH);
-  std::string schema_sql((std::istreambuf_iterator<char>(schema_t)),
-                         std::istreambuf_iterator<char>());
-  status = sqlite3_exec(db, schema_sql.c_str(), nullptr, nullptr, &error_buf);
-  if (status != 0) {
-    fprintf(stderr, "%s\n", error_buf);
-    exit(1);
-  }
-
-  // read data file and execute
-  std::ifstream data_t(TEST_DATA_PATH);
-  std::string data_sql((std::istreambuf_iterator<char>(data_t)),
-                       std::istreambuf_iterator<char>());
-  status = sqlite3_exec(db, data_sql.c_str(), nullptr, nullptr, &error_buf);
-  if (status != 0) {
-    fprintf(stderr, "%s\n", error_buf);
-    exit(1);
-  }
 }
 
 Connection *create_conn() {

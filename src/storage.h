@@ -13,6 +13,8 @@ public:
   Storage(const char *path);
   ~Storage();
 
+  void initialize(bool testing = false); // public for testing
+
   PatchMaster *load(bool testing = false);
   void save(PatchMaster *pm, bool testing = false);
   bool has_error();
@@ -25,7 +27,6 @@ private:
   int max_patch_id;
   int max_conn_id;
 
-  void initialize(bool testing = false);
   void initialize_with_schema_file(string config_path);
 
   void load_instruments();
