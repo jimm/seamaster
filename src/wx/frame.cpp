@@ -666,8 +666,11 @@ void Frame::super_panic(wxCommandEvent &_event) {
 // ================ standard menu items ================
 
 void Frame::OnAbout(wxCommandEvent &_event) {
-  wxMessageBox("SeaMaster, the MIDI processing and patching system.\nJim Menard, jim@jimmenard.com\nhttps://github.com/jimm/seamaster/wiki",
-                "About SeaMaster", wxOK | wxICON_INFORMATION);
+  wxMessageBox("SeaMaster, the MIDI processing and patching system.\n"
+               "v1.0.0\n"
+               "Jim Menard, jim@jimmenard.com\n"
+               "https://github.com/jimm/seamaster/wiki",
+               "About SeaMaster", wxOK | wxICON_INFORMATION);
 }
 
 void Frame::OnOpen(wxCommandEvent &_event) {
