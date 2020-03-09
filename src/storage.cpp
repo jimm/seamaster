@@ -171,9 +171,9 @@ void Storage::load_messages() {
 void Storage::load_triggers() {
   sqlite3_stmt *stmt;
   const char * const sql =
-"select id, input_id, trigger_message_bytes, action, message_id"
-" from triggers"
-" order by id";
+    "select id, input_id, trigger_message_bytes, action, message_id"
+    " from triggers"
+    " order by id";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -227,7 +227,11 @@ void Storage::load_songs() {
 
 void Storage::load_patches(Song *s) {
   sqlite3_stmt *stmt;
-  const char * const sql = "select id, name, start_message_id, stop_message_id from patches where song_id = ? order by position";
+  const char * const sql =
+    "select id, name, start_message_id, stop_message_id"
+    " from patches"
+    " where song_id = ?"
+    " order by position";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   sqlite3_bind_int(stmt, 1, s->id());
@@ -299,13 +303,13 @@ void Storage::create_default_patch(Song *s) {
 void Storage::load_connections(Patch *p) {
   sqlite3_stmt *stmt;
   const char * const sql =
-"select id,"
-"   input_id, input_chan, output_id, output_chan,"
-"   bank_msb, bank_lsb, prog,"
-"   zone_low, zone_high, xpose, pass_through_sysex"
-" from connections"
-" where patch_id = ?"
-" order by position";
+    "select id,"
+    "   input_id, input_chan, output_id, output_chan,"
+    "   bank_msb, bank_lsb, prog,"
+    "   zone_low, zone_high, xpose, pass_through_sysex"
+    " from connections"
+    " where patch_id = ?"
+    " order by position";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   sqlite3_bind_int(stmt, 1, p->id());
@@ -346,9 +350,9 @@ void Storage::load_connections(Patch *p) {
 void Storage::load_controller_mappings(Connection *conn) {
   sqlite3_stmt *stmt;
   const char * const sql =
-"select id, cc_num, translated_cc_num, min, max, filtered"
-" from controller_mappings"
-" where connection_id = ?";
+    "select id, cc_num, translated_cc_num, min, max, filtered"
+    " from controller_mappings"
+    " where connection_id = ?";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   sqlite3_bind_int(stmt, 1, conn->id());
@@ -502,13 +506,10 @@ void Storage::save_songs() {
   for (auto& song : pm->all_songs->songs) {
     BIND_ID_OR_NULL(1, song->id());
     sqlite3_bind_text(stmt, 2, song->name.c_str(), -1, SQLITE_STATIC);
-    string notes = "";
-    for (auto& line : song->notes)
-      notes += line;
-    if (notes == "")
+    if (song->notes.empty())
       sqlite3_bind_null(stmt, 3);
     else
-      sqlite3_bind_text(stmt, 3, notes.c_str(), -1, SQLITE_STATIC);
+      sqlite3_bind_text(stmt, 3, song->notes.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
     EXTRACT_ID(song);
     sqlite3_reset(stmt);
@@ -520,7 +521,9 @@ void Storage::save_songs() {
 void Storage::save_patches(Song *song) {
   sqlite3_stmt *stmt;
   const char * const sql =
-    "insert into patches (id, song_id, position, name, start_message_id, stop_message_id) values (?, ?, ?, ?, ?, ?)";
+    "insert into patches"
+    "   (id, song_id, position, name, start_message_id, stop_message_id)"
+    " values (?, ?, ?, ?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
@@ -542,7 +545,10 @@ void Storage::save_patches(Song *song) {
 void Storage::save_connections(Patch *patch) {
   sqlite3_stmt *stmt;
   const char * const sql =
-    "insert into connections (id, patch_id, position, input_id, input_chan, output_id, output_chan, bank_msb, bank_lsb, prog, zone_low, zone_high, xpose, pass_through_sysex) values (?, ?, ?, ?, ?, ?)";
+    "insert into connections"
+    "   (id, patch_id, position, input_id, input_chan, output_id, output_chan,"
+    "    bank_msb, bank_lsb, prog, zone_low, zone_high, xpose, pass_through_sysex)"
+    " values (?, ?, ?, ?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
@@ -551,15 +557,9 @@ void Storage::save_connections(Patch *patch) {
     sqlite3_bind_int(stmt, 2, patch->id());
     sqlite3_bind_int(stmt, 3, position++);
     sqlite3_bind_int(stmt, 4, conn->input->id());
-    if (conn->input_chan == CONNECTION_ALL_CHANNELS)
-      sqlite3_bind_null(stmt, 5);
-    else
-      sqlite3_bind_int(stmt, 5, conn->input_chan);
+    BIND_INT_OR_NULL(5, conn->input_chan, CONNECTION_ALL_CHANNELS);
     sqlite3_bind_int(stmt, 6, conn->output->id());
-    if (conn->output_chan == CONNECTION_ALL_CHANNELS)
-      sqlite3_bind_null(stmt, 7);
-    else
-      sqlite3_bind_int(stmt, 7, conn->output_chan);
+    BIND_INT_OR_NULL(7, conn->output_chan, CONNECTION_ALL_CHANNELS);
     BIND_INT_OR_NULL(8, conn->prog.bank_msb, UNDEFINED);
     BIND_INT_OR_NULL(9, conn->prog.bank_lsb, UNDEFINED);
     BIND_INT_OR_NULL(10, conn->prog.prog, UNDEFINED);
@@ -578,7 +578,9 @@ void Storage::save_connections(Patch *patch) {
 void Storage::save_controller_mappings(Connection *conn) {
   sqlite3_stmt *stmt;
   const char * const sql =
-    "insert into controller_mappings (id, connection_id, cc_num, translated_cc_num, min, max, filtered) values (?, ?, ?, ?, ?, ?, ?)";
+    "insert into controller_mappings"
+    "   (id, connection_id, cc_num, translated_cc_num, min, max, filtered)"
+    " values (?, ?, ?, ?, ?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (int i = 0; i < 128; ++i) {
@@ -624,7 +626,8 @@ void Storage::save_set_lists() {
 void Storage::save_set_list_songs(SetList *set_list) {
   sqlite3_stmt *stmt;
   const char * const sql =
-    "insert into set_lists_songs (set_list_id, song_id, position) values (?, ?, ?)";
+    "insert into set_lists_songs (set_list_id, song_id, position)"
+    " values (?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
