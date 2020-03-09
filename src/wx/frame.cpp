@@ -4,6 +4,7 @@
 #include <wx/listctrl.h>
 #include <wx/textctrl.h>
 #include <wx/gbsizer.h>
+#include <unistd.h>
 #include "frame.h"
 #include "set_list_box.h"
 #include "set_list_list_box.h"
@@ -722,6 +723,12 @@ void Frame::initialize() {
 }
 
 void Frame::load(wxString path) {
+  if (access(path, F_OK) != 0) {
+    wxString err = wxString::Format("File '%s' does not exist", path);
+    wxLogError(err);
+    return;
+  }
+
   PatchMaster *old_pm = PatchMaster_instance();
   bool testing = old_pm != nullptr && old_pm->testing;
   Storage storage(path);
