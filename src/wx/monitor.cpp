@@ -91,7 +91,7 @@ wxWindow *Monitor::make_panel(wxPanel *parent, const char * const title, wxListC
   }
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, title), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, title), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(*list_ptr, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);

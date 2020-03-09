@@ -282,7 +282,7 @@ TEST_CASE("save", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
 
   Storage storage(TEST_DB_PATH);
-  storage.save(pm);
+  storage.save(pm, true);
   REQUIRE(storage.has_error() == false);
 
   pm = storage.load(true);
@@ -299,4 +299,20 @@ TEST_CASE("save", CATCH_CATEGORY) {
   REQUIRE(pm->set_lists[0] == pm->all_songs);
   REQUIRE(pm->set_lists[1]->name == "Set List One");
   REQUIRE(pm->set_lists[2]->name == "Set List Two");
+}
+
+TEST_CASE("save sets UNDEFINED ids", CATCH_CATEGORY) {
+  PatchMaster *pm = new PatchMaster();
+  pm->testing = true;
+  pm->initialize();
+
+  Song *s = new Song(UNDEFINED, "unnamed");
+  pm->all_songs->songs.push_back(s);
+  REQUIRE(s->id() == UNDEFINED);
+
+  Storage storage(TEST_DB_PATH);
+  storage.save(pm, true);
+  REQUIRE(storage.has_error() == false);
+  REQUIRE(s->id() != UNDEFINED);
+  REQUIRE(s->id() >= 1);
 }

@@ -55,9 +55,9 @@ PatchMaster *load_test_data() {
 }
 
 Connection *create_conn() {
-  Input *in = new Input(-1, "in1", "in port name", CONNECTION_ALL_CHANNELS);
-  Output *out = new Output(-1, "out1", "out port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn = new Connection(-1, in, 0, out, 0);
+  Input *in = new Input(UNDEFINED, "in1", "in port name", CONNECTION_ALL_CHANNELS);
+  Output *out = new Output(UNDEFINED, "out1", "out port name", CONNECTION_ALL_CHANNELS);
+  Connection *conn = new Connection(UNDEFINED, in, 0, out, 0);
   vector<PmMessage> empty;
   conn->start();                // add conn to input
   return conn;

@@ -34,9 +34,9 @@ InstrumentDialog::InstrumentDialog(wxWindow *parent, PatchMaster *patchmaster)
   wxSizer *buttons = CreateButtonSizer(wxOK);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(this, -1, "Inputs"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(this, wxID_ANY, "Inputs"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(inputs, wxSizerFlags(1).Expand());
-  sizer->Add(new wxStaticText(this, -1, "Outputs"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(this, wxID_ANY, "Outputs"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(outputs, wxSizerFlags(1).Expand());
   sizer->Add(buttons, wxSizerFlags().Expand().DoubleBorder());
 

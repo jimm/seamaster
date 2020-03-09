@@ -7,6 +7,7 @@ public:
   virtual ~DBObj() {}
 
   int id() { return _id; }
+  void set_id(int id) { _id = id; }
 
 private:
   int _id;

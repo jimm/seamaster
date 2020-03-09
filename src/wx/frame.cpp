@@ -133,7 +133,7 @@ wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
                                wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_set_list, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -146,7 +146,7 @@ wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
                                       wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Set Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Set Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_set_lists, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -159,7 +159,7 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
                                 wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_song_patches, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -172,7 +172,7 @@ wxWindow * Frame::make_message_panel(wxPanel *parent) {
                                 wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Messages"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Messages"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_messages, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -184,7 +184,7 @@ wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
   lc_triggers = new TriggerList(p, ID_TriggerList);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
@@ -197,7 +197,7 @@ wxWindow * Frame::make_notes_panel(wxPanel *parent) {
                             wxSize(NOTES_WIDTH, TALL_LIST_HEIGHT), wxTE_MULTILINE);
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  sizer->Add(new wxStaticText(p, -1, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(lc_notes, wxSizerFlags(1).Expand().Border(wxALL));
 
   p->SetSizerAndFit(sizer);

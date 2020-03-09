@@ -12,14 +12,20 @@
 #include "storage.h"
 #include "formatter.h"
 
+// TODO ID is int64
+
 #define INT_OR_NULL(col_num, null_val) \
   (sqlite3_column_type(stmt, col_num) == SQLITE_NULL ? null_val : sqlite3_column_int(stmt, col_num))
 #define TEXT_OR_NULL(col_num, null_val) \
   (sqlite3_column_type(stmt, col_num) == SQLITE_NULL ? null_val : (const char *)sqlite3_column_text(stmt, col_num))
-#define BIND_ID_OR_NULL(col_num, obj_ptr) \
+#define BIND_OBJ_ID_OR_NULL(col_num, obj_ptr) \
   (obj_ptr == nullptr ? sqlite3_bind_null(stmt, col_num) : sqlite3_bind_int(stmt, col_num, obj_ptr->id()))
+#define BIND_ID_OR_NULL(col_num, val) \
+  (val == UNDEFINED ? sqlite3_bind_null(stmt, col_num) : sqlite3_bind_int64(stmt, col_num, val))
 #define BIND_INT_OR_NULL(col_num, val, nullval) \
   (val == nullval ? sqlite3_bind_null(stmt, col_num) : sqlite3_bind_int(stmt, col_num, val))
+#define EXTRACT_ID(db_obj) \
+  { if ((db_obj)->id() == UNDEFINED) (db_obj)->set_id(sqlite3_last_insert_rowid(db)); }
 
 using namespace std;
 
@@ -404,19 +410,21 @@ void Storage::save_instruments() {
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (auto& input : pm->inputs) {
-    sqlite3_bind_int(stmt, 1, input->id());
+    BIND_ID_OR_NULL(1, input->id());
     sqlite3_bind_int(stmt, 2, 0);
     sqlite3_bind_text(stmt, 3, input->name.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, input->port_name.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
+    EXTRACT_ID(input);
     sqlite3_reset(stmt);
   }
   for (auto& output : pm->outputs) {
-    sqlite3_bind_int(stmt, 1, output->id());
+    BIND_ID_OR_NULL(1, output->id());
     sqlite3_bind_int(stmt, 2, 1);
     sqlite3_bind_text(stmt, 3, output->name.c_str(), -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, output->port_name.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
+    EXTRACT_ID(output);
     sqlite3_reset(stmt);
   }
   sqlite3_finalize(stmt);
@@ -441,10 +449,11 @@ void Storage::save_messages() {
 }
 
 void Storage::save_message(sqlite3_stmt *stmt, Message *msg) {
-  sqlite3_bind_int(stmt, 1, msg->id());
+  BIND_ID_OR_NULL(1, msg->id());
   sqlite3_bind_text(stmt, 2, msg->name.c_str(), -1, SQLITE_STATIC);
   sqlite3_bind_text(stmt, 3, message_to_byte_str(msg).c_str(), -1, SQLITE_STATIC);
   sqlite3_step(stmt);
+  EXTRACT_ID(msg);
   sqlite3_reset(stmt);
 }
 
@@ -456,7 +465,7 @@ void Storage::save_triggers() {
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (auto& input : pm->inputs) {
     for (auto& trigger : input->triggers) {
-      sqlite3_bind_int(stmt, 1, trigger->id());
+      BIND_ID_OR_NULL(1, trigger->id());
       sqlite3_bind_int(stmt, 2, input->id());
       sqlite3_bind_text(stmt, 3, pm_message_to_bytes(trigger->trigger_message).c_str(),
                         -1, SQLITE_STATIC);
@@ -477,6 +486,7 @@ void Storage::save_triggers() {
         sqlite3_bind_null(stmt, 5);
       }
       sqlite3_step(stmt);
+      EXTRACT_ID(trigger);
       sqlite3_reset(stmt);
     }
   }
@@ -490,7 +500,7 @@ void Storage::save_songs() {
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (auto& song : pm->all_songs->songs) {
-    sqlite3_bind_int(stmt, 1, song->id());
+    BIND_ID_OR_NULL(1, song->id());
     sqlite3_bind_text(stmt, 2, song->name.c_str(), -1, SQLITE_STATIC);
     string notes = "";
     for (auto& line : song->notes)
@@ -500,6 +510,7 @@ void Storage::save_songs() {
     else
       sqlite3_bind_text(stmt, 3, notes.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
+    EXTRACT_ID(song);
     sqlite3_reset(stmt);
     save_patches(song);
   }
@@ -514,13 +525,14 @@ void Storage::save_patches(Song *song) {
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
   for (auto& patch : song->patches) {
-    sqlite3_bind_int(stmt, 1, patch->id());
+    BIND_ID_OR_NULL(1, patch->id());
     sqlite3_bind_int(stmt, 2, song->id());
     sqlite3_bind_int(stmt, 3, position++);
     sqlite3_bind_text(stmt, 4, patch->name.c_str(), -1, SQLITE_STATIC);
-    BIND_ID_OR_NULL(5, patch->start_message);
-    BIND_ID_OR_NULL(6, patch->stop_message);
+    BIND_OBJ_ID_OR_NULL(5, patch->start_message);
+    BIND_OBJ_ID_OR_NULL(6, patch->stop_message);
     sqlite3_step(stmt);
+    EXTRACT_ID(patch);
     sqlite3_reset(stmt);
     save_connections(patch);
   }
@@ -535,7 +547,7 @@ void Storage::save_connections(Patch *patch) {
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
   for (auto& conn : patch->connections) {
-    sqlite3_bind_int(stmt, 1, conn->id());
+    BIND_ID_OR_NULL(1, conn->id());
     sqlite3_bind_int(stmt, 2, patch->id());
     sqlite3_bind_int(stmt, 3, position++);
     sqlite3_bind_int(stmt, 4, conn->input->id());
@@ -556,6 +568,7 @@ void Storage::save_connections(Patch *patch) {
     sqlite3_bind_int(stmt, 13, conn->xpose);
     sqlite3_bind_int(stmt, 14, conn->pass_through_sysex ? 1 : 0);
     sqlite3_step(stmt);
+    EXTRACT_ID(conn);
     sqlite3_reset(stmt);
     save_controller_mappings(conn);
   }
@@ -573,7 +586,7 @@ void Storage::save_controller_mappings(Connection *conn) {
     if (cc == nullptr)
       continue;
 
-    sqlite3_bind_int(stmt, 1, cc->id());
+    BIND_ID_OR_NULL(1, cc->id());
     sqlite3_bind_int(stmt, 2, conn->id());
     sqlite3_bind_int(stmt, 3, cc->cc_num);
     sqlite3_bind_int(stmt, 4, cc->translated_cc_num);
@@ -581,6 +594,7 @@ void Storage::save_controller_mappings(Connection *conn) {
     sqlite3_bind_int(stmt, 6, cc->max);
     sqlite3_bind_int(stmt, 7, cc->filtered ? 1 : 0);
     sqlite3_step(stmt);
+    EXTRACT_ID(cc);
     sqlite3_reset(stmt);
   }
   sqlite3_finalize(stmt);
@@ -597,9 +611,10 @@ void Storage::save_set_lists() {
        ++iter)
   {
     SetList *set_list = *iter;
-    sqlite3_bind_int(stmt, 1, set_list->id());
+    BIND_ID_OR_NULL(1, set_list->id());
     sqlite3_bind_text(stmt, 2, set_list->name.c_str(), -1, SQLITE_STATIC);
     sqlite3_step(stmt);
+    EXTRACT_ID(set_list);
     sqlite3_reset(stmt);
     save_set_list_songs(set_list);
   }

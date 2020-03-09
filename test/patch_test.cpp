@@ -5,9 +5,9 @@
 #define CATCH_CATEGORY "[patch]"
 
 TEST_CASE("start msgs", CATCH_CATEGORY) {
-  Patch p(-1, "test patch");
+  Patch p(UNDEFINED, "test patch");
   Connection *conn = create_conn();
-  Message message(-1, "A Message");
+  Message message(UNDEFINED, "A Message");
   PmMessage pm_message = Pm_Message(0x32, 0x12, 0);
   message.messages.push_back(pm_message);
 
@@ -20,9 +20,9 @@ TEST_CASE("start msgs", CATCH_CATEGORY) {
 }
 
 TEST_CASE("stop msgs", CATCH_CATEGORY) {
-  Patch p(-1, "test patch");
+  Patch p(UNDEFINED, "test patch");
   Connection *conn = create_conn();
-  Message message(-1, "A Message");
+  Message message(UNDEFINED, "A Message");
   PmMessage pm_message = Pm_Message(0x32, 0x12, 0);
   message.messages.push_back(pm_message);
 
