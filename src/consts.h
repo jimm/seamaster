@@ -6,7 +6,6 @@
 #define UNDEFINED -1
 #define CONNECTION_ALL_CHANNELS -1
 #define CONTROLLER_BLOCK -1
-#define CONTROLLER_NO_XLATE -1
 
 // MIDI constants
 

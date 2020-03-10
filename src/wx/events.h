@@ -7,6 +7,7 @@
 #endif
 
 wxDECLARE_EVENT(Frame_Refresh, wxCommandEvent);
+wxDECLARE_EVENT(Connection_Refresh, wxCommandEvent);
 
 
 #endif /* EVENTS_H */

@@ -1,11 +1,15 @@
 #include <wx/persist/toplevel.h>
 #include "connection_editor.h"
 #include "controller_mappings.h"
+#include "controller_editor.h"
+#include "events.h"
 #include "../patchmaster.h"
 #include "../connection.h"
 #include "../formatter.h"
 
 #define FRAME_NAME "seamaster_main_frame"
+
+wxDEFINE_EVENT(Connection_Refresh, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(ConnectionEditor, wxDialog)
   EVT_BUTTON(ID_CE_AddControllerMapping, ConnectionEditor::add_controller_mapping)
@@ -14,6 +18,7 @@ wxBEGIN_EVENT_TABLE(ConnectionEditor, wxDialog)
   EVT_LIST_ITEM_ACTIVATED(ID_CE_ControllerMappings, ConnectionEditor::edit_controller_mapping)
   EVT_LIST_ITEM_SELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
   EVT_LIST_ITEM_DESELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
+  EVT_COMMAND(wxID_ANY, Connection_Refresh, ConnectionEditor::update)
 wxEND_EVENT_TABLE()
 
 ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
@@ -37,7 +42,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
-  update_buttons();
+  update();
   Show(true);
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
@@ -45,7 +50,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
 wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_InputDropdown, ID_CE_InputChannel,
-    &lc_input, &lc_input_chan,
+    &cb_input, &cb_input_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->inputs),
     connection->input, connection->input_chan);
 }
@@ -53,7 +58,7 @@ wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
 wxWindow *ConnectionEditor::make_output_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_OutputDropdown, ID_CE_OutputChannel,
-    &lc_output, &lc_output_chan,
+    &cb_output, &cb_output_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->outputs),
     connection->output, connection->output_chan);
 }
@@ -239,12 +244,8 @@ void ConnectionEditor::edit_controller_mapping(wxListEvent& event) {
 }
 
 void ConnectionEditor::edit_controller_mapping(Controller *controller) {
-  if (controller == nullptr)
-    return;
-
-  wxMessageBox("Controller mapping editor not yet implemented",
-               "Edit Controller Mapping", wxOK | wxICON_INFORMATION);
-  // TODO
+  if (controller != nullptr)
+    new ControllerEditor(this, connection, controller);
 }
 
 void ConnectionEditor::update_buttons() {
@@ -270,7 +271,7 @@ void ConnectionEditor::add_controller_mapping(wxCommandEvent& event) {
 
   Controller *cc = new Controller(UNDEFINED, cc_num);
   connection->cc_maps[cc_num] = cc;
-  update_buttons();
+  update();
   edit_controller_mapping(cc);
 }
 
@@ -280,16 +281,21 @@ void ConnectionEditor::del_controller_mapping(wxCommandEvent& event) {
     return;
 
   connection->remove_cc_num(controller_num);
+  update();
+}
+
+void ConnectionEditor::update() {
+  lc_cc_mappings->update();
   update_buttons();
 }
 
 void ConnectionEditor::done(wxCommandEvent& event) {
-  connection->input = pm->inputs[lc_input->GetCurrentSelection()];
-  int n = lc_input->GetCurrentSelection();
+  connection->input = pm->inputs[cb_input->GetCurrentSelection()];
+  int n = cb_input->GetCurrentSelection();
   connection->input_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
 
-  connection->output = pm->outputs[lc_output->GetCurrentSelection()];
-  n = lc_output->GetCurrentSelection();
+  connection->output = pm->outputs[cb_output->GetCurrentSelection()];
+  n = cb_output->GetCurrentSelection();
   connection->output_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
 
   connection->prog.bank_msb = int_or_undefined_from_field(tc_bank_msb);

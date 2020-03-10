@@ -120,8 +120,11 @@ void Connection::midi_in(PmMessage msg) {
   }
 }
 
-void Connection::add_controller(Controller *controller) {
-  cc_maps[controller->cc_num] = controller;
+void Connection::set_controller(Controller *controller) {
+  int cc_num = controller->cc_num;
+  if (cc_maps[cc_num] != nullptr && cc_maps[cc_num] != controller)
+    remove_cc_num(cc_num);
+  cc_maps[cc_num] = controller;
 }
 
 void Connection::remove_cc_num(int cc_num) {

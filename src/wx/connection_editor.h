@@ -31,6 +31,7 @@ class PatchMaster;
 class Instrument;
 class Connection;
 class Controller;
+class ControllerMappings;
 class wxListCtrl;
 class wxListEvent;
 
@@ -38,13 +39,16 @@ class ConnectionEditor : public wxDialog {
 public:
   ConnectionEditor(wxWindow *parent, Connection *connection);
 
+  void update(wxCommandEvent& event) { update(); }
+  void update();
+
 private:
   PatchMaster *pm;
   Connection *connection;
-  wxComboBox *lc_input;
-  wxComboBox *lc_input_chan;
-  wxComboBox *lc_output;
-  wxComboBox *lc_output_chan;
+  wxComboBox *cb_input;
+  wxComboBox *cb_input_chan;
+  wxComboBox *cb_output;
+  wxComboBox *cb_output_chan;
   wxTextCtrl *tc_bank_msb;
   wxTextCtrl *tc_bank_lsb;
   wxTextCtrl *tc_prog;
@@ -52,7 +56,7 @@ private:
   wxTextCtrl *tc_zone_high;
   wxTextCtrl *tc_xpose;
   wxCheckBox *cb_sysex;
-  wxListCtrl *lc_cc_mappings;
+  ControllerMappings *lc_cc_mappings;
   wxButton *b_add_ccmap;
   wxButton *b_del_ccmap;
 

@@ -36,7 +36,7 @@ void ControllerMappings::update() {
     SetItem(row, 1, wxString::Format("%d", controller->translated_cc_num));
     SetItem(row, 2, wxString::Format("%d", controller->min));
     SetItem(row, 3, wxString::Format("%d", controller->max));
-    SetItem(row, 3, controller->filtered ? "yes" : "no");
+    SetItem(row, 4, controller->filtered ? "yes" : "no");
     ++row;
   }
 }

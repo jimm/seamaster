@@ -7,7 +7,7 @@
 class Controller : public DBObj {
 public:
   int cc_num;
-  int translated_cc_num;        // CONTROLLER_NO_XLATE means no translation
+  int translated_cc_num;
   int min;
   int max;
   bool filtered;
