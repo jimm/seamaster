@@ -36,9 +36,8 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   sizer->Add(make_sysex_panel(p));
   sizer->Add(make_cc_maps_panel(p));
 
-  // TODO better button padding
   sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
-             wxSizerFlags().Right());
+             wxSizerFlags().Right().Border(wxALL, 10));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

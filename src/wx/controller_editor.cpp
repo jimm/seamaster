@@ -21,9 +21,8 @@ ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn, Controlle
   sizer->Add(make_minmax_panel(p));
   sizer->Add(make_filtered_panel(p));
 
-  // TODO better button padding
   sizer->Add(new wxButton(this, ID_CMAP_DoneButton, "Done"),
-             wxSizerFlags().Right());
+             wxSizerFlags().Right().Border(wxALL, 10));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

@@ -35,9 +35,8 @@ SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   list_sizer->Add(make_set_list_panel(p), wxEXPAND);
 
   sizer->Add(list_sizer);
-  // TODO better button padding
   sizer->Add(new wxButton(this, ID_SLE_DoneButton, "Done"),
-             wxSizerFlags().Right());
+             wxSizerFlags().Right().Border(wxALL, 10));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

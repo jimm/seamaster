@@ -25,9 +25,8 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
                                 wxTE_MULTILINE);
   sizer->Add(message_text, wxEXPAND);
 
-  // TODO better button padding
   sizer->Add(new wxButton(this, ID_ME_DoneButton, "Done"),
-             wxSizerFlags().Right());
+             wxSizerFlags().Right().Border(wxALL, 10));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
