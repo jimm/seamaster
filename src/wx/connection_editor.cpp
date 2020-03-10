@@ -28,13 +28,14 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-  sizer->Add(make_input_panel(p));
-  sizer->Add(make_output_panel(p));
-  sizer->Add(make_program_panel(p));
-  sizer->Add(make_zone_panel(p));
-  sizer->Add(make_xpose_panel(p));
-  sizer->Add(make_sysex_panel(p));
-  sizer->Add(make_cc_maps_panel(p));
+  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
+  sizer->Add(make_input_panel(p), panel_flags);
+  sizer->Add(make_output_panel(p), panel_flags);
+  sizer->Add(make_program_panel(p), panel_flags);
+  sizer->Add(make_zone_panel(p), panel_flags);
+  sizer->Add(make_xpose_panel(p), panel_flags);
+  sizer->Add(make_sysex_panel(p), panel_flags);
+  sizer->Add(make_cc_maps_panel(p), panel_flags);
 
   sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL, 10));
@@ -49,7 +50,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
 wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_InputDropdown, ID_CE_InputChannel,
-    &cb_input, &cb_input_chan,
+    "Input", &cb_input, &cb_input_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->inputs),
     connection->input, connection->input_chan);
 }
@@ -57,13 +58,14 @@ wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
 wxWindow *ConnectionEditor::make_output_panel(wxPanel *parent) {
   return make_instrument_panel(
     parent, ID_CE_OutputDropdown, ID_CE_OutputChannel,
-    &cb_output, &cb_output_chan,
+    "Output", &cb_output, &cb_output_chan,
     reinterpret_cast<vector<Instrument *> &>(pm->outputs),
     connection->output, connection->output_chan);
 }
 
 wxWindow *ConnectionEditor::make_instrument_panel(
   wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+  const char * const title,
   wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
   vector<Instrument *> &instruments, Instrument *curr_instrument,
   int curr_chan)
@@ -87,7 +89,7 @@ wxWindow *ConnectionEditor::make_instrument_panel(
   *chan_combo_ptr = make_channel_dropdown(p, chan_id, curr_chan, "All Channels");
   field_sizer->Add(*chan_combo_ptr);
 
-  outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Output"));
+  outer_sizer->Add(new wxStaticText(p, wxID_ANY, title));
   outer_sizer->Add(field_sizer);
 
   p->SetSizerAndFit(outer_sizer);
@@ -114,24 +116,26 @@ wxWindow *ConnectionEditor::make_program_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
+  wxSizerFlags center_flags =
+    wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL);
 
   wxString val = connection->prog.bank_msb >= 0
     ? wxString::Format("%d", connection->prog.bank_msb) : "";
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank MSB"));
+  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank MSB"), center_flags);
   tc_bank_msb = new wxTextCtrl(p, ID_CE_BankMSB, val);
-  field_sizer->Add(tc_bank_msb);
+  field_sizer->Add(tc_bank_msb, center_flags);
 
   val = connection->prog.bank_lsb >= 0
     ? wxString::Format("%d", connection->prog.bank_lsb) : "";
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank LSB"));
+  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Bank LSB"), center_flags);
   tc_bank_lsb = new wxTextCtrl(p, ID_CE_BankLSB, val);
-  field_sizer->Add(tc_bank_lsb);
+  field_sizer->Add(tc_bank_lsb, center_flags);
 
   val = connection->prog.prog >= 0
     ? wxString::Format("%d", connection->prog.prog) : "";
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "PChg"));
+  field_sizer->Add(new wxStaticText(p, wxID_ANY, "PChg"), center_flags);
   tc_prog = new wxTextCtrl(p, ID_CE_Program, val);
-  field_sizer->Add(tc_prog);
+  field_sizer->Add(tc_prog, center_flags);
 
   outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Program Change"));
   outer_sizer->Add(field_sizer);
@@ -144,22 +148,24 @@ wxWindow *ConnectionEditor::make_zone_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
+  wxSizerFlags center_flags =
+    wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL);
 
   char buf[BUFSIZ];
   note_num_to_name(connection->zone.low, buf);
   wxString val(buf);
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Low"));
+  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Low"), center_flags);
   tc_zone_low = new wxTextCtrl(p, ID_CE_ZoneLow, val);
-  field_sizer->Add(tc_zone_low);
+  field_sizer->Add(tc_zone_low, center_flags);
 
   note_num_to_name(connection->zone.high, buf);
   val = buf;
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "High"));
+  field_sizer->Add(new wxStaticText(p, wxID_ANY, "High"), center_flags);
   tc_zone_high = new wxTextCtrl(p, ID_CE_ZoneHigh, val);
-  field_sizer->Add(tc_zone_high);
+  field_sizer->Add(tc_zone_high, center_flags);
 
-  outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Zone"));
-  outer_sizer->Add(field_sizer);
+  outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Zone"), center_flags);
+  outer_sizer->Add(field_sizer, center_flags);
 
   p->SetSizerAndFit(outer_sizer);
   return p;
@@ -211,6 +217,7 @@ wxWindow *ConnectionEditor::make_cc_maps_panel(wxPanel *parent) {
   b_del_ccmap = new wxButton(p, ID_CE_DelControllerMapping, " - ");
   button_sizer->Add(b_del_ccmap, wxSizerFlags().Left());
 
+  outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Controller Mappings"));
   outer_sizer->Add(lc_cc_mappings);
   outer_sizer->Add(button_sizer);
 

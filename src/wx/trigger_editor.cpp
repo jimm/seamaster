@@ -17,24 +17,23 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
 {
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
+  wxSizerFlags field_flags = wxSizerFlags().Border(wxLEFT|wxRIGHT, 10);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Input"),
-             wxSizerFlags().Border(wxTOP|wxLEFT, 10));
-  sizer->Add(make_input_dropdown(p), wxSizerFlags().Border(wxLEFT, 10));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Input"), label_flags);
+  sizer->Add(make_input_dropdown(p), field_flags);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Message"),
-             wxSizerFlags().Border(wxTOP|wxLEFT, 10));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Message"), label_flags);
   wxString message_str = wxString::Format(
     "%02x %02x %02x",
     Pm_MessageStatus(trigger->trigger_message),
     Pm_MessageData1(trigger->trigger_message),
     Pm_MessageData2(trigger->trigger_message));
   tc_trigger_message = new wxTextCtrl(p, ID_TE_MessageText, message_str);
-  sizer->Add(tc_trigger_message, wxSizerFlags().Border(wxLEFT, 10));
+  sizer->Add(tc_trigger_message, field_flags);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Action"),
-             wxSizerFlags().Border(wxTOP|wxLEFT, 10));
-  sizer->Add(make_action_dropdown(p), wxSizerFlags().Border(wxLEFT, 10));
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Action"), label_flags);
+  sizer->Add(make_action_dropdown(p), field_flags);
 
   sizer->Add(new wxButton(this, ID_TE_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL, 10));

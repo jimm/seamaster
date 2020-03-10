@@ -18,12 +18,14 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
 {
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
 
-  sizer->Add(make_name_panel(p));
+  sizer->Add(make_name_panel(p), panel_flags);
   message_text = new wxTextCtrl(p, ID_ME_MessageText, messages_to_text(),
                                 wxDefaultPosition, wxSize(WIDTH, HEIGHT),
                                 wxTE_MULTILINE);
-  sizer->Add(message_text, wxEXPAND);
+  sizer->Add(message_text,
+             wxSizerFlags().Expand().Border(wxTOP|wxLEFT|wxRIGHT, 10));
 
   sizer->Add(new wxButton(this, ID_ME_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL, 10));
@@ -37,10 +39,12 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
 wxWindow *MessageEditor::make_name_panel(wxPanel *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+  wxSizerFlags center_flags =
+    wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Name"));
-  name_text = new wxTextCtrl(p, ID_ME_Name, message->name);
-  sizer->Add(name_text);
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Name"), center_flags);
+  name_text = new wxTextCtrl(p, ID_ME_Name, message->name, wxDefaultPosition);
+  sizer->Add(name_text, center_flags);
 
   p->SetSizerAndFit(sizer);
   return p;

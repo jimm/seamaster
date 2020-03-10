@@ -73,6 +73,7 @@ private:
 
   wxWindow *make_instrument_panel(
     wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+    const char * const title,
     wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
     vector<Instrument *> &instruments, Instrument *curr_instrument,
     int curr_chan);
