@@ -44,6 +44,7 @@ public:
   void midi_in(PmMessage msg);
 
   void add_controller(Controller *controller);
+  void remove_cc_num(int cc_num);
 
 private:
   int input_channel_ok(PmMessage msg);

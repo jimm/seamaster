@@ -1,5 +1,6 @@
 #include <wx/persist/toplevel.h>
 #include "connection_editor.h"
+#include "controller_mappings.h"
 #include "../patchmaster.h"
 #include "../connection.h"
 #include "../formatter.h"
@@ -7,7 +8,12 @@
 #define FRAME_NAME "seamaster_main_frame"
 
 wxBEGIN_EVENT_TABLE(ConnectionEditor, wxDialog)
+  EVT_BUTTON(ID_CE_AddControllerMapping, ConnectionEditor::add_controller_mapping)
+  EVT_BUTTON(ID_CE_DelControllerMapping, ConnectionEditor::del_controller_mapping)
   EVT_BUTTON(ID_CE_DoneButton, ConnectionEditor::done)
+  EVT_LIST_ITEM_ACTIVATED(ID_CE_ControllerMappings, ConnectionEditor::edit_controller_mapping)
+  EVT_LIST_ITEM_SELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
+  EVT_LIST_ITEM_DESELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
 wxEND_EVENT_TABLE()
 
 ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
@@ -23,6 +29,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   sizer->Add(make_zone_panel(p));
   sizer->Add(make_xpose_panel(p));
   sizer->Add(make_sysex_panel(p));
+  sizer->Add(make_cc_maps_panel(p));
 
   // TODO better button padding
   sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
@@ -30,6 +37,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
+  update_buttons();
   Show(true);
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
@@ -185,6 +193,27 @@ wxWindow *ConnectionEditor::make_sysex_panel(wxPanel *parent) {
   return p;
 }
 
+wxWindow *ConnectionEditor::make_cc_maps_panel(wxPanel *parent) {
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);
+
+  lc_cc_mappings = new ControllerMappings(p, ID_CE_ControllerMappings,
+                                          connection);
+
+  b_add_ccmap = new wxButton(p, ID_CE_AddControllerMapping, " + ");
+  button_sizer->Add(b_add_ccmap, wxSizerFlags().Left());
+
+  b_del_ccmap = new wxButton(p, ID_CE_DelControllerMapping, " - ");
+  button_sizer->Add(b_del_ccmap, wxSizerFlags().Left());
+
+  outer_sizer->Add(lc_cc_mappings);
+  outer_sizer->Add(button_sizer);
+
+  p->SetSizerAndFit(outer_sizer);
+  return p;
+}
+
 Instrument *ConnectionEditor::input_from_instrument_list(
   wxComboBox *list, vector<Instrument *>& instruments)
 {
@@ -201,6 +230,57 @@ int ConnectionEditor::int_or_undefined_from_field(wxTextCtrl *field) {
   if (val.empty())
     return UNDEFINED;
   return int_from_chars((const char *)val);
+}
+
+void ConnectionEditor::edit_controller_mapping(wxListEvent& event) {
+  int controller_num = selected_cc_map_index();
+  if (controller_num != wxNOT_FOUND)
+    edit_controller_mapping(connection->cc_maps[controller_num]);
+}
+
+void ConnectionEditor::edit_controller_mapping(Controller *controller) {
+  if (controller == nullptr)
+    return;
+
+  wxMessageBox("Controller mapping editor not yet implemented",
+               "Edit Controller Mapping", wxOK | wxICON_INFORMATION);
+  // TODO
+}
+
+void ConnectionEditor::update_buttons() {
+  bool has_free_cc_map_slot = false;
+  for (int i = 0; i < 128 && !has_free_cc_map_slot; ++i)
+    if (connection->cc_maps[i] == nullptr)
+      has_free_cc_map_slot = true;
+
+  b_add_ccmap->Enable(has_free_cc_map_slot);
+  b_del_ccmap->Enable(selected_cc_map_index() != wxNOT_FOUND);
+}
+
+void ConnectionEditor::add_controller_mapping(wxCommandEvent& event) {
+  int cc_num = -1;
+  for (int i = 0; i < 128; ++i) {
+    if (connection->cc_maps[i] == nullptr) {
+      cc_num = i;
+      break;
+    }
+  }
+  if (cc_num == -1)
+    return;
+
+  Controller *cc = new Controller(UNDEFINED, cc_num);
+  connection->cc_maps[cc_num] = cc;
+  update_buttons();
+  edit_controller_mapping(cc);
+}
+
+void ConnectionEditor::del_controller_mapping(wxCommandEvent& event) {
+  int controller_num = selected_cc_map_index();
+  if (controller_num == wxNOT_FOUND)
+    return;
+
+  connection->remove_cc_num(controller_num);
+  update_buttons();
 }
 
 void ConnectionEditor::done(wxCommandEvent& event) {
@@ -220,7 +300,14 @@ void ConnectionEditor::done(wxCommandEvent& event) {
   connection->xpose = int_from_chars(tc_xpose->GetValue());
   connection->pass_through_sysex = cb_sysex->IsChecked();
 
+  // Don't need to update cc_maps because that's done on the fly
+
   wxCommandEvent e(Frame_Refresh, GetId());
   wxPostEvent(GetParent(), e);
   Close();
+}
+
+long ConnectionEditor::selected_cc_map_index() {
+  return lc_cc_mappings->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
 }

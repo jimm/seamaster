@@ -21,13 +21,18 @@ enum {
   ID_CE_ZoneHigh,
   ID_CE_Transpose,
   ID_CE_PassThroughSysex,
+  ID_CE_ControllerMappings,
+  ID_CE_AddControllerMapping,
+  ID_CE_DelControllerMapping,
   ID_CE_DoneButton
 };
 
 class PatchMaster;
 class Instrument;
 class Connection;
+class Controller;
 class wxListCtrl;
+class wxListEvent;
 
 class ConnectionEditor : public wxDialog {
 public:
@@ -47,6 +52,9 @@ private:
   wxTextCtrl *tc_zone_high;
   wxTextCtrl *tc_xpose;
   wxCheckBox *cb_sysex;
+  wxListCtrl *lc_cc_mappings;
+  wxButton *b_add_ccmap;
+  wxButton *b_del_ccmap;
 
   wxWindow *make_input_panel(wxPanel *parent);
   wxWindow *make_output_panel(wxPanel *parent);
@@ -57,6 +65,7 @@ private:
   wxWindow *make_zone_panel(wxPanel *parent);
   wxWindow *make_xpose_panel(wxPanel *parent);
   wxWindow *make_sysex_panel(wxPanel *parent);
+  wxWindow *make_cc_maps_panel(wxPanel *parent);
 
   wxWindow *make_instrument_panel(
     wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
@@ -69,7 +78,17 @@ private:
   int channel_from_channel_list(wxComboBox *list);
   int int_or_undefined_from_field(wxTextCtrl *field);
 
+  void edit_controller_mapping(wxListEvent& event);
+  void edit_controller_mapping(Controller *controller);
+
+  void update_buttons(wxListEvent& event) { update_buttons(); }
+  void update_buttons();
+
+  void add_controller_mapping(wxCommandEvent& event);
+  void del_controller_mapping(wxCommandEvent& event);
   void done(wxCommandEvent& event);
+
+  long selected_cc_map_index();
 
   wxDECLARE_EVENT_TABLE();
 };

@@ -124,6 +124,11 @@ void Connection::add_controller(Controller *controller) {
   cc_maps[controller->cc_num] = controller;
 }
 
+void Connection::remove_cc_num(int cc_num) {
+  delete cc_maps[cc_num];
+  cc_maps[cc_num] = nullptr;
+}
+
 // Returns `true` if any one of the following are true:
 // - we accept any input channel
 // - it's a system message, not a channel message
