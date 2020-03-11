@@ -8,8 +8,10 @@
 Output::Output(int id, const char *name, const char *port_name, int port_num)
   : Instrument(id, name, port_name, port_num)
 {
-  if (!real_port())
+  if (!real_port()) {
+    enabled = false;
     return;
+  }
 
   PmError err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);
   if (err == 0) {
@@ -21,7 +23,7 @@ Output::Output(int id, const char *name, const char *port_name, int port_num)
   sprintf(buf, "error opening output stream %s: %s\n", name,
           Pm_GetErrorText(err));
   error_message(buf);
-  exit(1);
+  enabled = false;
 }
 
 Output::~Output() {

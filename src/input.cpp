@@ -73,8 +73,10 @@ void *read_thread(void *in_voidptr) {
 Input::Input(int id, const char *name, const char *port_name, int port_num)
   : Instrument(id, name, port_name, port_num), running(false), read_pthread(nullptr)
 {
-  if (!real_port())
+  if (!real_port()) {
+    enabled = false;
     return;
+  }
 
   PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
   if (err != 0) {
@@ -82,17 +84,17 @@ Input::Input(int id, const char *name, const char *port_name, int port_num)
     sprintf(buf, "error opening input stream %s: %s\n", name,
             Pm_GetErrorText(err));
     error_message(buf);
-    exit(1);
+    enabled = false;
+    return;
   }
-  enabled = true;
 
+  enabled = true;
   err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
   if (err != 0) {
     char buf[BUFSIZ];
     sprintf(buf, "error setting PortMidi filter for input %s: %s\n", name,
             Pm_GetErrorText(err));
     error_message(buf);
-    exit(1);
   }
 }
 
