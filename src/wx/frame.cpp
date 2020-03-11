@@ -328,7 +328,7 @@ void Frame::prev_patch() {
 
 void Frame::find_set_list() {
   PatchMaster *pm = PatchMaster_instance();
-  wxTextEntryDialog prompt(this, "Find Set List");
+  wxTextEntryDialog prompt(this, "Find Set List", "Find Set List");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
@@ -340,7 +340,7 @@ void Frame::find_set_list() {
 
 void Frame::find_song() {
   PatchMaster *pm = PatchMaster_instance();
-  wxTextEntryDialog prompt(this, "Find Song");
+  wxTextEntryDialog prompt(this, "Find Song", "Find Song");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
@@ -490,7 +490,7 @@ void Frame::edit_song(Song *song) {
   if (song == nullptr)
     return;
 
-  wxTextEntryDialog prompt(this, "Song Name");
+  wxTextEntryDialog prompt(this, "Song Name", "Song Editor", song->name);
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
@@ -509,7 +509,7 @@ void Frame::edit_patch(Patch *patch) {
   if (patch == nullptr)
     return;
 
-  wxTextEntryDialog prompt(this, "Patch Name");
+  wxTextEntryDialog prompt(this, "Patch Name", "Patch Editor", patch->name);
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
