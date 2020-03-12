@@ -39,21 +39,23 @@ TEST_CASE("create song", CATCH_CATEGORY) {
 
 TEST_CASE("create patch", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
-  pm->cursor->init();
+  Cursor *c = pm->cursor;
+  c->init();
   Editor e(pm);
 
-  int num_patches = pm->cursor->song()->patches.size();
+  int num_patches = c->song()->patches.size();
   e.create_patch();
-  REQUIRE(pm->cursor->song()->patches.size() == num_patches + 1);
-  REQUIRE(pm->cursor->song()->patches.back()->name == "Unnamed Patch");
+  REQUIRE(c->song()->patches.size() == num_patches + 1);
+  REQUIRE(c->song()->patches.back()->name == "Unnamed Patch");
 }
 
 TEST_CASE("create connection", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
-  pm->cursor->init();
+  Cursor *c = pm->cursor;
+  c->init();
   Editor e(pm);
 
-  Patch *patch = pm->cursor->patch();
+  Patch *patch = c->patch();
   int num_conns = patch->connections.size();
   e.create_connection(patch, pm->inputs.front(), pm->outputs.front());
   REQUIRE(patch->connections.size() == num_conns + 1);
@@ -111,23 +113,87 @@ TEST_CASE("create and destroy song", CATCH_CATEGORY) {
   e.destroy_song(pm->all_songs->songs.back());
 }
 
-TEST_CASE("destroy patch", CATCH_CATEGORY) {
+TEST_CASE("destroy first patch in song with mult. patches", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
-  pm->cursor->init();
-  Editor e(pm);
+  Cursor *c = pm->cursor;
+  c->init();
+  Patch *old_patch = c->patch();
+  int num_patches = c->song()->patches.size();
 
+  // sanity check
+  REQUIRE(c->song() == pm->all_songs->songs[0]);
+  REQUIRE(c->patch() == c->song()->patches[0]);
+
+  Editor e(pm);
+  e.destroy_patch(c->song(), c->patch());
+
+  // old_patch has been deallocated, but we can still check that the current
+  // cursor patch is not the same value.
+  REQUIRE(c->song() == pm->all_songs->songs[0]);
+  REQUIRE(c->song()->patches.size() == num_patches - 1);
+
+  // current patch is the first patch in the song, but not the same as
+  // old_patch
+  REQUIRE(c->patch() == c->song()->patches[0]);
+  REQUIRE(c->patch() != old_patch);
+}
+
+TEST_CASE("destroy last patch in song with mult. patches", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  Cursor *c = pm->cursor;
+  c->init();
+
+  int num_patches = c->song()->patches.size();
+  c->patch_index = num_patches - 1;
+  Patch *old_patch = c->patch();
+
+  // sanity check
+  REQUIRE(c->song() == pm->all_songs->songs[0]);
+  REQUIRE(c->patch() == c->song()->patches.back());
+  REQUIRE(c->song()->patches.size() == num_patches);
+
+  Editor e(pm);
+  e.destroy_patch(c->song(), c->patch());
+
+  // old_patch has been deallocated, but we can still check that the current
+  // cursor patch is not the same value.
+  REQUIRE(c->song() == pm->all_songs->songs[0]);
+  REQUIRE(c->song()->patches.size() == num_patches - 1);
+
+  // current patch is the first patch in the song, but not the same as
+  // old_patch
+  REQUIRE(c->patch() == c->song()->patches.back());
+  REQUIRE(c->patch() != old_patch);
 }
 
 TEST_CASE("destroy connection", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
   pm->cursor->init();
-  Editor e(pm);
 
+  Patch *p = pm->cursor->patch();
+  Connection *old_conn = p->connections.back();
+  int num_conns = p->connections.size();
+
+  Editor e(pm);
+  e.destroy_connection(p, old_conn);
+  REQUIRE(p->connections.size() == num_conns - 1);
+  for (auto &conn : p->connections)
+    if (conn == old_conn)
+      FAIL("old_conn was not removed");
 }
 
 TEST_CASE("destroy set list", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
   pm->cursor->init();
-  Editor e(pm);
 
+  SetList *old_set_list = pm->set_lists.back();
+  int num_set_lists = pm->set_lists.size();
+
+  Editor e(pm);
+  e.destroy_set_list(old_set_list);
+
+  REQUIRE(pm->set_lists.size() == num_set_lists - 1);
+  for (auto &slist : pm->set_lists)
+    if (slist == old_set_list)
+      FAIL("old_set_list was not removed");
 }

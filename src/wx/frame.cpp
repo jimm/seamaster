@@ -35,6 +35,7 @@
 #define FRAME_NAME "seamaster_main_frame"
 
 wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
+wxDEFINE_EVENT(Frame_MenuUpdate, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)
@@ -80,6 +81,7 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_TEXT(ID_SongNotes, Frame::set_song_notes)
 
   EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::update)
+  EVT_COMMAND(wxID_ANY, Frame_MenuUpdate, Frame::update_menu_items)
 wxEND_EVENT_TABLE()
 
 void *frame_clear_user_message_thread(void *gui_vptr) {
@@ -451,11 +453,7 @@ void Frame::edit_message(Message *message) {
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
-  long trigger_num = selected_trigger_index();
-  if (trigger_num == wxNOT_FOUND)
-    return;
-
-  edit_trigger(trigger_from_index(trigger_num));
+  edit_trigger(lc_triggers->selected());
 }
 
 void Frame::edit_trigger(Trigger *trigger) {
@@ -520,17 +518,7 @@ void Frame::edit_patch(Patch *patch) {
 }
 
 void Frame::edit_connection(wxListEvent& event) {
-  PatchMaster *pm = PatchMaster_instance();
-  Patch *patch = pm->cursor->patch();
-  if (patch == nullptr)
-    return;
-
-  int connection_num = selected_connection_index();
-  Connection *conn = patch->connections[connection_num];
-  if (conn == nullptr)
-    return;
-
-  edit_connection(conn);
+  edit_connection(lc_patch_conns->selected());
 }
 
 void Frame::edit_connection(Connection *conn) {
@@ -561,12 +549,8 @@ void Frame::destroy_message(wxCommandEvent& event) {
 }
 
 void Frame::destroy_trigger(wxCommandEvent& event) {
-  long trigger_num = selected_trigger_index();
-  if (trigger_num == wxNOT_FOUND)
-    return;
-
   Editor e;
-  e.destroy_trigger(trigger_from_index(trigger_num));
+  e.destroy_trigger(lc_triggers->selected());
 }
 
 void Frame::destroy_song(wxCommandEvent& event) {
@@ -595,8 +579,7 @@ void Frame::destroy_connection(wxCommandEvent& event) {
   if (patch == nullptr)
     return;
 
-  int connection_num = selected_connection_index();
-  Connection *conn = patch->connections[connection_num];
+  Connection *conn = lc_patch_conns->selected();
   if (conn == nullptr)
     return;
 
@@ -758,28 +741,6 @@ void Frame::save() {
   storage.save(PatchMaster_instance());
 }
 
-long Frame::selected_trigger_index() {
-  return lc_triggers->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
-                                  wxLIST_STATE_SELECTED);
-}
-
-long Frame::selected_connection_index() {
-  return lc_patch_conns->GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL,
-                                     wxLIST_STATE_SELECTED);
-}
-
-Trigger *Frame::trigger_from_index(long index) {
-  int row = 0;
-  for (auto* input : PatchMaster_instance()->inputs) {
-    for (auto * trigger : input->triggers) {
-      if (row == index)
-        return trigger;
-      ++row;
-    }
-  }
-  return nullptr;
-}
-
 void Frame::update() {
   update_lists();
   update_song_notes();
@@ -809,6 +770,7 @@ void Frame::update_song_notes() {
 void Frame::update_menu_items() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
+  Editor e(pm);
 
   // file menu
   menu_bar->FindItem(wxID_SAVE, nullptr)
@@ -819,20 +781,21 @@ void Frame::update_menu_items() {
     ->Enable(!pm->messages.empty() && lc_messages->GetSelection() != wxNOT_FOUND);
 
   menu_bar->FindItem(ID_DestroyTrigger, nullptr)
-    ->Enable(selected_trigger_index() != wxNOT_FOUND);
+    ->Enable(lc_triggers->selected() != nullptr);
 
   menu_bar->FindItem(ID_DestroySong, nullptr)
-    ->Enable(pm->cursor->song() != nullptr);
+    ->Enable(cursor->song() != nullptr);
 
-  menu_bar->FindItem(ID_DestroyPatch, nullptr)
-    ->Enable(pm->cursor->patch() != nullptr);
+  bool enable = cursor->patch() != nullptr &&
+    cursor->song()->patches.size() >= 1;
+  menu_bar->FindItem(ID_DestroyPatch, nullptr)->Enable(enable);
 
   menu_bar->FindItem(ID_DestroyConnection, nullptr)
-    ->Enable(pm->cursor->patch() != nullptr && selected_connection_index() != wxNOT_FOUND);
+    ->Enable(e.ok_to_destroy_connection(
+               cursor->patch(), lc_patch_conns->selected()));
 
-  SetList *set_list = pm->cursor->set_list();
   menu_bar->FindItem(ID_DestroySetList, nullptr)
-    ->Enable(set_list != nullptr && set_list != pm->all_songs);
+             ->Enable(e.ok_to_destroy_set_list(cursor->set_list()));
 
   // go menu
   menu_bar->FindItem(ID_GoNextSong, nullptr)->Enable(cursor->has_next_song());

@@ -3,12 +3,14 @@
 
 #include <vector>
 #include "wx/listctrl.h"
+#include "frame_list_ctrl.h"
 #include "../trigger.h"
 
-class TriggerList : public wxListCtrl {
+class TriggerList : public FrameListCtrl {
 public:
   TriggerList(wxWindow *parent, wxWindowID id);
 
+  Trigger *selected();          // may return null
   void update();
 
 private:

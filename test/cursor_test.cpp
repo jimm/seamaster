@@ -177,6 +177,35 @@ TEST_CASE("has prev patch false", CATCH_CATEGORY) {
   REQUIRE(!c->has_prev_patch());
 }
 
+TEST_CASE("has next patch in song true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  REQUIRE(c->has_next_patch_in_song());
+}
+
+TEST_CASE("has next patch in song false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = c->set_list()->songs.size() - 1;
+  c->patch_index = c->song()->patches.size() - 1;
+  REQUIRE(!c->has_next_patch_in_song());
+}
+
+TEST_CASE("has prev patch in song true", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = 1;
+  c->patch_index = 1;
+  REQUIRE(c->has_prev_patch_in_song());
+}
+
+TEST_CASE("has prev patch in song false", CATCH_CATEGORY) {
+  PatchMaster *pm = cursor_pm();
+  Cursor *c = pm->cursor;
+  c->song_index = 1;
+  REQUIRE(!c->has_prev_patch_in_song());
+}
+
 // ================ defaults
 
 TEST_CASE("default set list is all songs", CATCH_CATEGORY) {

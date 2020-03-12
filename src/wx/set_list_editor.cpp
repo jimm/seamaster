@@ -153,7 +153,8 @@ void SetListEditor::update(wxListBox *list_box, SetList *slist) {
   wxArrayString names;
   for (auto& song : slist->songs)
     names.Add(song->name.c_str());
-  list_box->InsertItems(names, 0);
+  if (!names.empty())
+      list_box->InsertItems(names, 0);
 }
 
 void SetListEditor::done(wxCommandEvent& event) {

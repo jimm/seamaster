@@ -41,7 +41,6 @@ enum {
   ID_SongNotes
 };
 
-class wxListCtrl;
 class wxTextCtrl;
 class SetListBox;
 class SetListListBox;
@@ -64,6 +63,9 @@ public:
 
   void update(wxCommandEvent& event) { update(); }
   void update();
+
+  void update_menu_items(wxCommandEvent& event) { update_menu_items(); }
+  void update_menu_items();
 
   void show_user_message(std::string);
   void show_user_message(std::string, int);
@@ -161,13 +163,8 @@ private:
   wxWindow * make_notes_panel(wxPanel *);
   wxWindow * make_patch_panel(wxPanel *);
 
-  long selected_trigger_index();
-  long selected_connection_index();
-  Trigger *trigger_from_index(long index);
-
   void update_lists();
   void update_song_notes();
-  void update_menu_items();
 
   wxDECLARE_EVENT_TABLE();
 };

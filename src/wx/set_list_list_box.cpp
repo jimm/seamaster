@@ -3,7 +3,7 @@
 #include "../cursor.h"
 
 SetListListBox::SetListListBox(wxWindow *parent, wxWindowID id, wxSize size)
-  : wxListBox(parent, id, wxDefaultPosition, size, 0, nullptr, wxLB_SINGLE)
+  : FrameListBox(parent, id, wxDefaultPosition, size, wxLB_SINGLE)
 {
 }
 

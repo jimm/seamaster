@@ -2,16 +2,17 @@
 #define PATCH_CONNECTIONS_H
 
 #include "wx/listctrl.h"
+#include "frame_list_ctrl.h"
 #include "../patch.h"
 
-class PatchConnections : public wxListCtrl {
+class PatchConnections : public FrameListCtrl {
 public:
   PatchConnections(wxWindow *parent, wxWindowID id);
 
+  Connection *selected();       // may return nullptr
   void update();
 
 private:
-  Patch *patch;
 
   void set_headers();
 };

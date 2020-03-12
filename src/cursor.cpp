@@ -119,17 +119,38 @@ bool Cursor::has_prev_patch() {
   return s != nullptr && (patch_index > 0 || has_prev_song());
 }
 
+bool Cursor::has_next_patch_in_song() {
+  Song *s = song();
+  return s != nullptr && patch_index != s->patches.size() - 1;
+}
+
+bool Cursor::has_prev_patch_in_song() {
+  Song *s = song();
+  return s != nullptr && patch_index > 0;
+}
+
 void Cursor::jump_to_set_list_index(int i) {
+  if (i < 0 || i >= pm->set_lists.size())
+    return;
+
   set_list_index = i;
   jump_to_song_index(0);
 }
 
 void Cursor::jump_to_song_index(int i) {
+  SetList *slist = set_list();
+  if (slist == nullptr || i < 0 || i >= slist->songs.size())
+    return;
+
   song_index = i;
   jump_to_patch_index(0);
 }
 
 void Cursor::jump_to_patch_index(int i) {
+  Song *s = song();
+  if (s == nullptr || i < 0 || i >= s->patches.size())
+    return;
+
   patch_index = i;
 }
 

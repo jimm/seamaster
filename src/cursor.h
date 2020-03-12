@@ -33,6 +33,9 @@ public:
   bool has_next_patch();
   bool has_prev_patch();
 
+  bool has_next_patch_in_song();
+  bool has_prev_patch_in_song();
+
   void jump_to_set_list_index(int i);
   void jump_to_song_index(int i);
   void jump_to_patch_index(int i);

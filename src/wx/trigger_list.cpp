@@ -14,11 +14,28 @@ const int COLUMN_WIDTHS[] = {
 };
 
 TriggerList::TriggerList(wxWindow *parent, wxWindowID id)
-  : wxListCtrl(parent, id, wxDefaultPosition,
-               wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT),
-               wxLC_REPORT | wxLC_SINGLE_SEL)
+  : FrameListCtrl(parent, id, wxDefaultPosition,
+                  wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT),
+                  wxLC_REPORT | wxLC_SINGLE_SEL)
 {
   set_headers();
+}
+
+Trigger *TriggerList::selected() {
+  long index = GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+  if (index == wxNOT_FOUND)
+    return nullptr;
+
+  PatchMaster *pm = PatchMaster_instance();
+  long row = 0;
+  for (auto* input : pm->inputs) {
+    for (auto * trigger : input->triggers) {
+      if (row == index)
+        return trigger;
+      ++row;
+    }
+  }
+  return nullptr;
 }
 
 void TriggerList::update() {

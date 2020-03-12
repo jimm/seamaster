@@ -5,8 +5,9 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
+#include "frame_list_box.h"
 
-class SetListListBox : public wxListBox {
+class SetListListBox : public FrameListBox {
 public:
   SetListListBox(wxWindow *parent, wxWindowID id, wxSize size);
 

@@ -5,10 +5,11 @@
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
 #endif
+#include "frame_list_box.h"
 
 class Message;
 
-class MessageList : public wxListBox {
+class MessageList : public FrameListBox {
 public:
   MessageList(wxWindow *parent, wxWindowID id, wxSize size);
 

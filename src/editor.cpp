@@ -96,27 +96,72 @@ void Editor::destroy_trigger(Trigger *trigger) {
   }
 }
 
-void Editor::destroy_song(Song *song) {
-  if (song == pm->cursor->song())
-    pm->next_song();
+// Returns true if `message` is not used anywhere.
+bool Editor::ok_to_destroy_message(Message *message) {
+  if (message == nullptr)
+    return false;
 
-  // remove song from all set lists first
+  for (auto &song : pm->all_songs->songs)
+    for (auto &patch : song->patches)
+      if (patch->start_message == message || patch->stop_message == message)
+        return false;
+
+  for (auto &input : pm->inputs)
+    for (auto &trigger : input->triggers)
+      if (trigger->output_message == message)
+        return false;
+
+  return true;
+}
+
+bool Editor::ok_to_destroy_trigger(Trigger *trigger) {
+  return true;
+}
+
+bool Editor::ok_to_destroy_song(Song *song) {
+  return true;
+}
+
+bool Editor::ok_to_destroy_patch(Song *song, Patch *patch) {
+  return song != nullptr
+    && song->patches.size() >= 1;
+}
+
+bool Editor::ok_to_destroy_connection(Patch *patch, Connection *connection) {
+  return patch != nullptr
+    && connection != nullptr
+    && patch->connections.size() >= 1;
+}
+
+bool Editor::ok_to_destroy_set_list(SetList *set_list) {
+  return set_list != nullptr
+    && set_list != pm->all_songs;
+}
+
+void Editor::destroy_song(Song *song) {
+  move_away_from_song(song);
+
   for (auto &set_list : pm->set_lists)
     remove_song_from_set_list(song, set_list);
-  for (ITER(Song) i = pm->all_songs->songs.begin(); i != pm->all_songs->songs.end(); ++i)
+
+  for (ITER(Song) i = pm->all_songs->songs.begin();
+       i != pm->all_songs->songs.end();
+       ++i)
   {
     if (*i == song) {
       pm->all_songs->songs.erase(i);
       delete song;
-      return;
+      return;                   // only appears once in all_songs list
     }
   }
 }
 
+// Will not destroy the only patch in a song.
 void Editor::destroy_patch(Song *song, Patch *patch) {
-  if (patch == pm->cursor->patch())
-    pm->next_patch();
+  if (song->patches.size() <= 1)
+    return;
 
+  move_away_from_patch(song, patch);
   for (ITER(Patch) i = song->patches.begin(); i != song->patches.end(); ++i) {
     if (*i == patch) {
       song->patches.erase(i);
@@ -169,4 +214,52 @@ void Editor::remove_song_from_set_list(Song *song, SetList *set_list) {
       }
     }
   }
+}
+
+// If `song` is not the current song, does nothing. Else tries to move to
+// the next song or, if there isn't one, the prev song. If both those fail
+// (this is the only song in the current set list) then stops the current
+// patch and reinits the cursor.
+void Editor::move_away_from_song(Song *song) {
+  Cursor *c = pm->cursor;
+
+  if (song != c->song())
+    return;
+
+  if (c->has_next_song()) {
+    pm->next_song();
+    return;
+  }
+
+  if (c->has_prev_song()) {
+    pm->prev_song();
+    return;
+  }
+
+  if (c->patch() != nullptr)
+    c->patch()->stop();
+  c->init();
+}
+
+// If `patch` is not the current patch, does nothing. Else tries to move to
+// the next patch or, if there isn't one, the prev patch. If both those fail
+// (this is the only patch in the current song) then calls
+// move_away_from_song.
+void Editor::move_away_from_patch(Song *song, Patch *patch) {
+  Cursor *c = pm->cursor;
+
+  if (patch != c->patch())
+    return;
+
+  if (c->has_next_patch_in_song()) {
+    pm->next_patch();
+    return;
+  }
+
+  if (c->has_prev_patch_in_song()) {
+    pm->prev_patch();
+    return;
+  }
+
+  move_away_from_song(song);
 }

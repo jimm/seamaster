@@ -1,4 +1,5 @@
 #include "patch_connections.h"
+#include "events.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../formatter.h"
@@ -13,19 +14,26 @@ const int COLUMN_WIDTHS[] = {
 };
 
 PatchConnections::PatchConnections(wxWindow *parent, wxWindowID id)
-  : wxListCtrl(parent, id, wxDefaultPosition, wxSize(600, 150),
-               wxLC_REPORT | wxLC_SINGLE_SEL),
-    patch(nullptr)
+  : FrameListCtrl(parent, id, wxDefaultPosition, wxSize(600, 150),
+                  wxLC_REPORT | wxLC_SINGLE_SEL)
 {
   set_headers();
+}
+
+Connection *PatchConnections::selected() {
+  Patch *patch = PatchMaster_instance()->cursor->patch();
+  if (patch == nullptr || patch->connections.empty())
+    return nullptr;
+
+  long index = GetNextItem(wxNOT_FOUND, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+  return index == wxNOT_FOUND ? nullptr : patch->connections[index];
 }
 
 void PatchConnections::update() {
   PatchMaster *pm = PatchMaster_instance();
   Cursor *cursor = pm->cursor;
-  Patch *curr_patch = cursor->patch();
+  Patch *patch = cursor->patch();
 
-  patch = curr_patch;
   ClearAll();
   set_headers();
   if (patch == nullptr)
