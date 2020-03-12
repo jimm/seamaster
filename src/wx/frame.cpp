@@ -787,7 +787,7 @@ void Frame::update_menu_items() {
     ->Enable(cursor->song() != nullptr);
 
   bool enable = cursor->patch() != nullptr &&
-    cursor->song()->patches.size() >= 1;
+    cursor->song()->patches.size() > 1;
   menu_bar->FindItem(ID_DestroyPatch, nullptr)->Enable(enable);
 
   menu_bar->FindItem(ID_DestroyConnection, nullptr)

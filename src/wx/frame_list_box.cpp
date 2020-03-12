@@ -12,11 +12,11 @@ FrameListBox::FrameListBox(wxWindow *parent, wxWindowID id, wxPoint pos, wxSize 
 
 // If `event` is a list (de)selection event, broadcast a Frame_MenuUpdate
 // event.
-bool FrameListBox::TryBefore(wxEvent &event) {
+bool FrameListBox::TryAfter(wxEvent &event) {
   wxEventType type = event.GetEventType();
   if (type == wxEVT_LISTBOX) {
     wxCommandEvent e(Frame_MenuUpdate, GetId());
     wxPostEvent(GetParent(), e);
   }
-  return wxListBox::TryBefore(event);
+  return wxListBox::TryAfter(event);
 }

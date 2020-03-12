@@ -11,7 +11,7 @@ public:
   FrameListBox(wxWindow *parent, wxWindowID id, wxPoint pos, wxSize size, long style);
 
 protected:
-  virtual bool TryBefore(wxEvent &event);
+  virtual bool TryAfter(wxEvent &event);
 };
 
 #endif /* FRAME_LIST_BOX_H */

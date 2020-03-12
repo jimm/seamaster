@@ -9,7 +9,7 @@ public:
                 long style);
 
 protected:
-  virtual bool TryBefore(wxEvent &event);
+  virtual bool TryAfter(wxEvent &event);
 };
 
 #endif /* FRAME_LIST_CTRL_H */
