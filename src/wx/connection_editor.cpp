@@ -275,7 +275,7 @@ void ConnectionEditor::add_controller_mapping(wxCommandEvent& event) {
   if (cc_num == -1)
     return;
 
-  Controller *cc = new Controller(UNDEFINED, cc_num);
+  Controller *cc = new Controller(UNDEFINED_ID, cc_num);
   connection->cc_maps[cc_num] = cc;
   update();
   edit_controller_mapping(cc);

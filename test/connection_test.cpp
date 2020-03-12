@@ -4,9 +4,9 @@
 #define CATCH_CATEGORY "[connection]"
 
 TEST_CASE("start sends pc", CATCH_CATEGORY) {
-  Input *in = new Input(UNDEFINED, "in1", "in port name", CONNECTION_ALL_CHANNELS);
-  Output *out = new Output(UNDEFINED, "out1", "out port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn = new Connection(UNDEFINED, in, 0, out, 1);
+  Input *in = new Input(UNDEFINED_ID, "in1", "in port name", CONNECTION_ALL_CHANNELS);
+  Output *out = new Output(UNDEFINED_ID, "out1", "out port name", CONNECTION_ALL_CHANNELS);
+  Connection *conn = new Connection(UNDEFINED_ID, in, 0, out, 1);
   vector<PmMessage> empty;
 
   conn->prog.prog = 123;
@@ -46,7 +46,7 @@ TEST_CASE("all chans filter controller", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   conn->input_chan = CONNECTION_ALL_CHANNELS;
   conn->output_chan = CONNECTION_ALL_CHANNELS;
-  conn->set_controller(new Controller(UNDEFINED, 64));
+  conn->set_controller(new Controller(UNDEFINED_ID, 64));
   conn->cc_maps[64]->filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 0);
@@ -57,7 +57,7 @@ TEST_CASE("all chans process controller", CATCH_CATEGORY) {
   Connection *conn = create_conn();
   conn->input_chan = 3;
   conn->output_chan = 3;
-  conn->set_controller(new Controller(UNDEFINED, 64));
+  conn->set_controller(new Controller(UNDEFINED_ID, 64));
   conn->cc_maps[64]->max = 126;
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 1);
@@ -115,7 +115,7 @@ TEST_CASE("zone poly pressure", CATCH_CATEGORY) {
 
 TEST_CASE("cc processed", CATCH_CATEGORY) {
   Connection *conn = create_conn();
-  conn->set_controller(new Controller(UNDEFINED, 7));
+  conn->set_controller(new Controller(UNDEFINED_ID, 7));
   conn->cc_maps[7]->filtered = true;
   conn->midi_in(Pm_Message(CONTROLLER, 7, 127));
 

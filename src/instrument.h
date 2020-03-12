@@ -19,7 +19,8 @@ public:
   PmMessage io_messages[MIDI_BUFSIZ]; // testing only
   int num_io_messages;                // ditto
 
-  Instrument(int id, const char *name, const char *port_name, int port_num);
+  Instrument(sqlite3_int64 id, const char *name, const char *port_name,
+             int port_num);
   virtual ~Instrument();
 
   bool real_port();

@@ -54,11 +54,12 @@ private:
   void create_default_patch(Song *);
 
   PmDeviceID find_device(const char *name, int device_type);
-  Input *find_input_by_id(const char * const, int, int);
-  Output *find_output_by_id(const char * const, int, int);
-  Message *find_message_by_id(const char * const, int, int);
-  Song *find_song_by_id(const char * const, int, int);
-  void set_find_error_message(const char * const, int, const char * const, int);
+  Input *find_input_by_id(const char * const, sqlite3_int64, sqlite3_int64);
+  Output *find_output_by_id(const char * const, sqlite3_int64, sqlite3_int64);
+  Message *find_message_by_id(const char * const, sqlite3_int64, sqlite3_int64);
+  Song *find_song_by_id(const char * const, sqlite3_int64, sqlite3_int64);
+  void set_find_error_message(const char * const, sqlite3_int64,
+                              const char * const, sqlite3_int64);
 
   int compare_device_names(const char *name1, const char *name2);
 

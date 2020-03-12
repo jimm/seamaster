@@ -11,7 +11,7 @@ class SetList : public DBObj, public Named {
 public:
   vector<Song *> songs;
 
-  SetList(int id, const char *name);
+  SetList(sqlite3_int64 id, const char *name);
   ~SetList();
 };
 

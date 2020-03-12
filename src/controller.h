@@ -12,7 +12,7 @@ public:
   int max;
   bool filtered;
 
-  Controller(int id, int cc_num);
+  Controller(sqlite3_int64 id, int cc_num);
   ~Controller();
 
   // Returns true if this controller will modify the original by filtering,

@@ -2,7 +2,7 @@
 #include <string.h>
 #include "set_list.h"
 
-SetList::SetList(int id, const char *name)
+SetList::SetList(sqlite3_int64 id, const char *name)
   : DBObj(id), Named(name)
 {
 }

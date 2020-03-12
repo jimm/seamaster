@@ -16,7 +16,7 @@ public:
   int num_stop_messages;
   bool running;
 
-  Patch(int id, const char *name);
+  Patch(sqlite3_int64 id, const char *name);
   ~Patch();
 
   void start();

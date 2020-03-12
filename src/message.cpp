@@ -3,7 +3,7 @@
 #include "message.h"
 #include "output.h"
 
-Message::Message(int id, const char *name)
+Message::Message(sqlite3_int64 id, const char *name)
   : DBObj(id), Named(name), events(nullptr), num_events(0)
 {
 }

@@ -3,7 +3,8 @@
 #include "trigger.h"
 #include "patchmaster.h"
 
-Trigger::Trigger(int id, PmMessage message, TriggerAction ta, Message *out_msg)
+Trigger::Trigger(sqlite3_int64 id, PmMessage message, TriggerAction ta,
+                 Message *out_msg)
   : DBObj(id), trigger_message(message), action(ta), output_message(out_msg)
 {
 }

@@ -1,16 +1,18 @@
 #ifndef DB_OBJ_H
 #define DB_OBJ_H
 
+#include <sqlite3.h>
+
 class DBObj {
 public:
-  DBObj(int i) : _id(i) {}
+  DBObj(sqlite3_int64 i) : _id(i) {}
   virtual ~DBObj() {}
 
-  int id() { return _id; }
-  void set_id(int id) { _id = id; }
+  sqlite3_int64 id() { return _id; }
+  void set_id(sqlite3_int64 id) { _id = id; }
 
 private:
-  int _id;
+  sqlite3_int64 _id;
 };
 
 #endif /* DB_OBJ_H */

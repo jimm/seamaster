@@ -3,8 +3,10 @@
 #include "error.h"
 #include "instrument.h"
 
-Instrument::Instrument(int id, const char *name, const char *pname, int portmidi_port_num)
-  : DBObj(id), Named(name), port_name(pname), midi_monitor(nullptr), enabled(false)
+Instrument::Instrument(sqlite3_int64 id, const char *name, const char *pname,
+                       int portmidi_port_num)
+  : DBObj(id), Named(name),
+    port_name(pname), midi_monitor(nullptr), enabled(false)
 {
   port_num = portmidi_port_num;
   num_io_messages = 0;

@@ -31,6 +31,7 @@ void _initialize_and_load_database() {
   status = sqlite3_exec(db, data_sql.c_str(), nullptr, nullptr, &error_buf);
   if (status != 0) {
     fprintf(stderr, "%s\n", error_buf);
+    sqlite3_close(db);
     exit(1);
   }
 
@@ -47,7 +48,8 @@ PatchMaster *load_test_data() {
   Storage storage(TEST_DB_PATH);
   PatchMaster *pm = storage.load(true);
   if (storage.has_error()) {
-    fprintf(stderr, "load_test_data storage error: %s\n", storage.error().c_str());
+    fprintf(stderr, "load_test_data storage error: %s\n",
+            storage.error().c_str());
     exit(1);
   }
   pm->testing = true;
@@ -55,9 +57,11 @@ PatchMaster *load_test_data() {
 }
 
 Connection *create_conn() {
-  Input *in = new Input(UNDEFINED, "in1", "in port name", CONNECTION_ALL_CHANNELS);
-  Output *out = new Output(UNDEFINED, "out1", "out port name", CONNECTION_ALL_CHANNELS);
-  Connection *conn = new Connection(UNDEFINED, in, 0, out, 0);
+  Input *in = new Input(UNDEFINED_ID, "in1", "in port name",
+                        CONNECTION_ALL_CHANNELS);
+  Output *out = new Output(UNDEFINED_ID, "out1", "out port name",
+                           CONNECTION_ALL_CHANNELS);
+  Connection *conn = new Connection(UNDEFINED_ID, in, 0, out, 0);
   vector<PmMessage> empty;
   conn->start();                // add conn to input
   return conn;

@@ -3,9 +3,10 @@
 
 // SeaMaster constants
 
-#define UNDEFINED -1
-#define CONNECTION_ALL_CHANNELS -1
-#define CONTROLLER_BLOCK -1
+#define UNDEFINED (-1)
+#define UNDEFINED_ID (-1LL)
+#define CONNECTION_ALL_CHANNELS (-1)
+#define CONTROLLER_BLOCK (-1)
 
 // MIDI constants
 

@@ -21,7 +21,7 @@ public:
   TriggerAction action;
   Message *output_message;
 
-  Trigger(int id, PmMessage message, TriggerAction action, Message *output);
+  Trigger(sqlite3_int64 id, PmMessage message, TriggerAction action, Message *output);
   ~Trigger();
 
   void signal(PmMessage msg);

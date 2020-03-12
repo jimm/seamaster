@@ -12,7 +12,7 @@ public:
   vector<Patch *> patches;
   string notes;
 
-  Song(int id, const char *name);
+  Song(sqlite3_int64 id, const char *name);
   ~Song();
 };
 

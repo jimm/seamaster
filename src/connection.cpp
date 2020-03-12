@@ -7,8 +7,11 @@
 #define is_status(b) (((b) & 0x80) == 0x80)
 #define is_realtime(b) ((b) >= 0xf8)
 
-Connection::Connection(int id, Input *in, int in_chan, Output *out, int out_chan)
-  : DBObj(id), input(in), input_chan(in_chan), output(out), output_chan(out_chan),
+Connection::Connection(sqlite3_int64 id, Input *in, int in_chan, Output *out,
+                       int out_chan)
+  : DBObj(id),
+    input(in), input_chan(in_chan),
+    output(out), output_chan(out_chan),
     xpose(0), pass_through_sysex(false), processing_sysex(false)
 {
   prog.bank_msb = prog.bank_lsb = prog.prog = UNDEFINED;

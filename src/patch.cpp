@@ -3,7 +3,7 @@
 #include "patch.h"
 #include "output.h"
 
-Patch::Patch(int id, const char *patch_name)
+Patch::Patch(sqlite3_int64 id, const char *patch_name)
   : DBObj(id), Named(patch_name), running(false),
     start_message(0), stop_message(0)
 {

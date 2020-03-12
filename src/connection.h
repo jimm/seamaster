@@ -35,7 +35,8 @@ public:
   bool processing_sysex;
   Controller *cc_maps[128];
 
-  Connection(int id, Input *input, int input_chan, Output *output, int output_chan);
+  Connection(sqlite3_int64 id, Input *input, int input_chan, Output *output,
+             int output_chan);
   ~Connection();
 
   void start();

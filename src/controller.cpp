@@ -1,7 +1,7 @@
 #include "consts.h"
 #include "controller.h"
 
-Controller::Controller(int id, int num)
+Controller::Controller(sqlite3_int64 id, int num)
   : DBObj(id),
     cc_num(num),
     translated_cc_num(num),

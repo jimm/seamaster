@@ -17,7 +17,7 @@ PatchMaster *PatchMaster_instance() {
 PatchMaster::PatchMaster() {
   running = false;
   testing = false;
-  all_songs = new SetList(UNDEFINED, (char *)"All Songs");
+  all_songs = new SetList(UNDEFINED_ID, (char *)"All Songs");
   set_lists.push_back(all_songs);
   cursor = new Cursor(this);
   pm_instance = this;
@@ -72,9 +72,9 @@ void PatchMaster::load_instruments() {
   for (int i = 0; i < num_devices; ++i) {
     const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
     if (info->input)
-      inputs.push_back(new Input(UNDEFINED, info->name, info->name, i));
+      inputs.push_back(new Input(UNDEFINED_ID, info->name, info->name, i));
     if (info->output)
-      outputs.push_back(new Output(UNDEFINED, info->name, info->name, i));
+      outputs.push_back(new Output(UNDEFINED_ID, info->name, info->name, i));
   }
 }
 
@@ -86,13 +86,13 @@ void PatchMaster::create_songs() {
     int output_num = 1;
     for (auto& output : outputs) {
       sprintf(name, "%s -> %s", input->name.c_str(), output->name.c_str());
-      Song *song = new Song(UNDEFINED, name);
+      Song *song = new Song(UNDEFINED_ID, name);
       all_songs->songs.push_back(song);
 
-      Patch *patch = new Patch(UNDEFINED, name);
+      Patch *patch = new Patch(UNDEFINED_ID, name);
       song->patches.push_back(patch);
 
-      Connection *conn = new Connection(UNDEFINED, input, CONNECTION_ALL_CHANNELS,
+      Connection *conn = new Connection(UNDEFINED_ID, input, CONNECTION_ALL_CHANNELS,
                                         output, CONNECTION_ALL_CHANNELS);
       patch->connections.push_back(conn);
 
@@ -102,10 +102,10 @@ void PatchMaster::create_songs() {
     if (outputs.size() > 1) {
       // one more song: this input to all outputs at once
       sprintf(name, "%s -> all outputs", input->name.c_str());
-      Song *song = new Song(UNDEFINED, name);
+      Song *song = new Song(UNDEFINED_ID, name);
       all_songs->songs.push_back(song);
 
-      Patch *patch = new Patch(UNDEFINED, name);
+      Patch *patch = new Patch(UNDEFINED_ID, name);
       song->patches.push_back(patch);
 
       for (auto& output : outputs) {

@@ -301,18 +301,18 @@ TEST_CASE("save", CATCH_CATEGORY) {
   REQUIRE(pm->set_lists[2]->name == "Set List Two");
 }
 
-TEST_CASE("save sets UNDEFINED ids", CATCH_CATEGORY) {
+TEST_CASE("save sets UNDEFINE_ID ids", CATCH_CATEGORY) {
   PatchMaster *pm = new PatchMaster();
   pm->testing = true;
   pm->initialize();
 
-  Song *s = new Song(UNDEFINED, "unnamed");
+  Song *s = new Song(UNDEFINED_ID, "unnamed");
   pm->all_songs->songs.push_back(s);
-  REQUIRE(s->id() == UNDEFINED);
+  REQUIRE(s->id() == UNDEFINED_ID);
 
   Storage storage(TEST_DB_PATH);
   storage.save(pm, true);
   REQUIRE(storage.has_error() == false);
-  REQUIRE(s->id() != UNDEFINED);
-  REQUIRE(s->id() >= 1);
+  REQUIRE(s->id() != UNDEFINED_ID);
+  REQUIRE(s->id() >= 1LL);
 }

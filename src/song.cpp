@@ -2,7 +2,7 @@
 #include <string.h>
 #include "song.h"
 
-Song::Song(int id, const char *name)
+Song::Song(sqlite3_int64 id, const char *name)
   : DBObj(id), Named(name)
 {
 }

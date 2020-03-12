@@ -14,7 +14,7 @@ class Message : public DBObj, public Named {
 public:
   vector<PmMessage> messages;
 
-  Message(int id, const char *name);
+  Message(sqlite3_int64 id, const char *name);
   ~Message();
 
   void send(Output &);
