@@ -31,6 +31,8 @@ PatchMaster::~PatchMaster() {
     delete in;
   for (auto& out : outputs)
     delete out;
+  for (auto& t : triggers)
+    delete t;
   for (auto& song : all_songs->songs)
     delete song;
   for (auto& set_list : set_lists)

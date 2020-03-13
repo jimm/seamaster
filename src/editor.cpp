@@ -17,9 +17,9 @@ Message *Editor::create_message() {
 }
 
 Trigger *Editor::create_trigger(Input *input) {
-  Trigger *trigger = new Trigger(UNDEFINED_ID, Pm_Message(CONTROLLER, 50, 127),
-                                 TA_NEXT_PATCH, nullptr);
-  input->triggers.push_back(trigger);
+  Trigger *trigger = new Trigger(UNDEFINED_ID, TA_NEXT_PATCH, nullptr);
+  pm->triggers.push_back(trigger);
+  trigger->set_trigger_message(input, Pm_Message(CONTROLLER, 50, 127));
   return trigger;
 }
 
@@ -84,14 +84,16 @@ void Editor::destroy_message(Message *message) {
 }
 
 void Editor::destroy_trigger(Trigger *trigger) {
-  for (auto &input : pm->inputs) {
+  for (auto &input : pm->inputs)
     for (ITER(Trigger) i = input->triggers.begin(); i != input->triggers.end(); ++i)
-    {
-      if (*i == trigger) {
+      if (*i == trigger)
         input->triggers.erase(i);
-        delete trigger;
-        return;
-      }
+
+  for (ITER(Trigger) i = pm->triggers.begin(); i != pm->triggers.end(); ++i) {
+    if (*i == trigger) {
+      pm->triggers.erase(i);
+      delete trigger;
+      return;
     }
   }
 }
@@ -106,10 +108,9 @@ bool Editor::ok_to_destroy_message(Message *message) {
       if (patch->start_message == message || patch->stop_message == message)
         return false;
 
-  for (auto &input : pm->inputs)
-    for (auto &trigger : input->triggers)
-      if (trigger->output_message == message)
-        return false;
+  for (auto &trigger : pm->triggers)
+    if (trigger->output_message == message)
+      return false;
 
   return true;
 }

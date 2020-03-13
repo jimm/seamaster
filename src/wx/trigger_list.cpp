@@ -7,10 +7,10 @@
 #define SHORT_LIST_HEIGHT 200
 
 const char * const COLUMN_HEADERS[] = {
-  "Input", "Trigger", "Action / Message"
+  "Key", "Input", "Trigger", "Action / Message"
 };
 const int COLUMN_WIDTHS[] = {
-  3*CW, 3*CW, 8*CW
+  2*CW, 3*CW, 3*CW, 8*CW
 };
 
 TriggerList::TriggerList(wxWindow *parent, wxWindowID id)
@@ -26,16 +26,7 @@ Trigger *TriggerList::selected() {
   if (index == wxNOT_FOUND)
     return nullptr;
 
-  PatchMaster *pm = PatchMaster_instance();
-  long row = 0;
-  for (auto* input : pm->inputs) {
-    for (auto * trigger : input->triggers) {
-      if (row == index)
-        return trigger;
-      ++row;
-    }
-  }
-  return nullptr;
+  return PatchMaster_instance()->triggers[index];
 }
 
 void TriggerList::update() {
@@ -45,43 +36,47 @@ void TriggerList::update() {
   set_headers();
 
   int row = 0;
-  for (auto* input : pm->inputs) {
-    for (auto * trigger : input->triggers) {
-      InsertItem(row, input->name.c_str());
+  for (auto * trigger : PatchMaster_instance()->triggers) {
+    int key = trigger->trigger_key_code;
 
-      wxString str = wxString::Format(
-        "%02x %02x %02x",
-        Pm_MessageStatus(trigger->trigger_message),
-        Pm_MessageData1(trigger->trigger_message),
-        Pm_MessageData2(trigger->trigger_message));
-      SetItem(row, 1, str);
+    InsertItem(row, key == UNDEFINED ? ""
+               : wxString::Format("F%d", WXK_F1 - trigger->trigger_key_code + 1));
 
-      switch (trigger->action) {
-      case TA_NEXT_SONG:
-        str = "next song";
-        break;
-      case TA_PREV_SONG:
-        str = "prev song";
-        break;
-      case TA_NEXT_PATCH:
-        str = "next patch";
-        break;
-      case TA_PREV_PATCH:
-        str = "prev patch";
-        break;
-      case TA_PANIC:
-        str = "panic";
-        break;
-      case TA_SUPER_PANIC:
-        str = "super panic";
-        break;
-      case TA_MESSAGE:
-        str = trigger->output_message->name;
-        break;
-      }
-      SetItem(row, 2, str);
-      ++row;
+    Input *input = trigger->input();
+    SetItem(row, 1, input ? input->name.c_str() : "");
+
+    wxString str = wxString::Format(
+      "%02x %02x %02x",
+      Pm_MessageStatus(trigger->trigger_message),
+      Pm_MessageData1(trigger->trigger_message),
+      Pm_MessageData2(trigger->trigger_message));
+    SetItem(row, 2, str);
+
+    switch (trigger->action) {
+    case TA_NEXT_SONG:
+      str = "next song";
+      break;
+    case TA_PREV_SONG:
+      str = "prev song";
+      break;
+    case TA_NEXT_PATCH:
+      str = "next patch";
+      break;
+    case TA_PREV_PATCH:
+      str = "prev patch";
+      break;
+    case TA_PANIC:
+      str = "panic";
+      break;
+    case TA_SUPER_PANIC:
+      str = "super panic";
+      break;
+    case TA_MESSAGE:
+      str = trigger->output_message->name;
+      break;
     }
+    SetItem(row, 3, str);
+    ++row;
   }
 }
 

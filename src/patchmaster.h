@@ -15,6 +15,7 @@ class PatchMaster {
 public:
   vector<Input *> inputs;
   vector<Output *> outputs;
+  vector<Trigger *> triggers;
   SetList *all_songs;
   vector<SetList *> set_lists;
   Cursor *cursor;

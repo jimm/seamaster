@@ -20,7 +20,6 @@ public:
   bool running;
 
   Input(int id, const char *name, const char *port_name, int port_num);
-  ~Input();
 
   void add_connection(Connection *);
   void remove_connection(Connection *);

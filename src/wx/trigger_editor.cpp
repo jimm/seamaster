@@ -46,15 +46,14 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
 
 wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   wxArrayString choices;
-  orig_input = nullptr;
-  for (auto &input : pm->inputs) {
+  Input *orig_input = trigger->input();
+  for (auto &input : pm->inputs)
     choices.Add(input->name);
-    if (count(input->triggers.begin(), input->triggers.end(), trigger) > 0)
-      orig_input = input;
-  }
 
   return lc_input = new wxComboBox(
-    parent, ID_TE_InputDropdown, orig_input->name, wxDefaultPosition,
+    parent, ID_TE_InputDropdown,
+    orig_input ? orig_input->name : "",
+    wxDefaultPosition,
     wxDefaultSize, choices, wxCB_READONLY);
 }
 
@@ -102,13 +101,10 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
 
 void TriggerEditor::done(wxCommandEvent& event) {
   Input *new_input = pm->inputs[lc_input->GetCurrentSelection()];
-  if (new_input != orig_input) {
-    orig_input->remove_trigger(trigger);
-    new_input->add_trigger(trigger);
-  }
 
-  trigger->trigger_message =
-    message_from_bytes(tc_trigger_message->GetValue().c_str());
+  // TODO handle key code instead of input
+  PmMessage msg = message_from_bytes(tc_trigger_message->GetValue().c_str());
+  trigger->set_trigger_message(new_input, msg);
 
   wxString val = lc_action->GetValue();
   if (val == "Next Song")

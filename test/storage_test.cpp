@@ -45,11 +45,22 @@ TEST_CASE("load messages", CATCH_CATEGORY) {
 
 TEST_CASE("load triggers", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
+  Trigger *t;
+
+  REQUIRE(pm->triggers.size() == 7);
+
+  // keys
+  t = pm->triggers[0];
+  REQUIRE(t->trigger_key_code == 340);
+  REQUIRE(t->trigger_message == Pm_Message(0, 0, 0));
+  REQUIRE(t->output_message == nullptr);
+  REQUIRE(t->action == TA_PANIC);
 
   Input *in = pm->inputs[0];
   REQUIRE(in->triggers.size() == 5);
 
-  Trigger *t = in->triggers[0];
+  t = in->triggers[0];
+  REQUIRE(t->trigger_key_code == UNDEFINED);
   REQUIRE(t->trigger_message == Pm_Message(0xb0, 50, 127));
   REQUIRE(t->action == TA_NEXT_SONG);
   REQUIRE(t->output_message == 0);
@@ -291,6 +302,7 @@ TEST_CASE("save", CATCH_CATEGORY) {
   REQUIRE(pm->outputs.size() == 2);
   REQUIRE(pm->inputs[0]->name == "first input");
   REQUIRE(pm->messages.size() == 4);
+  REQUIRE(pm->triggers.size() == 7);
   REQUIRE(pm->inputs[0]->triggers.size() == 5);
   REQUIRE(pm->all_songs->songs.size() == 3);
   REQUIRE(pm->all_songs->songs[0]->name == "Another Song");

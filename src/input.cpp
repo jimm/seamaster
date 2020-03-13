@@ -98,11 +98,6 @@ Input::Input(int id, const char *name, const char *port_name, int port_num)
   }
 }
 
-Input::~Input() {
-  for (auto& trigger : triggers)
-    delete trigger;
-}
-
 void Input::add_connection(Connection *conn) {
   connections.push_back(conn);
 }
@@ -199,7 +194,6 @@ void Input::read(PmMessage msg) {
   if (!enabled && real_port())
     return;
 
-  // triggers
   for (auto& trigger : triggers)
     trigger->signal(msg);
 

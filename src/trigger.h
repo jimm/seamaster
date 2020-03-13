@@ -17,19 +17,28 @@ typedef enum TriggerAction {
   TA_MESSAGE
 } TriggerAction;
 
+class Input;
+
 class Trigger : public DBObj {
 public:
+  int trigger_key_code;         // if UNDEFINED use trigger_message
   PmMessage trigger_message;
   TriggerAction action;
   Message *output_message;
 
-  Trigger(sqlite3_int64 id, PmMessage message, TriggerAction action, Message *output);
+  Trigger(sqlite3_int64 id, TriggerAction action, Message *output);
   ~Trigger();
+
+  void set_trigger_key_code(int key_code);
+  void set_trigger_message(Input *input, PmMessage message);
+
+  Input *input();               // will return nullptr if key is defined
 
   void signal(PmMessage msg);
 
 private:
   void perform_action();
+  void remove_from_input();
 };
 
 #endif /* TRIGGER_H */

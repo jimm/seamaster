@@ -10,12 +10,16 @@ insert into messages (id, name, bytes) values
   (3, '_start', 'b07a00b0077fb1077f'),
   (4, '_stop', 'b2077fb3077fb07a7f');
 
-insert into triggers (id, input_id, trigger_message_bytes, action, message_id) values
-  (1, 1, 'b0327f', 'next_song', null),
-  (2, 1, 'b0337f', 'prev_song', null),
-  (3, 1, 'b0347f', 'next_patch', null),
-  (4, 1, 'b0357f', 'prev_patch', null),
-  (5, 1, 'b0367f', null, 1);
+insert into triggers
+  (id, trigger_key_code, input_id, trigger_message_bytes, action, message_id)
+values
+  (1, 340, null, null, 'panic', null),
+  (2, 341, null, null, 'super_panic', null),
+  (3, null, 1, 'b0327f', 'next_song', null),
+  (4, null, 1, 'b0337f', 'prev_song', null),
+  (5, null, 1, 'b0347f', 'next_patch', null),
+  (6, null, 1, 'b0357f', 'prev_patch', null),
+  (7, null, 1, 'b0367f', null, 1);
 
 insert into songs (id, name, notes) values
   (1, 'To Each His Own', 'example notes'),

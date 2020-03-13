@@ -26,7 +26,6 @@ public:
 private:
   PatchMaster *pm;
   Trigger *trigger;
-  Input *orig_input;
   wxComboBox *lc_input;
   wxTextCtrl *tc_trigger_message;
   wxComboBox *lc_action;
