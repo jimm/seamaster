@@ -253,7 +253,7 @@ void Frame::make_menu_bar() {
   wxMenu *menu_midi = new wxMenu;
   menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\tCtrl-A",
                    "Send All Notes Off controller message on all channels");
-  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\tF1",
+  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\tCtrl-.",
                    "Send Notes Off messages, all notes, all channels");
 
   wxMenu *menu_help = new wxMenu;
@@ -643,7 +643,7 @@ void Frame::super_panic(wxCommandEvent &_event) {
   PatchMaster *pm = PatchMaster_instance();
   show_user_message("Sending \"super panic\": all notes off, all channels...");
   pm->panic(true);
-  show_user_message("Panic sent (all notes off, all channels)", 5);
+  show_user_message("Super panic sent (all notes off, all channels)", 5);
 }
 
 // ================ standard menu items ================
