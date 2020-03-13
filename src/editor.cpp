@@ -18,7 +18,7 @@ Message *Editor::create_message() {
 
 Trigger *Editor::create_trigger(Input *input) {
   Trigger *trigger = new Trigger(UNDEFINED_ID, Pm_Message(CONTROLLER, 50, 127),
-                                 NEXT_PATCH, nullptr);
+                                 TA_NEXT_PATCH, nullptr);
   input->triggers.push_back(trigger);
   return trigger;
 }

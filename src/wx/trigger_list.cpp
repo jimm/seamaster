@@ -57,19 +57,19 @@ void TriggerList::update() {
       SetItem(row, 1, str);
 
       switch (trigger->action) {
-      case NEXT_SONG:
+      case TA_NEXT_SONG:
         str = "next song";
         break;
-      case PREV_SONG:
+      case TA_PREV_SONG:
         str = "prev song";
         break;
-      case NEXT_PATCH:
+      case TA_NEXT_PATCH:
         str = "next patch";
         break;
-      case PREV_PATCH:
+      case TA_PREV_PATCH:
         str = "prev patch";
         break;
-      case MESSAGE:
+      case TA_MESSAGE:
         str = trigger->output_message->name;
         break;
       }

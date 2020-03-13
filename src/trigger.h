@@ -8,11 +8,11 @@
 class PatchMaster;
 
 typedef enum TriggerAction {
-  NEXT_SONG,
-  PREV_SONG,
-  NEXT_PATCH,
-  PREV_PATCH,
-  MESSAGE
+  TA_NEXT_SONG,
+  TA_PREV_SONG,
+  TA_NEXT_PATCH,
+  TA_PREV_PATCH,
+  TA_MESSAGE
 } TriggerAction;
 
 class Trigger : public DBObj {

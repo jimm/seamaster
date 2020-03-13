@@ -70,19 +70,19 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
     choices.Add(message->name);
 
   switch (trigger->action) {
-  case NEXT_SONG:
+  case TA_NEXT_SONG:
     initial_value = "Next Song";
     break;
-  case PREV_SONG:
+  case TA_PREV_SONG:
     initial_value = "Prev Song";
     break;
-  case NEXT_PATCH:
+  case TA_NEXT_PATCH:
     initial_value = "Next Patch";
     break;
-  case PREV_PATCH:
+  case TA_PREV_PATCH:
     initial_value = "Prev Patch";
     break;
-  case MESSAGE:
+  case TA_MESSAGE:
     initial_value = trigger->output_message->name;
     break;
   }
@@ -104,15 +104,15 @@ void TriggerEditor::done(wxCommandEvent& event) {
 
   wxString val = lc_action->GetValue();
   if (val == "Next Song")
-    trigger->action = NEXT_SONG;
+    trigger->action = TA_NEXT_SONG;
   else if (val == "Prev Song")
-    trigger->action = PREV_SONG;
+    trigger->action = TA_PREV_SONG;
   else if (val == "Next Patch")
-    trigger->action = NEXT_PATCH;
+    trigger->action = TA_NEXT_PATCH;
   else if (val == "Prev Patch")
-    trigger->action = PREV_PATCH;
+    trigger->action = TA_PREV_PATCH;
   else {
-    trigger->action = MESSAGE;
+    trigger->action = TA_MESSAGE;
     for (auto &msg : pm->messages) {
       if (msg->name == val) {
         trigger->output_message = msg;

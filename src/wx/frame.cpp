@@ -253,7 +253,7 @@ void Frame::make_menu_bar() {
   wxMenu *menu_midi = new wxMenu;
   menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\tCtrl-A",
                    "Send All Notes Off controller message on all channels");
-  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\t\e",
+  menu_midi->Append(ID_SuperPanic, "&Send Super-Panic\tF1",
                    "Send Notes Off messages, all notes, all channels");
 
   wxMenu *menu_help = new wxMenu;

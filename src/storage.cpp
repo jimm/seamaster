@@ -188,17 +188,17 @@ void Storage::load_triggers() {
     if (message_id != UNDEFINED_ID)
       output_message = find_message_by_id("trigger", id, message_id);
 
-    TriggerAction action = MESSAGE;
+    TriggerAction action = TA_MESSAGE;
     if (action_name == nullptr)
-      action = MESSAGE;
+      action = TA_MESSAGE;
     else if (strcmp(action_name, "next_song") == 0)
-      action = NEXT_SONG;
+      action = TA_NEXT_SONG;
     else if (strcmp(action_name, "prev_song") == 0)
-      action = PREV_SONG;
+      action = TA_PREV_SONG;
     else if (strcmp(action_name, "next_patch") == 0)
-      action = NEXT_PATCH;
+      action = TA_NEXT_PATCH;
     else if (strcmp(action_name, "prev_patch") == 0)
-      action = PREV_PATCH;
+      action = TA_PREV_PATCH;
 
     Trigger *t = new Trigger(id, trigger_message, action, output_message);
     Input *input = find_input_by_id("trigger", id, input_id);
@@ -484,10 +484,10 @@ void Storage::save_triggers() {
       else {
         const char * action;
         switch (trigger->action) {
-        case NEXT_SONG: action = "next_song"; break;
-        case PREV_SONG: action = "prev_song"; break;
-        case NEXT_PATCH: action = "next_patch"; break;
-        case PREV_PATCH: action = "prev_patch"; break;
+        case TA_NEXT_SONG: action = "next_song"; break;
+        case TA_PREV_SONG: action = "prev_song"; break;
+        case TA_NEXT_PATCH: action = "next_patch"; break;
+        case TA_PREV_PATCH: action = "prev_patch"; break;
         default: break;
         }
         sqlite3_bind_text(stmt, 4, action, -1, SQLITE_STATIC);

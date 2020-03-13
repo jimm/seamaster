@@ -51,7 +51,7 @@ TEST_CASE("load triggers", CATCH_CATEGORY) {
 
   Trigger *t = in->triggers[0];
   REQUIRE(t->trigger_message == Pm_Message(0xb0, 50, 127));
-  REQUIRE(t->action == NEXT_SONG);
+  REQUIRE(t->action == TA_NEXT_SONG);
   REQUIRE(t->output_message == 0);
 
   // make sure trigger added to first input
@@ -59,7 +59,7 @@ TEST_CASE("load triggers", CATCH_CATEGORY) {
 
   t = in->triggers[4];
   REQUIRE(t->trigger_message == Pm_Message(0xb0, 54, 127));
-  REQUIRE(t->action == MESSAGE);
+  REQUIRE(t->action == TA_MESSAGE);
   REQUIRE(t->output_message != 0);
   REQUIRE(t->output_message->name == "Tune Request");
 

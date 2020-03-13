@@ -21,19 +21,19 @@ void Trigger::perform_action() {
   PatchMaster *pm = PatchMaster_instance();
 
   switch (action) {
-  case NEXT_SONG:
+  case TA_NEXT_SONG:
     pm->next_song();
     break;
-  case PREV_SONG:
+  case TA_PREV_SONG:
     pm->prev_song();
     break;
-  case NEXT_PATCH:
+  case TA_NEXT_PATCH:
     pm->next_patch();
     break;
-  case PREV_PATCH:
+  case TA_PREV_PATCH:
     pm->prev_patch();
     break;
-  case MESSAGE:
+  case TA_MESSAGE:
     send_message(pm);
   }
 }
