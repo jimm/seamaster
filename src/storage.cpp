@@ -199,6 +199,10 @@ void Storage::load_triggers() {
       action = TA_NEXT_PATCH;
     else if (strcmp(action_name, "prev_patch") == 0)
       action = TA_PREV_PATCH;
+    else if (strcmp(action_name, "panic") == 0)
+      action = TA_PANIC;
+    else if (strcmp(action_name, "super_panic") == 0)
+      action = TA_SUPER_PANIC;
 
     Trigger *t = new Trigger(id, trigger_message, action, output_message);
     Input *input = find_input_by_id("trigger", id, input_id);
@@ -488,6 +492,8 @@ void Storage::save_triggers() {
         case TA_PREV_SONG: action = "prev_song"; break;
         case TA_NEXT_PATCH: action = "next_patch"; break;
         case TA_PREV_PATCH: action = "prev_patch"; break;
+        case TA_PANIC: action = "panic"; break;
+        case TA_SUPER_PANIC: action = "super_panic"; break;
         default: break;
         }
         sqlite3_bind_text(stmt, 4, action, -1, SQLITE_STATIC);

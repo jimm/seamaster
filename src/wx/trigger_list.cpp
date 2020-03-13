@@ -69,6 +69,12 @@ void TriggerList::update() {
       case TA_PREV_PATCH:
         str = "prev patch";
         break;
+      case TA_PANIC:
+        str = "panic";
+        break;
+      case TA_SUPER_PANIC:
+        str = "super panic";
+        break;
       case TA_MESSAGE:
         str = trigger->output_message->name;
         break;

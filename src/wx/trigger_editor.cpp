@@ -66,6 +66,8 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
   choices.Add("Prev Song");
   choices.Add("Next Patch");
   choices.Add("Prev Patch");
+  choices.Add("Panic");
+  choices.Add("Super Panic");
   for (auto &message : pm->messages)
     choices.Add(message->name);
 
@@ -81,6 +83,12 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
     break;
   case TA_PREV_PATCH:
     initial_value = "Prev Patch";
+    break;
+  case TA_PANIC:
+    initial_value = "Panic";
+    break;
+  case TA_SUPER_PANIC:
+    initial_value = "Super Panic";
     break;
   case TA_MESSAGE:
     initial_value = trigger->output_message->name;
@@ -111,6 +119,10 @@ void TriggerEditor::done(wxCommandEvent& event) {
     trigger->action = TA_NEXT_PATCH;
   else if (val == "Prev Patch")
     trigger->action = TA_PREV_PATCH;
+  else if (val == "Panic")
+    trigger->action = TA_PANIC;
+  else if (val == "Super Panic")
+    trigger->action = TA_SUPER_PANIC;
   else {
     trigger->action = TA_MESSAGE;
     for (auto &msg : pm->messages) {

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include "patchmaster.h"
 #include "message.h"
 #include "output.h"
 
@@ -11,6 +12,12 @@ Message::Message(sqlite3_int64 id, const char *name)
 Message::~Message() {
   if (events != nullptr)
     free(events);
+}
+
+
+void Message::send() {
+  for (auto& out : PatchMaster_instance()->outputs)
+    send(*out);
 }
 
 void Message::send(Output &out) {

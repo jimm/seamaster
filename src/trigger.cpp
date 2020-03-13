@@ -33,12 +33,14 @@ void Trigger::perform_action() {
   case TA_PREV_PATCH:
     pm->prev_patch();
     break;
+  case TA_PANIC:
+    pm->panic(false);
+    break;
+  case TA_SUPER_PANIC:
+    pm->panic(true);
+    break;
   case TA_MESSAGE:
-    send_message(pm);
+    output_message->send();
+    break;
   }
-}
-
-void Trigger::send_message(PatchMaster *pm) {
-  for (auto& out : pm->outputs)
-    output_message->send(*out);
 }

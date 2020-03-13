@@ -12,6 +12,8 @@ typedef enum TriggerAction {
   TA_PREV_SONG,
   TA_NEXT_PATCH,
   TA_PREV_PATCH,
+  TA_PANIC,
+  TA_SUPER_PANIC,
   TA_MESSAGE
 } TriggerAction;
 
@@ -28,7 +30,6 @@ public:
 
 private:
   void perform_action();
-  void send_message(PatchMaster *pm);
 };
 
 #endif /* TRIGGER_H */

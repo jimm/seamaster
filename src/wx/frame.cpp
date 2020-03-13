@@ -63,7 +63,6 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
   EVT_MENU(ID_Monitor, Frame::OnMonitor)
   EVT_MENU(ID_RegularPanic, Frame::regular_panic)
   EVT_MENU(ID_SuperPanic, Frame::super_panic)
-  EVT_MENU(wxID_EXIT,  Frame::OnExit)
   EVT_MENU(wxID_ABOUT, Frame::OnAbout)
 
   EVT_LISTBOX(ID_SetListList, Frame::jump_to_set_list)
@@ -270,13 +269,6 @@ void Frame::make_menu_bar() {
 #if defined(__WXMAC__)
   menu_bar->OSXGetAppleMenu()->SetTitle("SeaMaster");
 #endif
-}
-
-void Frame::OnExit(wxCommandEvent &_event) {
-  if (PatchMaster_instance() != nullptr)
-    PatchMaster_instance()->start();
-  Close(true);
-  exit(0);
 }
 
 // ================ messaging ================
@@ -600,6 +592,15 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
 // ================ keypress handling ================
 
 int Frame::handle_global_key_event(wxKeyEvent &event) {
+  int key_code = event.GetKeyCode();
+
+  if (key_code >= WXK_F1 && key_code <= WXK_F24) {
+    if (handle_trigger_keys()) {
+      update();
+      return true;
+    }
+  }
+
   if (FindFocus() == lc_notes)
     return -1;
 
@@ -644,6 +645,13 @@ void Frame::super_panic(wxCommandEvent &_event) {
   show_user_message("Sending \"super panic\": all notes off, all channels...");
   pm->panic(true);
   show_user_message("Super panic sent (all notes off, all channels)", 5);
+}
+
+// ================ trigger keys
+
+bool Frame::handle_trigger_keys() {
+  // TODO
+  return false;
 }
 
 // ================ standard menu items ================

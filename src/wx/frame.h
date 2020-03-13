@@ -104,11 +104,11 @@ private:
   void OnSaveAs(wxCommandEvent& event);
   void OnListInstruments(wxCommandEvent& event);
   void OnMonitor(wxCommandEvent& event);
-  void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
 
   void regular_panic(wxCommandEvent &_event);
   void super_panic(wxCommandEvent &_event);
+  bool handle_trigger_keys();
 
   void next_song(wxCommandEvent &_event) { next_song(); }
   void prev_song(wxCommandEvent &_event) { prev_song(); }

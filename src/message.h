@@ -17,6 +17,7 @@ public:
   Message(sqlite3_int64 id, const char *name);
   ~Message();
 
+  void send();
   void send(Output &);
 
 private:
