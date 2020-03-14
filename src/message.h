@@ -20,6 +20,8 @@ public:
   void send();
   void send(Output &);
 
+  void clear_messages();
+
 private:
   PmEvent *events;
   int num_events;

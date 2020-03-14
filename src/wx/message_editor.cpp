@@ -95,12 +95,12 @@ void MessageEditor::done(wxCommandEvent& event) {
   // safe. We make sure each call is run in isolation (first splitting text
   // into lines, then parsing each line) and runs on a char array.
   strcpy(text_buf, text.c_str());
-  message->messages.clear();
   for (char *line = strtok(text_buf, "\n");
        line != nullptr;
        line = strtok(nullptr, "\n"))
     line_ptrs.push_back(line);
 
+  message->clear_messages();
   for (auto p : line_ptrs) {
     char line_buf[BUFSIZ];
     strcpy(line_buf, p);

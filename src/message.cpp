@@ -26,6 +26,12 @@ void Message::send(Output &out) {
   out.write(events, num_events);
 }
 
+void Message::clear_messages() {
+  messages.clear();
+  free(events);
+  events = nullptr;
+}
+
 void Message::convert_messages() {
   num_events = messages.size();
   if (num_events == 0)
