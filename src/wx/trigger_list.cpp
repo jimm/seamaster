@@ -10,7 +10,7 @@ const char * const COLUMN_HEADERS[] = {
   "Key", "Input", "Trigger", "Action / Message"
 };
 const int COLUMN_WIDTHS[] = {
-  2*CW, 3*CW, 3*CW, 8*CW
+  CW, 3*CW, 5*CW, 7*CW
 };
 
 TriggerList::TriggerList(wxWindow *parent, wxWindowID id)
@@ -48,7 +48,7 @@ void TriggerList::update() {
     wxString str;
     if (input != nullptr)
       str = wxString::Format(
-        "%02x %02x %02x",
+        "0x%02x 0x%02x 0x%02x",
         Pm_MessageStatus(trigger->trigger_message),
         Pm_MessageData1(trigger->trigger_message),
         Pm_MessageData2(trigger->trigger_message));

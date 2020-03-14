@@ -81,38 +81,6 @@ void format_program(program prog, char *buf) {
     strcat(buf, "    ");
 }
 
-void format_program_no_spaces(program prog, char *buf) {
-  int has_msb = prog.bank_msb != UNDEFINED;
-  int has_lsb = prog.bank_lsb != UNDEFINED;
-  int has_bank = has_msb || has_lsb;
-
-  if (has_bank)
-    *buf++ = '[';
-
-  if (has_msb) {
-    sprintf(buf, "%3d", prog.bank_msb);
-    buf += 3;
-  }
-
-  if (has_bank)
-    *buf++ = ',';
-
-  if (has_lsb) {
-    sprintf(buf, "%3d", prog.bank_lsb);
-    buf += 3;
-  }
-
-  if (has_bank)
-    *buf++ = ']';
-
-  if (prog.prog != UNDEFINED) {
-    sprintf(buf, "%3d", prog.prog);
-    buf += 3;
-  }
-
-  *buf = 0;
-}
-
 void format_controllers(Connection *conn, char *buf) {
   int first = true;
 
@@ -160,7 +128,8 @@ unsigned char hex_digit_from_char(char ch) {
   }
 }
 
-// Translates first two chars to a hex bytes. Zero, one, or two chars used.
+// Translates first two hex chars into an unsigned char value. Zero, one, or
+// two chars used.
 unsigned char hex_to_byte(const char *hex) {
   unsigned char val = 0;
   
@@ -202,20 +171,19 @@ unsigned char byte_from_chars(const char * const str) {
   return check_byte_value(val) ? val : 0;
 }
 
+// Translates hex bytes in `str`
 PmMessage message_from_bytes(const char *str) {
   int bytes[3] = {0, 0, 0};
   int i = 0;
 
   for (char *word = strtok((char *)str + strspn(str, " \t"), ", ");
-       word != nullptr;
+       word != nullptr && i < 3;
        word = strtok(nullptr, ", "))
   {
-    if (i < 3) {
-      int val = int_from_chars(word);
-      if (!check_byte_value(val))
-        return 0;
-      bytes[i++] = byte_from_chars(word);
-    }
+    int val = int_from_chars(word);
+    if (!check_byte_value(val))
+      return 0;
+    bytes[i++] = byte_from_chars(word);
   }
 
   return Pm_Message(bytes[0], bytes[1], bytes[2]);

@@ -6,6 +6,7 @@
 #include "../formatter.h"
 
 #define FRAME_NAME "seamaster_main_frame"
+#define MESSAGE_TEXT_WIDTH 100
 
 wxBEGIN_EVENT_TABLE(TriggerEditor, wxDialog)
   EVT_BUTTON(ID_TE_DoneButton, TriggerEditor::done)
@@ -30,10 +31,11 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   wxString message_str;
   if (trigger->input() != nullptr)
     message_str = wxString::Format(
-      "%02x %02x %02x",
+      "0x%02x 0x%02x 0x%02x",
       Pm_MessageStatus(trigger->trigger_message),
       Pm_MessageData1(trigger->trigger_message),
       Pm_MessageData2(trigger->trigger_message));
+
   tc_trigger_message = new wxTextCtrl(p, ID_TE_MessageText, message_str);
   sizer->Add(tc_trigger_message, field_flags);
 
