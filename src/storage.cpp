@@ -487,47 +487,40 @@ void Storage::save_triggers() {
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (auto& trigger : pm->triggers) {
-    if (trigger->input() == nullptr)
-      save_trigger(stmt, nullptr, trigger);
-  }
-  for (auto& input : pm->inputs) {
-    for (auto& trigger : input->triggers)
-      save_trigger(stmt, input, trigger);
+    Input *input = trigger->input();
+
+    BIND_OBJ_ID_OR_NULL(1, trigger);
+    BIND_INT_OR_NULL(2, trigger->trigger_key_code, UNDEFINED);
+    BIND_OBJ_ID_OR_NULL(3, input);
+    if (trigger->trigger_message == Pm_Message(0, 0, 0))
+      sqlite3_bind_null(stmt, 4);
+    else
+      sqlite3_bind_text(stmt, 4,
+                        pm_message_to_bytes(trigger->trigger_message).c_str(),
+                        -1, SQLITE_STATIC);
+    if (trigger->output_message != nullptr) {
+      sqlite3_bind_null(stmt, 5);
+      sqlite3_bind_int64(stmt, 6, trigger->output_message->id());
+    }
+    else {
+      const char * action;
+      switch (trigger->action) {
+      case TA_NEXT_SONG: action = "next_song"; break;
+      case TA_PREV_SONG: action = "prev_song"; break;
+      case TA_NEXT_PATCH: action = "next_patch"; break;
+      case TA_PREV_PATCH: action = "prev_patch"; break;
+      case TA_PANIC: action = "panic"; break;
+      case TA_SUPER_PANIC: action = "super_panic"; break;
+      default: break;
+      }
+      sqlite3_bind_text(stmt, 5, action, -1, SQLITE_STATIC);
+      sqlite3_bind_null(stmt, 6);
+    }
+    sqlite3_step(stmt);
+    EXTRACT_ID(trigger);
+    sqlite3_reset(stmt);
   }
   sqlite3_finalize(stmt);
-}
-
-void Storage::save_trigger(sqlite3_stmt *stmt, Input *input, Trigger *trigger) {
-  BIND_OBJ_ID_OR_NULL(1, trigger);
-  BIND_INT_OR_NULL(2, trigger->trigger_key_code, UNDEFINED);
-  BIND_OBJ_ID_OR_NULL(3, input);
-  if (trigger->trigger_message == Pm_Message(0, 0, 0))
-    sqlite3_bind_null(stmt, 4);
-  else
-    sqlite3_bind_text(stmt, 4,
-                      pm_message_to_bytes(trigger->trigger_message).c_str(),
-                      -1, SQLITE_STATIC);
-  if (trigger->output_message != nullptr) {
-    sqlite3_bind_null(stmt, 4);
-    sqlite3_bind_int64(stmt, 5, trigger->output_message->id());
-  }
-  else {
-    const char * action;
-    switch (trigger->action) {
-    case TA_NEXT_SONG: action = "next_song"; break;
-    case TA_PREV_SONG: action = "prev_song"; break;
-    case TA_NEXT_PATCH: action = "next_patch"; break;
-    case TA_PREV_PATCH: action = "prev_patch"; break;
-    case TA_PANIC: action = "panic"; break;
-    case TA_SUPER_PANIC: action = "super_panic"; break;
-    default: break;
-    }
-    sqlite3_bind_text(stmt, 4, action, -1, SQLITE_STATIC);
-    sqlite3_bind_null(stmt, 5);
-  }
-  sqlite3_step(stmt);
-  EXTRACT_ID(trigger);
-  sqlite3_reset(stmt);
 }
 
 void Storage::save_songs() {
@@ -581,7 +574,7 @@ void Storage::save_connections(Patch *patch) {
     "insert into connections"
     "   (id, patch_id, position, input_id, input_chan, output_id, output_chan,"
     "    bank_msb, bank_lsb, prog, zone_low, zone_high, xpose, pass_through_sysex)"
-    " values (?, ?, ?, ?, ?, ?)";
+    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   int position = 0;
@@ -792,11 +785,8 @@ string Storage::message_to_byte_str(Message *msg) {
 }
 
 string Storage::pm_message_to_bytes(PmMessage msg) {
-  char buf[7], *p = buf;
+  char buf[7];
 
-  sprintf(p, "%02x", Pm_MessageStatus(msg)); p += 2;
-  sprintf(p, "%02x", Pm_MessageData1(msg)); p += 2;
-  sprintf(p, "%02x", Pm_MessageData2(msg)); p += 2;
-  *p = '\0';
+  sprintf(buf, "%02x%02x%02x", Pm_MessageStatus(msg), Pm_MessageData1(msg), Pm_MessageData2(msg));
   return string(buf);
 }

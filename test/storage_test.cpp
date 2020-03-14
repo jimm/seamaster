@@ -299,14 +299,20 @@ TEST_CASE("save", CATCH_CATEGORY) {
   Storage storage(TEST_DB_PATH "_save_test");
   pm = storage.load(true);
   REQUIRE(storage.has_error() == false);
+
   REQUIRE(pm->inputs.size() == 2);
   REQUIRE(pm->outputs.size() == 2);
   REQUIRE(pm->inputs[0]->name == "first input");
   REQUIRE(pm->messages.size() == 4);
+
   REQUIRE(pm->triggers.size() == 7);
   REQUIRE(pm->inputs[0]->triggers.size() == 5);
+
   REQUIRE(pm->all_songs->songs.size() == 3);
-  REQUIRE(pm->all_songs->songs[0]->name == "Another Song");
+
+  Song *song = pm->all_songs->songs[0];
+  REQUIRE(song->name == "Another Song");
+  REQUIRE(song->patches[0]->connections.size() == 2);
 
   REQUIRE(pm->set_lists.size() == 3);
   REQUIRE(pm->set_lists[0] == pm->all_songs);
