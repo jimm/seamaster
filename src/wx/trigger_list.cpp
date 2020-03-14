@@ -45,11 +45,13 @@ void TriggerList::update() {
     Input *input = trigger->input();
     SetItem(row, 1, input ? input->name.c_str() : "");
 
-    wxString str = wxString::Format(
-      "%02x %02x %02x",
-      Pm_MessageStatus(trigger->trigger_message),
-      Pm_MessageData1(trigger->trigger_message),
-      Pm_MessageData2(trigger->trigger_message));
+    wxString str;
+    if (input != nullptr)
+      str = wxString::Format(
+        "%02x %02x %02x",
+        Pm_MessageStatus(trigger->trigger_message),
+        Pm_MessageData1(trigger->trigger_message),
+        Pm_MessageData2(trigger->trigger_message));
     SetItem(row, 2, str);
 
     switch (trigger->action) {

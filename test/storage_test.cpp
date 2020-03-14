@@ -292,10 +292,11 @@ TEST_CASE("initialize", CATCH_CATEGORY) {
 TEST_CASE("save", CATCH_CATEGORY) {
   PatchMaster *pm = load_test_data();
 
-  Storage storage(TEST_DB_PATH);
-  storage.save(pm, true);
-  REQUIRE(storage.has_error() == false);
+  Storage saver(TEST_DB_PATH "_save_test");
+  saver.save(pm, true);
+  REQUIRE(saver.has_error() == false);
 
+  Storage storage(TEST_DB_PATH "_save_test");
   pm = storage.load(true);
   REQUIRE(storage.has_error() == false);
   REQUIRE(pm->inputs.size() == 2);

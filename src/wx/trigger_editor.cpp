@@ -53,14 +53,14 @@ wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
   wxArrayString choices;
   int key = trigger->trigger_key_code;
 
-  choices.Add("(Use Input Instrument)");
+  choices.Add("(No Trigger Key)");
   for (int i = 1; i <= 24; ++i)
     choices.Add(wxString::Format("F%d", i));
 
   return lc_key = new wxComboBox(
     parent, ID_TE_InputDropdown,
     key == UNDEFINED
-      ? "(Use Input Instrument)"
+      ? "(No Trigger Key)"
       : wxString::Format("F%d", WXK_F1 - key + 1),
     wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
@@ -68,12 +68,14 @@ wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
 wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   wxArrayString choices;
   Input *orig_input = trigger->input();
+
+  choices.Add("(No Trigger Instrument)");
   for (auto &input : pm->inputs)
     choices.Add(input->name);
 
   return lc_input = new wxComboBox(
     parent, ID_TE_InputDropdown,
-    orig_input ? orig_input->name : "",
+    orig_input ? orig_input->name : "(No Trigger Instrument)",
     wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
 
@@ -124,13 +126,15 @@ void TriggerEditor::done(wxCommandEvent& event) {
   int index = lc_key->GetCurrentSelection();
   if (index != wxNOT_FOUND && index > 0)
     trigger->set_trigger_key_code(WXK_F1 + index - 1);
+
+  index = lc_input->GetCurrentSelection();
+  if (index == wxNOT_FOUND || index == 0)
+    trigger->remove_from_input();
   else {
-    Input *input = pm->inputs[lc_input->GetCurrentSelection()];
+    Input *input = pm->inputs[index - 1];
     PmMessage msg = message_from_bytes(tc_trigger_message->GetValue().c_str());
     trigger->set_trigger_message(input, msg);
   }
-
-
 
   wxString val = lc_action->GetValue();
   if (val == "Next Song")

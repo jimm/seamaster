@@ -21,7 +21,7 @@ class Input;
 
 class Trigger : public DBObj {
 public:
-  int trigger_key_code;         // if UNDEFINED use trigger_message
+  int trigger_key_code;
   PmMessage trigger_message;
   TriggerAction action;
   Message *output_message;
@@ -32,14 +32,14 @@ public:
   void set_trigger_key_code(int key_code);
   void set_trigger_message(Input *input, PmMessage message);
 
-  Input *input();               // will return nullptr if key is defined
+  Input *input();               // may return nullptr
+  void remove_from_input();     // does nothing if no input
 
   bool signal_message(PmMessage msg);
   bool signal_key(int key_code);
 
 private:
   void perform_action();
-  void remove_from_input();
 };
 
 #endif /* TRIGGER_H */

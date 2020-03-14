@@ -180,12 +180,11 @@ void Storage::load_triggers() {
   while (sqlite3_step(stmt) == SQLITE_ROW) {
     sqlite3_int64 id = sqlite3_column_int64(stmt, 0);
     int trigger_key_code = INT_OR_NULL(1, UNDEFINED);
-    sqlite3_int64 input_id = sqlite3_column_int(stmt, 2);
+    sqlite3_int64 input_id = ID_OR_NULL(2, UNDEFINED_ID);
     const char *bytes = (const char *)sqlite3_column_text(stmt, 3);
     const char *action_name = (const char *)sqlite3_column_text(stmt, 4);
     sqlite3_int64 message_id = ID_OR_NULL(5, UNDEFINED_ID);
 
-    PmMessage trigger_message = pm_message_from_bytes((char *)bytes);
     Message *output_message = nullptr;
     if (message_id != UNDEFINED_ID)
       output_message = find_message_by_id("trigger", id, message_id);
@@ -211,8 +210,9 @@ void Storage::load_triggers() {
 
     if (trigger_key_code != UNDEFINED)
       t->set_trigger_key_code(trigger_key_code);
-    else {
+    if (input_id != UNDEFINED_ID) {
       Input *input = find_input_by_id("trigger", id, input_id);
+      PmMessage trigger_message = pm_message_from_bytes((char *)bytes);
       t->set_trigger_message(input, trigger_message);
     }
   }

@@ -24,6 +24,7 @@ create table messages (
 create table triggers (
   id integer primary key,
   trigger_key_code integer,     -- either this or bytes must not be NULL
+                                -- both may be not NULL
   input_id integer references instruments(id),
   trigger_message_bytes text,
   action text,

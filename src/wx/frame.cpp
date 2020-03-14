@@ -601,7 +601,9 @@ int Frame::handle_global_key_event(wxKeyEvent &event) {
     }
   }
 
-  if (FindFocus() == lc_notes)
+  // Do not handle keys if we're in a text control.
+  wxString focus_class_name = FindFocus()->GetClassInfo()->GetClassName();
+  if (strncmp("wxTextCtrl", focus_class_name.c_str(), 10) == 0)
     return -1;
 
   switch (event.GetKeyCode()) {

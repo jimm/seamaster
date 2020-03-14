@@ -3,7 +3,6 @@
 #include <portmidi.h>
 #include "error.h"
 #include "output.h"
-#include "trigger.h"
 
 Output::Output(int id, const char *name, const char *port_name, int port_num)
   : Instrument(id, name, port_name, port_num)

@@ -15,20 +15,15 @@ Trigger::~Trigger() {
 
 void Trigger::set_trigger_key_code(int key_code) {
   trigger_key_code = key_code;
-  remove_from_input();
 }
 
 void Trigger::set_trigger_message(Input *input, PmMessage message) {
-  trigger_key_code = UNDEFINED;
   remove_from_input();
   trigger_message = message;
   input->add_trigger(this);
 }
 
 Input *Trigger::input() {
-  if (trigger_key_code != UNDEFINED)
-    return nullptr;
-
   for (auto &input : PatchMaster_instance()->inputs)
     for (auto &trigger : input->triggers)
       if (trigger == this)

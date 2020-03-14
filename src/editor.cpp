@@ -84,10 +84,7 @@ void Editor::destroy_message(Message *message) {
 }
 
 void Editor::destroy_trigger(Trigger *trigger) {
-  for (auto &input : pm->inputs)
-    for (ITER(Trigger) i = input->triggers.begin(); i != input->triggers.end(); ++i)
-      if (*i == trigger)
-        input->triggers.erase(i);
+  trigger->remove_from_input();
 
   for (ITER(Trigger) i = pm->triggers.begin(); i != pm->triggers.end(); ++i) {
     if (*i == trigger) {

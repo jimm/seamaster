@@ -11,7 +11,7 @@
 
 #define LOCAL_SCHEMA_PATH "db/schema.sql"
 #define TEST_DATA_PATH "test/testdata.sql"
-#define TEST_DB_PATH "/tmp/seamaster_test.db"
+#define TEST_DB_PATH "/tmp/seamaster_test.sm"
 
 PatchMaster *load_test_data();
 Connection *create_conn();
