@@ -34,7 +34,8 @@ public:
 
   Input *input();               // will return nullptr if key is defined
 
-  void signal(PmMessage msg);
+  bool signal_message(PmMessage msg);
+  bool signal_key(int key_code);
 
 private:
   void perform_action();

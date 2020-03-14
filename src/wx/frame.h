@@ -108,7 +108,7 @@ private:
 
   void regular_panic(wxCommandEvent &_event);
   void super_panic(wxCommandEvent &_event);
-  bool handle_trigger_keys();
+  bool handle_trigger_key(int key_code);
 
   void next_song(wxCommandEvent &_event) { next_song(); }
   void prev_song(wxCommandEvent &_event) { prev_song(); }

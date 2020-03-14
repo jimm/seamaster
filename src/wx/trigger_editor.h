@@ -26,10 +26,12 @@ public:
 private:
   PatchMaster *pm;
   Trigger *trigger;
+  wxComboBox *lc_key;
   wxComboBox *lc_input;
   wxTextCtrl *tc_trigger_message;
   wxComboBox *lc_action;
 
+  wxWindow *make_key_dropdown(wxPanel *parent);
   wxWindow *make_input_dropdown(wxPanel *parent);
   wxWindow *make_action_dropdown(wxPanel *parent);
 

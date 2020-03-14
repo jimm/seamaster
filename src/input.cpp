@@ -195,7 +195,7 @@ void Input::read(PmMessage msg) {
     return;
 
   for (auto& trigger : triggers)
-    trigger->signal(msg);
+    trigger->signal_message(msg);
 
   // When testing, remember the messages we've seen. This could be made
   // more efficient by doing a bulk copy before or after this for loop,

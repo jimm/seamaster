@@ -20,15 +20,20 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
   wxSizerFlags field_flags = wxSizerFlags().Border(wxLEFT|wxRIGHT, 10);
 
+  sizer->Add(new wxStaticText(p, wxID_ANY, "Trigger Key"), label_flags);
+  sizer->Add(make_key_dropdown(p), field_flags);
+
   sizer->Add(new wxStaticText(p, wxID_ANY, "Input"), label_flags);
   sizer->Add(make_input_dropdown(p), field_flags);
 
   sizer->Add(new wxStaticText(p, wxID_ANY, "Message"), label_flags);
-  wxString message_str = wxString::Format(
-    "%02x %02x %02x",
-    Pm_MessageStatus(trigger->trigger_message),
-    Pm_MessageData1(trigger->trigger_message),
-    Pm_MessageData2(trigger->trigger_message));
+  wxString message_str;
+  if (trigger->input() != nullptr)
+    message_str = wxString::Format(
+      "%02x %02x %02x",
+      Pm_MessageStatus(trigger->trigger_message),
+      Pm_MessageData1(trigger->trigger_message),
+      Pm_MessageData2(trigger->trigger_message));
   tc_trigger_message = new wxTextCtrl(p, ID_TE_MessageText, message_str);
   sizer->Add(tc_trigger_message, field_flags);
 
@@ -44,6 +49,22 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
+wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
+  wxArrayString choices;
+  int key = trigger->trigger_key_code;
+
+  choices.Add("(Use Input Instrument)");
+  for (int i = 1; i <= 24; ++i)
+    choices.Add(wxString::Format("F%d", i));
+
+  return lc_key = new wxComboBox(
+    parent, ID_TE_InputDropdown,
+    key == UNDEFINED
+      ? "(Use Input Instrument)"
+      : wxString::Format("F%d", WXK_F1 - key + 1),
+    wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
+}
+
 wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   wxArrayString choices;
   Input *orig_input = trigger->input();
@@ -53,8 +74,7 @@ wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   return lc_input = new wxComboBox(
     parent, ID_TE_InputDropdown,
     orig_input ? orig_input->name : "",
-    wxDefaultPosition,
-    wxDefaultSize, choices, wxCB_READONLY);
+    wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
 
 wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
@@ -100,11 +120,17 @@ wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
 }
 
 void TriggerEditor::done(wxCommandEvent& event) {
-  Input *new_input = pm->inputs[lc_input->GetCurrentSelection()];
+  // If we have a key, prefer that over input + message
+  int index = lc_key->GetCurrentSelection();
+  if (index != wxNOT_FOUND && index > 0)
+    trigger->set_trigger_key_code(WXK_F1 + index - 1);
+  else {
+    Input *input = pm->inputs[lc_input->GetCurrentSelection()];
+    PmMessage msg = message_from_bytes(tc_trigger_message->GetValue().c_str());
+    trigger->set_trigger_message(input, msg);
+  }
 
-  // TODO handle key code instead of input
-  PmMessage msg = message_from_bytes(tc_trigger_message->GetValue().c_str());
-  trigger->set_trigger_message(new_input, msg);
+
 
   wxString val = lc_action->GetValue();
   if (val == "Next Song")

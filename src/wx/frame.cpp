@@ -595,7 +595,7 @@ int Frame::handle_global_key_event(wxKeyEvent &event) {
   int key_code = event.GetKeyCode();
 
   if (key_code >= WXK_F1 && key_code <= WXK_F24) {
-    if (handle_trigger_keys()) {
+    if (handle_trigger_key(key_code)) {
       update();
       return true;
     }
@@ -649,9 +649,14 @@ void Frame::super_panic(wxCommandEvent &_event) {
 
 // ================ trigger keys
 
-bool Frame::handle_trigger_keys() {
-  // TODO
-  return false;
+bool Frame::handle_trigger_key(int key_code) {
+  bool triggered = false;
+
+  for (auto &trigger : PatchMaster_instance()->triggers)
+    if (trigger->signal_key(key_code))
+      triggered = true;
+
+  return triggered;
 }
 
 // ================ standard menu items ================

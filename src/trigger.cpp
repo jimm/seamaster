@@ -36,9 +36,20 @@ Input *Trigger::input() {
   return nullptr;
 }
 
-void Trigger::signal(PmMessage msg) {
-  if (msg == trigger_message)
+bool Trigger::signal_message(PmMessage msg) {
+  if (msg == trigger_message) {
       perform_action();
+      return true;
+  }
+  return false;
+}
+
+bool Trigger::signal_key(int key_code) {
+  if (key_code == trigger_key_code) {
+      perform_action();
+      return true;
+  }
+  return false;
 }
 
 void Trigger::perform_action() {
