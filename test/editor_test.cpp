@@ -197,3 +197,34 @@ TEST_CASE("destroy set list", CATCH_CATEGORY) {
     if (slist == old_set_list)
       FAIL("old_set_list was not removed");
 }
+
+TEST_CASE("add then destroy patches", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  Cursor *c = pm->cursor;
+  c->init();
+
+  Song *song = c->song();
+  REQUIRE(song->patches.size() == 2); // sanity check
+
+  Editor e;
+  e.create_patch();
+  Patch *created1 = song->patches.back();
+  e.create_patch();
+  Patch *created2 = song->patches.back();
+  REQUIRE(created1 != created2);
+  REQUIRE(created2 == song->patches.back());
+
+  REQUIRE(song->patches.size() == 4);
+  REQUIRE(c->patch() == song->patches.front());
+
+  c->patch_index = 2;              // first created patch
+  REQUIRE(c->patch() == created1); // sanity check
+
+  e.destroy_patch(song, c->patch());
+  REQUIRE(c->patch_index == 2);
+  REQUIRE(c->patch() == created2);
+
+  e.destroy_patch(song, c->patch());
+  REQUIRE(c->song() == song);
+  REQUIRE(c->patch_index == 1);
+}

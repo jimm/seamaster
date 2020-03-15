@@ -137,6 +137,8 @@ bool Editor::ok_to_destroy_set_list(SetList *set_list) {
 }
 
 void Editor::destroy_song(Song *song) {
+  if (pm->cursor->patch())
+    pm->cursor->patch()->stop();
   move_away_from_song(song);
 
   for (auto &set_list : pm->set_lists)
@@ -152,6 +154,9 @@ void Editor::destroy_song(Song *song) {
       return;                   // only appears once in all_songs list
     }
   }
+
+  if (pm->cursor->patch())
+    pm->cursor->patch()->start();
 }
 
 // Will not destroy the only patch in a song.
@@ -159,14 +164,20 @@ void Editor::destroy_patch(Song *song, Patch *patch) {
   if (song->patches.size() <= 1)
     return;
 
+  if (pm->cursor->patch())
+    pm->cursor->patch()->stop();
   move_away_from_patch(song, patch);
+
   for (ITER(Patch) i = song->patches.begin(); i != song->patches.end(); ++i) {
     if (*i == patch) {
       song->patches.erase(i);
       delete patch;
-      return;
+      break;
     }
   }
+
+  if (pm->cursor->patch())
+    pm->cursor->patch()->start();
 }
 
 void Editor::destroy_connection(Patch *patch, Connection *connection) {
@@ -177,9 +188,7 @@ void Editor::destroy_connection(Patch *patch, Connection *connection) {
     if (*i == connection) {
       patch->connections.erase(i);
       delete connection;
-      if (patch == pm->cursor->patch())
-        patch->start();
-      return;
+      break;
     }
   }
   // shouldn't get here, assuming connection is in patch
@@ -215,28 +224,30 @@ void Editor::remove_song_from_set_list(Song *song, SetList *set_list) {
 }
 
 // If `song` is not the current song, does nothing. Else tries to move to
-// the next song or, if there isn't one, the prev song. If both those fail
-// (this is the only song in the current set list) then stops the current
-// patch and reinits the cursor.
+// the next song (see comment though) or, if there isn't one, the prev song.
+// If both those fail (this is the only song in the current set list) then
+// reinits the cursor.
 void Editor::move_away_from_song(Song *song) {
-  Cursor *c = pm->cursor;
+  Cursor *cursor = pm->cursor;
 
-  if (song != c->song())
+  if (song != cursor->song())
     return;
 
-  if (c->has_next_song()) {
-    pm->next_song();
+  if (cursor->has_next_song()) {
+    // Don't move to next song because this one will be deleted and the
+    // cursor index will point to the next song. Do set the cursor's patch
+    // index back to 0.
+    cursor->patch_index = 0;
     return;
   }
 
-  if (c->has_prev_song()) {
+  if (cursor->has_prev_song()) {
     pm->prev_song();
     return;
   }
 
-  if (c->patch() != nullptr)
-    c->patch()->stop();
-  c->init();
+  // Nowhere to move. Reini the cursor;
+  cursor->init();
 }
 
 // If `patch` is not the current patch, does nothing. Else tries to move to
@@ -244,17 +255,19 @@ void Editor::move_away_from_song(Song *song) {
 // (this is the only patch in the current song) then calls
 // move_away_from_song.
 void Editor::move_away_from_patch(Song *song, Patch *patch) {
-  Cursor *c = pm->cursor;
+  Cursor *cursor = pm->cursor;
 
-  if (patch != c->patch())
+  if (patch != cursor->patch())
     return;
 
-  if (c->has_next_patch_in_song()) {
-    pm->next_patch();
+  if (cursor->has_next_patch_in_song()) {
+    // Do nothing. We'll remove the patch from the song. The cursor patch
+    // index will remain the same, so it will point to the patch that is
+    // currently after this one.
     return;
   }
 
-  if (c->has_prev_patch_in_song()) {
+  if (cursor->has_prev_patch_in_song()) {
     pm->prev_patch();
     return;
   }
