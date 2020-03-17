@@ -63,7 +63,7 @@ wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
     parent, ID_TE_InputDropdown,
     key == UNDEFINED
       ? "(No Trigger Key)"
-      : wxString::Format("F%d", WXK_F1 - key + 1),
+      : wxString::Format("F%d", key - WXK_F1 + 1),
     wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
 

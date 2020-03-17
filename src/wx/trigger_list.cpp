@@ -40,7 +40,7 @@ void TriggerList::update() {
     int key = trigger->trigger_key_code;
 
     InsertItem(row, key == UNDEFINED ? ""
-               : wxString::Format("F%d", WXK_F1 - trigger->trigger_key_code + 1));
+               : wxString::Format("F%d", trigger->trigger_key_code - WXK_F1 + 1));
 
     Input *input = trigger->input();
     SetItem(row, 1, input ? input->name.c_str() : "");
