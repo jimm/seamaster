@@ -18,8 +18,8 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
 {
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
-  wxSizerFlags field_flags = wxSizerFlags().Border(wxLEFT|wxRIGHT, 10);
+  wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
+  wxSizerFlags field_flags = wxSizerFlags().Border(wxLEFT|wxRIGHT);
 
   sizer->Add(new wxStaticText(p, wxID_ANY, "Trigger Key"), label_flags);
   sizer->Add(make_key_dropdown(p), field_flags);
@@ -43,7 +43,7 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   sizer->Add(make_action_dropdown(p), field_flags);
 
   sizer->Add(new wxButton(this, ID_TE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL, 10));
+             wxSizerFlags().Right().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

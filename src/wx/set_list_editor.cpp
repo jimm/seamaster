@@ -36,7 +36,7 @@ SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
 
   sizer->Add(list_sizer);
   sizer->Add(new wxButton(this, ID_SLE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL, 10));
+             wxSizerFlags().Right().Border());
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
@@ -95,7 +95,7 @@ wxWindow *SetListEditor::make_panel(wxPanel *parent, wxWindowID id,
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, title), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(*list_ptr, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(*list_ptr, wxSizerFlags(1).Expand().Border());
 
   update(*list_ptr, slist);
 

@@ -136,7 +136,7 @@ wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Songs"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_set_list, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_set_list, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -149,7 +149,7 @@ wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Set Lists"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_set_lists, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_set_lists, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -162,7 +162,7 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Patches"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_song_patches, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_song_patches, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -175,7 +175,7 @@ wxWindow * Frame::make_message_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Messages"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_messages, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_messages, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -187,7 +187,7 @@ wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Triggers"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_triggers, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -200,7 +200,7 @@ wxWindow * Frame::make_notes_panel(wxPanel *parent) {
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(new wxStaticText(p, wxID_ANY, "Notes"), wxSizerFlags().Align(wxALIGN_LEFT));
-  sizer->Add(lc_notes, wxSizerFlags(1).Expand().Border(wxALL));
+  sizer->Add(lc_notes, wxSizerFlags(1).Expand().Border());
 
   p->SetSizerAndFit(sizer);
   return p;

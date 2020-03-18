@@ -18,17 +18,17 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
 {
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
+  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
 
   sizer->Add(make_name_panel(p), panel_flags);
   message_text = new wxTextCtrl(p, ID_ME_MessageText, messages_to_text(),
                                 wxDefaultPosition, wxSize(WIDTH, HEIGHT),
                                 wxTE_MULTILINE);
   sizer->Add(message_text,
-             wxSizerFlags().Expand().Border(wxTOP|wxLEFT|wxRIGHT, 10));
+             wxSizerFlags().Expand().Border(wxTOP|wxLEFT|wxRIGHT));
 
   sizer->Add(new wxButton(this, ID_ME_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL, 10));
+             wxSizerFlags().Right().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

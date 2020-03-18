@@ -28,7 +28,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
+  wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
   sizer->Add(make_input_panel(p), panel_flags);
   sizer->Add(make_output_panel(p), panel_flags);
   sizer->Add(make_program_panel(p), panel_flags);
@@ -38,7 +38,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   sizer->Add(make_cc_maps_panel(p), panel_flags);
 
   sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL, 10));
+             wxSizerFlags().Right().Border());
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());

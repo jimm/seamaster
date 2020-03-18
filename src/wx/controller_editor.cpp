@@ -19,13 +19,13 @@ ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn,
   wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-  wxSizerFlags panel_sizer = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT, 10);
+  wxSizerFlags panel_sizer = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
   sizer->Add(make_numbers_panel(p), panel_sizer);
   sizer->Add(make_minmax_panel(p), panel_sizer);
   sizer->Add(make_filtered_panel(p), panel_sizer);
 
   sizer->Add(new wxButton(this, ID_CMAP_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL, 10));
+             wxSizerFlags().Right().Border(wxALL));
 
   p->SetSizerAndFit(sizer);
   SetClientSize(p->GetSize());
