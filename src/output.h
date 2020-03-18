@@ -8,9 +8,11 @@
 class Output : public Instrument {
 public:
   Output(int id, const char *name, const char *port_name, int port_num);
-  ~Output();
 
   void write(PmEvent *buf, int len);
+
+protected:
+  virtual bool start_midi();
 };
 
 #endif /* OUTPUT_H */

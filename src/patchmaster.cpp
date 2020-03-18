@@ -46,6 +46,8 @@ PatchMaster::~PatchMaster() {
 void PatchMaster::start() {
   cursor->init();
   PATCH_START;
+  for (auto& out : outputs)
+    out->start();
   for (auto& in : inputs)
     in->start();
   running = true;
@@ -55,6 +57,8 @@ void PatchMaster::stop() {
   running = false;
   for (auto& in : inputs)
     in->stop();
+  for (auto& out : outputs)
+    out->stop();
   PATCH_STOP;
 }
 

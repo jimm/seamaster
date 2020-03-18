@@ -73,29 +73,6 @@ void *read_thread(void *in_voidptr) {
 Input::Input(int id, const char *name, const char *port_name, int port_num)
   : Instrument(id, name, port_name, port_num), running(false), read_pthread(nullptr)
 {
-  if (!real_port()) {
-    enabled = false;
-    return;
-  }
-
-  PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
-  if (err != 0) {
-    char buf[BUFSIZ];
-    sprintf(buf, "error opening input stream %s: %s\n", name,
-            Pm_GetErrorText(err));
-    error_message(buf);
-    enabled = false;
-    return;
-  }
-
-  enabled = true;
-  err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
-  if (err != 0) {
-    char buf[BUFSIZ];
-    sprintf(buf, "error setting PortMidi filter for input %s: %s\n", name,
-            Pm_GetErrorText(err));
-    error_message(buf);
-  }
 }
 
 void Input::add_connection(Connection *conn) {
@@ -128,10 +105,11 @@ void Input::remove_trigger(Trigger *trigger) {
 // Lazily starts the `input_thread` if needed. Sets `running` to `true` and
 // starts a `read_thread` for this Input.
 void Input::start() {
-  int status;
-
+  Instrument::start();
   if (!enabled || !real_port())
     return;
+
+  int status;
 
   // Not thread safe, but we don't care because this method is called
   // synchronously from a single thread.
@@ -179,6 +157,29 @@ void Input::stop() {
     portmidi_pthread = nullptr;
   }
   inputs_mutex.unlock();
+
+  Instrument::stop();
+}
+
+bool Input::start_midi() {
+  PmError err = Pm_OpenInput(&stream, port_num, 0, MIDI_BUFSIZ, 0, 0);
+  if (err != 0) {
+    char buf[BUFSIZ];
+    sprintf(buf, "error opening input stream %s: %s\n", name.c_str(),
+            Pm_GetErrorText(err));
+    error_message(buf);
+    return false;
+  }
+
+  err = Pm_SetFilter(stream, PM_FILT_ACTIVE); // TODO cmd line option to enable
+  if (err != 0) {
+    char buf[BUFSIZ];
+    sprintf(buf, "error setting PortMidi filter for input %s: %s\n",
+            name.c_str(), Pm_GetErrorText(err));
+    error_message(buf);
+  }
+
+  return true;
 }
 
 // Adds all the PmMessages in `events` to our message queue in a thread-safe

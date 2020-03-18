@@ -21,14 +21,20 @@ public:
 
   Instrument(sqlite3_int64 id, const char *name, const char *port_name,
              int port_num);
-  virtual ~Instrument();
+  virtual ~Instrument() {}
 
+  virtual void start();
+  virtual void stop();
   bool real_port();
 
   void clear();                 // testing only
 
   // m may be nullptr
   void set_monitor(MIDIMonitor *m) { midi_monitor = m; }
+
+protected:
+  virtual bool start_midi() { return false; }
+  virtual void stop_midi();
 };
 
 #endif /* INSTRUMENT_H */

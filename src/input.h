@@ -35,6 +35,9 @@ public:
   PmMessage message_from_read_queue();
   void stop_read_thread();
 
+protected:
+  virtual bool start_midi();
+
 private:
   vector<Connection *> notes_off_conns[MIDI_CHANNELS][NOTES_PER_CHANNEL];
   vector<Connection *> sustain_off_conns[MIDI_CHANNELS];

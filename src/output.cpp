@@ -7,25 +7,18 @@
 Output::Output(int id, const char *name, const char *port_name, int port_num)
   : Instrument(id, name, port_name, port_num)
 {
-  if (!real_port()) {
-    enabled = false;
-    return;
-  }
-
-  PmError err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);
-  if (err == 0) {
-    enabled = true;
-    return;
-  }
-
-  char buf[BUFSIZ];
-  sprintf(buf, "error opening output stream %s: %s\n", name,
-          Pm_GetErrorText(err));
-  error_message(buf);
-  enabled = false;
 }
 
-Output::~Output() {
+bool Output::start_midi() {
+  PmError err = Pm_OpenOutput(&stream, port_num, 0, 128, 0, 0, 0);
+  if (err == 0)
+    return true;
+
+  char buf[BUFSIZ];
+  sprintf(buf, "error opening output stream %s: %s\n", name.c_str(),
+          Pm_GetErrorText(err));
+  error_message(buf);
+  return false;
 }
 
 void Output::write(PmEvent *buf, int len) {

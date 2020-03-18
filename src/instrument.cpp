@@ -12,20 +12,32 @@ Instrument::Instrument(sqlite3_int64 id, const char *name, const char *pname,
   num_io_messages = 0;
 }
 
-Instrument::~Instrument() {
-  if (real_port()) {
-    PmError err = Pm_Close(stream);
-    if (err != 0) {
-      char buf[BUFSIZ];
-      sprintf(buf, "error closing instrument %s: %s\n", name.c_str(),
-              Pm_GetErrorText(err));
-      error_message(buf);
-    }
-  }
-}
-
 bool Instrument::real_port() {
   return port_num != pmNoDevice;
+}
+
+void Instrument::start() {
+  if (!real_port()) {
+    enabled = false;
+    return;
+  }
+  enabled = start_midi();
+}
+
+void Instrument::stop() {
+  if (real_port() && enabled)
+    stop_midi();
+  enabled = false;
+}
+
+void Instrument::stop_midi() {
+  PmError err = Pm_Close(stream);
+  if (err != 0) {
+    char buf[BUFSIZ];
+    sprintf(buf, "error closing instrument %s: %s\n", name.c_str(),
+            Pm_GetErrorText(err));
+    error_message(buf);
+  }
 }
 
 // only used during testing
