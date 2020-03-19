@@ -82,18 +82,20 @@ wxWindow *ControllerEditor::make_minmax_panel(wxPanel *parent) {
   wxSizerFlags center_flags =
     wxSizerFlags().Align(wxALIGN_CENTER_VERTICAL);
 
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Min"), center_flags);
-  tc_min = new wxTextCtrl(p, ID_CMAP_Min,
-                          wxString::Format("%d", controller->min));
-  field_sizer->Add(tc_min, center_flags);
+  // FIXME
 
-  field_sizer->Add(new wxStaticText(p, wxID_ANY, "Max"), center_flags);
-  tc_max = new wxTextCtrl(p, ID_CMAP_Max,
-                          wxString::Format("%d", controller->max));
-  field_sizer->Add(tc_max, center_flags);
+  // field_sizer->Add(new wxStaticText(p, wxID_ANY, "Min"), center_flags);
+  // tc_min = new wxTextCtrl(p, ID_CMAP_Min,
+  //                         wxString::Format("%d", controller->min));
+  // field_sizer->Add(tc_min, center_flags);
 
-  outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Min/Max Values"));
-  outer_sizer->Add(field_sizer);
+  // field_sizer->Add(new wxStaticText(p, wxID_ANY, "Max"), center_flags);
+  // tc_max = new wxTextCtrl(p, ID_CMAP_Max,
+  //                         wxString::Format("%d", controller->max));
+  // field_sizer->Add(tc_max, center_flags);
+
+  // outer_sizer->Add(new wxStaticText(p, wxID_ANY, "Min/Max Values"));
+  // outer_sizer->Add(field_sizer);
 
   p->SetSizerAndFit(outer_sizer);
   return p;
@@ -118,9 +120,10 @@ wxWindow *ControllerEditor::make_filtered_panel(wxPanel *parent) {
 void ControllerEditor::done(wxCommandEvent& event) {
   controller->cc_num = int_from_chars(cb_cc_number->GetValue());
   controller->translated_cc_num = int_from_chars(cb_xlated_number->GetValue());
-  controller->min = int_from_chars(tc_min->GetValue());
-  controller->max = int_from_chars(tc_max->GetValue());
   controller->filtered = cb_filtered->IsChecked();
+  // FIXME
+  // controller->min = int_from_chars(tc_min->GetValue());
+  // controller->max = int_from_chars(tc_max->GetValue());
 
   if (controller->cc_num != orig_cc_num) {
     connection->cc_maps[orig_cc_num] = nullptr;

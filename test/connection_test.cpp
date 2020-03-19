@@ -58,7 +58,7 @@ TEST_CASE("all chans process controller", CATCH_CATEGORY) {
   conn->input_chan = 3;
   conn->output_chan = 3;
   conn->set_controller(new Controller(UNDEFINED_ID, 64));
-  conn->cc_maps[64]->max = 126;
+  conn->cc_maps[64]->set_range(false, false, 1, 127, 1, 126);
   conn->midi_in(Pm_Message(CONTROLLER + 3, 64, 127));
   REQUIRE(conn->output->num_io_messages == 1);
   REQUIRE(conn->output->io_messages[0] == Pm_Message(CONTROLLER + 3, 64, 126)); /* out value clamped */

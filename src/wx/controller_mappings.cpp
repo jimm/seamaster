@@ -6,10 +6,7 @@
 #define CW 48
 
 const char * const COLUMN_HEADERS[] = {
-  "CC In", "CC Out", "Min", "Max", "Filtered"
-};
-const int COLUMN_WIDTHS[] = {
-  CW, CW, CW, CW, 2*CW
+  "CC In", "CC Out", "Filtered", "Pass 0", "Pass 127", "Min In", "Max In", "Min Out", "Max Out"
 };
 
 ControllerMappings::ControllerMappings(wxWindow *parent, wxWindowID id, Connection *conn)
@@ -33,10 +30,13 @@ void ControllerMappings::update() {
       continue;
 
     InsertItem(row, wxString::Format("%d", controller->cc_num));
-    SetItem(row, 1, wxString::Format("%d", controller->translated_cc_num));
-    SetItem(row, 2, wxString::Format("%d", controller->min));
-    SetItem(row, 3, wxString::Format("%d", controller->max));
-    SetItem(row, 4, controller->filtered ? "yes" : "no");
+    int col = 1;
+    SetItem(row, col++, wxString::Format("%d", controller->translated_cc_num));
+    SetItem(row, col++, controller->filtered ? "yes" : "no");
+    SetItem(row, col++, wxString::Format("%d", controller->min_in()));
+    SetItem(row, col++, wxString::Format("%d", controller->max_in()));
+    SetItem(row, col++, wxString::Format("%d", controller->min_out()));
+    SetItem(row, col++, wxString::Format("%d", controller->max_out()));
     ++row;
   }
 }
@@ -44,6 +44,6 @@ void ControllerMappings::update() {
 void ControllerMappings::set_headers() {
   for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     InsertColumn(i, COLUMN_HEADERS[i]);
-    SetColumnWidth(i, COLUMN_WIDTHS[i]);
+    SetColumnWidth(i, CW);
   }
 }

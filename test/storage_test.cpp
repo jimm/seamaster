@@ -235,11 +235,16 @@ TEST_CASE("load controller mappings") {
   p = s->patches[1];
   conn = p->connections.front();
   REQUIRE(conn->id() == 3);     // sanity check
-  REQUIRE(conn->cc_maps[7] != nullptr);
-  REQUIRE(conn->cc_maps[7]->translated_cc_num == 10);
-  REQUIRE(conn->cc_maps[7]->min == 1);
-  REQUIRE(conn->cc_maps[7]->max == 120);
-  REQUIRE(conn->cc_maps[7]->filtered == false);
+  Controller *cc = conn->cc_maps[7];
+  REQUIRE(cc != nullptr);
+  REQUIRE(cc->translated_cc_num == 10);
+  REQUIRE(cc->filtered == false);
+  REQUIRE(cc->pass_through_0 == false);
+  REQUIRE(cc->pass_through_127 == false);
+  REQUIRE(cc->min_in() == 1);
+  REQUIRE(cc->max_in() == 120);
+  REQUIRE(cc->min_out() == 40);
+  REQUIRE(cc->max_out() == 50);
 
   delete pm;
 }

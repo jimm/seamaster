@@ -68,9 +68,13 @@ create table controller_mappings (
   connection_id integer not null references connections(id),
   cc_num integer not null,
   translated_cc_num integer not null,
-  min integer not null,
-  max integer not null,
-  filtered integer not null default 0 -- boolean
+  filtered integer not null default 0, -- boolean
+  pass_through_0 integer not null default 1, -- boolean
+  pass_through_127 integer not null default 1, -- boolean
+  min_in integer not null,
+  max_in integer not null,
+  min_out integer not null,
+  max_out integer not null
 );
 
 create table set_lists (

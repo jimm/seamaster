@@ -362,7 +362,9 @@ void Storage::load_connections(Patch *p) {
 void Storage::load_controller_mappings(Connection *conn) {
   sqlite3_stmt *stmt;
   const char * const sql =
-    "select id, cc_num, translated_cc_num, min, max, filtered"
+    "select id, cc_num, translated_cc_num, filtered,"
+    "   pass_through_0, pass_through_127,"
+    "   min_in, max_in, min_out, max_out"
     " from controller_mappings"
     " where connection_id = ?";
 
@@ -372,15 +374,19 @@ void Storage::load_controller_mappings(Connection *conn) {
     sqlite3_int64 id = sqlite3_column_int64(stmt, 0);
     int cc_num = sqlite3_column_int(stmt, 1);
     int translated_cc_num = sqlite3_column_int(stmt, 2);
-    int min = sqlite3_column_int(stmt, 3);
-    int max = sqlite3_column_int(stmt, 4);
-    int filtered_bool = sqlite3_column_int(stmt, 5);
+    int filtered_bool = sqlite3_column_int(stmt, 3);
+    int pass_through_0 = sqlite3_column_int(stmt, 4);
+    int pass_through_127 = sqlite3_column_int(stmt, 5);
+    int min_in = sqlite3_column_int(stmt, 6);
+    int max_in = sqlite3_column_int(stmt, 7);
+    int min_out = sqlite3_column_int(stmt, 8);
+    int max_out = sqlite3_column_int(stmt, 9);
 
     Controller *cc = new Controller(id, cc_num);
     cc->translated_cc_num = translated_cc_num;
-    cc->min = min;
-    cc->max = max;
     cc->filtered = filtered_bool != 0;
+    cc->set_range(pass_through_0, pass_through_127,
+                  min_in, max_in, min_out, max_out);
     conn->cc_maps[cc->cc_num] = cc;
   }
   sqlite3_finalize(stmt);
@@ -605,8 +611,9 @@ void Storage::save_controller_mappings(Connection *conn) {
   sqlite3_stmt *stmt;
   const char * const sql =
     "insert into controller_mappings"
-    "   (id, connection_id, cc_num, translated_cc_num, min, max, filtered)"
-    " values (?, ?, ?, ?, ?, ?, ?)";
+    "   (id, connection_id, cc_num, translated_cc_num, filtered,"
+    "    pass_through_0, pass_through_127, min_in, max_in, min_out, max_out)"
+    " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   sqlite3_prepare_v3(db, sql, -1, 0, &stmt, nullptr);
   for (int i = 0; i < 128; ++i) {
@@ -615,12 +622,17 @@ void Storage::save_controller_mappings(Connection *conn) {
       continue;
 
     BIND_OBJ_ID_OR_NULL(1, cc);
-    sqlite3_bind_int64(stmt, 2, conn->id());
-    sqlite3_bind_int(stmt, 3, cc->cc_num);
-    sqlite3_bind_int(stmt, 4, cc->translated_cc_num);
-    sqlite3_bind_int(stmt, 5, cc->min);
-    sqlite3_bind_int(stmt, 6, cc->max);
-    sqlite3_bind_int(stmt, 7, cc->filtered ? 1 : 0);
+    int j = 2;
+    sqlite3_bind_int64(stmt, j++, conn->id());
+    sqlite3_bind_int(stmt, j++, cc->cc_num);
+    sqlite3_bind_int(stmt, j++, cc->translated_cc_num);
+    sqlite3_bind_int(stmt, j++, cc->filtered ? 1 : 0);
+    sqlite3_bind_int(stmt, j++, cc->pass_through_0 ? 1 : 0);
+    sqlite3_bind_int(stmt, j++, cc->pass_through_127 ? 1 : 0);
+    sqlite3_bind_int(stmt, j++, cc->min_in());
+    sqlite3_bind_int(stmt, j++, cc->max_in());
+    sqlite3_bind_int(stmt, j++, cc->min_out());
+    sqlite3_bind_int(stmt, j++, cc->max_out());
     sqlite3_step(stmt);
     EXTRACT_ID(cc);
     sqlite3_reset(stmt);

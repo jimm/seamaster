@@ -88,7 +88,7 @@ void format_controllers(Connection *conn, char *buf) {
   buf += 1;
   for (int i = 0; i < 128; ++i) {
     Controller *cc = conn->cc_maps[i];
-    if (cc == nullptr || !cc->will_modify())
+    if (cc == nullptr)
       continue;
 
     if (first) first = false; else { strcat(buf, ", "); buf += 2; }
@@ -106,9 +106,23 @@ void format_controllers(Connection *conn, char *buf) {
       buf += strlen(buf);
     }
 
-    if (cc->min != 0 || cc->max != 127) {
-      sprintf(buf, " [%d, %d]", cc->min, cc->max);
+    if (cc->min_in() != 0 || cc->max_in() != 127
+        || cc->min_out() != 0 || cc->max_out() != 127)
+    {
+      sprintf(buf, " ");
+      buf += 1;
+      if (cc->pass_through_0) {
+        sprintf(buf, "0");
+        buf += 1;
+      }
+      sprintf(buf, " [%d, %d] -> [%d, %d]",
+              cc->min_in(), cc->max_in(),
+              cc->min_out(), cc->max_out());
       buf += strlen(buf);
+      if (cc->pass_through_127) {
+        sprintf(buf, "127");
+        buf += 3;
+      }
     }
   }
   *buf = 0;

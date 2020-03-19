@@ -47,10 +47,11 @@ values
   (8, 4, 1, 2, 0, 4, 4, null, null, null, 64, 127, -12, 0);
 
 insert into controller_mappings
-  (id, connection_id, cc_num, translated_cc_num, min, max, filtered)
+  (id, connection_id, cc_num, translated_cc_num, filtered,
+   pass_through_0, pass_through_127, min_in, max_in, min_out, max_out)
 values
-  (1, 2, 64, 64, 0, 127, 1),
-  (2, 3, 7, 10, 1, 120, 0);
+  (1, 2, 64, 64, 1, 1, 1, 0, 127, 0, 127),
+  (2, 3, 7, 10, 0, 0, 0, 1, 120, 40, 50);
 
 insert into set_lists (id, name) values
   (1, 'Set List One'),
