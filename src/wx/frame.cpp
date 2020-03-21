@@ -740,6 +740,8 @@ void Frame::load(wxString path) {
   }
 
   show_user_message(string(wxString::Format("Loaded %s", path).c_str()), 15);
+  file_path = path;
+
   if (old_pm != nullptr) {
     old_pm->stop();
     delete old_pm;
