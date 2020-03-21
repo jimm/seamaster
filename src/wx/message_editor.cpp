@@ -1,4 +1,5 @@
 #include <wx/persist/toplevel.h>
+#include <wx/gbsizer.h>
 #include "message_editor.h"
 #include "../patchmaster.h"
 #include "../message.h"

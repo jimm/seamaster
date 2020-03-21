@@ -3,7 +3,7 @@
 #include "../cursor.h"
 #include "../formatter.h"
 
-#define CW 48
+#define CW 60
 
 const char * const COLUMN_HEADERS[] = {
   "CC In", "CC Out", "Filtered", "Pass 0", "Pass 127", "Min In", "Max In", "Min Out", "Max Out"
@@ -33,6 +33,8 @@ void ControllerMappings::update() {
     int col = 1;
     SetItem(row, col++, wxString::Format("%d", controller->translated_cc_num));
     SetItem(row, col++, controller->filtered ? "yes" : "no");
+    SetItem(row, col++, controller->pass_through_0 ? "yes" : "no");
+    SetItem(row, col++, controller->pass_through_127 ? "yes" : "no");
     SetItem(row, col++, wxString::Format("%d", controller->min_in()));
     SetItem(row, col++, wxString::Format("%d", controller->max_in()));
     SetItem(row, col++, wxString::Format("%d", controller->min_out()));

@@ -12,8 +12,12 @@ using namespace std;
 enum {
   ID_CMAP_CCNumber = 5000,
   ID_CMAP_TranslatedNumber,
-  ID_CMAP_Min,
-  ID_CMAP_Max,
+  ID_CMAP_MinIn,
+  ID_CMAP_MaxIn,
+  ID_CMAP_MinOut,
+  ID_CMAP_MaxOut,
+  ID_CMAP_PassThrough0,
+  ID_CMAP_PassThrough127,
   ID_CMAP_Filtered,
   ID_CMAP_DoneButton
 };
@@ -35,12 +39,16 @@ private:
   int orig_cc_num;
   wxComboBox *cb_cc_number;
   wxComboBox *cb_xlated_number;
-  wxTextCtrl *tc_min;
-  wxTextCtrl *tc_max;
+  wxTextCtrl *tc_min_in;
+  wxTextCtrl *tc_max_in;
+  wxTextCtrl *tc_min_out;
+  wxTextCtrl *tc_max_out;
+  wxCheckBox *cb_pass_through_0;
+  wxCheckBox *cb_pass_through_127;
   wxCheckBox *cb_filtered;
 
   wxWindow *make_numbers_panel(wxPanel *parent);
-  wxWindow *make_minmax_panel(wxPanel *parent);
+  wxWindow *make_val_mapping_panel(wxPanel *parent);
   wxWindow *make_filtered_panel(wxPanel *parent);
   wxComboBox *make_cc_number_dropdown(wxPanel *parent, wxWindowID id,
                                       int curr_val, bool filter_out_existing);
