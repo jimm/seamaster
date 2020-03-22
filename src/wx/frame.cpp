@@ -27,8 +27,6 @@
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
 
-#define FRAME_POS_X 20
-#define FRAME_POS_Y 40
 #define LIST_WIDTH 200
 #define TALL_LIST_HEIGHT 300
 #define SHORT_LIST_HEIGHT 200
@@ -97,7 +95,7 @@ void *frame_clear_user_message_thread(void *gui_vptr) {
 }
 
 Frame::Frame(const wxString& title)
-  : wxFrame(NULL, wxID_ANY, title, wxPoint(FRAME_POS_X, FRAME_POS_Y)),
+  : wxFrame(NULL, wxID_ANY, title),
     updating_notes(false)
 {
   make_frame_panels();
@@ -108,29 +106,25 @@ Frame::Frame(const wxString& title)
 }
 
 void Frame::make_frame_panels() {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
-  wxGridBagSizer * const main_sizer = new wxGridBagSizer();
+  wxGridBagSizer * const sizer = new wxGridBagSizer();
 
-  main_sizer->Add(make_set_list_panel(p), POS(0, 0), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_song_panel(p), POS(0, 1), SPAN(3, 1), wxEXPAND);
-  main_sizer->Add(make_notes_panel(p), POS(0, 2), SPAN(3, 1), wxEXPAND);
+  sizer->Add(make_set_list_songs_panel(this), POS(0, 0), SPAN(3, 1), wxEXPAND);
+  sizer->Add(make_song_patches_panel(this), POS(0, 1), SPAN(3, 1), wxEXPAND);
+  sizer->Add(make_notes_panel(this), POS(0, 2), SPAN(3, 1), wxEXPAND);
 
-  main_sizer->Add(make_patch_panel(p), POS(3, 0), SPAN(1, 3), wxEXPAND);
+  sizer->Add(make_patch_conns_panel(this), POS(3, 0), SPAN(1, 3), wxEXPAND);
 
-  main_sizer->Add(make_set_list_list_panel(p), POS(4, 0), SPAN(1, 1), wxEXPAND);
-  main_sizer->Add(make_message_panel(p), POS(4, 1), SPAN(1, 1), wxEXPAND);
-  main_sizer->Add(make_trigger_panel(p), POS(4, 2), SPAN(1, 1), wxEXPAND);
+  sizer->Add(make_set_lists_panel(this), POS(4, 0), SPAN(1, 1), wxEXPAND);
+  sizer->Add(make_messages_panel(this), POS(4, 1), SPAN(1, 1), wxEXPAND);
+  sizer->Add(make_triggers_panel(this), POS(4, 2), SPAN(1, 1), wxEXPAND);
 
-  for (int row = 0; row < 5; ++row)
-    main_sizer->AddGrowableRow(row);
-  for (int col = 0; col < 3; ++col)
-    main_sizer->AddGrowableCol(col);
 
-  p->SetSizerAndFit(main_sizer);
-  SetClientSize(p->GetSize());
+  wxBoxSizer * const outer_border_sizer = new wxBoxSizer(wxVERTICAL);
+  outer_border_sizer->Add(sizer, wxSizerFlags().Expand().Border());
+  SetSizerAndFit(outer_border_sizer);
 }
 
-wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
+wxWindow * Frame::make_set_list_songs_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_set_list = new SetListBox(p, ID_SetListSongs,
                                wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
@@ -143,7 +137,7 @@ wxWindow * Frame::make_set_list_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
+wxWindow * Frame::make_set_lists_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_set_lists = new SetListListBox(p, ID_SetListList,
                                       wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
@@ -156,7 +150,7 @@ wxWindow * Frame::make_set_list_list_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_song_panel(wxPanel *parent) {
+wxWindow * Frame::make_song_patches_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_song_patches = new SongBox(p, ID_SongPatches,
                                 wxSize(LIST_WIDTH, TALL_LIST_HEIGHT));
@@ -169,7 +163,7 @@ wxWindow * Frame::make_song_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_message_panel(wxPanel *parent) {
+wxWindow * Frame::make_messages_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_messages = new MessageList(p, ID_MessageList,
                                 wxSize(LIST_WIDTH, SHORT_LIST_HEIGHT));
@@ -182,7 +176,7 @@ wxWindow * Frame::make_message_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
+wxWindow * Frame::make_triggers_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_triggers = new TriggerList(p, ID_TriggerList);
 
@@ -194,7 +188,7 @@ wxWindow * Frame::make_trigger_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_notes_panel(wxPanel *parent) {
+wxWindow * Frame::make_notes_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   lc_notes = new wxTextCtrl(p, ID_SongNotes, "", wxDefaultPosition,
                             wxSize(NOTES_WIDTH, TALL_LIST_HEIGHT), wxTE_MULTILINE);
@@ -207,9 +201,13 @@ wxWindow * Frame::make_notes_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow * Frame::make_patch_panel(wxPanel *parent) {
-  lc_patch_conns = new PatchConnections(parent, ID_PatchConnections);
-  return lc_patch_conns;
+wxWindow * Frame::make_patch_conns_panel(wxWindow *parent) {
+  wxPanel *p = new wxPanel(parent, wxID_ANY);
+  wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+  lc_patch_conns = new PatchConnections(p, ID_PatchConnections);
+  sizer->Add(lc_patch_conns, wxSizerFlags(1).Expand().Border());
+  p->SetSizerAndFit(sizer);
+  return p;
 }
 
 void Frame::make_menu_bar() {

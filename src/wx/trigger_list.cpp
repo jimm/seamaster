@@ -10,7 +10,7 @@ const char * const COLUMN_HEADERS[] = {
   "Key", "Input", "Trigger", "Action / Message"
 };
 const int COLUMN_WIDTHS[] = {
-  CW, 3*CW, 5*CW, 7*CW
+  (int)(1.5*CW), 3*CW, 5*CW, 7*CW
 };
 
 TriggerList::TriggerList(wxWindow *parent, wxWindowID id)

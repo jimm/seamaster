@@ -155,13 +155,13 @@ private:
 
   void make_frame_panels();
   void make_menu_bar();
-  wxWindow * make_set_list_panel(wxPanel *);
-  wxWindow * make_set_list_list_panel(wxPanel *);
-  wxWindow * make_song_panel(wxPanel *);
-  wxWindow * make_message_panel(wxPanel *);
-  wxWindow * make_trigger_panel(wxPanel *);
-  wxWindow * make_notes_panel(wxPanel *);
-  wxWindow * make_patch_panel(wxPanel *);
+  wxWindow * make_set_list_songs_panel(wxWindow *);
+  wxWindow * make_set_lists_panel(wxWindow *);
+  wxWindow * make_song_patches_panel(wxWindow *);
+  wxWindow * make_messages_panel(wxWindow *);
+  wxWindow * make_triggers_panel(wxWindow *);
+  wxWindow * make_notes_panel(wxWindow *);
+  wxWindow * make_patch_conns_panel(wxWindow *);
 
   void update_lists();
   void update_song_notes();
