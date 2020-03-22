@@ -62,9 +62,6 @@ private:
 
   wxWindow *make_input_panel(wxPanel *parent);
   wxWindow *make_output_panel(wxPanel *parent);
-  wxComboBox *make_channel_dropdown(
-    wxPanel *parent, wxWindowID id, int curr_val,
-    const char * const first_choice);
   wxWindow *make_program_panel(wxPanel *parent);
   wxWindow *make_zone_panel(wxPanel *parent);
   wxWindow *make_xpose_panel(wxPanel *parent);
@@ -77,6 +74,9 @@ private:
     wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
     vector<Instrument *> &instruments, Instrument *curr_instrument,
     int curr_chan);
+  wxComboBox *make_channel_dropdown(
+    wxPanel *parent, wxWindowID id, int curr_val,
+    const char * const first_choice);
 
   Instrument *input_from_instrument_list(
     wxComboBox *list, vector<Instrument *> &instruments);

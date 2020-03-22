@@ -18,6 +18,7 @@
 #include "trigger_editor.h"
 #include "connection_editor.h"
 #include "set_list_editor.h"
+#include "patch_editor.h"
 #include "../patchmaster.h"
 #include "../cursor.h"
 #include "../storage.h"
@@ -496,17 +497,8 @@ void Frame::edit_patch(wxCommandEvent& event) {
 }
 
 void Frame::edit_patch(Patch *patch) {
-  if (patch == nullptr)
-    return;
-
-  wxTextEntryDialog prompt(this, "Patch Name", "Patch Editor", patch->name);
-  if (prompt.ShowModal() == wxID_OK) {
-    wxString str = prompt.GetValue();
-    if (!str.IsEmpty()) {
-      patch->name = str.ToStdString();
-      update();
-    }
-  }
+  if (patch != nullptr)
+    new PatchEditor(this, patch);
 }
 
 void Frame::edit_connection(wxListEvent& event) {
