@@ -13,7 +13,6 @@ public:
   vector<Connection *> connections;
   Message *start_message;
   Message *stop_message;
-  int num_stop_messages;
   bool running;
 
   Patch(sqlite3_int64 id, const char *name);
