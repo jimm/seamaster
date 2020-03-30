@@ -73,9 +73,11 @@ wxWindow *ConnectionEditor::make_instrument_panel(
   wxArrayString choices;
   wxString curr_output;
   for (auto &instrument : instruments) {
-    choices.Add(instrument->name);
-    if (instrument == curr_instrument)
-      curr_output = instrument->name;
+    if (instrument->enabled || instrument == curr_output) {
+      choices.Add(instrument->name);
+      if (instrument == curr_instrument)
+        curr_output = instrument->name;
+    }
   }
 
   wxPanel *p = new wxPanel(parent, wxID_ANY);

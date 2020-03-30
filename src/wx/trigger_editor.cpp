@@ -72,8 +72,10 @@ wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
   Input *orig_input = trigger->input();
 
   choices.Add("(No Trigger Instrument)");
-  for (auto &input : pm->inputs)
-    choices.Add(input->name);
+  for (auto &input : pm->inputs) {
+    if (input->enabled || input == trigger->input())
+      choices.Add(input->name);
+  }
 
   return lc_input = new wxComboBox(
     parent, ID_TE_InputDropdown,
