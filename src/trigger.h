@@ -39,6 +39,8 @@ public:
   bool signal_key(int key_code);
 
 private:
+  Input *trigger_input;
+
   void perform_action();
 };
 

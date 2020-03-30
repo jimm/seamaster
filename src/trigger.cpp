@@ -6,7 +6,7 @@
 Trigger::Trigger(sqlite3_int64 id, TriggerAction ta, Message *out_msg)
   : DBObj(id),
     trigger_key_code(UNDEFINED), trigger_message(Pm_Message(0, 0, 0)),
-    action(ta), output_message(out_msg)
+    action(ta), output_message(out_msg), trigger_input(nullptr)
 {
 }
 
@@ -21,14 +21,11 @@ void Trigger::set_trigger_message(Input *input, PmMessage message) {
   remove_from_input();
   trigger_message = message;
   input->add_trigger(this);
+  trigger_input = input;
 }
 
 Input *Trigger::input() {
-  for (auto &input : PatchMaster_instance()->inputs)
-    for (auto &trigger : input->triggers)
-      if (trigger == this)
-        return input;
-  return nullptr;
+  return trigger_input;
 }
 
 bool Trigger::signal_message(PmMessage msg) {
@@ -76,7 +73,7 @@ void Trigger::perform_action() {
 }
 
 void Trigger::remove_from_input() {
-  Input *i = input();
-  if (i != nullptr)
-    i->remove_trigger(this);
+  if (trigger_input != nullptr)
+    trigger_input->remove_trigger(this);
+  trigger_input = nullptr;
 }

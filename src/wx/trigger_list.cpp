@@ -36,7 +36,10 @@ void TriggerList::update() {
   set_headers();
 
   int row = 0;
-  for (auto * trigger : PatchMaster_instance()->triggers) {
+  vector<Trigger *> *sorted_triggers =
+    sorted_copy(PatchMaster_instance()->triggers);
+
+  for (auto * trigger : *sorted_triggers) {
     int key = trigger->trigger_key_code;
 
     InsertItem(row, key == UNDEFINED ? ""
@@ -80,6 +83,8 @@ void TriggerList::update() {
     SetItem(row, 3, str);
     ++row;
   }
+
+  delete sorted_triggers;
 }
 
 void TriggerList::set_headers() {
@@ -87,4 +92,34 @@ void TriggerList::set_headers() {
     InsertColumn(i, COLUMN_HEADERS[i]);
     SetColumnWidth(i, COLUMN_WIDTHS[i]);
   }
+}
+
+// ================ helpers ================
+
+bool songNameComparator(Trigger *t1, Trigger *t2) {
+  if (t1->trigger_key_code != UNDEFINED) {
+    if (t2->trigger_key_code == UNDEFINED)
+      return true;
+    return t1->trigger_key_code < t2->trigger_key_code;
+  }
+
+  if (t2->trigger_key_code != UNDEFINED)
+    return false;
+
+  if (t1->input() != nullptr) {
+    if (t2->input() != nullptr)
+      return t1->input()->name < t2->input()->name;
+    return true;
+  }
+
+  if (t2->input() != nullptr)
+    return false;
+
+  return true;
+}
+
+vector<Trigger *> * TriggerList::sorted_copy(vector<Trigger *> &triggers) {
+  vector<Trigger *> *sortable_copy = new vector<Trigger *>(triggers);
+  sort(sortable_copy->begin(), sortable_copy->end(), songNameComparator);
+  return sortable_copy;
 }

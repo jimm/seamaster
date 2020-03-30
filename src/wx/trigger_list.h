@@ -15,6 +15,7 @@ public:
 
 private:
   void set_headers();
+  vector<Trigger *> * sorted_copy(vector<Trigger *> &triggers);
 };
 
 #endif /* TRIGGER_LIST_H */
