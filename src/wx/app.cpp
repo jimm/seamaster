@@ -2,9 +2,6 @@
 #include <portmidi.h>
 #include "app.h"
 #include "frame.h"
-#include "set_list_list_box.h"
-#include "set_list_box.h"
-#include "song_box.h"
 #include "../patchmaster.h"
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
