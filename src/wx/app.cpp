@@ -6,7 +6,7 @@
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
   { wxCMD_LINE_SWITCH, "l", "list-devices", "Display MIDI Devices" },
-  { wxCMD_LINE_SWITCH, "i", "initialize", "Output initial SeamMaster file" },
+  { wxCMD_LINE_SWITCH, "i", "initialize", "Output initial SeaMaster file" },
   { wxCMD_LINE_PARAM, nullptr, nullptr, "SeaMaster file", wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL },
   { wxCMD_LINE_NONE }
