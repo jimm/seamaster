@@ -99,6 +99,7 @@ private:
   int clear_msg_secs;
   int clear_msg_id;
 
+  void OnNew(wxCommandEvent& event);
   void OnOpen(wxCommandEvent& event);
   void OnSave(wxCommandEvent& event);
   void OnSaveAs(wxCommandEvent& event);

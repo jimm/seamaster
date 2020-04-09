@@ -37,6 +37,7 @@ wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
 wxDEFINE_EVENT(Frame_MenuUpdate, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
+  EVT_MENU(wxID_NEW,  Frame::OnNew)
   EVT_MENU(wxID_OPEN,  Frame::OnOpen)
   EVT_MENU(wxID_SAVE,  Frame::OnSave)
   EVT_MENU(wxID_SAVEAS,  Frame::OnSaveAs)
@@ -212,6 +213,7 @@ wxWindow * Frame::make_patch_conns_panel(wxWindow *parent) {
 
 void Frame::make_menu_bar() {
   wxMenu *menu_file = new wxMenu;
+  menu_file->Append(wxID_NEW, "&New Project\tCtrl-Shift-N", "Create a new project");
   menu_file->Append(wxID_OPEN);
   menu_file->Append(wxID_SAVE);
   menu_file->Append(wxID_SAVEAS);
@@ -659,6 +661,25 @@ void Frame::OnAbout(wxCommandEvent &_event) {
                "Jim Menard, jim@jimmenard.com\n"
                "https://github.com/jimm/seamaster/wiki",
                "About SeaMaster", wxOK | wxICON_INFORMATION);
+}
+
+void Frame::OnNew(wxCommandEvent &_event) {
+  PatchMaster *old_pm = PatchMaster_instance();
+  bool testing = old_pm != nullptr && old_pm->testing;
+
+  PatchMaster *pm = new PatchMaster();
+  pm->testing = testing;
+  pm->initialize();
+
+  if (old_pm != nullptr) {
+    old_pm->stop();
+    delete old_pm;
+  }
+
+  show_user_message("Created new project", 15);
+  file_path = "";
+  pm->start();                  // initializes cursor
+  update();                     // must come after start
 }
 
 void Frame::OnOpen(wxCommandEvent &_event) {
