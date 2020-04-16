@@ -43,7 +43,7 @@ void *input_thread(void *_) {
     }
     inputs_mutex.unlock();
     if (!processed_something && INPUT_THREAD_IS_RUNNING) {
-      if (nanosleep(&rqtp, 0) == -1)
+      if (nanosleep(&rqtp, nullptr) == -1)
         return nullptr;
     }
   }
@@ -62,7 +62,7 @@ void *read_thread(void *in_voidptr) {
     if (msg != 0)
       in->read(msg);
     else {
-      if (nanosleep(&rqtp, 0) == -1)
+      if (nanosleep(&rqtp, nullptr) == -1)
         return nullptr;
     }
   }
