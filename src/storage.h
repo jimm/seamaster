@@ -64,6 +64,14 @@ private:
 
   int compare_device_names(const char *name1, const char *name2);
 
+  // SQL statement helpers
+  int int_or_null(sqlite3_stmt *stmt, int col_num, int null_val=UNDEFINED);
+  sqlite3_int64 id_or_null(sqlite3_stmt *stmt, int col_num, sqlite3_int64 null_val=UNDEFINED_ID);
+  const char *text_or_null(sqlite3_stmt *stmt, int col_num, const char *null_val);
+  void bind_obj_id_or_null(sqlite3_stmt *stmt, int col_num, DBObj *obj_ptr);
+  void bind_int_or_null(sqlite3_stmt *stmt, int col_num, int val, int nullval=UNDEFINED);
+  void extract_id(DBObj *db_obj);
+
   PmMessage pm_message_from_bytes(char *);
   string message_to_byte_str(Message *);
   string pm_message_to_bytes(PmMessage msg);
