@@ -10,7 +10,7 @@ changes and System Exclusive messages, limit controller and velocity values,
 modify controllers, and much more. At the stomp of a foot switch (or any
 other MIDI event), an entire MIDI system can be totally reconfigured.
 
-SeaMaster is a C+ version of [PatchMaster](https://patchmaster.org/).
+SeaMaster is a C++ version of [PatchMaster](https://patchmaster.org/).
 
 For more information see the [wiki](https://github.com/jimm/seamaster/wiki).
 
