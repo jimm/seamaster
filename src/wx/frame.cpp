@@ -576,7 +576,7 @@ void Frame::destroy_set_list(wxCommandEvent& event) {
   Editor e;
   PatchMaster *pm = PatchMaster_instance();
   SetList *set_list = pm->cursor->set_list();
-  if (set_list != pm->all_songs)
+  if (set_list != nullptr && set_list != pm->all_songs)
     e.destroy_set_list(set_list);
   update();
 }
@@ -791,7 +791,8 @@ void Frame::update_song_notes() {
   Song *song = cursor->song();
   updating_notes = true;
   lc_notes->Clear();
-  lc_notes->AppendText(song->notes);
+  if (song != nullptr)
+    lc_notes->AppendText(song->notes);
   updating_notes = false;
 }
 
