@@ -486,6 +486,7 @@ void Frame::edit_song(Song *song) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
       song->name = str.ToStdString();
+      PatchMaster_instance()->sort_all_songs();
       update();
     }
   }

@@ -68,3 +68,34 @@ TEST_CASE("send start and stop messages", CATCH_CATEGORY) {
 
   pm->stop();
 }
+
+TEST_CASE("all songs sorted", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  REQUIRE(pm->all_songs->songs[0]->name == "Another Song");
+  REQUIRE(pm->all_songs->songs[1]->name == "Song Without Explicit Patch");
+  REQUIRE(pm->all_songs->songs[2]->name == "To Each His Own");
+}
+
+TEST_CASE("inserted song sorts properly", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  Song *s = new Song(UNDEFINED_ID, "Bees, Bees!");
+  pm->all_songs->songs.push_back(s);
+  pm->sort_all_songs();
+
+  REQUIRE(pm->all_songs->songs[0]->name == "Another Song");
+  REQUIRE(pm->all_songs->songs[1]->name == "Bees, Bees!");
+  REQUIRE(pm->all_songs->songs[2]->name == "Song Without Explicit Patch");
+  REQUIRE(pm->all_songs->songs[3]->name == "To Each His Own");
+}
+
+TEST_CASE("inserted song sorts properly, case-sensitively", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  Song *s = new Song(UNDEFINED_ID, "a jar full of bees");
+  pm->all_songs->songs.push_back(s);
+  pm->sort_all_songs();
+
+  REQUIRE(pm->all_songs->songs[0]->name == "Another Song");
+  REQUIRE(pm->all_songs->songs[1]->name == "Song Without Explicit Patch");
+  REQUIRE(pm->all_songs->songs[2]->name == "To Each His Own");
+  REQUIRE(pm->all_songs->songs[3]->name == "a jar full of bees");
+}

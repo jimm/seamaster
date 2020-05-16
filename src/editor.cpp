@@ -25,7 +25,7 @@ Trigger *Editor::create_trigger(Input *input) {
 
 Song *Editor::create_song() {
   Song *song = new Song(UNDEFINED_ID, "Unnamed Song");
-  // TODO consolidate with Loader::ensure_song_has_patch
+  // TODO consolidate with Storage::create_default_patch
   create_patch(song);
   pm->all_songs->songs.push_back(song);
   pm->sort_all_songs();
@@ -34,12 +34,16 @@ Song *Editor::create_song() {
   if (curr_set_list == pm->all_songs)
     return song;
 
-  vector<Song *> slist = curr_set_list->songs;
+  vector<Song *> &slist = curr_set_list->songs;
   Song *curr_song = pm->cursor->song();
-  for (ITER(Song) iter = slist.begin(); iter != slist.end(); ++iter) {
-    if (*iter == curr_song) {
-      slist.insert(++iter, song);
-      break;
+  if (curr_song == nullptr)
+    slist.push_back(song);
+  else {
+    for (ITER(Song) iter = slist.begin(); iter != slist.end(); ++iter) {
+      if (*iter == curr_song) {
+        slist.insert(++iter, song);
+        break;
+      }
     }
   }
 

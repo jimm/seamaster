@@ -30,11 +30,37 @@ TEST_CASE("create song", CATCH_CATEGORY) {
   pm->cursor->init();
   Editor e(pm);
 
-  e.create_song();
-  Song *s = pm->all_songs->songs.back();
-  REQUIRE(s->name == "Unnamed Song");
-  REQUIRE(s->patches.size() == 1);
-  REQUIRE(s->patches.front()->name == "Unnamed Patch");
+  Song *created_song = e.create_song();
+  REQUIRE(created_song->name == "Unnamed Song");
+  REQUIRE(created_song->patches.size() == 1);
+  REQUIRE(created_song->patches.front()->name == "Unnamed Patch");
+}
+
+TEST_CASE("create song inserts into current song list", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  pm->cursor->init();
+  Editor e(pm);
+
+  Song *created_song = e.create_song();
+  // It'll be last because name is "Unnamed Song" and that's last
+  // alphabetically
+  REQUIRE(created_song == pm->all_songs->songs.back());
+}
+
+TEST_CASE("create song inserts into empty song list", CATCH_CATEGORY) {
+  PatchMaster *pm = load_test_data();
+  pm->cursor->init();
+  Editor e(pm);
+
+  SetList *set_list = e.create_set_list();
+  pm->cursor->set_list_index = pm->set_lists.size() - 1;
+  // sanity checks
+  REQUIRE(set_list == pm->cursor->set_list());
+  REQUIRE(set_list->songs.size() == 0);
+
+  Song *created_song = e.create_song();
+  REQUIRE(set_list->songs.size() == 1);
+  REQUIRE(created_song == set_list->songs.front());
 }
 
 TEST_CASE("create patch", CATCH_CATEGORY) {
