@@ -45,21 +45,21 @@ SeaMaster::~SeaMaster() {
 
 void SeaMaster::start() {
   cursor->init();
-  PATCH_START;
   for (auto& out : outputs)
     out->start();
   for (auto& in : inputs)
     in->start();
   running = true;
+  PATCH_START;
 }
 
 void SeaMaster::stop() {
+  PATCH_STOP;
   running = false;
   for (auto& in : inputs)
     in->stop();
   for (auto& out : outputs)
     out->stop();
-  PATCH_STOP;
 }
 
 // ================ initialization ================
