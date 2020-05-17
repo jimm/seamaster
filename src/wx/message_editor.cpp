@@ -7,22 +7,20 @@
 
 #define WIDTH 200
 #define HEIGHT 300
-#define FRAME_NAME "seamaster_main_frame"
 
 wxBEGIN_EVENT_TABLE(MessageEditor, wxDialog)
   EVT_BUTTON(ID_ME_DoneButton, MessageEditor::done)
 wxEND_EVENT_TABLE()
 
 MessageEditor::MessageEditor(wxWindow *parent, Message *m)
-  : wxDialog(parent, wxID_ANY, "Message Editor", wxDefaultPosition, wxSize(480, 500)),
+  : wxDialog(parent, wxID_ANY, "Message Editor", wxDefaultPosition),
     pm(PatchMaster_instance()), message(m)
 {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
 
-  sizer->Add(make_name_panel(p), panel_flags);
-  message_text = new wxTextCtrl(p, ID_ME_MessageText, messages_to_text(),
+  sizer->Add(make_name_panel(this), panel_flags);
+  message_text = new wxTextCtrl(this, ID_ME_MessageText, messages_to_text(),
                                 wxDefaultPosition, wxSize(WIDTH, HEIGHT),
                                 wxTE_MULTILINE);
   sizer->Add(message_text,
@@ -31,13 +29,11 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
   sizer->Add(new wxButton(this, ID_ME_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL));
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *MessageEditor::make_name_panel(wxPanel *parent) {
+wxWindow *MessageEditor::make_name_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
   wxSizerFlags center_flags =

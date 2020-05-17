@@ -47,10 +47,10 @@ private:
   wxCheckBox *cb_pass_through_127;
   wxCheckBox *cb_filtered;
 
-  wxWindow *make_numbers_panel(wxPanel *parent);
-  wxWindow *make_val_mapping_panel(wxPanel *parent);
-  wxWindow *make_filtered_panel(wxPanel *parent);
-  wxComboBox *make_cc_number_dropdown(wxPanel *parent, wxWindowID id,
+  wxWindow *make_numbers_panel(wxWindow *parent);
+  wxWindow *make_val_mapping_panel(wxWindow *parent);
+  wxWindow *make_filtered_panel(wxWindow *parent);
+  wxComboBox *make_cc_number_dropdown(wxWindow *parent, wxWindowID id,
                                       int curr_val, bool filter_out_existing);
 
   void done(wxCommandEvent& event);

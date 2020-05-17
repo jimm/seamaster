@@ -3,7 +3,6 @@
 #include "monitor.h"
 #include "../patchmaster.h"
 
-#define FRAME_NAME "seamaster_monitor_frame"
 #define MONITOR_LIST_LEN 50
 
 const char * const COLUMN_HEADERS[] = {
@@ -13,21 +12,18 @@ const char * const COLUMN_HEADERS[] = {
 Monitor::Monitor()
   : wxFrame(NULL, wxID_ANY, "MIDI Monitor", wxDefaultPosition, wxSize(480, 500))
 {     
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
-  sizer->Add(make_input_panel(p), wxEXPAND);
-  sizer->Add(make_output_panel(p), wxEXPAND);
+  sizer->Add(make_input_panel(this), wxEXPAND);
+  sizer->Add(make_output_panel(this), wxEXPAND);
 
   for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
     input_list->InsertColumn(i, COLUMN_HEADERS[i]);
     output_list->InsertColumn(i, COLUMN_HEADERS[i]);
   }
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 
   PatchMaster *pm = PatchMaster_instance();
   for (auto& input : pm->inputs)
@@ -68,15 +64,17 @@ void Monitor::add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vec
   Refresh();
 }
 
-wxWindow *Monitor::make_input_panel(wxPanel *parent) {
+wxWindow *Monitor::make_input_panel(wxWindow *parent) {
   return make_panel(parent, "Inputs", &input_list);
 }
 
-wxWindow *Monitor::make_output_panel(wxPanel *parent) {
+wxWindow *Monitor::make_output_panel(wxWindow *parent) {
   return make_panel(parent, "Outputs", &output_list);
 }
 
-wxWindow *Monitor::make_panel(wxPanel *parent, const char * const title, wxListCtrl **list_ptr) {
+wxWindow *Monitor::make_panel(wxWindow *parent, const char * const title,
+                              wxListCtrl **list_ptr)
+{
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   *list_ptr = new wxListCtrl(p, wxID_ANY, wxDefaultPosition, wxSize(200, 400),
                               wxLC_REPORT);

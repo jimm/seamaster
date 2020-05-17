@@ -5,7 +5,6 @@
 #include "../controller.h"
 #include "../formatter.h"
 
-#define FRAME_NAME "seamaster_main_frame"
 #define POS(row, col) wxGBPosition(row, col)
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
 
@@ -19,24 +18,21 @@ ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn,
              wxSize(480, 500)),
     connection(conn), controller(cc), orig_cc_num(cc->cc_num)
 {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
   wxSizerFlags panel_sizer = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
-  sizer->Add(make_numbers_panel(p), panel_sizer);
-  sizer->Add(make_val_mapping_panel(p), panel_sizer);
-  sizer->Add(make_filtered_panel(p), panel_sizer);
+  sizer->Add(make_numbers_panel(this), panel_sizer);
+  sizer->Add(make_val_mapping_panel(this), panel_sizer);
+  sizer->Add(make_filtered_panel(this), panel_sizer);
 
   sizer->Add(new wxButton(this, ID_CMAP_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL));
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *ControllerEditor::make_numbers_panel(wxPanel *parent) {
+wxWindow *ControllerEditor::make_numbers_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -63,7 +59,7 @@ wxWindow *ControllerEditor::make_numbers_panel(wxPanel *parent) {
 }
 
 wxComboBox *ControllerEditor::make_cc_number_dropdown(
-  wxPanel *parent, wxWindowID id, int curr_val, bool filter_out_existing)
+  wxWindow *parent, wxWindowID id, int curr_val, bool filter_out_existing)
 {
   wxArrayString choices;
   for (int i = 0; i < 128; ++i)
@@ -78,7 +74,7 @@ wxComboBox *ControllerEditor::make_cc_number_dropdown(
                         wxCB_READONLY);
 }
 
-wxWindow *ControllerEditor::make_val_mapping_panel(wxPanel *parent) {
+wxWindow *ControllerEditor::make_val_mapping_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *input_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -132,7 +128,7 @@ wxWindow *ControllerEditor::make_val_mapping_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *ControllerEditor::make_filtered_panel(wxPanel *parent) {
+wxWindow *ControllerEditor::make_filtered_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);

@@ -7,8 +7,6 @@
 #include "../connection.h"
 #include "../formatter.h"
 
-#define FRAME_NAME "seamaster_main_frame"
-
 wxDEFINE_EVENT(Connection_Refresh, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(ConnectionEditor, wxDialog)
@@ -25,29 +23,26 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   : wxDialog(parent, wxID_ANY, "Connection Editor", wxDefaultPosition, wxSize(480, 500)),
     pm(PatchMaster_instance()), connection(c)
 {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
   wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
-  sizer->Add(make_input_panel(p), panel_flags);
-  sizer->Add(make_output_panel(p), panel_flags);
-  sizer->Add(make_program_panel(p), panel_flags);
-  sizer->Add(make_zone_panel(p), panel_flags);
-  sizer->Add(make_xpose_panel(p), panel_flags);
-  sizer->Add(make_sysex_panel(p), panel_flags);
-  sizer->Add(make_cc_maps_panel(p), panel_flags);
+  sizer->Add(make_input_panel(this), panel_flags);
+  sizer->Add(make_output_panel(this), panel_flags);
+  sizer->Add(make_program_panel(this), panel_flags);
+  sizer->Add(make_zone_panel(this), panel_flags);
+  sizer->Add(make_xpose_panel(this), panel_flags);
+  sizer->Add(make_sysex_panel(this), panel_flags);
+  sizer->Add(make_cc_maps_panel(this), panel_flags);
 
   sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
              wxSizerFlags().Right().Border());
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   update();
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_input_panel(wxWindow *parent) {
   return make_instrument_panel(
     parent, ID_CE_InputDropdown, ID_CE_InputChannel,
     "Input", &cb_input, &cb_input_chan,
@@ -55,7 +50,7 @@ wxWindow *ConnectionEditor::make_input_panel(wxPanel *parent) {
     connection->input, connection->input_chan);
 }
 
-wxWindow *ConnectionEditor::make_output_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_output_panel(wxWindow *parent) {
   return make_instrument_panel(
     parent, ID_CE_OutputDropdown, ID_CE_OutputChannel,
     "Output", &cb_output, &cb_output_chan,
@@ -64,7 +59,7 @@ wxWindow *ConnectionEditor::make_output_panel(wxPanel *parent) {
 }
 
 wxWindow *ConnectionEditor::make_instrument_panel(
-  wxPanel *parent, wxWindowID inst_id, wxWindowID chan_id,
+  wxWindow *parent, wxWindowID inst_id, wxWindowID chan_id,
   const char * const title,
   wxComboBox **instrument_combo_ptr, wxComboBox **chan_combo_ptr,
   vector<Instrument *> &instruments, Instrument *curr_instrument,
@@ -99,7 +94,7 @@ wxWindow *ConnectionEditor::make_instrument_panel(
 }
 
 wxComboBox *ConnectionEditor::make_channel_dropdown(
-  wxPanel *parent, wxWindowID id, int curr_val, const char * const first_choice)
+  wxWindow *parent, wxWindowID id, int curr_val, const char * const first_choice)
 {
   wxArrayString choices;
   choices.Add(first_choice);
@@ -114,7 +109,7 @@ wxComboBox *ConnectionEditor::make_channel_dropdown(
                         wxCB_READONLY);
 }
 
-wxWindow *ConnectionEditor::make_program_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_program_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -146,7 +141,7 @@ wxWindow *ConnectionEditor::make_program_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *ConnectionEditor::make_zone_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_zone_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -173,7 +168,7 @@ wxWindow *ConnectionEditor::make_zone_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *ConnectionEditor::make_xpose_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_xpose_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -189,7 +184,7 @@ wxWindow *ConnectionEditor::make_xpose_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *ConnectionEditor::make_sysex_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_sysex_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *field_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -205,7 +200,7 @@ wxWindow *ConnectionEditor::make_sysex_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *ConnectionEditor::make_cc_maps_panel(wxPanel *parent) {
+wxWindow *ConnectionEditor::make_cc_maps_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer *button_sizer = new wxBoxSizer(wxHORIZONTAL);

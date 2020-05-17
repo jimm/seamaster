@@ -31,9 +31,9 @@ private:
   wxTextCtrl *tc_trigger_message;
   wxComboBox *lc_action;
 
-  wxWindow *make_key_dropdown(wxPanel *parent);
-  wxWindow *make_input_dropdown(wxPanel *parent);
-  wxWindow *make_action_dropdown(wxPanel *parent);
+  wxWindow *make_key_dropdown(wxWindow *parent);
+  wxWindow *make_input_dropdown(wxWindow *parent);
+  wxWindow *make_action_dropdown(wxWindow *parent);
 
   void done(wxCommandEvent& event);
 

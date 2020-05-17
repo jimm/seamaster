@@ -27,7 +27,7 @@ private:
   wxTextCtrl *name_text;
   wxTextCtrl *message_text;
 
-  wxWindow *make_name_panel(wxPanel *parent);
+  wxWindow *make_name_panel(wxWindow *parent);
 
   wxString messages_to_text();
 

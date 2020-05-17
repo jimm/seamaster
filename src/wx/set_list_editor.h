@@ -33,11 +33,12 @@ private:
   wxButton *add_button;
   wxButton *remove_button;
 
-  wxWindow *make_name_panel(wxPanel *parent);
-  wxWindow *make_all_songs_panel(wxPanel *parent);
-  wxWindow *make_buttons(wxPanel *parent);
-  wxWindow *make_set_list_panel(wxPanel *parent);
-  wxWindow *make_panel(wxPanel *parent, wxWindowID id, const char * const title,
+  wxWindow *make_name_panel(wxWindow *parent);
+  wxWindow *make_all_songs_panel(wxWindow *parent);
+  wxWindow *make_buttons(wxWindow *parent);
+  wxWindow *make_set_list_panel(wxWindow *parent);
+  wxWindow *make_panel(wxWindow *parent, wxWindowID id,
+                       const char * const title,
                        SetList *slist, wxListBox **list_ptr);
 
   void set_name(wxCommandEvent& event);

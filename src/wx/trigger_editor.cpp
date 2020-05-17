@@ -5,7 +5,6 @@
 #include "../trigger.h"
 #include "../formatter.h"
 
-#define FRAME_NAME "seamaster_main_frame"
 #define MESSAGE_TEXT_WIDTH 100
 
 wxBEGIN_EVENT_TABLE(TriggerEditor, wxDialog)
@@ -16,18 +15,17 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   : wxDialog(parent, wxID_ANY, "Trigger Editor", wxDefaultPosition, wxSize(480, 500)),
   pm(PatchMaster_instance()), trigger(t)
 {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
   wxSizerFlags field_flags = wxSizerFlags().Border(wxLEFT|wxRIGHT);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Trigger Key"), label_flags);
-  sizer->Add(make_key_dropdown(p), field_flags);
+  sizer->Add(new wxStaticText(this, wxID_ANY, "Trigger Key"), label_flags);
+  sizer->Add(make_key_dropdown(this), field_flags);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Input"), label_flags);
-  sizer->Add(make_input_dropdown(p), field_flags);
+  sizer->Add(new wxStaticText(this, wxID_ANY, "Input"), label_flags);
+  sizer->Add(make_input_dropdown(this), field_flags);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Message"), label_flags);
+  sizer->Add(new wxStaticText(this, wxID_ANY, "MIDI Message"), label_flags);
   wxString message_str;
   if (trigger->input() != nullptr)
     message_str = wxString::Format(
@@ -36,22 +34,20 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
       Pm_MessageData1(trigger->trigger_message),
       Pm_MessageData2(trigger->trigger_message));
 
-  tc_trigger_message = new wxTextCtrl(p, ID_TE_MessageText, message_str);
+  tc_trigger_message = new wxTextCtrl(this, ID_TE_MessageText, message_str);
   sizer->Add(tc_trigger_message, field_flags);
 
-  sizer->Add(new wxStaticText(p, wxID_ANY, "Action"), label_flags);
-  sizer->Add(make_action_dropdown(p), field_flags);
+  sizer->Add(new wxStaticText(this, wxID_ANY, "Action"), label_flags);
+  sizer->Add(make_action_dropdown(this), field_flags);
 
   sizer->Add(new wxButton(this, ID_TE_DoneButton, "Done"),
              wxSizerFlags().Right().Border(wxALL));
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
+wxWindow *TriggerEditor::make_key_dropdown(wxWindow *parent) {
   wxArrayString choices;
   int key = trigger->trigger_key_code;
 
@@ -67,7 +63,7 @@ wxWindow *TriggerEditor::make_key_dropdown(wxPanel *parent) {
     wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
 
-wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
+wxWindow *TriggerEditor::make_input_dropdown(wxWindow *parent) {
   wxArrayString choices;
   Input *orig_input = trigger->input();
 
@@ -83,7 +79,7 @@ wxWindow *TriggerEditor::make_input_dropdown(wxPanel *parent) {
     wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
 }
 
-wxWindow *TriggerEditor::make_action_dropdown(wxPanel *parent) {
+wxWindow *TriggerEditor::make_action_dropdown(wxWindow *parent) {
   wxArrayString choices;
   wxString initial_value;
 

@@ -35,6 +35,7 @@ void App::show_user_message(string msg, int clear_secs) {
   frame->show_user_message(msg, clear_secs);
 }
 
+// This is the wxWidgets equivalent of the "main" function.
 bool App::OnInit() {
   if (!wxApp::OnInit())
     return false;

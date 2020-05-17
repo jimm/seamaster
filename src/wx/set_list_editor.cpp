@@ -3,8 +3,6 @@
 #include "../patchmaster.h"
 #include "../set_list.h"
 
-#define FRAME_NAME "seamaster_main_frame"
-
 wxBEGIN_EVENT_TABLE(SetListEditor, wxDialog)
   EVT_TEXT(ID_SLE_Name, SetListEditor::set_name)
 
@@ -21,30 +19,26 @@ wxBEGIN_EVENT_TABLE(SetListEditor, wxDialog)
 wxEND_EVENT_TABLE()
 
 SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
-  : wxDialog(parent, wxID_ANY, "Set List Editor", wxDefaultPosition, wxSize(480, 500)),
+  : wxDialog(parent, wxID_ANY, "Set List Editor", wxDefaultPosition),
     pm(PatchMaster_instance()), set_list(slist)
 {     
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
-  sizer->Add(make_name_panel(p), wxEXPAND);
+  sizer->Add(make_name_panel(this), wxEXPAND);
 
   wxBoxSizer *list_sizer = new wxBoxSizer(wxHORIZONTAL);
-  list_sizer->Add(make_all_songs_panel(p), wxEXPAND);
-  list_sizer->Add(make_buttons(p), wxEXPAND);
-  list_sizer->Add(make_set_list_panel(p), wxEXPAND);
+  list_sizer->Add(make_all_songs_panel(this), wxEXPAND);
+  list_sizer->Add(make_buttons(this), wxEXPAND);
+  list_sizer->Add(make_set_list_panel(this), wxEXPAND);
 
   sizer->Add(list_sizer);
   sizer->Add(new wxButton(this, ID_SLE_DoneButton, "Done"),
              wxSizerFlags().Right().Border());
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *SetListEditor::make_name_panel(wxPanel *parent) {
+wxWindow *SetListEditor::make_name_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -56,13 +50,13 @@ wxWindow *SetListEditor::make_name_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *SetListEditor::make_all_songs_panel(wxPanel *parent) {
+wxWindow *SetListEditor::make_all_songs_panel(wxWindow *parent) {
   wxWindow *retval = make_panel(parent, ID_SLE_AllSongs, "All Songs", pm->all_songs,
                                 &all_songs_wxlist);
   return retval;
 }
 
-wxWindow *SetListEditor::make_buttons(wxPanel *parent) {
+wxWindow *SetListEditor::make_buttons(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *button_sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -79,13 +73,13 @@ wxWindow *SetListEditor::make_buttons(wxPanel *parent) {
   return p;
 }
 
-wxWindow *SetListEditor::make_set_list_panel(wxPanel *parent) {
+wxWindow *SetListEditor::make_set_list_panel(wxWindow *parent) {
   wxWindow *retval = make_panel(parent, ID_SLE_SetList, set_list->name.c_str(), set_list,
                                 &set_list_wxlist);
   return retval;
 }
 
-wxWindow *SetListEditor::make_panel(wxPanel *parent, wxWindowID id,
+wxWindow *SetListEditor::make_panel(wxWindow *parent, wxWindowID id,
                                     const char * const title, SetList *slist,
                                     wxListBox **list_ptr)
 {

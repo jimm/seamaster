@@ -4,34 +4,28 @@
 #include "../patchmaster.h"
 #include "../patch.h"
 
-#define FRAME_NAME "seamaster_main_frame"
-
 wxBEGIN_EVENT_TABLE(PatchEditor, wxDialog)
   EVT_BUTTON(ID_PE_DoneButton, PatchEditor::done)
 wxEND_EVENT_TABLE()
 
 PatchEditor::PatchEditor(wxWindow *parent, Patch *patch_ptr)
-  : wxDialog(parent, wxID_ANY, "Patch Editor", wxDefaultPosition, wxSize(480, 500)),
+: wxDialog(parent, wxID_ANY, "Patch Editor", wxDefaultPosition),
     patch(patch_ptr)
 {
-  wxPanel *p = new wxPanel(this, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-
   wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
-  sizer->Add(make_name_panel(p), panel_flags);
-  sizer->Add(make_start_panel(p), panel_flags);
-  sizer->Add(make_stop_panel(p), panel_flags);
+  sizer->Add(make_name_panel(this), panel_flags);
+  sizer->Add(make_start_panel(this), panel_flags);
+  sizer->Add(make_stop_panel(this), panel_flags);
 
   sizer->Add(new wxButton(this, ID_PE_DoneButton, "Done"),
              wxSizerFlags().Right().Border());
 
-  p->SetSizerAndFit(sizer);
-  SetClientSize(p->GetSize());
+  SetSizerAndFit(sizer);
   Show(true);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
-wxWindow *PatchEditor::make_name_panel(wxPanel *parent) {
+wxWindow *PatchEditor::make_name_panel(wxWindow *parent) {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
   wxSizerFlags center_flags =
@@ -45,20 +39,20 @@ wxWindow *PatchEditor::make_name_panel(wxPanel *parent) {
   return p;
 }
 
-wxWindow *PatchEditor::make_start_panel(wxPanel *parent) {
+wxWindow *PatchEditor::make_start_panel(wxWindow *parent) {
   return make_message_panel(
     parent, ID_PE_StartMessageDropdown, "Start", patch->start_message,
     &cb_start_message);
 }
 
-wxWindow *PatchEditor::make_stop_panel(wxPanel *parent) {
+wxWindow *PatchEditor::make_stop_panel(wxWindow *parent) {
   return make_message_panel(
     parent, ID_PE_StopMessageDropdown, "Stop", patch->stop_message,
     &cb_stop_message);
 }
 
 wxWindow *PatchEditor::make_message_panel(
-  wxPanel *parent, wxWindowID id, const char * const title,
+  wxWindow *parent, wxWindowID id, const char * const title,
   Message *curr_message, wxComboBox **combo_ptr)
 {
   wxArrayString choices;

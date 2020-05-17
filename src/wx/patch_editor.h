@@ -29,10 +29,10 @@ private:
   wxComboBox *cb_start_message;
   wxComboBox *cb_stop_message;
 
-  wxWindow *make_name_panel(wxPanel *parent);
-  wxWindow *make_start_panel(wxPanel *parent);
-  wxWindow *make_stop_panel(wxPanel *parent);
-  wxWindow *make_message_panel(wxPanel *parent, wxWindowID id,
+  wxWindow *make_name_panel(wxWindow *parent);
+  wxWindow *make_start_panel(wxWindow *parent);
+  wxWindow *make_stop_panel(wxWindow *parent);
+  wxWindow *make_message_panel(wxWindow *parent, wxWindowID id,
                                const char * const title, Message *msg,
                                wxComboBox **cb_ptr);
 

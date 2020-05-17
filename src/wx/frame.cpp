@@ -31,7 +31,6 @@
 #define TALL_LIST_HEIGHT 300
 #define SHORT_LIST_HEIGHT 200
 #define NOTES_WIDTH 200
-#define FRAME_NAME "seamaster_main_frame"
 
 wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
 wxDEFINE_EVENT(Frame_MenuUpdate, wxCommandEvent);
@@ -103,7 +102,6 @@ Frame::Frame(const wxString& title)
   make_menu_bar();
   CreateStatusBar();
   show_user_message("No SeaMaster file loaded", 15);
-  wxPersistentRegisterAndRestore(this, FRAME_NAME); // not working?
 }
 
 void Frame::make_frame_panels() {
