@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class PatchMaster;
+class SeaMaster;
 class Instrument;
 
 class Monitor : public wxFrame, public MIDIMonitor {

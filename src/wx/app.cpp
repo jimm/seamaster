@@ -2,7 +2,7 @@
 #include <portmidi.h>
 #include "app.h"
 #include "frame.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 
 static const wxCmdLineEntryDesc g_cmdLineDesc [] = {
   { wxCMD_LINE_SWITCH, "l", "list-devices", "Display MIDI Devices" },
@@ -68,14 +68,14 @@ bool App::OnCmdLineParsed(wxCmdLineParser& parser) {
 }
 
 int App::FilterEvent(wxEvent &event) {
-  if (event.GetEventType() != wxEVT_KEY_DOWN || PatchMaster_instance() == 0)
+  if (event.GetEventType() != wxEVT_KEY_DOWN || SeaMaster_instance() == 0)
     return -1;
 
   return frame->handle_global_key_event((wxKeyEvent &)event);
 }
 
 int App::OnExit() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   if (pm) pm->stop();
   close_portmidi();
   return wxApp::OnExit();

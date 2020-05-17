@@ -1,5 +1,5 @@
 #include "message_list.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 
 MessageList::MessageList(wxWindow *parent, wxWindowID id, wxSize size)
   : FrameListBox(parent, id, wxDefaultPosition, size, wxLB_SINGLE),
@@ -8,7 +8,7 @@ MessageList::MessageList(wxWindow *parent, wxWindowID id, wxSize size)
 }
 
 void MessageList::update() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
 
   Clear();
   wxArrayString names;

@@ -1,7 +1,7 @@
 #include <wx/persist/toplevel.h>
 #include "patch_editor.h"
 #include "events.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../patch.h"
 
 wxBEGIN_EVENT_TABLE(PatchEditor, wxDialog)
@@ -58,7 +58,7 @@ wxWindow *PatchEditor::make_message_panel(
   wxArrayString choices;
   choices.Add("(No Message)");
   wxString curr_choice;
-  for (auto &message : PatchMaster_instance()->messages) {
+  for (auto &message : SeaMaster_instance()->messages) {
     choices.Add(message->name);
     if (message == curr_message)
       curr_choice = message->name;
@@ -81,7 +81,7 @@ wxWindow *PatchEditor::make_message_panel(
 }
 
 void PatchEditor::done(wxCommandEvent& event) {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
 
   // extract data from text edit widget
   patch->name = name_text->GetLineText(0);

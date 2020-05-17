@@ -6,7 +6,7 @@
 #define TEST_FILE "test/testfile.org"
 
 TEST_CASE("create message", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -15,7 +15,7 @@ TEST_CASE("create message", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create trigger", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
   Input *input = pm->inputs.front();
@@ -26,7 +26,7 @@ TEST_CASE("create trigger", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -37,7 +37,7 @@ TEST_CASE("create song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create song inserts into current song list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -48,7 +48,7 @@ TEST_CASE("create song inserts into current song list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create song inserts into empty song list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -64,7 +64,7 @@ TEST_CASE("create song inserts into empty song list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create patch", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Cursor *c = pm->cursor;
   c->init();
   Editor e(pm);
@@ -76,7 +76,7 @@ TEST_CASE("create patch", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create connection", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Cursor *c = pm->cursor;
   c->init();
   Editor e(pm);
@@ -88,7 +88,7 @@ TEST_CASE("create connection", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create set list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -97,7 +97,7 @@ TEST_CASE("create set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy message", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -107,7 +107,7 @@ TEST_CASE("destroy message", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy trigger", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
   Input *input = pm->inputs.front();
@@ -119,7 +119,7 @@ TEST_CASE("destroy trigger", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -131,7 +131,7 @@ TEST_CASE("destroy song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("create and destroy song", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
   Editor e(pm);
 
@@ -140,7 +140,7 @@ TEST_CASE("create and destroy song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy first patch in song with mult. patches", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Cursor *c = pm->cursor;
   c->init();
   Patch *old_patch = c->patch();
@@ -165,7 +165,7 @@ TEST_CASE("destroy first patch in song with mult. patches", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy last patch in song with mult. patches", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Cursor *c = pm->cursor;
   c->init();
 
@@ -193,7 +193,7 @@ TEST_CASE("destroy last patch in song with mult. patches", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy connection", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
 
   Patch *p = pm->cursor->patch();
@@ -209,7 +209,7 @@ TEST_CASE("destroy connection", CATCH_CATEGORY) {
 }
 
 TEST_CASE("destroy set list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   pm->cursor->init();
 
   SetList *old_set_list = pm->set_lists.back();
@@ -225,7 +225,7 @@ TEST_CASE("destroy set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("add then destroy patches", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Cursor *c = pm->cursor;
   c->init();
 

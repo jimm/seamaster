@@ -8,7 +8,7 @@
  * songs and patches, and how to find them given name regexes.
  */
 
-Cursor::Cursor(PatchMaster *pmaster)
+Cursor::Cursor(SeaMaster *pmaster)
   : pm(pmaster)
 {
   clear();

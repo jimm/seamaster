@@ -14,7 +14,7 @@ enum {
   ID_TE_DoneButton
 };
 
-class PatchMaster;
+class SeaMaster;
 class Trigger;
 class Input;
 class wxListCtrl;
@@ -24,7 +24,7 @@ public:
   TriggerEditor(wxWindow *parent, Trigger *trigger);
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
   Trigger *trigger;
   wxComboBox *lc_key;
   wxComboBox *lc_input;

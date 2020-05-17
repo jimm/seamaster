@@ -1,5 +1,5 @@
 #include "set_list_box.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../cursor.h"
 
 SetListBox::SetListBox(wxWindow *parent, wxWindowID id, wxSize size)
@@ -9,7 +9,7 @@ SetListBox::SetListBox(wxWindow *parent, wxWindowID id, wxSize size)
 }
 
 void SetListBox::update() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   Cursor *cursor = pm->cursor;
   SetList *curr_set_list = cursor->set_list();
 
@@ -39,7 +39,7 @@ void SetListBox::update() {
 void SetListBox::jump() {
   int selection = GetSelection();
   if (selection != wxNOT_FOUND) {
-    PatchMaster *pm = PatchMaster_instance();
+    SeaMaster *pm = SeaMaster_instance();
     pm->jump_to_song_index(selection);
   }
 }

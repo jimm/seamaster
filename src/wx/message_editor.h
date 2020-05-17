@@ -13,7 +13,7 @@ enum {
   ID_ME_DoneButton
 };
 
-class PatchMaster;
+class SeaMaster;
 class Message;
 class wxListCtrl;
 
@@ -22,7 +22,7 @@ public:
   MessageEditor(wxWindow *parent, Message *message);
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
   Message *message;
   wxTextCtrl *name_text;
   wxTextCtrl *message_text;

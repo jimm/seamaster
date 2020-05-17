@@ -1,6 +1,6 @@
 #include <wx/persist/toplevel.h>
 #include "set_list_editor.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../set_list.h"
 
 wxBEGIN_EVENT_TABLE(SetListEditor, wxDialog)
@@ -20,7 +20,7 @@ wxEND_EVENT_TABLE()
 
 SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   : wxDialog(parent, wxID_ANY, "Set List Editor", wxDefaultPosition),
-    pm(PatchMaster_instance()), set_list(slist)
+    pm(SeaMaster_instance()), set_list(slist)
 {     
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(make_name_panel(this), wxEXPAND);

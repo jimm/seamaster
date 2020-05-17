@@ -1,5 +1,5 @@
 #include "controller_mappings.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../cursor.h"
 #include "../formatter.h"
 

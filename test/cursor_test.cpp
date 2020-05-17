@@ -5,8 +5,8 @@
 #define CATCH_CATEGORY "[cursor]"
 #define TEST_FILE "test/testfile.org"
 
-PatchMaster *cursor_pm() {
-  PatchMaster *pm = load_test_data();
+SeaMaster *cursor_pm() {
+  SeaMaster *pm = load_test_data();
   pm->testing = true;
   pm->cursor->init();
   return pm;
@@ -15,7 +15,7 @@ PatchMaster *cursor_pm() {
 // ================ initialization
 
 TEST_CASE("init empty", CATCH_CATEGORY) {
-  PatchMaster *pm = new PatchMaster();
+  SeaMaster *pm = new SeaMaster();
   Cursor *c = pm->cursor;
   c->init();
   REQUIRE(c->set_list_index == 0);
@@ -24,7 +24,7 @@ TEST_CASE("init empty", CATCH_CATEGORY) {
 }
 
 TEST_CASE("init", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm(); // calls Cursor::init
+  SeaMaster *pm = cursor_pm(); // calls Cursor::init
   Cursor *c = pm->cursor;
   REQUIRE(c->set_list_index == 0);
   REQUIRE(c->song_index == 0);
@@ -35,7 +35,7 @@ TEST_CASE("init", CATCH_CATEGORY) {
 // ================ movement
 
 TEST_CASE("next patch", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->next_patch();
   REQUIRE(c->set_list_index == 0);
@@ -45,7 +45,7 @@ TEST_CASE("next patch", CATCH_CATEGORY) {
 }
 
 TEST_CASE("next patch at end of song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
   c->next_patch();
@@ -56,7 +56,7 @@ TEST_CASE("next patch at end of song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("next patch at end of set list", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->set_list_index = 1;        // Set List One
   c->song_index = 1;            // Another Song
@@ -69,7 +69,7 @@ TEST_CASE("next patch at end of set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("prev patch", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
   c->prev_patch();
@@ -80,7 +80,7 @@ TEST_CASE("prev patch", CATCH_CATEGORY) {
 }
 
 TEST_CASE("prev patch start of song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   c->prev_patch();
@@ -91,7 +91,7 @@ TEST_CASE("prev patch start of song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("prev patch start of set list", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->prev_patch();
   REQUIRE(c->set_list_index == 0);
@@ -101,7 +101,7 @@ TEST_CASE("prev patch start of set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("next song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->next_song();
   REQUIRE(c->set_list_index == 0);
@@ -111,7 +111,7 @@ TEST_CASE("next song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("prev song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   c->patch_index = 1;
@@ -125,39 +125,39 @@ TEST_CASE("prev song", CATCH_CATEGORY) {
 // ================ has_{next,prev}_{song,patch} predicates
 
 TEST_CASE("has next song true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(c->has_next_song());
 }
 
 TEST_CASE("has next song false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = c->set_list()->songs.size() - 1;
   REQUIRE(!c->has_next_song());
 }
 
 TEST_CASE("has prev song true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   REQUIRE(c->has_prev_song());
 }
 
 TEST_CASE("has prev song false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(!c->has_prev_song());
 }
 
 TEST_CASE("has next patch true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(c->has_next_patch());
 }
 
 TEST_CASE("has next patch false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = c->set_list()->songs.size() - 1;
   c->patch_index = c->song()->patches.size() - 1;
@@ -165,26 +165,26 @@ TEST_CASE("has next patch false", CATCH_CATEGORY) {
 }
 
 TEST_CASE("has prev patch true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->patch_index = 1;
   REQUIRE(c->has_prev_patch());
 }
 
 TEST_CASE("has prev patch false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(!c->has_prev_patch());
 }
 
 TEST_CASE("has next patch in song true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(c->has_next_patch_in_song());
 }
 
 TEST_CASE("has next patch in song false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = c->set_list()->songs.size() - 1;
   c->patch_index = c->song()->patches.size() - 1;
@@ -192,7 +192,7 @@ TEST_CASE("has next patch in song false", CATCH_CATEGORY) {
 }
 
 TEST_CASE("has prev patch in song true", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   c->patch_index = 1;
@@ -200,7 +200,7 @@ TEST_CASE("has prev patch in song true", CATCH_CATEGORY) {
 }
 
 TEST_CASE("has prev patch in song false", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   c->song_index = 1;
   REQUIRE(!c->has_prev_patch_in_song());
@@ -209,21 +209,21 @@ TEST_CASE("has prev patch in song false", CATCH_CATEGORY) {
 // ================ defaults
 
 TEST_CASE("default set list is all songs", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(c->set_list() == pm->all_songs);
   delete pm;
 }
 
 TEST_CASE("song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   REQUIRE(c->song() == pm->all_songs->songs[0]);
   delete pm;
 }
 
 TEST_CASE("patch", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
   Song *s = c->song();
   REQUIRE(c->patch() == s->patches[0]);
@@ -233,7 +233,7 @@ TEST_CASE("patch", CATCH_CATEGORY) {
 // ================ goto
 
 TEST_CASE("goto song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   c->goto_song("nother");
@@ -245,7 +245,7 @@ TEST_CASE("goto song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("goto song no such song", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   Song *before = c->song();
@@ -259,7 +259,7 @@ TEST_CASE("goto song no such song", CATCH_CATEGORY) {
 }
 
 TEST_CASE("goto set list", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   c->goto_set_list("two");
@@ -271,7 +271,7 @@ TEST_CASE("goto set list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("goto set list no such set list", CATCH_CATEGORY) {
-  PatchMaster *pm = cursor_pm();
+  SeaMaster *pm = cursor_pm();
   Cursor *c = pm->cursor;
 
   SetList *before = c->set_list();

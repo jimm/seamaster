@@ -16,7 +16,7 @@ enum {
   ID_SLE_RemoveButton
 };
 
-class PatchMaster;
+class SeaMaster;
 class SetList;
 class wxListCtrl;
 
@@ -25,7 +25,7 @@ public:
   SetListEditor(wxWindow *parent, SetList *set_list);
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
   SetList *set_list;
   wxTextCtrl *name_text;
   wxListBox *all_songs_wxlist;

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <sqlite3.h>
-#include "patchmaster.h"
+#include "seamaster.h"
 
 using namespace std;
 
@@ -15,14 +15,14 @@ public:
 
   void initialize(bool testing = false); // public for testing
 
-  PatchMaster *load(bool testing = false);
-  void save(PatchMaster *pm, bool testing = false);
+  SeaMaster *load(bool testing = false);
+  void save(SeaMaster *pm, bool testing = false);
   bool has_error();
   string error();
 
 private:
   sqlite3 *db;
-  PatchMaster *pm;
+  SeaMaster *pm;
   string error_str;
   int max_patch_id;
   int max_conn_id;

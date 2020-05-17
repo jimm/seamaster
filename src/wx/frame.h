@@ -7,7 +7,7 @@
  #include <wx/listctrl.h>
 #endif
 #include "events.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 
 enum {
   ID_GoNextSong = 1,

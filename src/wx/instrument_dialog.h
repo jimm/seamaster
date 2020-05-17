@@ -9,16 +9,16 @@
 
 using namespace std;
 
-class PatchMaster;
+class SeaMaster;
 class Instrument;
 
 class InstrumentDialog : public wxDialog {
 public:
-  InstrumentDialog(wxWindow *parent, PatchMaster *pm);
+  InstrumentDialog(wxWindow *parent, SeaMaster *pm);
   void run();
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
 
   void add_instrument(wxListCtrl *list_box, Instrument *inst, int i);
 };

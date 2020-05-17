@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "patchmaster.h"
+#include "seamaster.h"
 #include "message.h"
 #include "output.h"
 
@@ -16,7 +16,7 @@ Message::~Message() {
 
 
 void Message::send() {
-  for (auto& out : PatchMaster_instance()->outputs)
+  for (auto& out : SeaMaster_instance()->outputs)
     send(*out);
 }
 

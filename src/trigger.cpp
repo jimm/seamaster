@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "trigger.h"
-#include "patchmaster.h"
+#include "seamaster.h"
 
 Trigger::Trigger(sqlite3_int64 id, TriggerAction ta, Message *out_msg)
   : DBObj(id),
@@ -45,7 +45,7 @@ bool Trigger::signal_key(int key_code) {
 }
 
 void Trigger::perform_action() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
 
   switch (action) {
   case TA_NEXT_SONG:

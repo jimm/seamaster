@@ -1,6 +1,6 @@
 #include <wx/persist/toplevel.h>
 #include "trigger_editor.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../input.h"
 #include "../trigger.h"
 #include "../formatter.h"
@@ -13,7 +13,7 @@ wxEND_EVENT_TABLE()
 
 TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   : wxDialog(parent, wxID_ANY, "Trigger Editor", wxDefaultPosition, wxSize(480, 500)),
-  pm(PatchMaster_instance()), trigger(t)
+  pm(SeaMaster_instance()), trigger(t)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);

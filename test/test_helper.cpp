@@ -38,15 +38,15 @@ void _initialize_and_load_database() {
   sqlite3_close(db);
 }
 
-PatchMaster *load_test_data() {
-  PatchMaster *old_pm = PatchMaster_instance();
+SeaMaster *load_test_data() {
+  SeaMaster *old_pm = SeaMaster_instance();
   if (old_pm)
     delete old_pm;
 
   _initialize_and_load_database();
 
   Storage storage(TEST_DB_PATH);
-  PatchMaster *pm = storage.load(true);
+  SeaMaster *pm = storage.load(true);
   if (storage.has_error()) {
     fprintf(stderr, "load_test_data storage error: %s\n",
             storage.error().c_str());

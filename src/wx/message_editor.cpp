@@ -1,7 +1,7 @@
 #include <wx/persist/toplevel.h>
 #include <wx/gbsizer.h>
 #include "message_editor.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../message.h"
 #include "../formatter.h"
 
@@ -14,7 +14,7 @@ wxEND_EVENT_TABLE()
 
 MessageEditor::MessageEditor(wxWindow *parent, Message *m)
   : wxDialog(parent, wxID_ANY, "Message Editor", wxDefaultPosition),
-    pm(PatchMaster_instance()), message(m)
+    pm(SeaMaster_instance()), message(m)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);

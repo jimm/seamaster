@@ -1,11 +1,11 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include "patchmaster.h"
+#include "seamaster.h"
 
 class Editor {
 public:
-  Editor(PatchMaster *pm = nullptr); // defaults to PatchMaster_instance()
+  Editor(SeaMaster *pm = nullptr); // defaults to SeaMaster_instance()
 
   Message *create_message();
   Trigger *create_trigger(Input *input);
@@ -35,7 +35,7 @@ public:
   void move_away_from_patch(Song *, Patch *);
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
 };
 
 #endif /* EDITOR_H */

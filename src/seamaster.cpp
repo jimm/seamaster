@@ -1,20 +1,20 @@
 #include <stdlib.h>
-#include "patchmaster.h"
+#include "seamaster.h"
 #include "cursor.h"
 
 #define PATCH_STOP  {if (cursor->patch() != nullptr) cursor->patch()->stop();}
 #define PATCH_START {if (cursor->patch() != nullptr) cursor->patch()->start();}
 
 
-static PatchMaster *pm_instance = nullptr;
+static SeaMaster *pm_instance = nullptr;
 
-PatchMaster *PatchMaster_instance() {
+SeaMaster *SeaMaster_instance() {
   return pm_instance;
 }
 
 // ================ allocation ================
 
-PatchMaster::PatchMaster() {
+SeaMaster::SeaMaster() {
   running = false;
   testing = false;
   all_songs = new SetList(UNDEFINED_ID, (char *)"All Songs");
@@ -23,7 +23,7 @@ PatchMaster::PatchMaster() {
   pm_instance = this;
 }
 
-PatchMaster::~PatchMaster() {
+SeaMaster::~SeaMaster() {
   if (pm_instance == this)
     pm_instance = 0;
 
@@ -43,7 +43,7 @@ PatchMaster::~PatchMaster() {
 
 // ================ running ================
 
-void PatchMaster::start() {
+void SeaMaster::start() {
   cursor->init();
   PATCH_START;
   for (auto& out : outputs)
@@ -53,7 +53,7 @@ void PatchMaster::start() {
   running = true;
 }
 
-void PatchMaster::stop() {
+void SeaMaster::stop() {
   running = false;
   for (auto& in : inputs)
     in->stop();
@@ -64,12 +64,12 @@ void PatchMaster::stop() {
 
 // ================ initialization ================
 
-void PatchMaster::initialize() {
+void SeaMaster::initialize() {
   load_instruments();
   create_songs();
 }
 
-void PatchMaster::load_instruments() {
+void SeaMaster::load_instruments() {
   if (testing)
     return;
 
@@ -84,7 +84,7 @@ void PatchMaster::load_instruments() {
   }
 }
 
-void PatchMaster::create_songs() {
+void SeaMaster::create_songs() {
   char name[BUFSIZ];
 
   for (auto& input : inputs) {
@@ -127,25 +127,25 @@ void PatchMaster::create_songs() {
 
 // ================ movement ================
 
-void PatchMaster::next_patch() {
+void SeaMaster::next_patch() {
   PATCH_STOP;
   cursor->next_patch();
   PATCH_START;
 }
 
-void PatchMaster::prev_patch() {
+void SeaMaster::prev_patch() {
   PATCH_STOP;
   cursor->prev_patch();
   PATCH_START;
 }
 
-void PatchMaster::next_song() {
+void SeaMaster::next_song() {
   PATCH_STOP;
   cursor->next_song();
   PATCH_START;
 }
 
-void PatchMaster::prev_song() {
+void SeaMaster::prev_song() {
   PATCH_STOP;
   cursor->prev_song();
   PATCH_START;
@@ -153,19 +153,19 @@ void PatchMaster::prev_song() {
 
 // ================ going places ================
 
-void PatchMaster::goto_song(string name_regex) {
+void SeaMaster::goto_song(string name_regex) {
   PATCH_STOP;
   cursor->goto_song(name_regex);
   PATCH_START;
 }
 
-void PatchMaster::goto_set_list(string name_regex) {
+void SeaMaster::goto_set_list(string name_regex) {
   PATCH_STOP;
   cursor->goto_set_list(name_regex);
   PATCH_START;
 }
 
-void PatchMaster::jump_to_set_list_index(int i) {
+void SeaMaster::jump_to_set_list_index(int i) {
   if (i == cursor->set_list_index)
     return;
 
@@ -174,7 +174,7 @@ void PatchMaster::jump_to_set_list_index(int i) {
   PATCH_START;
 }
 
-void PatchMaster::jump_to_song_index(int i) {
+void SeaMaster::jump_to_song_index(int i) {
   if (i == cursor->song_index)
     return;
 
@@ -183,7 +183,7 @@ void PatchMaster::jump_to_song_index(int i) {
   PATCH_START;
 }
 
-void PatchMaster::jump_to_patch_index(int i) {
+void SeaMaster::jump_to_patch_index(int i) {
   if (i == cursor->patch_index)
     return;
 
@@ -194,7 +194,7 @@ void PatchMaster::jump_to_patch_index(int i) {
 
 // ================ doing things ================
 
-void PatchMaster::panic(bool send_notes_off) {
+void SeaMaster::panic(bool send_notes_off) {
   PmEvent buf[128];
 
   memset(buf, 0, 128 * sizeof(PmEvent));
@@ -224,6 +224,6 @@ bool songNameComparator(Song *s1, Song *s2) {
   return s1->name < s2->name;
 }
 
-void PatchMaster::sort_all_songs() {
+void SeaMaster::sort_all_songs() {
   sort(all_songs->songs.begin(), all_songs->songs.end(), songNameComparator);
 }

@@ -1,7 +1,7 @@
 #include <wx/persist/toplevel.h>
 #include <wx/listctrl.h>
 #include "monitor.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 
 #define MONITOR_LIST_LEN 50
 
@@ -25,7 +25,7 @@ Monitor::Monitor()
   SetSizerAndFit(sizer);
   Show(true);
 
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   for (auto& input : pm->inputs)
     input->set_monitor(this);
   for (auto& output : pm->outputs)
@@ -33,7 +33,7 @@ Monitor::Monitor()
 }
 
 Monitor::~Monitor() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   for (auto& input : pm->inputs)
     input->set_monitor(nullptr);
   for (auto& output : pm->outputs)

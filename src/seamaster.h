@@ -1,5 +1,5 @@
-#ifndef PATCHMASTER_H
-#define PATCHMASTER_H
+#ifndef SEAMASTER_H
+#define SEAMASTER_H
 
 #include <vector>
 #include "set_list.h"
@@ -11,7 +11,7 @@ using namespace std;
 
 class Cursor;
 
-class PatchMaster {
+class SeaMaster {
 public:
   vector<Input *> inputs;
   vector<Output *> outputs;
@@ -24,8 +24,8 @@ public:
   vector<Message *> messages;
   string loaded_from_file;
 
-  PatchMaster();
-  ~PatchMaster();
+  SeaMaster();
+  ~SeaMaster();
 
   int load(const char *);
 
@@ -62,6 +62,6 @@ private:
   void create_songs();
 };
 
-PatchMaster *PatchMaster_instance();
+SeaMaster *SeaMaster_instance();
 
-#endif /* PATCHMASTER_H */
+#endif /* SEAMASTER_H */

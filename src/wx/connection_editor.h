@@ -27,7 +27,7 @@ enum {
   ID_CE_DoneButton
 };
 
-class PatchMaster;
+class SeaMaster;
 class Instrument;
 class Connection;
 class Controller;
@@ -43,7 +43,7 @@ public:
   void update();
 
 private:
-  PatchMaster *pm;
+  SeaMaster *pm;
   Connection *connection;
   wxComboBox *cb_input;
   wxComboBox *cb_input_chan;

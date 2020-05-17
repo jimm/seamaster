@@ -1,6 +1,6 @@
 #include "patch_connections.h"
 #include "events.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../cursor.h"
 #include "../formatter.h"
 
@@ -21,7 +21,7 @@ PatchConnections::PatchConnections(wxWindow *parent, wxWindowID id)
 }
 
 Connection *PatchConnections::selected() {
-  Patch *patch = PatchMaster_instance()->cursor->patch();
+  Patch *patch = SeaMaster_instance()->cursor->patch();
   if (patch == nullptr || patch->connections.empty())
     return nullptr;
 
@@ -30,7 +30,7 @@ Connection *PatchConnections::selected() {
 }
 
 void PatchConnections::update() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   Cursor *cursor = pm->cursor;
   Patch *patch = cursor->patch();
 

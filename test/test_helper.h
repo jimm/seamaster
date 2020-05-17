@@ -4,7 +4,7 @@
 #include <portmidi.h>
 #include "../src/consts.h"
 #include "../src/connection.h"
-#include "../src/patchmaster.h"
+#include "../src/seamaster.h"
 #include "../src/input.h"
 #include "../src/output.h"
 #include "../src/cursor.h"
@@ -13,7 +13,7 @@
 #define TEST_DATA_PATH "test/testdata.sql"
 #define TEST_DB_PATH "/tmp/seamaster_test.sm"
 
-PatchMaster *load_test_data();
+SeaMaster *load_test_data();
 Connection *create_conn();
 
 #endif /* TEST_HELPER_H */

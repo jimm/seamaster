@@ -3,7 +3,7 @@
 #include "controller_mappings.h"
 #include "controller_editor.h"
 #include "events.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../connection.h"
 #include "../formatter.h"
 
@@ -21,7 +21,7 @@ wxEND_EVENT_TABLE()
 
 ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   : wxDialog(parent, wxID_ANY, "Connection Editor", wxDefaultPosition, wxSize(480, 500)),
-    pm(PatchMaster_instance()), connection(c)
+    pm(SeaMaster_instance()), connection(c)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 

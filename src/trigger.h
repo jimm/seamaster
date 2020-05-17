@@ -5,7 +5,7 @@
 #include "db_obj.h"
 #include "message.h"
 
-class PatchMaster;
+class SeaMaster;
 
 typedef enum TriggerAction {
   TA_NEXT_SONG,

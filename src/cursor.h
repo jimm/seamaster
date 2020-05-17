@@ -1,19 +1,19 @@
 #ifndef CURSOR_H
 #define CURSOR_H
 
-#include "patchmaster.h"
+#include "seamaster.h"
 #include "set_list.h"
 #include "song.h"
 #include "patch.h"
 
 class Cursor {
 public:
-  PatchMaster *pm;
+  SeaMaster *pm;
   int set_list_index;
   int song_index;
   int patch_index;
 
-  Cursor(PatchMaster *pm);
+  Cursor(SeaMaster *pm);
   ~Cursor();
 
   void clear();

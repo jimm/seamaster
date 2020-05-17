@@ -1,5 +1,5 @@
 #include "trigger_list.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../formatter.h"
 
 #define CW 24
@@ -26,18 +26,18 @@ Trigger *TriggerList::selected() {
   if (index == wxNOT_FOUND)
     return nullptr;
 
-  return PatchMaster_instance()->triggers[index];
+  return SeaMaster_instance()->triggers[index];
 }
 
 void TriggerList::update() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
 
   ClearAll();
   set_headers();
 
   int row = 0;
   vector<Trigger *> *sorted_triggers =
-    sorted_copy(PatchMaster_instance()->triggers);
+    sorted_copy(SeaMaster_instance()->triggers);
 
   for (auto * trigger : *sorted_triggers) {
     int key = trigger->trigger_key_code;

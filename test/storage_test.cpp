@@ -11,7 +11,7 @@
 #define TO_EACH_INDEX 2
 
 TEST_CASE("load instruments", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   REQUIRE(pm->inputs.size() == 2);
   REQUIRE(pm->outputs.size() == 2);
@@ -26,7 +26,7 @@ TEST_CASE("load instruments", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load messages", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   REQUIRE(pm->messages.size() == 4); // includes 2 start/stop messages
 
@@ -44,7 +44,7 @@ TEST_CASE("load messages", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load triggers", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
   Trigger *t;
 
   REQUIRE(pm->triggers.size() == 7);
@@ -78,7 +78,7 @@ TEST_CASE("load triggers", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load songs", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   vector<Song *> &all = pm->all_songs->songs;
   REQUIRE(all.size() == 3);
@@ -96,7 +96,7 @@ TEST_CASE("load songs", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load notes", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[SONG_WITHOUT_INDEX];
   REQUIRE(s->notes.size() == 0);
@@ -107,7 +107,7 @@ TEST_CASE("load notes", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load patches", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX];
   REQUIRE(s->patches.size() == 2);
@@ -118,7 +118,7 @@ TEST_CASE("load patches", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load start and stop messages", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[ANOTHER_INDEX];
   Patch *p = s->patches.back();
@@ -135,7 +135,7 @@ TEST_CASE("load start and stop messages", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load connections", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX]; // To Each His Own
   Patch *p = s->patches[0];          // Two Inputs Merging
@@ -156,7 +156,7 @@ TEST_CASE("load connections", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load bank msb lsb", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX]; // To Each His Own
   Patch *p = s->patches[0];          // Vanilla Through
@@ -166,7 +166,7 @@ TEST_CASE("load bank msb lsb", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load bank lsb only", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX]; // To Each His Own
   Patch *p = s->patches[1];          // One Up One Oct...
@@ -176,7 +176,7 @@ TEST_CASE("load bank lsb only", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load prog chg", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX];
   Patch *p = s->patches[0];
@@ -185,7 +185,7 @@ TEST_CASE("load prog chg", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load xpose", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX];
   Patch *p = s->patches[0];
@@ -201,7 +201,7 @@ TEST_CASE("load xpose", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load zone", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX];
   Patch *p = s->patches[0];
@@ -223,7 +223,7 @@ TEST_CASE("load zone", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load controller mappings") {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[TO_EACH_INDEX];
   Patch *p = s->patches[0];
@@ -250,7 +250,7 @@ TEST_CASE("load controller mappings") {
 }
 
 TEST_CASE("load song list", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   vector<Song *> &all = pm->all_songs->songs;
 
@@ -271,7 +271,7 @@ TEST_CASE("load song list", CATCH_CATEGORY) {
 }
 
 TEST_CASE("load auto patch", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Song *s = pm->all_songs->songs[SONG_WITHOUT_INDEX];
   REQUIRE(s->patches.size() == 1);
@@ -287,7 +287,7 @@ TEST_CASE("initialize", CATCH_CATEGORY) {
   storage.initialize(true);
   REQUIRE(storage.has_error() == false);
   
-  PatchMaster *pm = storage.load(true);
+  SeaMaster *pm = storage.load(true);
   REQUIRE(pm->inputs.size() == 0);
   REQUIRE(pm->outputs.size() == 0);
   REQUIRE(pm->messages.size() == 0);
@@ -295,7 +295,7 @@ TEST_CASE("initialize", CATCH_CATEGORY) {
 }
 
 TEST_CASE("save", CATCH_CATEGORY) {
-  PatchMaster *pm = load_test_data();
+  SeaMaster *pm = load_test_data();
 
   Storage saver(TEST_DB_PATH "_save_test");
   saver.save(pm, true);
@@ -326,7 +326,7 @@ TEST_CASE("save", CATCH_CATEGORY) {
 }
 
 TEST_CASE("save sets UNDEFINE_ID ids", CATCH_CATEGORY) {
-  PatchMaster *pm = new PatchMaster();
+  SeaMaster *pm = new SeaMaster();
   pm->testing = true;
   pm->initialize();
 

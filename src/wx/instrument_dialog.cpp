@@ -1,6 +1,6 @@
 #include <wx/listctrl.h>
 #include "instrument_dialog.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 
 #define CW 48
 
@@ -11,8 +11,8 @@ const int COLUMN_WIDTHS[] = {
   3*CW, 3*CW, 2*CW
 };
 
-InstrumentDialog::InstrumentDialog(wxWindow *parent, PatchMaster *patchmaster)
-  : wxDialog(parent, wxID_ANY, "Instruments"), pm(patchmaster)
+InstrumentDialog::InstrumentDialog(wxWindow *parent, SeaMaster *seamaster)
+  : wxDialog(parent, wxID_ANY, "Instruments"), pm(seamaster)
 {     
   wxListCtrl *inputs = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT);
   wxListCtrl *outputs = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT);

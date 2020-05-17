@@ -7,7 +7,7 @@
 #include <err.h>
 #include <portmidi.h>
 #include <sqlite3.h>
-#include "patchmaster.h"
+#include "seamaster.h"
 #include "cursor.h"
 #include "storage.h"
 #include "formatter.h"
@@ -30,14 +30,14 @@ Storage::~Storage() {
 }
 
 // Does not stop old pm or start new pm.
-PatchMaster *Storage::load(bool testing) {
-  PatchMaster *old_pm = PatchMaster_instance();
+SeaMaster *Storage::load(bool testing) {
+  SeaMaster *old_pm = SeaMaster_instance();
   int status;
 
   if (db == nullptr)
     return old_pm;
 
-  pm = new PatchMaster();    // side-effect: PatchMaster static instance set
+  pm = new SeaMaster();    // side-effect: SeaMaster static instance set
 
   max_patch_id = max_conn_id = -1;
   load_instruments();
@@ -51,7 +51,7 @@ PatchMaster *Storage::load(bool testing) {
   return pm;
 }
 
-void Storage::save(PatchMaster *patchmaster, bool testing) {
+void Storage::save(SeaMaster *seamaster, bool testing) {
   if (db == nullptr)
     return;
 
@@ -59,7 +59,7 @@ void Storage::save(PatchMaster *patchmaster, bool testing) {
   if (has_error())
     return;
 
-  pm = patchmaster;
+  pm = seamaster;
   save_instruments();
   save_messages();
   save_triggers();

@@ -1,12 +1,12 @@
 #include "consts.h"
 #include "editor.h"
-#include "patchmaster.h"
+#include "seamaster.h"
 #include "cursor.h"
 
 #define ITER(type) vector<type *>::iterator
 
-Editor::Editor(PatchMaster *pmaster)
-  : pm(pmaster ? pmaster : PatchMaster_instance())
+Editor::Editor(SeaMaster *pmaster)
+  : pm(pmaster ? pmaster : SeaMaster_instance())
 {
 }
 

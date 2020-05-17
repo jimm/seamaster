@@ -22,7 +22,7 @@ enum {
   ID_CMAP_DoneButton
 };
 
-class PatchMaster;
+class SeaMaster;
 class Instrument;
 class Connection;
 class Controller;

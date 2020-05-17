@@ -1,5 +1,5 @@
 #include "song_box.h"
-#include "../patchmaster.h"
+#include "../seamaster.h"
 #include "../cursor.h"
 
 SongBox::SongBox(wxWindow *parent, wxWindowID id, wxSize size)
@@ -9,7 +9,7 @@ SongBox::SongBox(wxWindow *parent, wxWindowID id, wxSize size)
 }
 
 void SongBox::update() {
-  PatchMaster *pm = PatchMaster_instance();
+  SeaMaster *pm = SeaMaster_instance();
   Cursor *cursor = pm->cursor;
   Song *curr_song = cursor->song();
 
@@ -39,7 +39,7 @@ void SongBox::update() {
 void SongBox::jump() {
   int selection = GetSelection();
   if (selection != wxNOT_FOUND) {
-    PatchMaster *pm = PatchMaster_instance();
+    SeaMaster *pm = SeaMaster_instance();
     pm->jump_to_patch_index(selection);
   }
 }
