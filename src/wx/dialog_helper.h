@@ -8,7 +8,7 @@
 
 class DialogHelper {
 protected:
-  wxWindow *make_ok_cancel_buttons(wxWindow *parent);
+  wxSizer *make_ok_cancel_buttons(wxDialog *parent);
 };
 
 #endif /* DIALOG_HELPER_H */

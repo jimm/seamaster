@@ -15,7 +15,7 @@ PatchEditor::PatchEditor(wxWindow *parent, Patch *patch_ptr)
   sizer->Add(make_name_panel(this), panel_flags);
   sizer->Add(make_start_panel(this), panel_flags);
   sizer->Add(make_stop_panel(this), panel_flags);
-  sizer->Add(make_ok_cancel_buttons(this));
+  sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
   SetSizerAndFit(sizer);
 }
 
@@ -91,4 +91,6 @@ void PatchEditor::save(wxCommandEvent& _) {
     patch->stop_message = nullptr;
   else
     patch->stop_message = sm->messages[index-1];
+
+  EndModal(wxID_OK);
 }

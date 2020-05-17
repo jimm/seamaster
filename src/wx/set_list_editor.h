@@ -1,6 +1,7 @@
 #ifndef SET_LIST_EDITOR_H
 #define SET_LIST_EDITOR_H
 
+#include <vector>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
@@ -16,6 +17,7 @@ enum {
   ID_SLE_RemoveButton
 };
 
+class Song;
 class SeaMaster;
 class SetList;
 class wxListCtrl;
@@ -27,6 +29,7 @@ public:
 private:
   SeaMaster *pm;
   SetList *set_list;
+  std::vector<Song *>songs_copy;
   wxTextCtrl *name_text;
   wxListBox *all_songs_wxlist;
   wxListBox *set_list_wxlist;
@@ -39,7 +42,8 @@ private:
   wxWindow *make_set_list_panel(wxWindow *parent);
   wxWindow *make_panel(wxWindow *parent, wxWindowID id,
                        const char * const title,
-                       SetList *slist, wxListBox **list_ptr);
+                       std::vector<Song *> &slist,
+                       wxListBox **list_ptr);
 
   void set_name(wxCommandEvent& event);
   void all_songs_selection(wxCommandEvent& event);
@@ -47,7 +51,7 @@ private:
   void add_song(wxCommandEvent& event);
   void remove_song(wxCommandEvent& event);
 
-  void update(wxListBox *list_box, SetList *set_list);
+  void update(wxListBox *list_box, std::vector<Song *> &song_list);
   void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();

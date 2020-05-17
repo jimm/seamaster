@@ -156,4 +156,6 @@ void TriggerEditor::save(wxCommandEvent& _) {
       }
     }
   }
+
+  EndModal(wxID_OK);
 }

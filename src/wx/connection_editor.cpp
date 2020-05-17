@@ -305,6 +305,8 @@ void ConnectionEditor::save(wxCommandEvent& _) {
   connection->pass_through_sysex = cb_sysex->IsChecked();
 
   // Don't need to update cc_maps because that's done on the fly
+
+  EndModal(wxID_OK);
 }
 
 long ConnectionEditor::selected_cc_map_index() {

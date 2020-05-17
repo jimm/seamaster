@@ -21,6 +21,8 @@ SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   : wxDialog(parent, wxID_ANY, "Set List Editor", wxDefaultPosition),
     pm(SeaMaster_instance()), set_list(slist)
 {     
+  songs_copy = set_list->songs;
+
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(make_name_panel(this), wxEXPAND);
 
@@ -49,7 +51,8 @@ wxWindow *SetListEditor::make_name_panel(wxWindow *parent) {
 }
 
 wxWindow *SetListEditor::make_all_songs_panel(wxWindow *parent) {
-  wxWindow *retval = make_panel(parent, ID_SLE_AllSongs, "All Songs", pm->all_songs,
+  wxWindow *retval = make_panel(parent, ID_SLE_AllSongs, "All Songs",
+                                pm->all_songs->songs,
                                 &all_songs_wxlist);
   return retval;
 }
@@ -72,13 +75,14 @@ wxWindow *SetListEditor::make_buttons(wxWindow *parent) {
 }
 
 wxWindow *SetListEditor::make_set_list_panel(wxWindow *parent) {
-  wxWindow *retval = make_panel(parent, ID_SLE_SetList, set_list->name.c_str(), set_list,
-                                &set_list_wxlist);
+  wxWindow *retval = make_panel(parent, ID_SLE_SetList, set_list->name.c_str(),
+                                songs_copy, &set_list_wxlist);
   return retval;
 }
 
 wxWindow *SetListEditor::make_panel(wxWindow *parent, wxWindowID id,
-                                    const char * const title, SetList *slist,
+                                    const char * const title,
+                                    std::vector<Song *>& song_list,
                                     wxListBox **list_ptr)
 {
   wxPanel *p = new wxPanel(parent, wxID_ANY);
@@ -89,7 +93,7 @@ wxWindow *SetListEditor::make_panel(wxWindow *parent, wxWindowID id,
   sizer->Add(new wxStaticText(p, wxID_ANY, title), wxSizerFlags().Align(wxALIGN_LEFT));
   sizer->Add(*list_ptr, wxSizerFlags(1).Expand().Border());
 
-  update(*list_ptr, slist);
+  update(*list_ptr, song_list);
 
   p->SetSizerAndFit(sizer);
   return p;
@@ -115,14 +119,14 @@ void SetListEditor::add_song(wxCommandEvent& event) {
 
   int set_list_index = set_list_wxlist->GetSelection();
   if (set_list_index == wxNOT_FOUND
-      || set_list_index == set_list->songs.size() - 1)
-    set_list->songs.push_back(song);
+      || set_list_index == songs_copy.size() - 1)
+    songs_copy.push_back(song);
   else {
-    vector<Song *>::iterator iter = set_list->songs.begin();
+    vector<Song *>::iterator iter = songs_copy.begin();
     iter += set_list_index + 1;
-    set_list->songs.insert(iter, song);
+    songs_copy.insert(iter, song);
   }
-  update(set_list_wxlist, set_list);
+  update(set_list_wxlist, songs_copy);
 }
 
 void SetListEditor::remove_song(wxCommandEvent& event) {
@@ -130,24 +134,26 @@ void SetListEditor::remove_song(wxCommandEvent& event) {
   if (set_list_index == wxNOT_FOUND)
     return;
 
-  vector<Song *>::iterator iter = set_list->songs.begin();
+  vector<Song *>::iterator iter = songs_copy.begin();
   iter += set_list_index;
-  set_list->songs.erase(iter);
+  songs_copy.erase(iter);
 
-  update(set_list_wxlist, set_list);
+  update(set_list_wxlist, songs_copy);
 }
 
-void SetListEditor::update(wxListBox *list_box, SetList *slist) {
+void SetListEditor::update(wxListBox *list_box, std::vector<Song *>&song_list) {
   list_box->Clear();
-  if (slist->songs.empty())
+  if (song_list.empty())
     return;
 
   wxArrayString names;
-  for (auto& song : slist->songs)
+  for (auto& song : song_list)
     names.Add(song->name.c_str());
   if (!names.empty())
       list_box->InsertItems(names, 0);
 }
 
 void SetListEditor::save(wxCommandEvent& _) {
+  set_list->songs = songs_copy;
+  EndModal(wxID_OK);
 }

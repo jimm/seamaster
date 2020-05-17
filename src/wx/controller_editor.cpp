@@ -154,4 +154,6 @@ void ControllerEditor::save(wxCommandEvent& _) {
     connection->cc_maps[orig_cc_num] = nullptr;
     connection->set_controller(controller);
   }
+
+  EndModal(wxID_OK);
 }

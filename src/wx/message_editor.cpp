@@ -100,4 +100,6 @@ void MessageEditor::save(wxCommandEvent& _) {
     strcpy(line_buf, p);
     message->messages.push_back(message_from_bytes(line_buf));
   }
+
+  EndModal(wxID_OK);
 }
