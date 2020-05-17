@@ -1,11 +1,9 @@
-#include <wx/persist/toplevel.h>
 #include "patch_editor.h"
-#include "events.h"
 #include "../seamaster.h"
 #include "../patch.h"
 
 wxBEGIN_EVENT_TABLE(PatchEditor, wxDialog)
-  EVT_BUTTON(ID_PE_DoneButton, PatchEditor::done)
+  EVT_BUTTON(wxID_OK, PatchEditor::save)
 wxEND_EVENT_TABLE()
 
 PatchEditor::PatchEditor(wxWindow *parent, Patch *patch_ptr)
@@ -17,12 +15,8 @@ PatchEditor::PatchEditor(wxWindow *parent, Patch *patch_ptr)
   sizer->Add(make_name_panel(this), panel_flags);
   sizer->Add(make_start_panel(this), panel_flags);
   sizer->Add(make_stop_panel(this), panel_flags);
-
-  sizer->Add(new wxButton(this, ID_PE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border());
-
+  sizer->Add(make_ok_cancel_buttons(this));
   SetSizerAndFit(sizer);
-  Show(true);
 }
 
 wxWindow *PatchEditor::make_name_panel(wxWindow *parent) {
@@ -80,8 +74,8 @@ wxWindow *PatchEditor::make_message_panel(
   return p;
 }
 
-void PatchEditor::done(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
+void PatchEditor::save(wxCommandEvent& _) {
+  SeaMaster *sm = SeaMaster_instance();
 
   // extract data from text edit widget
   patch->name = name_text->GetLineText(0);
@@ -90,15 +84,11 @@ void PatchEditor::done(wxCommandEvent& event) {
   if (index == wxNOT_FOUND || index == 0)
     patch->start_message = nullptr;
   else
-    patch->start_message = pm->messages[index-1];
+    patch->start_message = sm->messages[index-1];
 
   index = cb_stop_message->GetCurrentSelection();
   if (index == wxNOT_FOUND || index == 0)
     patch->stop_message = nullptr;
   else
-    patch->stop_message = pm->messages[index-1];
-
-  wxCommandEvent e(Frame_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
+    patch->stop_message = sm->messages[index-1];
 }

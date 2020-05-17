@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include "trigger_editor.h"
 #include "../seamaster.h"
 #include "../input.h"
@@ -8,7 +7,7 @@
 #define MESSAGE_TEXT_WIDTH 100
 
 wxBEGIN_EVENT_TABLE(TriggerEditor, wxDialog)
-  EVT_BUTTON(ID_TE_DoneButton, TriggerEditor::done)
+  EVT_BUTTON(wxID_OK, TriggerEditor::save)
 wxEND_EVENT_TABLE()
 
 TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
@@ -40,8 +39,7 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   sizer->Add(new wxStaticText(this, wxID_ANY, "Action"), label_flags);
   sizer->Add(make_action_dropdown(this), field_flags);
 
-  sizer->Add(new wxButton(this, ID_TE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL));
+  sizer->Add(make_ok_cancel_buttons(this));
 
   SetSizerAndFit(sizer);
   Show(true);
@@ -121,7 +119,7 @@ wxWindow *TriggerEditor::make_action_dropdown(wxWindow *parent) {
     wxDefaultSize, choices, wxCB_READONLY);
 }
 
-void TriggerEditor::done(wxCommandEvent& event) {
+void TriggerEditor::save(wxCommandEvent& _) {
   // If we have a key, prefer that over input + message
   int index = lc_key->GetCurrentSelection();
   if (index != wxNOT_FOUND && index > 0)
@@ -158,8 +156,4 @@ void TriggerEditor::done(wxCommandEvent& event) {
       }
     }
   }
-
-  wxCommandEvent e(Frame_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
 }

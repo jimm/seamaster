@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include "connection_editor.h"
 #include "controller_mappings.h"
 #include "controller_editor.h"
@@ -7,16 +6,13 @@
 #include "../connection.h"
 #include "../formatter.h"
 
-wxDEFINE_EVENT(Connection_Refresh, wxCommandEvent);
-
 wxBEGIN_EVENT_TABLE(ConnectionEditor, wxDialog)
   EVT_BUTTON(ID_CE_AddControllerMapping, ConnectionEditor::add_controller_mapping)
   EVT_BUTTON(ID_CE_DelControllerMapping, ConnectionEditor::del_controller_mapping)
-  EVT_BUTTON(ID_CE_DoneButton, ConnectionEditor::done)
+  EVT_BUTTON(wxID_OK, ConnectionEditor::save)
   EVT_LIST_ITEM_ACTIVATED(ID_CE_ControllerMappings, ConnectionEditor::edit_controller_mapping)
   EVT_LIST_ITEM_SELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
   EVT_LIST_ITEM_DESELECTED(ID_CE_ControllerMappings, ConnectionEditor::update_buttons)
-  EVT_COMMAND(wxID_ANY, Connection_Refresh, ConnectionEditor::update)
 wxEND_EVENT_TABLE()
 
 ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
@@ -33,9 +29,7 @@ ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   sizer->Add(make_xpose_panel(this), panel_flags);
   sizer->Add(make_sysex_panel(this), panel_flags);
   sizer->Add(make_cc_maps_panel(this), panel_flags);
-
-  sizer->Add(new wxButton(this, ID_CE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border());
+  sizer->Add(make_ok_cancel_buttons(this));
 
   SetSizerAndFit(sizer);
   update();
@@ -248,7 +242,8 @@ void ConnectionEditor::edit_controller_mapping(wxListEvent& event) {
 
 void ConnectionEditor::edit_controller_mapping(Controller *controller) {
   if (controller != nullptr)
-    new ControllerEditor(this, connection, controller);
+    if (ControllerEditor(this, connection, controller).ShowModal() == wxID_OK)
+      update();
 }
 
 void ConnectionEditor::update_buttons() {
@@ -292,7 +287,7 @@ void ConnectionEditor::update() {
   update_buttons();
 }
 
-void ConnectionEditor::done(wxCommandEvent& event) {
+void ConnectionEditor::save(wxCommandEvent& _) {
   connection->input = pm->inputs[cb_input->GetCurrentSelection()];
   int n = cb_input->GetCurrentSelection();
   connection->input_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
@@ -310,10 +305,6 @@ void ConnectionEditor::done(wxCommandEvent& event) {
   connection->pass_through_sysex = cb_sysex->IsChecked();
 
   // Don't need to update cc_maps because that's done on the fly
-
-  wxCommandEvent e(Frame_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
 }
 
 long ConnectionEditor::selected_cc_map_index() {

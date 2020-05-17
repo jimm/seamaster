@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include "set_list_editor.h"
 #include "../seamaster.h"
 #include "../set_list.h"
@@ -15,7 +14,7 @@ wxBEGIN_EVENT_TABLE(SetListEditor, wxDialog)
   EVT_BUTTON(ID_SLE_AddButton, SetListEditor::add_song)
   EVT_BUTTON(ID_SLE_RemoveButton, SetListEditor::remove_song)
 
-  EVT_BUTTON(ID_SLE_DoneButton, SetListEditor::done)
+  EVT_BUTTON(wxID_OK, SetListEditor::save)
 wxEND_EVENT_TABLE()
 
 SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
@@ -31,8 +30,7 @@ SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   list_sizer->Add(make_set_list_panel(this), wxEXPAND);
 
   sizer->Add(list_sizer);
-  sizer->Add(new wxButton(this, ID_SLE_DoneButton, "Done"),
-             wxSizerFlags().Right().Border());
+  sizer->Add(make_ok_cancel_buttons(this));
 
   SetSizerAndFit(sizer);
   Show(true);
@@ -151,8 +149,5 @@ void SetListEditor::update(wxListBox *list_box, SetList *slist) {
       list_box->InsertItems(names, 0);
 }
 
-void SetListEditor::done(wxCommandEvent& event) {
-  wxCommandEvent e(Frame_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
+void SetListEditor::save(wxCommandEvent& _) {
 }

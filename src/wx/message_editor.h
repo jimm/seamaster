@@ -6,18 +6,18 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
+#include "dialog_helper.h"
 
 enum {
   ID_ME_Name = 2000,
-  ID_ME_MessageText,
-  ID_ME_DoneButton
+  ID_ME_MessageText
 };
 
 class SeaMaster;
 class Message;
 class wxListCtrl;
 
-class MessageEditor : public wxDialog {
+class MessageEditor : public wxDialog, DialogHelper {
 public:
   MessageEditor(wxWindow *parent, Message *message);
 
@@ -31,7 +31,7 @@ private:
 
   wxString messages_to_text();
 
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();
 };

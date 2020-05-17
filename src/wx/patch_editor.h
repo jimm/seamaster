@@ -6,20 +6,20 @@
  #include <wx/wx.h>
 #endif
 #include "event.h"
+#include "dialog_helper.h"
 
 using namespace std;
 
 enum {
   ID_PE_Name = 6000,
   ID_PE_StartMessageDropdown,
-  ID_PE_StopMessageDropdown,
-  ID_PE_DoneButton
+  ID_PE_StopMessageDropdown
 };
 
 class Patch;
 class Message;
 
-class PatchEditor : public wxDialog {
+class PatchEditor : public wxDialog, DialogHelper {
 public:
   PatchEditor(wxWindow *parent, Patch *patch);
 
@@ -36,7 +36,7 @@ private:
                                const char * const title, Message *msg,
                                wxComboBox **cb_ptr);
 
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();
 };

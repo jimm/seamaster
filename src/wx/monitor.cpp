@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include <wx/listctrl.h>
 #include "monitor.h"
 #include "../seamaster.h"

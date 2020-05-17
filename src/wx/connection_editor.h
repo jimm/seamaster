@@ -6,6 +6,7 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
+#include "dialog_helper.h"
 
 using namespace std;
 
@@ -23,8 +24,7 @@ enum {
   ID_CE_PassThroughSysex,
   ID_CE_ControllerMappings,
   ID_CE_AddControllerMapping,
-  ID_CE_DelControllerMapping,
-  ID_CE_DoneButton
+  ID_CE_DelControllerMapping
 };
 
 class SeaMaster;
@@ -35,7 +35,7 @@ class ControllerMappings;
 class wxListCtrl;
 class wxListEvent;
 
-class ConnectionEditor : public wxDialog {
+class ConnectionEditor : public wxDialog, DialogHelper {
 public:
   ConnectionEditor(wxWindow *parent, Connection *connection);
 
@@ -91,7 +91,7 @@ private:
 
   void add_controller_mapping(wxCommandEvent& event);
   void del_controller_mapping(wxCommandEvent& event);
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   long selected_cc_map_index();
 

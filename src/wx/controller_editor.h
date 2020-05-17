@@ -6,6 +6,7 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
+#include "dialog_helper.h"
 
 using namespace std;
 
@@ -18,8 +19,7 @@ enum {
   ID_CMAP_MaxOut,
   ID_CMAP_PassThrough0,
   ID_CMAP_PassThrough127,
-  ID_CMAP_Filtered,
-  ID_CMAP_DoneButton
+  ID_CMAP_Filtered
 };
 
 class SeaMaster;
@@ -29,7 +29,7 @@ class Controller;
 class wxListCtrl;
 class wxListEvent;
 
-class ControllerEditor : public wxDialog {
+class ControllerEditor : public wxDialog, DialogHelper {
 public:
   ControllerEditor(wxWindow *parent, Connection *connection, Controller *controller);
 
@@ -53,7 +53,7 @@ private:
   wxComboBox *make_cc_number_dropdown(wxWindow *parent, wxWindowID id,
                                       int curr_val, bool filter_out_existing);
 
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();
 };

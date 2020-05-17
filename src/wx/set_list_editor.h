@@ -6,12 +6,12 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
+#include "dialog_helper.h"
 
 enum {
   ID_SLE_Name = 1000,
   ID_SLE_AllSongs,
   ID_SLE_SetList,
-  ID_SLE_DoneButton,
   ID_SLE_AddButton,
   ID_SLE_RemoveButton
 };
@@ -20,7 +20,7 @@ class SeaMaster;
 class SetList;
 class wxListCtrl;
 
-class SetListEditor : public wxDialog {
+class SetListEditor : public wxDialog, DialogHelper {
 public:
   SetListEditor(wxWindow *parent, SetList *set_list);
 
@@ -48,7 +48,7 @@ private:
   void remove_song(wxCommandEvent& event);
 
   void update(wxListBox *list_box, SetList *set_list);
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();
 };

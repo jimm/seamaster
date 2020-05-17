@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include <wx/gbsizer.h>
 #include "message_editor.h"
 #include "../seamaster.h"
@@ -9,7 +8,7 @@
 #define HEIGHT 300
 
 wxBEGIN_EVENT_TABLE(MessageEditor, wxDialog)
-  EVT_BUTTON(ID_ME_DoneButton, MessageEditor::done)
+  EVT_BUTTON(wxID_OK, MessageEditor::save)
 wxEND_EVENT_TABLE()
 
 MessageEditor::MessageEditor(wxWindow *parent, Message *m)
@@ -26,11 +25,9 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
   sizer->Add(message_text,
              wxSizerFlags().Expand().Border(wxTOP|wxLEFT|wxRIGHT));
 
-  sizer->Add(new wxButton(this, ID_ME_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL));
+  sizer->Add(make_ok_cancel_buttons(this));
 
   SetSizerAndFit(sizer);
-  Show(true);
 }
 
 wxWindow *MessageEditor::make_name_panel(wxWindow *parent) {
@@ -80,7 +77,7 @@ wxString MessageEditor::messages_to_text() {
   return text;
 }
 
-void MessageEditor::done(wxCommandEvent& event) {
+void MessageEditor::save(wxCommandEvent& _) {
   // extract data from text edit widget
   message->name = name_text->GetLineText(0);
   wxString text = message_text->GetValue();
@@ -103,8 +100,4 @@ void MessageEditor::done(wxCommandEvent& event) {
     strcpy(line_buf, p);
     message->messages.push_back(message_from_bytes(line_buf));
   }
-
-  wxCommandEvent e(Frame_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
 }

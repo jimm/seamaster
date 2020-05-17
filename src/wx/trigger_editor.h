@@ -6,12 +6,12 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
+#include "dialog_helper.h"
 
 enum {
   ID_TE_InputDropdown = 3000,
   ID_TE_MessageText,
-  ID_TE_ActionDropdown,
-  ID_TE_DoneButton
+  ID_TE_ActionDropdown
 };
 
 class SeaMaster;
@@ -19,7 +19,7 @@ class Trigger;
 class Input;
 class wxListCtrl;
 
-class TriggerEditor : public wxDialog {
+class TriggerEditor : public wxDialog, DialogHelper {
 public:
   TriggerEditor(wxWindow *parent, Trigger *trigger);
 
@@ -35,7 +35,7 @@ private:
   wxWindow *make_input_dropdown(wxWindow *parent);
   wxWindow *make_action_dropdown(wxWindow *parent);
 
-  void done(wxCommandEvent& event);
+  void save(wxCommandEvent& _);
 
   wxDECLARE_EVENT_TABLE();
 };

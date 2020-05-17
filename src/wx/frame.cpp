@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include <wx/defs.h>
 #include <wx/filename.h>
 #include <wx/listctrl.h>
@@ -32,7 +31,6 @@
 #define SHORT_LIST_HEIGHT 200
 #define NOTES_WIDTH 200
 
-wxDEFINE_EVENT(Frame_Refresh, wxCommandEvent);
 wxDEFINE_EVENT(Frame_MenuUpdate, wxCommandEvent);
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame)
@@ -78,7 +76,6 @@ wxBEGIN_EVENT_TABLE(Frame, wxFrame)
 
   EVT_TEXT(ID_SongNotes, Frame::set_song_notes)
 
-  EVT_COMMAND(wxID_ANY, Frame_Refresh, Frame::update)
   EVT_COMMAND(wxID_ANY, Frame_MenuUpdate, Frame::update_menu_items)
 wxEND_EVENT_TABLE()
 
@@ -440,7 +437,8 @@ void Frame::edit_message(wxCommandEvent& event) {
 
 void Frame::edit_message(Message *message) {
   if (message != nullptr)
-    new MessageEditor(this, message);
+    if (MessageEditor(this, message).ShowModal() == wxID_OK)
+      update();
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
@@ -449,7 +447,8 @@ void Frame::edit_trigger(wxListEvent& event) {
 
 void Frame::edit_trigger(Trigger *trigger) {
   if (trigger != nullptr)
-    new TriggerEditor(this, trigger);
+    if (TriggerEditor(this, trigger).ShowModal() == wxID_OK)
+      update();
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
@@ -467,7 +466,8 @@ void Frame::edit_set_list(SetList *set_list) {
                 "Set List Editor", wxOK | wxICON_INFORMATION);
     return;
   }
-  new SetListEditor(this, set_list);
+  if (SetListEditor(this, set_list).ShowModal() == wxID_OK)
+    update();
 }
 
 void Frame::edit_song(wxCommandEvent& event) {
@@ -497,7 +497,8 @@ void Frame::edit_patch(wxCommandEvent& event) {
 
 void Frame::edit_patch(Patch *patch) {
   if (patch != nullptr)
-    new PatchEditor(this, patch);
+    if (PatchEditor(this, patch).ShowModal() == wxID_OK)
+      update();
 }
 
 void Frame::edit_connection(wxListEvent& event) {
@@ -506,7 +507,8 @@ void Frame::edit_connection(wxListEvent& event) {
 
 void Frame::edit_connection(Connection *conn) {
   if (conn != nullptr)
-    new ConnectionEditor(this, conn);
+    if (ConnectionEditor(this, conn).ShowModal() == wxID_OK)
+      update();
 }
 
 void Frame::set_song_notes(wxCommandEvent& event) {

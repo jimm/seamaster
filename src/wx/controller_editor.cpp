@@ -1,4 +1,3 @@
-#include <wx/persist/toplevel.h>
 #include <wx/gbsizer.h>
 #include "controller_editor.h"
 #include "../connection.h"
@@ -9,7 +8,7 @@
 #define SPAN(rowspan, colspan) wxGBSpan(rowspan, colspan)
 
 wxBEGIN_EVENT_TABLE(ControllerEditor, wxDialog)
-  EVT_BUTTON(ID_CMAP_DoneButton, ControllerEditor::done)
+  EVT_BUTTON(wxID_OK, ControllerEditor::save)
 wxEND_EVENT_TABLE()
 
 ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn,
@@ -24,10 +23,7 @@ ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn,
   sizer->Add(make_numbers_panel(this), panel_sizer);
   sizer->Add(make_val_mapping_panel(this), panel_sizer);
   sizer->Add(make_filtered_panel(this), panel_sizer);
-
-  sizer->Add(new wxButton(this, ID_CMAP_DoneButton, "Done"),
-             wxSizerFlags().Right().Border(wxALL));
-
+  sizer->Add(make_ok_cancel_buttons(this));
   SetSizerAndFit(sizer);
   Show(true);
 }
@@ -144,7 +140,7 @@ wxWindow *ControllerEditor::make_filtered_panel(wxWindow *parent) {
   return p;
 }
 
-void ControllerEditor::done(wxCommandEvent& event) {
+void ControllerEditor::save(wxCommandEvent& _) {
   controller->cc_num = int_from_chars(cb_cc_number->GetValue());
   controller->translated_cc_num = int_from_chars(cb_xlated_number->GetValue());
   controller->filtered = cb_filtered->IsChecked();
@@ -158,8 +154,4 @@ void ControllerEditor::done(wxCommandEvent& event) {
     connection->cc_maps[orig_cc_num] = nullptr;
     connection->set_controller(controller);
   }
-
-  wxCommandEvent e(Connection_Refresh, GetId());
-  wxPostEvent(GetParent(), e);
-  Close();
 }
