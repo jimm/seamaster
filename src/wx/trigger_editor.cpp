@@ -39,7 +39,7 @@ TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   sizer->Add(new wxStaticText(this, wxID_ANY, "Action"), label_flags);
   sizer->Add(make_action_dropdown(this), field_flags);
 
-  sizer->Add(make_ok_cancel_buttons(this));
+  sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
 
   SetSizerAndFit(sizer);
   Show(true);

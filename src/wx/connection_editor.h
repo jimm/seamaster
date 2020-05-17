@@ -6,7 +6,6 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
-#include "dialog_helper.h"
 
 using namespace std;
 
@@ -35,7 +34,7 @@ class ControllerMappings;
 class wxListCtrl;
 class wxListEvent;
 
-class ConnectionEditor : public wxDialog, DialogHelper {
+class ConnectionEditor : public wxDialog {
 public:
   ConnectionEditor(wxWindow *parent, Connection *connection);
 

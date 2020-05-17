@@ -6,7 +6,6 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
-#include "dialog_helper.h"
 
 enum {
   ID_ME_Name = 2000,
@@ -17,7 +16,7 @@ class SeaMaster;
 class Message;
 class wxListCtrl;
 
-class MessageEditor : public wxDialog, DialogHelper {
+class MessageEditor : public wxDialog {
 public:
   MessageEditor(wxWindow *parent, Message *message);
 

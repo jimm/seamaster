@@ -23,7 +23,7 @@ ControllerEditor::ControllerEditor(wxWindow *parent, Connection *conn,
   sizer->Add(make_numbers_panel(this), panel_sizer);
   sizer->Add(make_val_mapping_panel(this), panel_sizer);
   sizer->Add(make_filtered_panel(this), panel_sizer);
-  sizer->Add(make_ok_cancel_buttons(this));
+  sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
   SetSizerAndFit(sizer);
   Show(true);
 }

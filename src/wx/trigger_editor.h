@@ -6,7 +6,6 @@
  #include <wx/wx.h>
 #endif
 #include "events.h"
-#include "dialog_helper.h"
 
 enum {
   ID_TE_InputDropdown = 3000,
@@ -19,7 +18,7 @@ class Trigger;
 class Input;
 class wxListCtrl;
 
-class TriggerEditor : public wxDialog, DialogHelper {
+class TriggerEditor : public wxDialog {
 public:
   TriggerEditor(wxWindow *parent, Trigger *trigger);
 

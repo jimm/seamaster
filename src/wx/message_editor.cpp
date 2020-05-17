@@ -25,7 +25,7 @@ MessageEditor::MessageEditor(wxWindow *parent, Message *m)
   sizer->Add(message_text,
              wxSizerFlags().Expand().Border(wxTOP|wxLEFT|wxRIGHT));
 
-  sizer->Add(make_ok_cancel_buttons(this));
+  sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
 
   SetSizerAndFit(sizer);
 }

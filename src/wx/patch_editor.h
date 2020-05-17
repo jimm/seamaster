@@ -6,7 +6,6 @@
  #include <wx/wx.h>
 #endif
 #include "event.h"
-#include "dialog_helper.h"
 
 using namespace std;
 
@@ -19,7 +18,7 @@ enum {
 class Patch;
 class Message;
 
-class PatchEditor : public wxDialog, DialogHelper {
+class PatchEditor : public wxDialog {
 public:
   PatchEditor(wxWindow *parent, Patch *patch);
 

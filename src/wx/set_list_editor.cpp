@@ -32,7 +32,7 @@ SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   list_sizer->Add(make_set_list_panel(this), wxEXPAND);
 
   sizer->Add(list_sizer);
-  sizer->Add(make_ok_cancel_buttons(this));
+  sizer->Add(CreateStdDialogButtonSizer(wxOK | wxCANCEL));
 
   SetSizerAndFit(sizer);
   Show(true);
