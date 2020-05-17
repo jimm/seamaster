@@ -87,13 +87,13 @@ void PatchEditor::done(wxCommandEvent& event) {
   patch->name = name_text->GetLineText(0);
 
   int index = cb_start_message->GetCurrentSelection();
-  if (index == wxNOT_FOUND || index != 0)
+  if (index == wxNOT_FOUND || index == 0)
     patch->start_message = nullptr;
   else
     patch->start_message = pm->messages[index-1];
 
   index = cb_stop_message->GetCurrentSelection();
-  if (index == wxNOT_FOUND || index != 0)
+  if (index == wxNOT_FOUND || index == 0)
     patch->stop_message = nullptr;
   else
     patch->stop_message = pm->messages[index-1];
