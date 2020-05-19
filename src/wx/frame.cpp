@@ -697,7 +697,11 @@ void Frame::OnOpen(wxCommandEvent &_event) {
   update_menu_items();
 }
 
-void Frame::OnSave(wxCommandEvent &_event) {
+void Frame::OnSave(wxCommandEvent &event) {
+  if (file_path.empty()) {
+    OnSaveAs(event);
+    return;
+  }
   save();
   update_menu_items();
 }
@@ -803,8 +807,7 @@ void Frame::update_menu_items() {
   Editor e(pm);
 
   // file menu
-  menu_bar->FindItem(wxID_SAVE, nullptr)
-    ->Enable(!file_path.empty());
+  menu_bar->FindItem(wxID_SAVEAS, nullptr)->Enable(!file_path.empty());
 
   // edit menu
   menu_bar->FindItem(ID_DestroyMessage, nullptr)
@@ -832,4 +835,10 @@ void Frame::update_menu_items() {
   menu_bar->FindItem(ID_GoPrevSong, nullptr)->Enable(cursor->has_prev_song());
   menu_bar->FindItem(ID_GoNextPatch, nullptr)->Enable(cursor->has_next_patch());
   menu_bar->FindItem(ID_GoPrevPatch, nullptr)->Enable(cursor->has_prev_patch());
+
+  SetList *set_list = cursor->set_list();
+  bool has_songs = set_list != nullptr && !set_list->songs.empty();
+  menu_bar->FindItem(ID_FindSong, nullptr)->Enable(has_songs);
+
+  menu_bar->FindItem(ID_FindSetList, nullptr)->Enable(pm->set_lists.size() > 1);
 }
