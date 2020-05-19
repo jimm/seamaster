@@ -14,11 +14,11 @@ class Instrument;
 
 class InstrumentDialog : public wxDialog {
 public:
-  InstrumentDialog(wxWindow *parent, SeaMaster *pm);
+  InstrumentDialog(wxWindow *parent, SeaMaster *sm);
   void run();
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
 
   void add_instrument(wxListCtrl *list_box, Instrument *inst, int i);
 };

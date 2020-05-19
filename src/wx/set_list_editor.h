@@ -26,7 +26,7 @@ public:
   SetListEditor(wxWindow *parent, SetList *set_list);
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
   SetList *set_list;
   std::vector<Song *>songs_copy;
   wxTextCtrl *name_text;

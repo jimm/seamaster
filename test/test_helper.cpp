@@ -46,14 +46,14 @@ SeaMaster *load_test_data() {
   _initialize_and_load_database();
 
   Storage storage(TEST_DB_PATH);
-  SeaMaster *pm = storage.load(true);
+  SeaMaster *sm = storage.load(true);
   if (storage.has_error()) {
     fprintf(stderr, "load_test_data storage error: %s\n",
             storage.error().c_str());
     exit(1);
   }
-  pm->testing = true;
-  return pm;
+  sm->testing = true;
+  return sm;
 }
 
 Connection *create_conn() {

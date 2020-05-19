@@ -293,48 +293,48 @@ void Frame::clear_user_message_after(int secs) {
 // ================ movement ================
 
 void Frame::next_song() {
-  SeaMaster *pm = SeaMaster_instance();
-  pm->next_song();
+  SeaMaster *sm = SeaMaster_instance();
+  sm->next_song();
   update();
 }
 
 void Frame::prev_song() {
-  SeaMaster *pm = SeaMaster_instance();
-  pm->prev_song();
+  SeaMaster *sm = SeaMaster_instance();
+  sm->prev_song();
   update();
 }
 
 void Frame::next_patch() {
-  SeaMaster *pm = SeaMaster_instance();
-  pm->next_patch();
+  SeaMaster *sm = SeaMaster_instance();
+  sm->next_patch();
   update();
 }
 
 void Frame::prev_patch() {
-  SeaMaster *pm = SeaMaster_instance();
-  pm->prev_patch();
+  SeaMaster *sm = SeaMaster_instance();
+  sm->prev_patch();
   update();
 }
 
 void Frame::find_set_list() {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
   wxTextEntryDialog prompt(this, "Find Set List", "Find Set List");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      pm->goto_set_list(str.ToStdString());
+      sm->goto_set_list(str.ToStdString());
       update();
     }
   }
 }
 
 void Frame::find_song() {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
   wxTextEntryDialog prompt(this, "Find Song", "Find Song");
   if (prompt.ShowModal() == wxID_OK) {
     wxString str = prompt.GetValue();
     if (!str.IsEmpty()) {
-      pm->goto_song(str.ToStdString());
+      sm->goto_song(str.ToStdString());
       update();
     }
   }
@@ -364,10 +364,10 @@ void Frame::jump_to_patch(wxCommandEvent &event) {
 // ================ messages ================
 
 void Frame::send_message(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
   int message_num = lc_messages->GetSelection();
-  Message *message = pm->messages[message_num];
-  for (auto& output : pm->outputs)
+  Message *message = sm->messages[message_num];
+  for (auto& output : sm->outputs)
     message->send(*output);
 }
 
@@ -382,8 +382,8 @@ void Frame::create_message(wxCommandEvent& event) {
 
 void Frame::create_trigger(wxCommandEvent& event) {
   Editor e;
-  SeaMaster *pm = SeaMaster_instance();
-  Trigger *trigger = e.create_trigger(pm->inputs.front());
+  SeaMaster *sm = SeaMaster_instance();
+  Trigger *trigger = e.create_trigger(sm->inputs.front());
   update();
   edit_trigger(trigger);
 }
@@ -404,20 +404,20 @@ void Frame::create_patch(wxCommandEvent& event) {
 
 void Frame::create_connection(wxCommandEvent& event) {
   Editor e;
-  SeaMaster *pm = SeaMaster_instance();
-  if (pm->inputs.empty() || pm->outputs.empty()) {
+  SeaMaster *sm = SeaMaster_instance();
+  if (sm->inputs.empty() || sm->outputs.empty()) {
     wxMessageBox("There must be at least one input and one\noutput to create a connection",
                 "New Connection", wxOK | wxICON_INFORMATION);
     return;
   }
-  Patch *patch = pm->cursor->patch();
+  Patch *patch = sm->cursor->patch();
   if (patch == nullptr) {
     wxMessageBox("Please select a patch", "New Connection",
                  wxOK | wxICON_INFORMATION);
     return;
   }
 
-  Connection *conn = e.create_connection(patch, pm->inputs.front(), pm->outputs.front());
+  Connection *conn = e.create_connection(patch, sm->inputs.front(), sm->outputs.front());
   update();
   edit_connection(conn);
 }
@@ -452,16 +452,16 @@ void Frame::edit_trigger(Trigger *trigger) {
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  edit_set_list(pm->cursor->set_list());
+  SeaMaster *sm = SeaMaster_instance();
+  edit_set_list(sm->cursor->set_list());
 }
 
 void Frame::edit_set_list(SetList *set_list) {
   if (set_list == nullptr)
     return;
 
-  SeaMaster *pm = SeaMaster_instance();
-  if (set_list == pm->all_songs) {
+  SeaMaster *sm = SeaMaster_instance();
+  if (set_list == sm->all_songs) {
     wxMessageBox("Can't edit the master list of all songs",
                 "Set List Editor", wxOK | wxICON_INFORMATION);
     return;
@@ -471,8 +471,8 @@ void Frame::edit_set_list(SetList *set_list) {
 }
 
 void Frame::edit_song(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  edit_song(pm->cursor->song());
+  SeaMaster *sm = SeaMaster_instance();
+  edit_song(sm->cursor->song());
 }
 
 void Frame::edit_song(Song *song) {
@@ -491,8 +491,8 @@ void Frame::edit_song(Song *song) {
 }
 
 void Frame::edit_patch(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  edit_patch(pm->cursor->patch());
+  SeaMaster *sm = SeaMaster_instance();
+  edit_patch(sm->cursor->patch());
 }
 
 void Frame::edit_patch(Patch *patch) {
@@ -520,15 +520,15 @@ void Frame::set_song_notes(wxCommandEvent& event) {
 }
 
 void Frame::destroy_message(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  if (pm->messages.empty())
+  SeaMaster *sm = SeaMaster_instance();
+  if (sm->messages.empty())
     return;
 
   Editor e;
   int message_num = lc_messages->GetSelection();
   if (message_num == wxNOT_FOUND)
     return;
-  Message *message = pm->messages[message_num];
+  Message *message = sm->messages[message_num];
   e.destroy_message(message);
   update();
 }
@@ -540,27 +540,27 @@ void Frame::destroy_trigger(wxCommandEvent& event) {
 
 void Frame::destroy_song(wxCommandEvent& event) {
   Editor e;
-  SeaMaster *pm = SeaMaster_instance();
-  Song *song = pm->cursor->song();
+  SeaMaster *sm = SeaMaster_instance();
+  Song *song = sm->cursor->song();
   if (song != nullptr)
     e.destroy_song(song);
   update();
 }
 
 void Frame::destroy_patch(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  Patch *patch = pm->cursor->patch();
+  SeaMaster *sm = SeaMaster_instance();
+  Patch *patch = sm->cursor->patch();
   if (patch == nullptr)
     return;
 
   Editor e;
-  e.destroy_patch(pm->cursor->song(), patch);
+  e.destroy_patch(sm->cursor->song(), patch);
   update();
 }
 
 void Frame::destroy_connection(wxCommandEvent& event) {
-  SeaMaster *pm = SeaMaster_instance();
-  Patch *patch = pm->cursor->patch();
+  SeaMaster *sm = SeaMaster_instance();
+  Patch *patch = sm->cursor->patch();
   if (patch == nullptr)
     return;
 
@@ -575,9 +575,9 @@ void Frame::destroy_connection(wxCommandEvent& event) {
 
 void Frame::destroy_set_list(wxCommandEvent& event) {
   Editor e;
-  SeaMaster *pm = SeaMaster_instance();
-  SetList *set_list = pm->cursor->set_list();
-  if (set_list != nullptr && set_list != pm->all_songs)
+  SeaMaster *sm = SeaMaster_instance();
+  SetList *set_list = sm->cursor->set_list();
+  if (set_list != nullptr && set_list != sm->all_songs)
     e.destroy_set_list(set_list);
   update();
 }
@@ -629,16 +629,16 @@ int Frame::handle_global_key_event(wxKeyEvent &event) {
 // ================ MIDI panic ================
 
 void Frame::regular_panic(wxCommandEvent &_event) {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
   show_user_message("Sending panic...");
-  pm->panic(false);
+  sm->panic(false);
   show_user_message("Panic sent", 5);
 }
 
 void Frame::super_panic(wxCommandEvent &_event) {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
   show_user_message("Sending \"super panic\": all notes off, all channels...");
-  pm->panic(true);
+  sm->panic(true);
   show_user_message("Super panic sent (all notes off, all channels)", 5);
 }
 
@@ -665,21 +665,21 @@ void Frame::OnAbout(wxCommandEvent &_event) {
 }
 
 void Frame::OnNew(wxCommandEvent &_event) {
-  SeaMaster *old_pm = SeaMaster_instance();
-  bool testing = old_pm != nullptr && old_pm->testing;
+  SeaMaster *old_sm = SeaMaster_instance();
+  bool testing = old_sm != nullptr && old_sm->testing;
 
-  SeaMaster *pm = new SeaMaster();
-  pm->testing = testing;
-  pm->initialize();
+  SeaMaster *sm = new SeaMaster();
+  sm->testing = testing;
+  sm->initialize();
 
-  if (old_pm != nullptr) {
-    old_pm->stop();
-    delete old_pm;
+  if (old_sm != nullptr) {
+    old_sm->stop();
+    delete old_sm;
   }
 
   show_user_message("Created new project", 15);
   file_path = "";
-  pm->start();                  // initializes cursor
+  sm->start();                  // initializes cursor
   update();                     // must come after start
 }
 
@@ -733,9 +733,9 @@ void Frame::OnMonitor(wxCommandEvent &event) {
 // ================ helpers ================
 
 void Frame::initialize() {
-  SeaMaster *pm = new SeaMaster();
-  pm->initialize();
-  pm->start();
+  SeaMaster *sm = new SeaMaster();
+  sm->initialize();
+  sm->start();
   update();
 }
 
@@ -746,10 +746,10 @@ void Frame::load(wxString path) {
     return;
   }
 
-  SeaMaster *old_pm = SeaMaster_instance();
-  bool testing = old_pm != nullptr && old_pm->testing;
+  SeaMaster *old_sm = SeaMaster_instance();
+  bool testing = old_sm != nullptr && old_sm->testing;
   Storage storage(path);
-  SeaMaster *pm = storage.load(testing);
+  SeaMaster *sm = storage.load(testing);
   if (storage.has_error()) {
     wxLogError("Cannot open file '%s': %s.", path, storage.error());
     return;
@@ -758,11 +758,11 @@ void Frame::load(wxString path) {
   show_user_message(string(wxString::Format("Loaded %s", path).c_str()), 15);
   file_path = path;
 
-  if (old_pm != nullptr) {
-    old_pm->stop();
-    delete old_pm;
+  if (old_sm != nullptr) {
+    old_sm->stop();
+    delete old_sm;
   }
-  pm->start();                  // initializes cursor
+  sm->start();                  // initializes cursor
   update();                     // must come after start
 }
 
@@ -790,8 +790,8 @@ void Frame::update_lists() {
 }
 
 void Frame::update_song_notes() {
-  SeaMaster *pm = SeaMaster_instance();
-  Cursor *cursor = pm->cursor;
+  SeaMaster *sm = SeaMaster_instance();
+  Cursor *cursor = sm->cursor;
 
   Song *song = cursor->song();
   updating_notes = true;
@@ -802,16 +802,16 @@ void Frame::update_song_notes() {
 }
 
 void Frame::update_menu_items() {
-  SeaMaster *pm = SeaMaster_instance();
-  Cursor *cursor = pm->cursor;
-  Editor e(pm);
+  SeaMaster *sm = SeaMaster_instance();
+  Cursor *cursor = sm->cursor;
+  Editor e(sm);
 
   // file menu
   menu_bar->FindItem(wxID_SAVEAS, nullptr)->Enable(!file_path.empty());
 
   // edit menu
   menu_bar->FindItem(ID_DestroyMessage, nullptr)
-    ->Enable(!pm->messages.empty() && lc_messages->GetSelection() != wxNOT_FOUND);
+    ->Enable(!sm->messages.empty() && lc_messages->GetSelection() != wxNOT_FOUND);
 
   menu_bar->FindItem(ID_DestroyTrigger, nullptr)
     ->Enable(lc_triggers->selected() != nullptr);
@@ -840,5 +840,5 @@ void Frame::update_menu_items() {
   bool has_songs = set_list != nullptr && !set_list->songs.empty();
   menu_bar->FindItem(ID_FindSong, nullptr)->Enable(has_songs);
 
-  menu_bar->FindItem(ID_FindSetList, nullptr)->Enable(pm->set_lists.size() > 1);
+  menu_bar->FindItem(ID_FindSetList, nullptr)->Enable(sm->set_lists.size() > 1);
 }

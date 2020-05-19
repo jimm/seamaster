@@ -30,7 +30,7 @@ Trigger *TriggerList::selected() {
 }
 
 void TriggerList::update() {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
 
   ClearAll();
   set_headers();

@@ -75,8 +75,8 @@ int App::FilterEvent(wxEvent &event) {
 }
 
 int App::OnExit() {
-  SeaMaster *pm = SeaMaster_instance();
-  if (pm) pm->stop();
+  SeaMaster *sm = SeaMaster_instance();
+  if (sm) sm->stop();
   close_portmidi();
   return wxApp::OnExit();
 }

@@ -30,8 +30,8 @@ Connection *PatchConnections::selected() {
 }
 
 void PatchConnections::update() {
-  SeaMaster *pm = SeaMaster_instance();
-  Cursor *cursor = pm->cursor;
+  SeaMaster *sm = SeaMaster_instance();
+  Cursor *cursor = sm->cursor;
   Patch *patch = cursor->patch();
 
   ClearAll();

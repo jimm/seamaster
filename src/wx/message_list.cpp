@@ -8,11 +8,11 @@ MessageList::MessageList(wxWindow *parent, wxWindowID id, wxSize size)
 }
 
 void MessageList::update() {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
 
   Clear();
   wxArrayString names;
-  for (auto& message : pm->messages)
+  for (auto& message : sm->messages)
     names.Add(message->name.c_str());
   if (!names.empty())
     InsertItems(names, 0);

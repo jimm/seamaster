@@ -9,8 +9,8 @@ SetListBox::SetListBox(wxWindow *parent, wxWindowID id, wxSize size)
 }
 
 void SetListBox::update() {
-  SeaMaster *pm = SeaMaster_instance();
-  Cursor *cursor = pm->cursor;
+  SeaMaster *sm = SeaMaster_instance();
+  Cursor *cursor = sm->cursor;
   SetList *curr_set_list = cursor->set_list();
 
   Clear();
@@ -39,7 +39,7 @@ void SetListBox::update() {
 void SetListBox::jump() {
   int selection = GetSelection();
   if (selection != wxNOT_FOUND) {
-    SeaMaster *pm = SeaMaster_instance();
-    pm->jump_to_song_index(selection);
+    SeaMaster *sm = SeaMaster_instance();
+    sm->jump_to_song_index(selection);
   }
 }

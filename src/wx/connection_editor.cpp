@@ -17,7 +17,7 @@ wxEND_EVENT_TABLE()
 
 ConnectionEditor::ConnectionEditor(wxWindow *parent, Connection *c)
   : wxDialog(parent, wxID_ANY, "Connection Editor", wxDefaultPosition, wxSize(480, 500)),
-    pm(SeaMaster_instance()), connection(c)
+    sm(SeaMaster_instance()), connection(c)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -40,7 +40,7 @@ wxWindow *ConnectionEditor::make_input_panel(wxWindow *parent) {
   return make_instrument_panel(
     parent, ID_CE_InputDropdown, ID_CE_InputChannel,
     "Input", &cb_input, &cb_input_chan,
-    reinterpret_cast<vector<Instrument *> &>(pm->inputs),
+    reinterpret_cast<vector<Instrument *> &>(sm->inputs),
     connection->input, connection->input_chan);
 }
 
@@ -48,7 +48,7 @@ wxWindow *ConnectionEditor::make_output_panel(wxWindow *parent) {
   return make_instrument_panel(
     parent, ID_CE_OutputDropdown, ID_CE_OutputChannel,
     "Output", &cb_output, &cb_output_chan,
-    reinterpret_cast<vector<Instrument *> &>(pm->outputs),
+    reinterpret_cast<vector<Instrument *> &>(sm->outputs),
     connection->output, connection->output_chan);
 }
 
@@ -288,11 +288,11 @@ void ConnectionEditor::update() {
 }
 
 void ConnectionEditor::save(wxCommandEvent& _) {
-  connection->input = pm->inputs[cb_input->GetCurrentSelection()];
+  connection->input = sm->inputs[cb_input->GetCurrentSelection()];
   int n = cb_input->GetCurrentSelection();
   connection->input_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
 
-  connection->output = pm->outputs[cb_output->GetCurrentSelection()];
+  connection->output = sm->outputs[cb_output->GetCurrentSelection()];
   n = cb_output->GetCurrentSelection();
   connection->output_chan = (n == 0 ? CONNECTION_ALL_CHANNELS : n - 1);
 

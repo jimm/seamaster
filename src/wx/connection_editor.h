@@ -42,7 +42,7 @@ public:
   void update();
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
   Connection *connection;
   wxComboBox *cb_input;
   wxComboBox *cb_input_chan;

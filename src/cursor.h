@@ -8,12 +8,12 @@
 
 class Cursor {
 public:
-  SeaMaster *pm;
+  SeaMaster *sm;
   int set_list_index;
   int song_index;
   int patch_index;
 
-  Cursor(SeaMaster *pm);
+  Cursor(SeaMaster *sm);
   ~Cursor();
 
   void clear();

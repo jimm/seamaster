@@ -8,8 +8,8 @@
  * songs and patches, and how to find them given name regexes.
  */
 
-Cursor::Cursor(SeaMaster *pmaster)
-  : pm(pmaster)
+Cursor::Cursor(SeaMaster *sea_master)
+  : sm(sea_master)
 {
   clear();
 }
@@ -42,7 +42,7 @@ void Cursor::init() {
 
 SetList *Cursor::set_list() {
   if (set_list_index != UNDEFINED)
-    return pm->set_lists[set_list_index];
+    return sm->set_lists[set_list_index];
   else
     return nullptr;
 }
@@ -130,7 +130,7 @@ bool Cursor::has_prev_patch_in_song() {
 }
 
 void Cursor::jump_to_set_list_index(int i) {
-  if (i < 0 || i >= pm->set_lists.size())
+  if (i < 0 || i >= sm->set_lists.size())
     return;
 
   set_list_index = i;
@@ -178,7 +178,7 @@ void Cursor::goto_song(string name_regex) {
   }
 
   i = 0;
-  for (auto &song : pm->all_songs->songs) {
+  for (auto &song : sm->all_songs->songs) {
     if (regexec(&re, song->name.c_str(), 1, &match, 0) == 0) {
       set_list_index = 0;
       song_index = i;
@@ -197,7 +197,7 @@ void Cursor::goto_set_list(string name_regex) {
     return;
 
   int i = 0;
-  for (auto &set_list : pm->set_lists) {
+  for (auto &set_list : sm->set_lists) {
     if (regexec(&re, set_list->name.c_str(), 1, &match, 0) == 0) {
       set_list_index = i;
       song_index = 0;

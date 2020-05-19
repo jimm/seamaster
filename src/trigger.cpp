@@ -45,26 +45,26 @@ bool Trigger::signal_key(int key_code) {
 }
 
 void Trigger::perform_action() {
-  SeaMaster *pm = SeaMaster_instance();
+  SeaMaster *sm = SeaMaster_instance();
 
   switch (action) {
   case TA_NEXT_SONG:
-    pm->next_song();
+    sm->next_song();
     break;
   case TA_PREV_SONG:
-    pm->prev_song();
+    sm->prev_song();
     break;
   case TA_NEXT_PATCH:
-    pm->next_patch();
+    sm->next_patch();
     break;
   case TA_PREV_PATCH:
-    pm->prev_patch();
+    sm->prev_patch();
     break;
   case TA_PANIC:
-    pm->panic(false);
+    sm->panic(false);
     break;
   case TA_SUPER_PANIC:
-    pm->panic(true);
+    sm->panic(true);
     break;
   case TA_MESSAGE:
     output_message->send();

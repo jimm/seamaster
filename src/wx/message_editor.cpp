@@ -13,7 +13,7 @@ wxEND_EVENT_TABLE()
 
 MessageEditor::MessageEditor(wxWindow *parent, Message *m)
   : wxDialog(parent, wxID_ANY, "Message Editor", wxDefaultPosition),
-    pm(SeaMaster_instance()), message(m)
+    sm(SeaMaster_instance()), message(m)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags panel_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
@@ -46,8 +46,8 @@ wxWindow *MessageEditor::make_name_panel(wxWindow *parent) {
 
 wxString MessageEditor::messages_to_text() {
   wxString text = "";
-  for (auto pm_msg : message->messages) {
-    unsigned char status = Pm_MessageStatus(pm_msg);
+  for (auto sm_msg : message->messages) {
+    unsigned char status = Pm_MessageStatus(sm_msg);
     unsigned char switch_status = status < 0xf0 ? (status & 0xf0) : status;
     switch (switch_status & 0xf0) {
     case NOTE_OFF: case NOTE_ON: case POLY_PRESSURE: case CONTROLLER:
@@ -55,16 +55,16 @@ wxString MessageEditor::messages_to_text() {
       text += "0x";
       text += byte_to_hex(status);
       text += " 0x";
-      text += byte_to_hex(Pm_MessageData1(pm_msg));
+      text += byte_to_hex(Pm_MessageData1(sm_msg));
       text += " 0x";
-      text += byte_to_hex(Pm_MessageData2(pm_msg));
+      text += byte_to_hex(Pm_MessageData2(sm_msg));
       text += "\n";
       break;
     case PROGRAM_CHANGE: case CHANNEL_PRESSURE: case SONG_SELECT:
       text += "0x";
       text += byte_to_hex(status);
       text += " 0x";
-      text += byte_to_hex(Pm_MessageData1(pm_msg));
+      text += byte_to_hex(Pm_MessageData1(sm_msg));
       text += "\n";
       break;
     default:

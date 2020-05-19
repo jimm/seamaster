@@ -21,7 +21,7 @@ public:
   MessageEditor(wxWindow *parent, Message *message);
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
   Message *message;
   wxTextCtrl *name_text;
   wxTextCtrl *message_text;

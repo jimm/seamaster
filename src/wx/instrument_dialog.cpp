@@ -12,7 +12,7 @@ const int COLUMN_WIDTHS[] = {
 };
 
 InstrumentDialog::InstrumentDialog(wxWindow *parent, SeaMaster *seamaster)
-  : wxDialog(parent, wxID_ANY, "Instruments"), pm(seamaster)
+  : wxDialog(parent, wxID_ANY, "Instruments"), sm(seamaster)
 {     
   wxListCtrl *inputs = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT);
   wxListCtrl *outputs = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxSize(600, 150), wxLC_REPORT);
@@ -25,10 +25,10 @@ InstrumentDialog::InstrumentDialog(wxWindow *parent, SeaMaster *seamaster)
   }
 
   int i = 0;
-  for (auto* inst : pm->inputs)
+  for (auto* inst : sm->inputs)
     add_instrument(inputs, inst, i++);
   i = 0;
-  for (auto* inst : pm->outputs)
+  for (auto* inst : sm->outputs)
     add_instrument(outputs, inst, i++);
 
   wxSizer *buttons = CreateButtonSizer(wxOK);

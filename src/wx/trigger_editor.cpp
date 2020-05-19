@@ -12,7 +12,7 @@ wxEND_EVENT_TABLE()
 
 TriggerEditor::TriggerEditor(wxWindow *parent, Trigger *t)
   : wxDialog(parent, wxID_ANY, "Trigger Editor", wxDefaultPosition, wxSize(480, 500)),
-  pm(SeaMaster_instance()), trigger(t)
+  sm(SeaMaster_instance()), trigger(t)
 {
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   wxSizerFlags label_flags = wxSizerFlags().Border(wxTOP|wxLEFT|wxRIGHT);
@@ -66,7 +66,7 @@ wxWindow *TriggerEditor::make_input_dropdown(wxWindow *parent) {
   Input *orig_input = trigger->input();
 
   choices.Add("(No Trigger Instrument)");
-  for (auto &input : pm->inputs) {
+  for (auto &input : sm->inputs) {
     if (input->enabled || input == trigger->input())
       choices.Add(input->name);
   }
@@ -87,7 +87,7 @@ wxWindow *TriggerEditor::make_action_dropdown(wxWindow *parent) {
   choices.Add("Prev Patch");
   choices.Add("Panic");
   choices.Add("Super Panic");
-  for (auto &message : pm->messages)
+  for (auto &message : sm->messages)
     choices.Add(message->name);
 
   switch (trigger->action) {
@@ -129,7 +129,7 @@ void TriggerEditor::save(wxCommandEvent& _) {
   if (index == wxNOT_FOUND || index == 0)
     trigger->remove_from_input();
   else {
-    Input *input = pm->inputs[index - 1];
+    Input *input = sm->inputs[index - 1];
     PmMessage msg = message_from_bytes(tc_trigger_message->GetValue().c_str());
     trigger->set_trigger_message(input, msg);
   }
@@ -149,7 +149,7 @@ void TriggerEditor::save(wxCommandEvent& _) {
     trigger->action = TA_SUPER_PANIC;
   else {
     trigger->action = TA_MESSAGE;
-    for (auto &msg : pm->messages) {
+    for (auto &msg : sm->messages) {
       if (msg->name == val) {
         trigger->output_message = msg;
         break;

@@ -24,18 +24,18 @@ Monitor::Monitor()
   SetSizerAndFit(sizer);
   Show(true);
 
-  SeaMaster *pm = SeaMaster_instance();
-  for (auto& input : pm->inputs)
+  SeaMaster *sm = SeaMaster_instance();
+  for (auto& input : sm->inputs)
     input->set_monitor(this);
-  for (auto& output : pm->outputs)
+  for (auto& output : sm->outputs)
     output->set_monitor(this);
 }
 
 Monitor::~Monitor() {
-  SeaMaster *pm = SeaMaster_instance();
-  for (auto& input : pm->inputs)
+  SeaMaster *sm = SeaMaster_instance();
+  for (auto& input : sm->inputs)
     input->set_monitor(nullptr);
-  for (auto& output : pm->outputs)
+  for (auto& output : sm->outputs)
     output->set_monitor(nullptr);
 }
 

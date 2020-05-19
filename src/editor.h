@@ -5,7 +5,7 @@
 
 class Editor {
 public:
-  Editor(SeaMaster *pm = nullptr); // defaults to SeaMaster_instance()
+  Editor(SeaMaster *sm = nullptr); // defaults to SeaMaster_instance()
 
   Message *create_message();
   Trigger *create_trigger(Input *input);
@@ -35,7 +35,7 @@ public:
   void move_away_from_patch(Song *, Patch *);
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
 };
 
 #endif /* EDITOR_H */

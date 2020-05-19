@@ -23,7 +23,7 @@ public:
   TriggerEditor(wxWindow *parent, Trigger *trigger);
 
 private:
-  SeaMaster *pm;
+  SeaMaster *sm;
   Trigger *trigger;
   wxComboBox *lc_key;
   wxComboBox *lc_input;

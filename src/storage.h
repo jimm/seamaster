@@ -16,13 +16,13 @@ public:
   void initialize(bool testing = false); // public for testing
 
   SeaMaster *load(bool testing = false);
-  void save(SeaMaster *pm, bool testing = false);
+  void save(SeaMaster *sm, bool testing = false);
   bool has_error();
   string error();
 
 private:
   sqlite3 *db;
-  SeaMaster *pm;
+  SeaMaster *sm;
   string error_str;
   int max_patch_id;
   int max_conn_id;
@@ -72,9 +72,9 @@ private:
   void bind_int_or_null(sqlite3_stmt *stmt, int col_num, int val, int nullval=UNDEFINED);
   void extract_id(DBObj *db_obj);
 
-  PmMessage pm_message_from_bytes(char *);
+  PmMessage sm_message_from_bytes(char *);
   string message_to_byte_str(Message *);
-  string pm_message_to_bytes(PmMessage msg);
+  string sm_message_to_bytes(PmMessage msg);
 };
 
 #endif /* STORAGE_H */

@@ -19,7 +19,7 @@ wxEND_EVENT_TABLE()
 
 SetListEditor::SetListEditor(wxWindow *parent, SetList *slist)
   : wxDialog(parent, wxID_ANY, "Set List Editor", wxDefaultPosition),
-    pm(SeaMaster_instance()), set_list(slist)
+    sm(SeaMaster_instance()), set_list(slist)
 {     
   songs_copy = set_list->songs;
 
@@ -52,7 +52,7 @@ wxWindow *SetListEditor::make_name_panel(wxWindow *parent) {
 
 wxWindow *SetListEditor::make_all_songs_panel(wxWindow *parent) {
   wxWindow *retval = make_panel(parent, ID_SLE_AllSongs, "All Songs",
-                                pm->all_songs->songs,
+                                sm->all_songs->songs,
                                 &all_songs_wxlist);
   return retval;
 }
@@ -115,7 +115,7 @@ void SetListEditor::add_song(wxCommandEvent& event) {
   int all_songs_index = all_songs_wxlist->GetSelection();
   if (all_songs_index == wxNOT_FOUND)
     return;
-  Song *song = pm->all_songs->songs[all_songs_index];
+  Song *song = sm->all_songs->songs[all_songs_index];
 
   int set_list_index = set_list_wxlist->GetSelection();
   if (set_list_index == wxNOT_FOUND
