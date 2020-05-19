@@ -376,6 +376,7 @@ void Frame::send_message(wxCommandEvent& event) {
 void Frame::create_message(wxCommandEvent& event) {
   Editor e;
   Message *message = e.create_message();
+  e.add_message(message);
   update();
   edit_message(message);
 }
@@ -384,6 +385,7 @@ void Frame::create_trigger(wxCommandEvent& event) {
   Editor e;
   SeaMaster *sm = SeaMaster_instance();
   Trigger *trigger = e.create_trigger(sm->inputs.front());
+  e.add_trigger(trigger);
   update();
   edit_trigger(trigger);
 }
@@ -391,6 +393,7 @@ void Frame::create_trigger(wxCommandEvent& event) {
 void Frame::create_song(wxCommandEvent& event) {
   Editor e;
   Song *song = e.create_song();
+  e.add_song(song);
   update();
   edit_song(song);
 }
@@ -398,6 +401,7 @@ void Frame::create_song(wxCommandEvent& event) {
 void Frame::create_patch(wxCommandEvent& event) {
   Editor e;
   Patch *patch = e.create_patch();
+  e.add_patch(patch);
   update();
   edit_patch(patch);
 }
@@ -417,7 +421,8 @@ void Frame::create_connection(wxCommandEvent& event) {
     return;
   }
 
-  Connection *conn = e.create_connection(patch, sm->inputs.front(), sm->outputs.front());
+  Connection *conn = e.create_connection(sm->inputs.front(), sm->outputs.front());
+  e.add_connection(conn, patch);
   update();
   edit_connection(conn);
 }
@@ -425,6 +430,7 @@ void Frame::create_connection(wxCommandEvent& event) {
 void Frame::create_set_list(wxCommandEvent& event) {
   Editor e;
   SetList *set_list = e.create_set_list();
+  e.add_set_list(set_list);
   update();
   edit_set_list(set_list);
 }

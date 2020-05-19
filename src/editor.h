@@ -11,9 +11,16 @@ public:
   Trigger *create_trigger(Input *input);
   Song *create_song();
   Patch *create_patch();
-  Patch *create_patch(Song *song);
-  Connection *create_connection(Patch *patch, Input *input, Output *output);
-  SetList * create_set_list();
+  Connection *create_connection(Input *input, Output *output);
+  SetList *create_set_list();
+
+  void add_message(Message *message);
+  void add_trigger(Trigger *trigger);
+  void add_song(Song *song);
+  void add_patch(Patch *patch);
+  void add_patch(Patch *patch, Song *song);
+  void add_connection(Connection *connection, Patch *patch);
+  void add_set_list(SetList *set_list);
 
   bool ok_to_destroy_message(Message *message);
   bool ok_to_destroy_trigger(Trigger *trigger);

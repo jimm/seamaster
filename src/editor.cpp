@@ -11,28 +11,50 @@ Editor::Editor(SeaMaster *sea_master)
 }
 
 Message *Editor::create_message() {
-  Message *message = new Message(UNDEFINED_ID, "Unnamed Message");
-  sm->messages.push_back(message);
-  return message;
+  return new Message(UNDEFINED_ID, "Unnamed Message");
 }
 
 Trigger *Editor::create_trigger(Input *input) {
-  Trigger *trigger = new Trigger(UNDEFINED_ID, TA_NEXT_PATCH, nullptr);
-  sm->triggers.push_back(trigger);
-  trigger->set_trigger_message(input, Pm_Message(CONTROLLER, 50, 127));
-  return trigger;
+  return new Trigger(UNDEFINED_ID, TA_NEXT_PATCH, nullptr);
 }
 
 Song *Editor::create_song() {
   Song *song = new Song(UNDEFINED_ID, "Unnamed Song");
   // TODO consolidate with Storage::create_default_patch
-  create_patch(song);
+  Patch *patch = create_patch();
+  add_patch(patch, song);
+  return song;
+}
+
+Patch *Editor::create_patch() {
+  return new Patch(UNDEFINED_ID, "Unnamed Patch");
+}
+
+Connection *Editor::create_connection(Input *input, Output *output)
+{
+  return new Connection(UNDEFINED_ID, input, CONNECTION_ALL_CHANNELS,
+                        output, CONNECTION_ALL_CHANNELS);
+}
+
+SetList *Editor::create_set_list() {
+  return new SetList(UNDEFINED_ID, "Unnamed Set List");
+}
+
+void Editor::add_message(Message *message) {
+  sm->messages.push_back(message);
+}
+
+void Editor::add_trigger(Trigger *trigger) {
+  sm->triggers.push_back(trigger);
+}
+
+void Editor::add_song(Song *song) {
   sm->all_songs->songs.push_back(song);
   sm->sort_all_songs();
 
   SetList *curr_set_list = sm->cursor->set_list();
   if (curr_set_list == sm->all_songs)
-    return song;
+    return;
 
   vector<Song *> &slist = curr_set_list->songs;
   Song *curr_song = sm->cursor->song();
@@ -46,35 +68,24 @@ Song *Editor::create_song() {
       }
     }
   }
-
-  return song;
 }
 
-Patch *Editor::create_patch() {
-  return create_patch(sm->cursor->song());
+void Editor::add_patch(Patch *patch) {
+  add_patch(patch, sm->cursor->song());
 }
 
-Patch *Editor::create_patch(Song *song) {
-  Patch *p = new Patch(UNDEFINED_ID, "Unnamed Patch");
-  song->patches.push_back(p);
-  return p;
+void Editor::add_patch(Patch *patch, Song *song) {
+  song->patches.push_back(patch);
 }
 
-Connection *Editor::create_connection(Patch *patch, Input *input, Output *output)
+void Editor::add_connection(Connection *connection, Patch *patch)
 {
-  if (patch == nullptr)
-    return nullptr;
-
-  Connection *conn = new Connection(UNDEFINED_ID, input, CONNECTION_ALL_CHANNELS,
-                                    output, CONNECTION_ALL_CHANNELS);
-  patch->connections.push_back(conn);
-  return conn;
+  if (patch != nullptr)
+    patch->connections.push_back(connection);
 }
 
-SetList *Editor::create_set_list() {
-  SetList *set_list = new SetList(UNDEFINED_ID, "Unnamed Set List");
+void Editor::add_set_list(SetList *set_list) {
   sm->set_lists.push_back(set_list);
-  return set_list;
 }
 
 void Editor::destroy_message(Message *message) {

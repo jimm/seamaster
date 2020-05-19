@@ -5,24 +5,25 @@
 #define CATCH_CATEGORY "[editor]"
 #define TEST_FILE "test/testfile.org"
 
-TEST_CASE("create message", CATCH_CATEGORY) {
+TEST_CASE("create and add message", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   sm->cursor->init();
   Editor e(sm);
 
-  e.create_message();
-  REQUIRE(sm->messages.back()->name == "Unnamed Message");
+  Message *m = e.create_message();
+  e.add_message(m);
+  REQUIRE(sm->messages.back() == m);
 }
 
-TEST_CASE("create trigger", CATCH_CATEGORY) {
+TEST_CASE("create and add trigger", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   sm->cursor->init();
   Editor e(sm);
   Input *input = sm->inputs.front();
 
-  int num_triggers = input->triggers.size();
-  e.create_trigger(sm->inputs.front());
-  REQUIRE(input->triggers.size() == num_triggers + 1);
+  Trigger *t = e.create_trigger(input);
+  e.add_trigger(t);
+  REQUIRE(sm->triggers.back() == t);
 }
 
 TEST_CASE("create song", CATCH_CATEGORY) {
@@ -36,46 +37,50 @@ TEST_CASE("create song", CATCH_CATEGORY) {
   REQUIRE(created_song->patches.front()->name == "Unnamed Patch");
 }
 
-TEST_CASE("create song inserts into current song list", CATCH_CATEGORY) {
+TEST_CASE("add song inserts into current song list", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   sm->cursor->init();
   Editor e(sm);
 
   Song *created_song = e.create_song();
+  e.add_song(created_song);
   // It'll be last because name is "Unnamed Song" and that's last
   // alphabetically
   REQUIRE(created_song == sm->all_songs->songs.back());
 }
 
-TEST_CASE("create song inserts into empty song list", CATCH_CATEGORY) {
+TEST_CASE("add song inserts into empty song list", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   sm->cursor->init();
   Editor e(sm);
 
   SetList *set_list = e.create_set_list();
+  e.add_set_list(set_list);
   sm->cursor->set_list_index = sm->set_lists.size() - 1;
   // sanity checks
   REQUIRE(set_list == sm->cursor->set_list());
   REQUIRE(set_list->songs.size() == 0);
 
   Song *created_song = e.create_song();
+  e.add_song(created_song);
   REQUIRE(set_list->songs.size() == 1);
   REQUIRE(created_song == set_list->songs.front());
 }
 
-TEST_CASE("create patch", CATCH_CATEGORY) {
+TEST_CASE("create and add patch", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   Cursor *c = sm->cursor;
   c->init();
   Editor e(sm);
 
   int num_patches = c->song()->patches.size();
-  e.create_patch();
+  Patch *p = e.create_patch();
+  e.add_patch(p, c->song());
   REQUIRE(c->song()->patches.size() == num_patches + 1);
-  REQUIRE(c->song()->patches.back()->name == "Unnamed Patch");
+  REQUIRE(c->song()->patches.back() == p);
 }
 
-TEST_CASE("create connection", CATCH_CATEGORY) {
+TEST_CASE("create and add connection", CATCH_CATEGORY) {
   SeaMaster *sm = load_test_data();
   Cursor *c = sm->cursor;
   c->init();
@@ -83,8 +88,10 @@ TEST_CASE("create connection", CATCH_CATEGORY) {
 
   Patch *patch = c->patch();
   int num_conns = patch->connections.size();
-  e.create_connection(patch, sm->inputs.front(), sm->outputs.front());
+  Connection *conn = e.create_connection(sm->inputs.front(), sm->outputs.front());
+  e.add_connection(conn, patch);
   REQUIRE(patch->connections.size() == num_conns + 1);
+  REQUIRE(patch->connections.back() == conn);
 }
 
 TEST_CASE("create set list", CATCH_CATEGORY) {
@@ -92,8 +99,9 @@ TEST_CASE("create set list", CATCH_CATEGORY) {
   sm->cursor->init();
   Editor e(sm);
 
-  e.create_set_list();
-  REQUIRE(sm->set_lists.back()->name == "Unnamed Set List");
+  SetList *slist = e.create_set_list();
+  e.add_set_list(slist);
+  REQUIRE(sm->set_lists.back() == slist);
 }
 
 TEST_CASE("destroy message", CATCH_CATEGORY) {
@@ -233,10 +241,11 @@ TEST_CASE("add then destroy patches", CATCH_CATEGORY) {
   REQUIRE(song->patches.size() == 2); // sanity check
 
   Editor e;
-  e.create_patch();
-  Patch *created1 = song->patches.back();
-  e.create_patch();
-  Patch *created2 = song->patches.back();
+  Patch *created1 = e.create_patch();
+  Patch *created2 = e.create_patch();
+  e.add_patch(created1, song);
+  e.add_patch(created2, song);
+
   REQUIRE(created1 != created2);
   REQUIRE(created2 == song->patches.back());
 
