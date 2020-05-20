@@ -376,34 +376,46 @@ void Frame::send_message(wxCommandEvent& event) {
 void Frame::create_message(wxCommandEvent& event) {
   Editor e;
   Message *message = e.create_message();
-  e.add_message(message);
-  update();
-  edit_message(message);
+  if (edit_message(message)) {
+    e.add_message(message);
+    update();
+  }
+  else
+    delete message;
 }
 
 void Frame::create_trigger(wxCommandEvent& event) {
   Editor e;
   SeaMaster *sm = SeaMaster_instance();
   Trigger *trigger = e.create_trigger(sm->inputs.front());
-  e.add_trigger(trigger);
-  update();
-  edit_trigger(trigger);
+  if (edit_trigger(trigger)) {
+    e.add_trigger(trigger);
+    update();
+  }
+  else
+    delete trigger;
 }
 
 void Frame::create_song(wxCommandEvent& event) {
   Editor e;
   Song *song = e.create_song();
-  e.add_song(song);
-  update();
-  edit_song(song);
+  if (edit_song(song)) {
+    e.add_song(song);
+    update();
+  }
+  else
+    delete song;
 }
 
 void Frame::create_patch(wxCommandEvent& event) {
   Editor e;
   Patch *patch = e.create_patch();
-  e.add_patch(patch);
-  update();
-  edit_patch(patch);
+  if (edit_patch(patch)) {
+    e.add_patch(patch);
+    update();
+  }
+  else
+    delete patch;
 }
 
 void Frame::create_connection(wxCommandEvent& event) {
@@ -422,17 +434,23 @@ void Frame::create_connection(wxCommandEvent& event) {
   }
 
   Connection *conn = e.create_connection(sm->inputs.front(), sm->outputs.front());
-  e.add_connection(conn, patch);
-  update();
-  edit_connection(conn);
+  if (edit_connection(conn)) {
+    e.add_connection(conn, patch);
+    update();
+  }
+  else
+    delete conn;
 }
 
 void Frame::create_set_list(wxCommandEvent& event) {
   Editor e;
   SetList *set_list = e.create_set_list();
-  e.add_set_list(set_list);
-  update();
-  edit_set_list(set_list);
+  if (edit_set_list(set_list)) {
+    e.add_set_list(set_list);
+    update();
+  }
+  else
+    delete set_list;
 }
 
 void Frame::edit_message(wxCommandEvent& event) {
@@ -441,20 +459,26 @@ void Frame::edit_message(wxCommandEvent& event) {
     edit_message(SeaMaster_instance()->messages[message_num]);
 }
 
-void Frame::edit_message(Message *message) {
+bool Frame::edit_message(Message *message) {
   if (message != nullptr)
-    if (MessageEditor(this, message).ShowModal() == wxID_OK)
+    if (MessageEditor(this, message).ShowModal() == wxID_OK) {
       update();
+      return true;
+    }
+  return false;
 }
 
 void Frame::edit_trigger(wxListEvent& event) {
   edit_trigger(lc_triggers->selected());
 }
 
-void Frame::edit_trigger(Trigger *trigger) {
+bool Frame::edit_trigger(Trigger *trigger) {
   if (trigger != nullptr)
-    if (TriggerEditor(this, trigger).ShowModal() == wxID_OK)
+    if (TriggerEditor(this, trigger).ShowModal() == wxID_OK) {
       update();
+      return true;
+    }
+  return false;
 }
 
 void Frame::edit_set_list(wxCommandEvent& event) {
@@ -462,18 +486,21 @@ void Frame::edit_set_list(wxCommandEvent& event) {
   edit_set_list(sm->cursor->set_list());
 }
 
-void Frame::edit_set_list(SetList *set_list) {
+bool Frame::edit_set_list(SetList *set_list) {
   if (set_list == nullptr)
-    return;
+    return false;
 
   SeaMaster *sm = SeaMaster_instance();
   if (set_list == sm->all_songs) {
     wxMessageBox("Can't edit the master list of all songs",
                 "Set List Editor", wxOK | wxICON_INFORMATION);
-    return;
+    return false;
   }
-  if (SetListEditor(this, set_list).ShowModal() == wxID_OK)
+  if (SetListEditor(this, set_list).ShowModal() == wxID_OK) {
     update();
+    return true;
+  }
+  return false;
 }
 
 void Frame::edit_song(wxCommandEvent& event) {
@@ -481,9 +508,9 @@ void Frame::edit_song(wxCommandEvent& event) {
   edit_song(sm->cursor->song());
 }
 
-void Frame::edit_song(Song *song) {
+bool Frame::edit_song(Song *song) {
   if (song == nullptr)
-    return;
+    return false;
 
   wxTextEntryDialog prompt(this, "Song Name", "Song Editor", song->name);
   if (prompt.ShowModal() == wxID_OK) {
@@ -492,8 +519,10 @@ void Frame::edit_song(Song *song) {
       song->name = str.ToStdString();
       SeaMaster_instance()->sort_all_songs();
       update();
+      return true;
     }
   }
+  return false;
 }
 
 void Frame::edit_patch(wxCommandEvent& event) {
@@ -501,20 +530,26 @@ void Frame::edit_patch(wxCommandEvent& event) {
   edit_patch(sm->cursor->patch());
 }
 
-void Frame::edit_patch(Patch *patch) {
+bool Frame::edit_patch(Patch *patch) {
   if (patch != nullptr)
-    if (PatchEditor(this, patch).ShowModal() == wxID_OK)
+    if (PatchEditor(this, patch).ShowModal() == wxID_OK) {
       update();
+      return true;
+    }
+  return false;
 }
 
 void Frame::edit_connection(wxListEvent& event) {
   edit_connection(lc_patch_conns->selected());
 }
 
-void Frame::edit_connection(Connection *conn) {
+bool Frame::edit_connection(Connection *conn) {
   if (conn != nullptr)
-    if (ConnectionEditor(this, conn).ShowModal() == wxID_OK)
+    if (ConnectionEditor(this, conn).ShowModal() == wxID_OK) {
       update();
+      return true;
+    }
+  return false;
 }
 
 void Frame::set_song_notes(wxCommandEvent& event) {

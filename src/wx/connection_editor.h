@@ -83,7 +83,7 @@ private:
   int int_or_undefined_from_field(wxTextCtrl *field);
 
   void edit_controller_mapping(wxListEvent& event);
-  void edit_controller_mapping(Controller *controller);
+  bool edit_controller_mapping(Controller *controller);
 
   void update_buttons(wxListEvent& event) { update_buttons(); }
   void update_buttons();

@@ -132,18 +132,17 @@ private:
   void send_message(wxCommandEvent& event);
 
   void edit_message(wxCommandEvent& event);
-  void edit_message(Message *);
+  bool edit_message(Message *);
   void edit_trigger(wxListEvent& event);
-  void edit_trigger(Trigger *);
+  bool edit_trigger(Trigger *);
   void edit_set_list(wxCommandEvent& event);
-  void edit_set_list(SetList *set_list);
-  void set_list_editor_done(wxCommandEvent& event);
+  bool edit_set_list(SetList *set_list);
   void edit_song(wxCommandEvent& event);
-  void edit_song(Song *);
+  bool edit_song(Song *);
   void edit_patch(wxCommandEvent& event);
-  void edit_patch(Patch *);
+  bool edit_patch(Patch *);
   void edit_connection(wxListEvent& event);
-  void edit_connection(Connection *);
+  bool edit_connection(Connection *);
 
   void set_song_notes(wxCommandEvent& event);
 

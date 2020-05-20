@@ -240,10 +240,13 @@ void ConnectionEditor::edit_controller_mapping(wxListEvent& event) {
     edit_controller_mapping(connection->cc_maps[controller_num]);
 }
 
-void ConnectionEditor::edit_controller_mapping(Controller *controller) {
+bool ConnectionEditor::edit_controller_mapping(Controller *controller) {
   if (controller != nullptr)
-    if (ControllerEditor(this, connection, controller).ShowModal() == wxID_OK)
+    if (ControllerEditor(this, connection, controller).ShowModal() == wxID_OK) {
       update();
+      return true;
+    }
+  return false;
 }
 
 void ConnectionEditor::update_buttons() {
@@ -268,9 +271,13 @@ void ConnectionEditor::add_controller_mapping(wxCommandEvent& event) {
     return;
 
   Controller *cc = new Controller(UNDEFINED_ID, cc_num);
-  connection->cc_maps[cc_num] = cc;
-  update();
-  edit_controller_mapping(cc);
+  if (edit_controller_mapping(cc)) {
+    connection->cc_maps[cc_num] = cc;
+    update();
+  }
+  else
+    delete cc;
+
 }
 
 void ConnectionEditor::del_controller_mapping(wxCommandEvent& event) {
