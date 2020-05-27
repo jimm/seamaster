@@ -107,6 +107,8 @@ private:
   void OnMonitor(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
 
+  void create_new_seamaster();
+
   void regular_panic(wxCommandEvent &_event);
   void super_panic(wxCommandEvent &_event);
   bool handle_trigger_key(int key_code);

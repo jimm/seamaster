@@ -706,22 +706,7 @@ void Frame::OnAbout(wxCommandEvent &_event) {
 }
 
 void Frame::OnNew(wxCommandEvent &_event) {
-  SeaMaster *old_sm = SeaMaster_instance();
-  bool testing = old_sm != nullptr && old_sm->testing;
-
-  SeaMaster *sm = new SeaMaster();
-  sm->testing = testing;
-  sm->initialize();
-
-  if (old_sm != nullptr) {
-    old_sm->stop();
-    delete old_sm;
-  }
-
-  show_user_message("Created new project", 15);
-  file_path = "";
-  sm->start();                  // initializes cursor
-  update();                     // must come after start
+  create_new_seamaster();
 }
 
 void Frame::OnOpen(wxCommandEvent &_event) {
@@ -784,6 +769,8 @@ void Frame::load(wxString path) {
   if (access(path, F_OK) != 0) {
     wxString err = wxString::Format("File '%s' does not exist", path);
     wxLogError(err);
+    if (SeaMaster_instance() == nullptr)
+      create_new_seamaster();
     return;
   }
 
@@ -803,6 +790,25 @@ void Frame::load(wxString path) {
     old_sm->stop();
     delete old_sm;
   }
+  sm->start();                  // initializes cursor
+  update();                     // must come after start
+}
+
+void Frame::create_new_seamaster() {
+  SeaMaster *old_sm = SeaMaster_instance();
+  bool testing = old_sm != nullptr && old_sm->testing;
+
+  SeaMaster *sm = new SeaMaster();
+  sm->testing = testing;
+  sm->initialize();
+
+  if (old_sm != nullptr) {
+    old_sm->stop();
+    delete old_sm;
+  }
+
+  show_user_message("Created new project", 15);
+  file_path = "";
   sm->start();                  // initializes cursor
   update();                     // must come after start
 }
