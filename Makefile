@@ -23,8 +23,6 @@ TEST_OBJ_FILTERS = src/wx/app_main.o
 
 CATCH_CATEGORY ?= ""
 
-CONFIG_DIR = $(or ${XDG_CONFIG_DIR},${XDG_CONFIG_DIR},$(HOME)/.config)/$(NAME)
-
 .PHONY: all test install tags clean distclean
 
 all: $(NAME)
@@ -35,21 +33,27 @@ $(NAME): $(OBJS)
 -include $(SRC:%.cpp=%.d)
 -include $(TEST_SRC:%.cpp=%.d)
 
+storage.cpp:	src/schema.sql.h
+
+# Turn db/schema.sql into a C++11 header file that defines a string
+# containing the SQL.
+src/schema.sql.h: db/schema.sql
+	@echo "// THIS FILE IS GENERATED FROM $<" > $@ \
+	&& echo 'static const char * const SCHEMA_SQL = R"(' >> $@ \
+	&& cat $< >> $@ \
+	&& echo ')";' >> $@
+
 test: $(NAME)_test
 	./$(NAME)_test --use-colour no $(CATCH_CATEGORY)
 
 $(NAME)_test:	$(OBJS) $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(filter-out $(TEST_OBJ_FILTERS),$^)
 
-install:	$(bindir)/$(NAME) $(CONFIG_DIR)/schema.sql
+install:	$(bindir)/$(NAME)
 
 $(bindir)/$(NAME):	$(NAME)
 	cp ./$(NAME) $(bindir)
 	chmod 755 $(bindir)/$(NAME)
-
-$(CONFIG_DIR)/schema.sql: db/schema.sql
-	mkdir -p $(CONFIG_DIR)
-	cp db/schema.sql $(CONFIG_DIR)
 
 tags:	TAGS
 

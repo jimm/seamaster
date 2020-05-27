@@ -284,7 +284,7 @@ TEST_CASE("load auto patch", CATCH_CATEGORY) {
 
 TEST_CASE("initialize", CATCH_CATEGORY) {
   Storage storage(TEST_DB_PATH);
-  storage.initialize(true);
+  storage.initialize();
   REQUIRE(storage.has_error() == false);
   
   SeaMaster *sm = storage.load(true);

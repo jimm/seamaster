@@ -11,6 +11,7 @@
 #include "cursor.h"
 #include "storage.h"
 #include "formatter.h"
+#include "schema.sql.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ void Storage::save(SeaMaster *seamaster, bool testing) {
   if (db == nullptr)
     return;
 
-  initialize(testing);
+  initialize();
   if (has_error())
     return;
 
@@ -75,32 +76,11 @@ string Storage::error() {
   return error_str;
 }
 
-void Storage::initialize(bool testing) {
-  if (testing) {
-    initialize_with_schema_file("db/schema.sql");
-    return;
-  }
-
-  char *xdg_config_home = getenv("XDG_CONFIG_HOME");
-  string config_path;
-  if (xdg_config_home == nullptr) {
-    config_path = getenv("HOME");
-    config_path += "/.config";
-  }
-  else
-    config_path = xdg_config_home;
-  config_path += "/seamaster/schema.sql";
-
-  initialize_with_schema_file(config_path);
-}
-
-void Storage::initialize_with_schema_file(string config_path) {
-  // read schema file and execute
+void Storage::initialize() {
   char *error_buf;
-  std::ifstream schema_t(config_path);
-  std::string schema_sql((std::istreambuf_iterator<char>(schema_t)),
-                         std::istreambuf_iterator<char>());
-  int status = sqlite3_exec(db, schema_sql.c_str(), nullptr, nullptr, &error_buf);
+
+  // execute schema strings defined in schema.sql.h
+  int status = sqlite3_exec(db, SCHEMA_SQL, nullptr, nullptr, &error_buf);
   if (status != 0) {
     fprintf(stderr, "%s\n", error_buf);
     error_str = error_buf;

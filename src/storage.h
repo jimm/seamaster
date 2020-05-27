@@ -13,7 +13,7 @@ public:
   Storage(const char *path);
   ~Storage();
 
-  void initialize(bool testing = false); // public for testing
+  void initialize();            // public for testing
 
   SeaMaster *load(bool testing = false);
   void save(SeaMaster *sm, bool testing = false);
@@ -26,8 +26,6 @@ private:
   string error_str;
   int max_patch_id;
   int max_conn_id;
-
-  void initialize_with_schema_file(string config_path);
 
   void load_instruments();
   void load_messages();

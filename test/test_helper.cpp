@@ -10,7 +10,7 @@ void _initialize_database() {
     remove(TEST_DB_PATH);
 
   Storage storage(TEST_DB_PATH);
-  storage.initialize(true);
+  storage.initialize();
 }
 
 void _initialize_and_load_database() {
