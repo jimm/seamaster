@@ -225,40 +225,39 @@ PmMessage Input::message_from_read_queue() {
 }
 
 // Return the connections to use for `msg`. Normally it's the same as our
-// list of connections. However for every note on we store those connections
-// so we can use them later for the corresponding note off. Same for sustain
-// controller messages.
+// list of connections. However for every note and sustain on we store those
+// connections so we can use them later for the corresponding note and
+// sustain offs.
 vector<Connection *> &Input::connections_for_message(PmMessage msg) {
   unsigned char status = Pm_MessageStatus(msg);
   unsigned char high_nibble = status & 0xf0;
   unsigned char chan = status & 0x0f;
   unsigned char data1 = Pm_MessageData1(msg);
 
-  // Note off messages must be sent to their original connections, so for
-  // incoming note on messages we store the current connections in
-  // note_off_conns.
-  switch (high_nibble) {
-  case NOTE_OFF:
-    return notes_off_conns[chan][data1];
-  case NOTE_ON:
-    // Velocity 0 means we should use the note-off connections.
-    if (Pm_MessageData2(msg) == 0)
-      return notes_off_conns[chan][data1];
-    notes_off_conns[chan][data1] = connections;
-    return connections;
-  case CONTROLLER:
-    if (data1 == CC_SUSTAIN) {
-      if (Pm_MessageData2(msg) == 0)
-        return sustain_off_conns[chan];
-      else {
-        sustain_off_conns[chan] = connections;
-        return connections;
-      }
-    }
-    else
+  // Note off and sustain off messages must be sent to their original
+  // connections, so for note on and sustain on messages we store the list
+  // of current connections and for off messages we return that list.
+
+  if (high_nibble == NOTE_OFF || (high_nibble == NOTE_ON && Pm_MessageData2(msg) == 0)) {
+    if (notes_off_conns[chan][data1].empty())
       return connections;
-    break;
-  default:
-    return connections;
+    return notes_off_conns[chan][data1];
   }
+
+  if (high_nibble == NOTE_ON) {
+    notes_off_conns[chan][data1] = connections;
+    return notes_off_conns[chan][data1];
+  }
+
+  if (high_nibble == CONTROLLER && data1 == CC_SUSTAIN) {
+    if (Pm_MessageData2(msg) == 0) {
+      if (sustain_off_conns[chan].empty())
+        return connections;
+      return sustain_off_conns[chan];
+    }
+    sustain_off_conns[chan] = connections;
+    return sustain_off_conns[chan];
+  }
+
+  return connections;
 }
