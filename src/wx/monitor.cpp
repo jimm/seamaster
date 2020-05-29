@@ -16,11 +16,6 @@ Monitor::Monitor()
   sizer->Add(make_input_panel(this), wxEXPAND);
   sizer->Add(make_output_panel(this), wxEXPAND);
 
-  for (int i = 0; i < sizeof(COLUMN_HEADERS) / sizeof(const char * const); ++i) {
-    input_list->InsertColumn(i, COLUMN_HEADERS[i]);
-    output_list->InsertColumn(i, COLUMN_HEADERS[i]);
-  }
-
   SetSizerAndFit(sizer);
   Show(true);
 
@@ -61,6 +56,7 @@ void Monitor::add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vec
     ++row;
   }
   Refresh();
+  Update();
 }
 
 wxWindow *Monitor::make_input_panel(wxWindow *parent) {

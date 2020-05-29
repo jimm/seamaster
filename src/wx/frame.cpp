@@ -242,8 +242,11 @@ void Frame::make_menu_bar() {
   wxMenu *menu_windows = new wxMenu;
   menu_windows->Append(ID_ListInstruments, "&Instruments\tCtrl-I",
                       "Displays input and output instruments");
-  menu_windows->Append(ID_Monitor, "MIDI &Monitor\tCtrl-M",
-                      "Open the MIDI Monitor window");
+  // FIXME until I can figure out how to get teh MIDI Monitor window to
+  // update when in the background, disable the menu item.
+  //
+  // menu_windows->Append(ID_Monitor, "MIDI &Monitor\tCtrl-M",
+  //                     "Open the MIDI Monitor window");
 
   wxMenu *menu_midi = new wxMenu;
   menu_midi->Append(ID_RegularPanic, "&Send All Notes Off\tCtrl-A",
