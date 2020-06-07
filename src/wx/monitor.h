@@ -1,7 +1,7 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <vector>
+#include <deque>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
  #include <wx/wx.h>
@@ -12,6 +12,14 @@ using namespace std;
 
 class SeaMaster;
 class Instrument;
+
+class MonitorMessage {
+public:
+  Instrument *instrument;
+  PmMessage message;
+
+  MonitorMessage(Instrument *inst, PmMessage msg) : instrument(inst), message(msg) {}
+};
 
 class Monitor : public wxFrame, public MIDIMonitor {
 public:
@@ -24,13 +32,20 @@ public:
 private:
   wxListCtrl *input_list;
   wxListCtrl *output_list;
-  vector<PmMessage> input_messages;
-  vector<PmMessage> output_messages;
+  deque<MonitorMessage> input_messages;
+  deque<MonitorMessage> output_messages;
+  wxTimer timer;
+  bool modified;
 
   wxWindow *make_input_panel(wxWindow *parent);
   wxWindow *make_output_panel(wxWindow *parent);
   wxWindow *make_panel(wxWindow *parent, const char * const title, wxListCtrl **list_ptr);
-  void add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, vector<PmMessage> &message_list);
+  void add_message(Instrument *inst, wxListCtrl *list, PmMessage msg, deque<MonitorMessage> &message_list);
+
+  void on_timer(wxTimerEvent &event);
+  void update_list(wxListCtrl *list, deque<MonitorMessage> &message_list);
+
+  wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* MONITOR_H */
